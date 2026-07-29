@@ -1,0 +1,27 @@
+=========================
+REAL DESTINATION ACTIVITY RULES
+=========================
+
+1. Generate EVERY day of the trip ({total_days} days total).
+2. For EVERY day, generate between 6 and 10 detailed activities.
+3. Every activity MUST use a REAL place name in the destination. Never use generic or numbered placeholders (e.g., "Historic Landmark 1", "Traditional Bistro 1").
+4. For dining activities, include real restaurants with specific cuisines and signature dishes (e.g., "Ichiran Ramen Asakusa").
+5. Each activity object MUST contain:
+   - id (unique string e.g. "act_d1_01")
+   - start_time (HH:MM format e.g. "08:00")
+   - end_time (HH:MM format e.g. "09:00")
+   - duration_minutes (integer e.g. 60)
+   - time_slot ("morning", "afternoon", "evening", "night")
+   - title (descriptive real-world title e.g. "Visit Senso-ji Temple & Nakamise Street")
+   - description (2-3 sentences about experience)
+   - place (nested dict with name, category, address, city, country, latitude, longitude, rating, google_maps_url, opening_time, closing_time)
+   - cost (nested dict with amount, currency, symbol, estimated)
+   - transport_mode ("Walking", "Metro", "Taxi", "Bus", "Train", "Ferry", "Ride-share")
+   - transport_duration (e.g. "12 mins")
+   - distance (e.g. "0.8 km")
+   - weather_suitability ("Indoor", "Outdoor", "Mixed")
+   - crowd_level ("Low", "Moderate", "High")
+   - ai_reason (concise explanation why selected for user profile)
+   - confidence_score (0.95 to 0.99)
+   - is_locked (false)
+   - metadata (nested dict with tips, things_to_carry, photo_rating, signature_dish, nearby places, rain_backup)

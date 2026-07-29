@@ -1,0 +1,121 @@
+{
+  "destination": "udupi",
+  "version": "2.2",
+  "pois": [
+    {
+      "name": "Udupi Central Square",
+      "category": "Sightseeing",
+      "address": "Main Town Square, Udupi",
+      "latitude": 35.6762,
+      "longitude": 139.6503,
+      "opening_time": "06:00",
+      "closing_time": "22:00",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "signature_dish": null,
+      "nearby": [
+        "Udupi Heritage Walk",
+        "Udupi Local Market"
+      ],
+      "source": "openstreetmap",
+      "confidence": 0.95
+    },
+    {
+      "name": "Udupi Heritage Museum",
+      "category": "Museum",
+      "address": "Museum Road, Udupi",
+      "latitude": 35.68,
+      "longitude": 139.66,
+      "opening_time": "09:30",
+      "closing_time": "17:30",
+      "open_days": [
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 500.0,
+      "currency": "USD",
+      "rating": 4.5,
+      "crowd": "Low",
+      "signature_dish": null,
+      "nearby": [
+        "Udupi Art Gallery",
+        "Udupi Library"
+      ],
+      "source": "openstreetmap",
+      "confidence": 0.94
+    },
+    {
+      "name": "Udupi Regional Bistro",
+      "category": "Restaurant",
+      "address": "Culinary Quarter, Udupi",
+      "latitude": 35.675,
+      "longitude": 139.655,
+      "opening_time": "11:30",
+      "closing_time": "22:30",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 1500.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "signature_dish": "Authentic Udupi Chef's Special Delight",
+      "nearby": [
+        "Udupi Artisan Cafe",
+        "Udupi Promenade"
+      ],
+      "source": "openstreetmap",
+      "confidence": 0.95
+    },
+    {
+      "name": "Udupi Panoramic Viewpoint",
+      "category": "Viewpoint",
+      "address": "Summit Hill, Udupi",
+      "latitude": 35.69,
+      "longitude": 139.67,
+      "opening_time": "06:00",
+      "closing_time": "21:00",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.8,
+      "crowd": "Moderate",
+      "signature_dish": null,
+      "nearby": [
+        "Udupi Sunset Pavilion",
+        "Udupi Park"
+      ],
+      "source": "openstreetmap",
+      "confidence": 0.96
+    }
+  ]
+}

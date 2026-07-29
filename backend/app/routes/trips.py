@@ -1,93 +1,843 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
-from datetime import date
+from typing import List, Optional, Any
+
+from datetime import date, datetime, timedelta
+
+
+
 from app.database.connection import get_db
 from app.models.trip import Trip
-from app.services.ai_service import generate_itinerary, replan_itinerary
+from app.models.itinerary import ItineraryDay, ItineraryActivity
+from app.models.place import Place
+from app.models.user import User
+from app.schemas.trip_schemas import (
+    TripCreate, TripUpdate, TripResponse, ActivityCreate, ActivityUpdate,
+    ActivityReorder, RegenerateDayRequest, FilterTripsRequest, DashboardWidgetResponse
+)
+from app.services.trip_service import (
+    create_trip, update_trip, duplicate_trip, search_trips, filter_trips,
+    get_dashboard_widgets, enrich_trip_response, get_or_create_place,
+    get_user_trip_stats, get_active_trip_spotlight, touch_trip,
+    get_recently_viewed_trip, check_duplicate_trip, get_paginated_user_trips
+)
+from app.services.ai_service import (
+    generate_structured_itinerary, regenerate_day_itinerary, check_budget_alert, replan_itinerary, generate_itinerary
+)
+from app.routes.auth import get_current_user_optional
 
-router = APIRouter(prefix="/api/trips", tags=["Trips"])
+router = APIRouter(prefix="/api/trips", tags=["Smart Trip Planner"])
 
 
-class TripCreate(BaseModel):
-    user_id: int
-    destination: str
-    start_date: date
-    end_date: date
-    budget: float
-    travel_type: str = "leisure"
-    travel_style: str = "solo"
-    interests: str = "sightseeing"
-    group_size: int = 1
-    currency: str = "USD"
-
-
-@router.post("/create")
-def create_trip(data: TripCreate, db: Session = Depends(get_db)):
-    days = (data.end_date - data.start_date).days + 1
-
-    itinerary = generate_itinerary(
-        destination=data.destination,
-        days=days,
-        budget=data.budget,
-        interests=data.interests,
-        travel_type=data.travel_type,
-        group_size=data.group_size,
-        currency=data.currency,
-    )
-
-    trip = Trip(
-        user_id=data.user_id,
-        destination=data.destination,
-        start_date=data.start_date,
-        end_date=data.end_date,
-        budget=data.budget,
-        currency=data.currency,
-        travel_type=data.travel_type,
-        travel_style=data.travel_style,
-        group_size=data.group_size,
-        interests=data.interests,
-        itinerary=itinerary,
-    )
-    db.add(trip)
-    db.commit()
-    db.refresh(trip)
+def _get_user_trip(trip_id: int, db: Session, current_user: Optional[User] = None) -> Trip:
+    """Helper to verify trip existence and user isolation."""
+    query = db.query(Trip).filter(Trip.id == trip_id)
+    if current_user:
+        query = query.filter(Trip.user_id == current_user.id)
+    trip = query.first()
+    if not trip:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Trip not found")
     return trip
+
+
+def _get_user_activity(activity_id: int, db: Session, current_user: Optional[User] = None) -> ItineraryActivity:
+    """Helper to verify itinerary activity existence and user isolation."""
+    act = db.query(ItineraryActivity).filter(ItineraryActivity.id == activity_id).first()
+    if not act:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Activity not found")
+    if current_user:
+        day = db.query(ItineraryDay).filter(ItineraryDay.id == act.day_id).first()
+        if not day:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Activity not found")
+        _get_user_trip(day.trip_id, db, current_user)
+    return act
+
+
+@router.post("/check-budget")
+def check_budget(destination: str, days: int, budget: float, currency: str = "USD"):
+    return check_budget_alert(destination=destination, days=days, budget=budget, currency=currency)
+
+
+@router.post("/create", status_code=status.HTTP_201_CREATED)
+def create_new_trip(
+    data: TripCreate,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    if current_user:
+        data.user_id = current_user.id
+
+    days = max(1, (data.end_date - data.start_date).days + 1)
+
+    # Budget alert check unless forced or requested budget-friendly
+    if not data.force_create and not data.is_budget_friendly:
+        alert = check_budget_alert(
+            destination=data.destination,
+            days=days,
+            budget=data.budget,
+            currency=data.currency or "USD"
+        )
+        if alert.get("has_warning"):
+            return {
+                "budget_alert": alert,
+                "requires_confirmation": True
+            }
+
+    trip = create_trip(db, data)
+    if data.trip_preferences:
+        trip.trip_preferences = data.trip_preferences
+        db.commit()
+        db.refresh(trip)
+
+    # Auto-generate structured AI itinerary
+    try:
+        ai_data = generate_structured_itinerary(
+            destination=data.destination,
+            days=days,
+            budget=data.budget,
+            interests=data.interests or "sightseeing",
+            travel_style=data.travel_style or "solo",
+            group_size=data.group_size or 1,
+            currency=data.currency or "USD",
+            trip_preferences=data.trip_preferences
+        )
+        _populate_trip_itinerary_from_ai(db, trip, ai_data)
+    except Exception as e:
+        print(f"[AI Itinerary Generation Warning]: {e}")
+
+    return enrich_trip_response(trip, db)
+
+
+def _safe_float(val: Any, default: float = 0.0) -> float:
+    if val is None:
+        return default
+    try:
+        return float(val)
+    except (ValueError, TypeError):
+        return default
+
+
+def _populate_trip_itinerary_from_ai(db: Session, trip: Trip, ai_data: dict):
+    """Save multi-day structured activities generated by AI into database models."""
+    days_data = ai_data.get("days", [])
+    if not days_data and "itinerary_days" in ai_data:
+        days_data = ai_data.get("itinerary_days", [])
+
+    print(f"[AI Output Log] AI JSON contains {len(days_data)} days for trip {trip.id}.")
+
+    for day_info in days_data:
+        day_num = day_info.get("day_number", 1)
+        it_day = db.query(ItineraryDay).filter(
+            ItineraryDay.trip_id == trip.id,
+            ItineraryDay.day_number == day_num
+        ).first()
+
+        if not it_day:
+            day_date = trip.start_date + timedelta(days=day_num - 1)
+            it_day = ItineraryDay(
+                trip_id=trip.id,
+                day_number=day_num,
+                date=day_date,
+                title=day_info.get("title", f"Day {day_num}: Explore {trip.destination}"),
+                theme_note=day_info.get("theme_note", "")
+            )
+            db.add(it_day)
+            db.commit()
+            db.refresh(it_day)
+
+        # Clear old unlocked activities before populating fresh itinerary
+        db.query(ItineraryActivity).filter(
+            ItineraryActivity.day_id == it_day.id,
+            ItineraryActivity.is_locked == False
+        ).delete()
+        db.commit()
+
+        acts = day_info.get("activities", [])
+        print(f"[DB Insert Log] Trip {trip.id} Day {day_num} activities count BEFORE insertion: {len(acts)}")
+
+        # Fallback to real POIs if acts list is empty
+        if not acts:
+            dest = trip.destination
+            print(f"[Fallback Triggered] Fetching real POIs for Trip {trip.id} Day {day_num} ({dest})")
+            from app.services.poi_service import fetch_real_pois_for_destination
+            pois = fetch_real_pois_for_destination(dest)
+            time_slots = [
+                ("08:30", "09:30", "morning", 60),
+                ("09:45", "11:45", "morning", 120),
+                ("12:00", "13:15", "afternoon", 75),
+                ("13:30", "16:00", "afternoon", 150),
+                ("16:30", "18:30", "evening", 120)
+            ]
+            acts = []
+            for p_idx, poi in enumerate(pois[:5]):
+                st, et, slot, dur_m = time_slots[min(p_idx, len(time_slots) - 1)]
+                acts.append({
+                    "start_time": st,
+                    "end_time": et,
+                    "duration_minutes": dur_m,
+                    "time_slot": slot,
+                    "title": f"📍 Explore {poi['name']}",
+                    "description": poi.get("description") or f"Visit {poi['name']} in {dest}.",
+                    "place": poi,
+                    "cost": {"amount": poi.get("ticket_price", 0.0)},
+                    "ticket_price": poi.get("ticket_price", 0.0),
+                    "transport_mode": "Walking",
+                    "transport_duration": "8 mins",
+                    "weather_suitability": "Mixed",
+                    "crowd_level": poi.get("crowd", "Moderate"),
+                    "ai_reason": poi.get("ai_reason") or f"✓ Best visited in the morning\n✓ Walking distance\n✓ 4.7★ reviews",
+                    "confidence_score": poi.get("confidence", 0.98),
+                    "metadata": {"tips": [poi.get("tip") or f"Visit early to enjoy quiet atmosphere."], "nearby": poi.get("nearby", [])}
+                })
+
+        inserted_count = 0
+        for order_idx, act_data in enumerate(acts):
+            place_info = act_data.get("place", {})
+            place_name = place_info.get("name") if isinstance(place_info, dict) else act_data.get("place_name")
+            if not place_name:
+                place_name = act_data.get("title", f"Attraction {order_idx + 1}")
+
+            place_cat = place_info.get("category", "sightseeing") if isinstance(place_info, dict) else "sightseeing"
+            place_lat = place_info.get("latitude") if isinstance(place_info, dict) else None
+            place_lon = place_info.get("longitude") if isinstance(place_info, dict) else None
+            place_addr = place_info.get("address") if isinstance(place_info, dict) else None
+            place_rating = place_info.get("rating", 4.5) if isinstance(place_info, dict) else 4.5
+            place_maps = place_info.get("google_maps_url") if isinstance(place_info, dict) else None
+
+            ticket_amt = _safe_float(act_data.get("ticket_price"), 0.0)
+            if ticket_amt == 0.0 and isinstance(act_data.get("cost"), dict):
+                ticket_amt = _safe_float(act_data.get("cost", {}).get("amount"), 0.0)
+
+            place = get_or_create_place(
+                db,
+                name=place_name,
+                category=place_cat,
+                city=trip.destination,
+                country=trip.country,
+                latitude=place_lat,
+                longitude=place_lon,
+                address=place_addr,
+                rating=place_rating,
+                ticket_price=ticket_amt,
+                google_maps_url=place_maps
+            )
+
+            dur_mins = act_data.get("duration_minutes") or 90
+            dur_str = act_data.get("estimated_duration") or f"{dur_mins} mins"
+
+            # Rich activity metadata preserve
+            act_meta = act_data.get("metadata")
+            if not isinstance(act_meta, dict):
+                act_meta = {}
+            if "tips" not in act_meta and isinstance(place_info, dict) and place_info.get("tip"):
+                act_meta["tips"] = [place_info.get("tip")]
+            if "nearby" not in act_meta and isinstance(place_info, dict) and place_info.get("nearby"):
+                act_meta["nearby"] = place_info.get("nearby")
+
+            activity = ItineraryActivity(
+                day_id=it_day.id,
+                place_id=place.id,
+                time_slot=act_data.get("time_slot", "morning"),
+                start_time=act_data.get("start_time", "09:00"),
+                end_time=act_data.get("end_time", "10:30"),
+                order_index=order_idx,
+                title=act_data.get("title", "Visit Attraction"),
+                description=act_data.get("description", ""),
+                estimated_duration=dur_str,
+                ticket_price=ticket_amt,
+                transport_mode=str(act_data.get("transport_mode", "Walking")),
+                transport_duration=str(act_data.get("transport_duration", "10 mins")),
+                weather_suitability=str(act_data.get("weather_suitability", "Indoor")),
+                crowd_level=str(act_data.get("crowd_level", "Moderate")),
+                ai_reason=str(act_data.get("ai_reason", "Recommended for itinerary")),
+                confidence_score=_safe_float(act_data.get("confidence_score"), 0.95),
+                is_locked=bool(act_data.get("is_locked", False)),
+                activity_metadata=act_meta
+            )
+            db.add(activity)
+            inserted_count += 1
+
+        db.commit()
+        print(f"[DB Insert Log] Trip {trip.id} Day {day_num} activities ACTUALLY INSERTED: {inserted_count}")
+
+    db.refresh(trip)
+
+
+@router.get("/search")
+def search_user_trips(
+    query: str,
+    user_id: Optional[int] = None,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    target_user_id = current_user.id if current_user else user_id
+    if not target_user_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User identification required")
+    trips = search_trips(db, user_id=target_user_id, query=query)
+    return [enrich_trip_response(t, db) for t in trips]
+
+
+@router.get("/filter")
+def filter_user_trips(
+    user_id: Optional[int] = None,
+    status: Optional[str] = None,
+    travel_style: Optional[str] = None,
+    min_budget: Optional[float] = None,
+    max_budget: Optional[float] = None,
+    is_favorite: Optional[bool] = None,
+    is_archived: Optional[bool] = None,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    target_user_id = current_user.id if current_user else user_id
+    if not target_user_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User identification required")
+    req = FilterTripsRequest(
+        user_id=target_user_id,
+        status=status,
+        travel_style=travel_style,
+        min_budget=min_budget,
+        max_budget=max_budget,
+        is_favorite=is_favorite,
+        is_archived=is_archived
+    )
+    trips = filter_trips(db, req)
+    return [enrich_trip_response(t, db) for t in trips]
+
+
+@router.get("/dashboard-widgets")
+@router.get("/user/{user_id}/dashboard-widgets")
+@router.get("/dashboard-widgets/{user_id}")
+def get_user_dashboard_widgets(
+    user_id: Optional[int] = None,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    target_user_id = current_user.id if current_user else user_id
+    if not target_user_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User identification required")
+    return get_dashboard_widgets(db, target_user_id)
+
+
+@router.get("/stats")
+@router.get("/user/{user_id}/stats")
+@router.get("/stats/{user_id}")
+def get_trip_stats_endpoint(
+    user_id: Optional[int] = None,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    target_user_id = current_user.id if current_user else user_id
+    if not target_user_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User identification required")
+    return get_user_trip_stats(db, target_user_id)
+
+
+@router.get("/spotlight")
+@router.get("/user/{user_id}/spotlight")
+def get_spotlight_endpoint(
+    user_id: Optional[int] = None,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    target_user_id = current_user.id if current_user else user_id
+    if not target_user_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User identification required")
+    spotlight = get_active_trip_spotlight(db, target_user_id)
+    return spotlight if spotlight else {}
+
+
+@router.get("/recently-viewed")
+@router.get("/user/{user_id}/recently-viewed")
+def get_recently_viewed_endpoint(
+    user_id: Optional[int] = None,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    target_user_id = current_user.id if current_user else user_id
+    if not target_user_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User identification required")
+    recent = get_recently_viewed_trip(db, target_user_id)
+    return recent if recent else {}
+
+
+@router.post("/check-duplicate")
+def check_duplicate_endpoint(
+    payload: dict,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    target_user_id = current_user.id if current_user else payload.get("user_id")
+    if not target_user_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User identification required")
+
+    dest = payload.get("destination", "")
+    st_str = payload.get("start_date", "")
+    try:
+        st_date = date.fromisoformat(st_str) if isinstance(st_str, str) else date.today()
+    except Exception:
+        st_date = date.today()
+
+    return check_duplicate_trip(db, target_user_id, dest, st_date)
+
+
+@router.get("")
+@router.get("/")
+@router.get("/user/{user_id}")
+def get_user_trips(
+    user_id: Optional[int] = None,
+    page: Optional[int] = Query(None),
+    limit: Optional[int] = Query(None),
+    search: Optional[str] = Query(None),
+    status: Optional[str] = Query(None),
+    travel_style: Optional[str] = Query(None),
+    sort: Optional[str] = Query(None),
+    paginated: Optional[bool] = Query(False),
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    target_user_id = current_user.id if current_user else user_id
+    if not target_user_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User identification required")
+
+    if page is not None or limit is not None or paginated or search or status or travel_style or sort:
+        p = page or 1
+        l = limit or 12
+        return get_paginated_user_trips(db, target_user_id, page=p, limit=l, search=search, status=status, travel_style=travel_style, sort=sort)
+
+    trips = db.query(Trip).filter(Trip.user_id == target_user_id).order_by(Trip.start_date.asc(), Trip.destination.asc(), Trip.id.desc()).all()
+    return [enrich_trip_response(t, db) for t in trips]
+
+
+@router.post("/{trip_id}/touch")
+def touch_trip_endpoint(
+    trip_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    trip = _get_user_trip(trip_id, db, current_user)
+    return touch_trip(db, trip.id, trip.user_id)
 
 
 @router.get("/{trip_id}")
-def get_trip(trip_id: int, db: Session = Depends(get_db)):
-    trip = db.query(Trip).filter(Trip.id == trip_id).first()
-    if not trip:
-        raise HTTPException(status_code=404, detail="Trip not found")
-    return trip
+def get_single_trip(
+    trip_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    trip = _get_user_trip(trip_id, db, current_user)
+    res = enrich_trip_response(trip, db)
+    total_acts = sum(len(d.get("activities", [])) for d in res.get("itinerary_days", []))
+    print(f"[GET Endpoint Log] GET /api/trips/{trip_id} returning {total_acts} total activities across {len(res.get('itinerary_days', []))} days.")
+    return res
 
 
-@router.get("/user/{user_id}")
-def get_user_trips(user_id: int, db: Session = Depends(get_db)):
-    return db.query(Trip).filter(Trip.user_id == user_id).order_by(Trip.id.desc()).all()
+@router.put("/{trip_id}")
+def update_existing_trip(
+    trip_id: int,
+    data: TripUpdate,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    trip = _get_user_trip(trip_id, db, current_user)
+    updated = update_trip(db, trip, data)
+    return enrich_trip_response(updated, db)
 
 
 @router.delete("/{trip_id}")
-def delete_trip(trip_id: int, db: Session = Depends(get_db)):
-    trip = db.query(Trip).filter(Trip.id == trip_id).first()
-    if not trip:
-        raise HTTPException(status_code=404, detail="Trip not found")
+@router.delete("/delete/{trip_id}")
+def delete_existing_trip(
+    trip_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    trip = _get_user_trip(trip_id, db, current_user)
     db.delete(trip)
     db.commit()
-    return {"message": "Trip deleted"}
+    return {"message": "Trip deleted successfully"}
 
-class ReplanRequest(BaseModel):
-    modification_request: str
 
-@router.post("/{trip_id}/replan")
-def replan_trip(trip_id: int, data: ReplanRequest, db: Session = Depends(get_db)):
-    trip = db.query(Trip).filter(Trip.id == trip_id).first()
-    if not trip:
-        raise HTTPException(status_code=404, detail="Trip not found")
-    
-    new_itinerary = replan_itinerary(trip.itinerary, data.modification_request)
-    trip.itinerary = new_itinerary
+@router.post("/{trip_id}/duplicate")
+def duplicate_trip_endpoint(
+    trip_id: int,
+    user_id: Optional[int] = None,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    trip = _get_user_trip(trip_id, db, current_user)
+    target_user_id = current_user.id if current_user else (user_id or trip.user_id)
+    try:
+        new_trip = duplicate_trip(db, trip_id=trip_id, user_id=target_user_id)
+        return enrich_trip_response(new_trip, db)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+
+@router.post("/{trip_id}/archive")
+def archive_trip_endpoint(
+    trip_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    trip = _get_user_trip(trip_id, db, current_user)
+    trip.is_archived = True
+    trip.status = "Archived"
     db.commit()
     db.refresh(trip)
-    return trip
+    return enrich_trip_response(trip, db)
+
+
+@router.post("/{trip_id}/restore")
+def restore_trip_endpoint(
+    trip_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    trip = _get_user_trip(trip_id, db, current_user)
+    trip.is_archived = False
+    today = date.today()
+    if today < trip.start_date:
+        trip.status = "Upcoming"
+    elif today > trip.end_date:
+        trip.status = "Completed"
+    else:
+        trip.status = "In Progress"
+    db.commit()
+    db.refresh(trip)
+    return enrich_trip_response(trip, db)
+
+
+@router.post("/{trip_id}/favorite")
+def toggle_favorite_endpoint(
+    trip_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    trip = _get_user_trip(trip_id, db, current_user)
+    trip.is_favorite = not trip.is_favorite
+    db.commit()
+    db.refresh(trip)
+    return enrich_trip_response(trip, db)
+
+
+@router.post("/{trip_id}/complete")
+def complete_trip_endpoint(
+    trip_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    trip = _get_user_trip(trip_id, db, current_user)
+    trip.status = "Completed"
+    db.commit()
+    db.refresh(trip)
+    return enrich_trip_response(trip, db)
+
+
+@router.post("/{trip_id}/cancel")
+def cancel_trip_endpoint(
+    trip_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    trip = _get_user_trip(trip_id, db, current_user)
+    trip.status = "Cancelled"
+    db.commit()
+    db.refresh(trip)
+    return enrich_trip_response(trip, db)
+
+
+activities_router = APIRouter(prefix="/api/activities", tags=["Activities"])
+
+
+@router.patch("/activities/{activity_id}/complete")
+@activities_router.patch("/{activity_id}/complete")
+def complete_activity_endpoint(
+    activity_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    act = _get_user_activity(activity_id, db, current_user)
+    act.is_completed = True
+    act.completed_at = datetime.now()
+    db.commit()
+    db.refresh(act)
+    return {
+        "message": "Activity marked as completed",
+        "id": act.id,
+        "activity_id": act.id,
+        "completed": True,
+        "completed_at": act.completed_at.isoformat() if act.completed_at else None
+    }
+
+
+@router.patch("/activities/{activity_id}/undo")
+@activities_router.patch("/{activity_id}/undo")
+def undo_activity_endpoint(
+    activity_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    act = _get_user_activity(activity_id, db, current_user)
+    act.is_completed = False
+    act.completed_at = None
+    db.commit()
+    db.refresh(act)
+    return {
+        "message": "Activity marked as incomplete",
+        "id": act.id,
+        "activity_id": act.id,
+        "completed": False,
+        "completed_at": None
+    }
+
+
+
+@router.post("/{trip_id}/share")
+
+def share_trip_endpoint(
+    trip_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    trip = _get_user_trip(trip_id, db, current_user)
+    if not trip.share_token:
+        import secrets
+        trip.share_token = secrets.token_urlsafe(12)
+        db.commit()
+        db.refresh(trip)
+    return {
+        "share_token": trip.share_token,
+        "share_url": f"http://localhost:5173/trips/share/{trip.share_token}"
+    }
+
+
+@router.post("/{trip_id}/generate-itinerary")
+def generate_trip_itinerary(
+    trip_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    trip = _get_user_trip(trip_id, db, current_user)
+    days = max(1, (trip.end_date - trip.start_date).days + 1)
+    ai_data = generate_structured_itinerary(
+        destination=trip.destination,
+        days=days,
+        budget=trip.budget,
+        interests=trip.interests or "sightseeing",
+        travel_style=trip.travel_style or "solo",
+        group_size=trip.group_size or 1,
+        currency=trip.currency or "USD"
+    )
+    _populate_trip_itinerary_from_ai(db, trip, ai_data)
+    return enrich_trip_response(trip, db)
+
+
+@router.post("/{trip_id}/regenerate-day")
+def regenerate_day_endpoint(
+    trip_id: int,
+    data: RegenerateDayRequest,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    trip = _get_user_trip(trip_id, db, current_user)
+    it_day = db.query(ItineraryDay).filter(ItineraryDay.trip_id == trip_id, ItineraryDay.day_number == data.day_number).first()
+    if not it_day:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Day {data.day_number} not found for this trip")
+
+    # Fetch locked activities to preserve
+    locked_acts = db.query(ItineraryActivity).filter(
+        ItineraryActivity.day_id == it_day.id,
+        ItineraryActivity.is_locked == True
+    ).all()
+    locked_payload = [
+        {
+            "id": a.id,
+            "title": a.title,
+            "start_time": a.start_time,
+            "end_time": a.end_time,
+            "time_slot": a.time_slot,
+            "is_locked": True
+        }
+        for a in locked_acts
+    ]
+
+    new_acts = regenerate_day_itinerary(
+        destination=trip.destination,
+        day_number=data.day_number,
+        locked_activities=locked_payload,
+        notes=data.notes
+    )
+
+    # Replace unlocked activities
+    db.query(ItineraryActivity).filter(
+        ItineraryActivity.day_id == it_day.id,
+        ItineraryActivity.is_locked == False
+    ).delete()
+    db.commit()
+
+    for idx, act_data in enumerate(new_acts):
+        p_name = act_data.get("title", f"Attraction {idx+1}")
+        place = get_or_create_place(db, name=p_name, city=trip.destination, country=trip.country)
+
+        act = ItineraryActivity(
+            day_id=it_day.id,
+            place_id=place.id,
+            time_slot=act_data.get("time_slot", "afternoon"),
+            start_time=act_data.get("start_time", "14:00"),
+            end_time=act_data.get("end_time", "15:30"),
+            order_index=idx,
+            title=act_data.get("title", "Regenerated Spot"),
+            description=act_data.get("description", ""),
+            estimated_duration=act_data.get("estimated_duration", "90 mins"),
+            ticket_price=_safe_float(act_data.get("ticket_price"), 0.0),
+            transport_mode="walking",
+            transport_duration="10 mins",
+            weather_suitability="all-weather",
+            crowd_level="moderate",
+            ai_reason="Regenerated based on traveler preferences",
+            confidence_score=0.96,
+            is_locked=False
+        )
+        db.add(act)
+
+    db.commit()
+    db.refresh(it_day)
+    return enrich_trip_response(trip, db)
+
+
+@router.post("/{trip_id}/replan")
+def replan_trip_endpoint(
+    trip_id: int,
+    trigger_reason: str = Query(..., description="E.g., weather_delay, budget_exceeded, miss_attraction"),
+    user_notes: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    trip = _get_user_trip(trip_id, db, current_user)
+    trip_dict = enrich_trip_response(trip, db)
+    
+    updated_itinerary = replan_itinerary(
+        trip_data=trip_dict,
+        trigger_reason=trigger_reason,
+        user_notes=user_notes or ""
+    )
+    return updated_itinerary
+
+
+@router.put("/activities/{activity_id}/lock")
+def toggle_activity_lock(
+    activity_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    act = _get_user_activity(activity_id, db, current_user)
+    act.is_locked = not act.is_locked
+    db.commit()
+    db.refresh(act)
+    return {"id": act.id, "is_locked": act.is_locked}
+
+
+@router.delete("/activities/{activity_id}")
+def delete_activity(
+    activity_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    act = _get_user_activity(activity_id, db, current_user)
+    db.delete(act)
+    db.commit()
+    return {"message": "Activity deleted successfully"}
+
+
+@router.put("/{trip_id}/activities/reorder")
+def reorder_trip_activities(
+    trip_id: int,
+    data: ActivityReorder,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    trip = _get_user_trip(trip_id, db, current_user)
+    act = db.query(ItineraryActivity).filter(ItineraryActivity.id == data.activity_id).first()
+    if not act:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Activity not found")
+    
+    act.day_id = data.target_day_id
+    act.time_slot = data.target_time_slot
+    act.order_index = data.new_order_index
+    db.commit()
+    db.refresh(act)
+    
+    return enrich_trip_response(trip, db)
+
+
+@router.post("/{trip_id}/activities/add")
+def add_custom_activity(
+    trip_id: int,
+    data: ActivityCreate,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    trip = _get_user_trip(trip_id, db, current_user)
+    place = None
+    if data.place_name:
+        place = get_or_create_place(
+            db,
+            name=data.place_name,
+            category=data.place_category or "sightseeing",
+            latitude=data.latitude,
+            longitude=data.longitude
+        )
+
+    act = ItineraryActivity(
+        day_id=data.day_id,
+        place_id=place.id if place else None,
+        title=data.title,
+        description=data.description,
+        time_slot=data.time_slot,
+        start_time=data.start_time,
+        end_time=data.end_time,
+        estimated_duration=data.estimated_duration,
+        ticket_price=data.ticket_price or 0.0,
+        transport_mode=data.transport_mode or "walking",
+        transport_duration=data.transport_duration,
+        weather_suitability=data.weather_suitability or "all-weather",
+        crowd_level=data.crowd_level or "moderate",
+        ai_reason="Custom traveler activity",
+        is_locked=True
+    )
+    db.add(act)
+    db.commit()
+    
+    return enrich_trip_response(trip, db)
+
+
+@router.get("/{trip_id}/today")
+def get_today_execution_itinerary(
+    trip_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    """Fetch today's active execution itinerary with user isolation."""
+    from app.services.trip_service import get_today_itinerary
+    try:
+        user_id = current_user.id if current_user else None
+        return get_today_itinerary(trip_id=trip_id, db=db, user_id=user_id)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+
+@router.post("/{trip_id}/activities/{activity_id}/toggle-complete")
+def toggle_activity_complete_status(
+    trip_id: int,
+    activity_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    """Toggle completion status for an itinerary activity with strict user isolation."""
+    from app.services.trip_service import toggle_activity_completion
+    try:
+        user_id = current_user.id if current_user else None
+        return toggle_activity_completion(trip_id=trip_id, activity_id=activity_id, user_id=user_id, db=db)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+

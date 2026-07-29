@@ -1,0 +1,105 @@
+{
+  "destination": "varkala",
+  "version": "2.2",
+  "pois": [
+    {
+      "name": "Varkala Cliff Walk & Sunset Point",
+      "category": "Viewpoint",
+      "address": "North Cliff, Varkala, Kerala 695141",
+      "latitude": 8.7368,
+      "longitude": 76.7029,
+      "opening_time": "06:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "INR",
+      "rating": 4.8,
+      "crowd": "Moderate",
+      "description": "Walk along Varkala's iconic red cliffs overlooking the Arabian Sea. Explore seaside caf\u00e9s, local handicraft shops, coconut groves, and panoramic coastal viewpoints before afternoon crowds arrive.",
+      "ai_reason": "\u2713 Best visited in the morning before crowds\n\u2713 Only 350m from your next stop\n\u2713 Free attraction within your budget\n\u2713 Panoramic Arabian Sea views",
+      "tip": "Visit before 9:00 AM or after 5:00 PM for the best sea breeze and comfortable temperatures.",
+      "signature_dish": null,
+      "nearby": [
+        "Papanasam Beach",
+        "Black Beach",
+        "Janardhana Swamy Temple"
+      ],
+      "source": "google_places",
+      "confidence": 0.99
+    },
+    {
+      "name": "Caf\u00e9 Del Mar Varkala",
+      "category": "Restaurant",
+      "address": "Middle Cliff, Varkala, Kerala 695141",
+      "latitude": 8.738,
+      "longitude": 76.7022,
+      "opening_time": "08:00 AM",
+      "closing_time": "11:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 450.0,
+      "currency": "INR",
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "description": "Relax at a premier cliffside caf\u00e9 featuring open-air ocean seating, fresh Kerala seafood curries, wood-fired pizzas, and organic tropical fruit smoothies.",
+      "ai_reason": "\u2713 Located directly on Middle Cliff (350m walk)\n\u2713 Fits lunch schedule perfectly\n\u2713 Highly rated for fresh seafood & vegetarian options\n\u2713 Ocean view dining",
+      "tip": "Grab an ocean-facing balcony table on the upper deck for unobstructed sea views.",
+      "signature_dish": "Kerala Grilled Fish Curry & Mango Smoothie",
+      "nearby": [
+        "North Cliff Market",
+        "Tibetan Artisan Shops",
+        "Black Beach"
+      ],
+      "source": "google_places",
+      "confidence": 0.97
+    },
+    {
+      "name": "Janardhana Swamy Temple",
+      "category": "Sightseeing",
+      "address": "Temple Rd, Varkala, Kerala 695141",
+      "latitude": 8.7302,
+      "longitude": 76.7118,
+      "opening_time": "05:00 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "INR",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Visit a 2,000-year-old historic Vishnu temple situated near the sea, known for its intricate Kerala wood carvings, ancient banyan tree, and sacred temple pond.",
+      "ai_reason": "\u2713 2000-year-old historic cultural landmark\n\u2713 Free entry\n\u2713 Matches cultural sightseeing interest\n\u2713 4.6\u2605 reviews",
+      "tip": "Dress modestly (shoulders and knees covered) when entering the main temple courtyard.",
+      "signature_dish": null,
+      "nearby": [
+        "Temple Pond",
+        "Papanasam Beach",
+        "Varkala Cliff"
+      ],
+      "source": "google_places",
+      "confidence": 0.98
+    }
+  ]
+}

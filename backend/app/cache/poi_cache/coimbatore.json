@@ -1,0 +1,92 @@
+{
+  "destination": "coimbatore",
+  "version": "2.2",
+  "pois": [
+    {
+      "name": "Adiyogi Shiva Statue",
+      "category": "Sightseeing",
+      "address": "Isha Yoga Center, Velliangiri Foothills, Coimbatore, Tamil Nadu 641114",
+      "latitude": 10.9734,
+      "longitude": 76.7404,
+      "opening_time": "06:00",
+      "closing_time": "20:00",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "INR",
+      "rating": 4.8,
+      "crowd": "High",
+      "signature_dish": null,
+      "nearby": [
+        "Dhyanalinga Temple",
+        "Velliangiri Hills"
+      ],
+      "source": "google_places",
+      "confidence": 0.99
+    },
+    {
+      "name": "Anapoorna Restaurant RS Puram",
+      "category": "Restaurant",
+      "address": "75, DB Rd, R.S. Puram, Coimbatore, Tamil Nadu 641002",
+      "latitude": 11.0067,
+      "longitude": 76.9535,
+      "opening_time": "06:30",
+      "closing_time": "22:00",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 250.0,
+      "currency": "INR",
+      "rating": 4.6,
+      "crowd": "High",
+      "signature_dish": "Ghee Roast Dosa & Filter Coffee",
+      "nearby": [
+        "RS Puram Shopping Street",
+        "Brookefields Mall"
+      ],
+      "source": "google_places",
+      "confidence": 0.98
+    },
+    {
+      "name": "GD Naidu Industrial Museum",
+      "category": "Museum",
+      "address": "70, Avinashi Rd, Race Course, Coimbatore, Tamil Nadu 641018",
+      "latitude": 11.0012,
+      "longitude": 76.9745,
+      "opening_time": "09:00",
+      "closing_time": "17:00",
+      "open_days": [
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 100.0,
+      "currency": "INR",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "signature_dish": null,
+      "nearby": [
+        "Gass Forest Museum",
+        "Race Course Promenade"
+      ],
+      "source": "google_places",
+      "confidence": 0.97
+    }
+  ]
+}

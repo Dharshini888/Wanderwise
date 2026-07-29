@@ -1,4 +1,13 @@
-import React from 'react';
+import {
+  IconStethoscope,
+  IconFileText,
+  IconUpload,
+  IconAlertTriangle,
+  IconCamera,
+  IconShieldCheck,
+  IconTrash,
+  IconCalendar,
+} from '@tabler/icons-react';
 
 export default function HealthAndDocs() {
   const documents = [
@@ -7,43 +16,95 @@ export default function HealthAndDocs() {
   ];
 
   return (
-    <div style={{ minHeight: '100vh', padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#f4f7fa' }}>
-      <h1 className="text-primary-dark" style={{ marginBottom: '1rem' }}>Health & Documents Vault</h1>
+    <div className="flex flex-col gap-6 pb-12">
       
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', width: '100%', maxWidth: '1000px' }}>
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-extrabold text-[var(--text-primary)] tracking-tight font-heading mb-1 flex items-center gap-2">
+          <IconStethoscope className="text-[var(--color-primary-600)]" size={32} /> Health & Documents Vault
+        </h1>
+        <p className="text-sm text-[var(--text-muted)] font-medium">Safeguard travel documents offline and monitor food allergy alerts.</p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start max-w-5xl">
         
-        {/* Visa & Docs Section */}
-        <div className="glass-card" style={{ padding: '2rem', borderRadius: '24px' }}>
-          <h2 style={{ fontSize: '1.3rem', marginBottom: '1.5rem', color: '#185FA5' }}>Digital Vault</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {documents.map(doc => (
-              <div key={doc.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'rgba(255,255,255,0.5)', borderRadius: '12px', borderLeft: doc.status === 'Valid' ? '4px solid #52c41a' : '4px solid #ff4d4f' }}>
-                <div>
-                  <strong>{doc.type}</strong>
-                  <div style={{ fontSize: '0.85rem', color: '#666' }}>Expires: {doc.expiry}</div>
-                </div>
-                <span style={{ fontSize: '0.8rem', padding: '4px 8px', borderRadius: '8px', background: doc.status === 'Valid' ? '#e6f7ff' : '#fff1f0', color: doc.status === 'Valid' ? '#52c41a' : '#ff4d4f', fontWeight: 'bold' }}>
-                  {doc.status}
-                </span>
-              </div>
-            ))}
+        {/* Visa & Docs Vault */}
+        <div className="glass-card p-6 flex flex-col gap-5 bg-[var(--bg-card)]">
+          <div>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] font-heading mb-1 flex items-center gap-2">
+              <IconShieldCheck size={20} className="text-emerald-500" /> Digital Document Vault
+            </h2>
+            <p className="text-xs text-[var(--text-muted)] font-medium">Encrypted file vault for passports, visas, and health cards.</p>
           </div>
-          <button style={{ marginTop: '1.5rem', padding: '10px 20px', width: '100%', background: '#185FA5', color: '#fff', border: 'none', borderRadius: '10px', cursor: 'pointer' }}>
-            + Upload Document
+
+          <div className="flex flex-col gap-3">
+            {documents.map(doc => {
+              const isValid = doc.status === 'Valid';
+              return (
+                <div 
+                  key={doc.id} 
+                  className={`flex justify-between items-center p-4 bg-[var(--bg-app)] border-l-4 rounded-r-xl border border-[var(--border-color)] ${
+                    isValid ? 'border-l-emerald-500' : 'border-l-red-500'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="p-2 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)]">
+                      <IconFileText size={18} />
+                    </span>
+                    <div>
+                      <div className="text-sm font-bold text-[var(--text-primary)] font-heading">{doc.type}</div>
+                      <div className="text-[10px] text-[var(--text-muted)] font-semibold flex items-center gap-1 mt-0.5">
+                        <IconCalendar size={12} />
+                        Expires: {doc.expiry}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      isValid 
+                        ? 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400' 
+                        : 'bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400'
+                    }`}>
+                      {doc.status}
+                    </span>
+                    <button className="p-1 text-[var(--text-muted)] hover:text-red-500 transition-colors">
+                      <IconTrash size={14} />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <button className="btn btn-primary w-full py-3.5 mt-2 text-sm font-semibold flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/10 cursor-pointer">
+            <IconUpload size={16} />
+            <span>Upload Document</span>
           </button>
         </div>
 
-        {/* Health & Dietary Section */}
-        <div className="glass-card" style={{ padding: '2rem', borderRadius: '24px' }}>
-          <h2 style={{ fontSize: '1.3rem', marginBottom: '1.5rem', color: '#185FA5' }}>Dietary & Allergy Scanner</h2>
-          <div style={{ padding: '2rem', border: '2px dashed #cbd5e1', borderRadius: '12px', textAlign: 'center', background: 'rgba(255,255,255,0.4)', cursor: 'pointer', transition: 'background 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.8)'} onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.4)'}>
-            <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>📷</div>
-            <p style={{ color: '#666', margin: 0 }}>Scan Menu</p>
+        {/* Health & Allergy Scanner */}
+        <div className="glass-card p-6 flex flex-col gap-6 bg-[var(--bg-card)]">
+          <div>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] font-heading mb-1 flex items-center gap-2">
+              <IconCamera size={20} className="text-blue-500" /> Dietary & Menu Scanner
+            </h2>
+            <p className="text-xs text-[var(--text-muted)] font-medium">Scan foreign restaurant menus to highlight custom allergens.</p>
+          </div>
+
+          <div className="border-2 border-dashed border-[var(--border-color)] rounded-xl p-8 text-center bg-[var(--bg-app)] hover:bg-[var(--border-color)]/20 transition-colors cursor-pointer flex flex-col items-center justify-center gap-2 group">
+            <span className="text-4xl text-[var(--text-muted)] group-hover:scale-110 transition-transform"><IconCamera size={36} /></span>
+            <div className="text-xs font-bold text-[var(--text-primary)]">Scan Menu Photo</div>
+            <p className="text-[10px] text-[var(--text-muted)] max-w-[180px] leading-relaxed">OCR extracts text and translates menu to screen for instant scanning.</p>
           </div>
           
-          <div style={{ marginTop: '1.5rem', padding: '1rem', background: '#fff1f0', borderRadius: '12px', border: '1px solid #ffccc7' }}>
-            <h4 style={{ color: '#cf1322', margin: '0 0 0.5rem 0' }}>⚠ Alert</h4>
-            <p style={{ margin: 0, fontSize: '0.9rem', color: '#cf1322' }}>Based on your profile, the last scanned menu contained <strong>peanuts</strong>. Please verify with staff.</p>
+          <div className="p-4 bg-red-50/50 dark:bg-red-950/10 border border-red-200/50 dark:border-red-900/10 rounded-2xl flex items-start gap-3 animate-pulse">
+            <IconAlertTriangle className="text-red-500 mt-0.5 flex-shrink-0" size={20} />
+            <div>
+              <h4 className="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-wider mb-1">Allergen Warning Alert</h4>
+              <p className="text-[11px] text-red-700 dark:text-red-300 leading-relaxed font-medium">
+                Based on your profile details, the last scanned menu contains **peanuts**. Please cross-check with waitstaff before ordering.
+              </p>
+            </div>
           </div>
         </div>
 

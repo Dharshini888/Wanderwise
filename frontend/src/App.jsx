@@ -3,10 +3,13 @@ import { useEffect } from "react";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import EmailVerification from "./pages/EmailVerification";
 import Dashboard from "./pages/Dashboard";
 import Chat from "./pages/Chat";
 import Weather from "./pages/Weather";
-import Recommendations from "./pages/Recommendations";
+import AISuggestions from "./pages/AISuggestions";
 import Transit from "./pages/Transit";
 import Packing from "./pages/Packing";
 import Safety from "./pages/Safety";
@@ -21,8 +24,14 @@ import Settings from "./pages/Settings";
 import GroupConsensus from "./pages/GroupConsensus";
 import HealthAndDocs from "./pages/HealthAndDocs";
 import SmartBudget from "./pages/SmartBudget";
+import TripList from "./pages/TripList";
+import TripDetails from "./pages/TripDetails";
+import ExpenseDashboard from "./pages/ExpenseDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+
 import Layout from "./components/Layout";
+
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   useEffect(() => {
@@ -44,36 +53,45 @@ function App() {
   }, []);
 
   return (
-    <Router>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/verify-email" element={<EmailVerification />} />
 
-        {/* Protected Routes inside Layout */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
-          <Route path="/chat" element={<Layout><Chat /></Layout>} />
-          <Route path="/weather" element={<Layout><Weather /></Layout>} />
-          <Route path="/recommendations" element={<Layout><Recommendations /></Layout>} />
-          <Route path="/transit" element={<Layout><Transit /></Layout>} />
-          <Route path="/packing" element={<Layout><Packing /></Layout>} />
-          <Route path="/safety" element={<Layout><Safety /></Layout>} />
-          <Route path="/budget" element={<Layout><Budget /></Layout>} />
-          <Route path="/smart-budget" element={<Layout><SmartBudget /></Layout>} />
-          <Route path="/currency" element={<Layout><Currency /></Layout>} />
-          <Route path="/journal/:tripId" element={<Layout><Journal /></Layout>} />
-          <Route path="/wishlist" element={<Layout><Wishlist /></Layout>} />
-          <Route path="/analytics" element={<Layout><Analytics /></Layout>} />
-          <Route path="/companion" element={<Layout><Companion /></Layout>} />
-          <Route path="/profile" element={<Layout><Profile /></Layout>} />
-          <Route path="/settings" element={<Layout><Settings /></Layout>} />
-          <Route path="/group-consensus" element={<Layout><GroupConsensus /></Layout>} />
-          <Route path="/health-docs" element={<Layout><HealthAndDocs /></Layout>} />
-        </Route>
-      </Routes>
-    </Router>
+          {/* Protected Routes inside Layout */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
+            <Route path="/trips" element={<Layout><TripList /></Layout>} />
+            <Route path="/trips/:tripId" element={<Layout><TripDetails /></Layout>} />
+            <Route path="/companion" element={<Layout><TripList /></Layout>} />
+            <Route path="/chat" element={<Layout><Chat /></Layout>} />
+            <Route path="/weather" element={<Layout><Weather /></Layout>} />
+            <Route path="/recommendations" element={<Layout><AISuggestions /></Layout>} />
+            <Route path="/transit" element={<Layout><Transit /></Layout>} />
+            <Route path="/packing" element={<Layout><Packing /></Layout>} />
+            <Route path="/safety" element={<Layout><Safety /></Layout>} />
+            <Route path="/budget" element={<Layout><Budget /></Layout>} />
+            <Route path="/smart-budget" element={<Layout><SmartBudget /></Layout>} />
+            <Route path="/expenses/:tripId" element={<Layout><ExpenseDashboard /></Layout>} />
+            <Route path="/currency" element={<Layout><Currency /></Layout>} />
+
+            <Route path="/journal/:tripId" element={<Layout><Journal /></Layout>} />
+            <Route path="/wishlist" element={<Layout><Wishlist /></Layout>} />
+            <Route path="/analytics" element={<Layout><Analytics /></Layout>} />
+            <Route path="/profile" element={<Layout><Profile /></Layout>} />
+            <Route path="/settings" element={<Layout><Settings /></Layout>} />
+            <Route path="/group-consensus" element={<Layout><GroupConsensus /></Layout>} />
+            <Route path="/health-docs" element={<Layout><HealthAndDocs /></Layout>} />
+          </Route>
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

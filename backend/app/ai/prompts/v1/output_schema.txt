@@ -1,0 +1,78 @@
+=========================
+OUTPUT JSON SCHEMA
+=========================
+
+Return ONLY valid JSON matching this exact structure:
+
+{{
+  "schema_version": "1.0",
+  "metadata": {{
+    "provider": "WanderWise AI",
+    "model": "gemini-2.5-flash",
+    "generation_time_ms": 1500,
+    "retry_count": 0,
+    "fallback_used": false,
+    "generated_at": "{current_iso_time}"
+  }},
+  "trip": {{
+    "destination": "{destination}",
+    "country": "{country}",
+    "total_days": {total_days},
+    "budget": {budget},
+    "currency": "{currency_code}",
+    "days": [
+      {{
+        "day_number": 1,
+        "title": "Arrival & Historic Highlights",
+        "theme_note": "Explore landmarks & local dining",
+        "activities": [
+          {{
+            "id": "act_d1_01",
+            "start_time": "08:00",
+            "end_time": "09:00",
+            "duration_minutes": 60,
+            "time_slot": "morning",
+            "title": "Breakfast at Coffee House",
+            "description": "Fresh regional coffee and breakfast items",
+            "place": {{
+              "name": "Coffee House",
+              "category": "Restaurant",
+              "latitude": 8.737,
+              "longitude": 76.716,
+              "address": "Main Street, {destination}",
+              "city": "{destination}",
+              "country": "{country}",
+              "rating": 4.5,
+              "google_maps_url": "https://maps.google.com/?q={destination}+Coffee"
+            }},
+            "cost": {{
+              "amount": 250.0,
+              "currency": "{currency_code}",
+              "symbol": "{currency_symbol}",
+              "estimated": true
+            }},
+            "transport_mode": "Walking",
+            "transport_duration": "5 mins",
+            "weather_suitability": "Indoor",
+            "crowd_level": "Low",
+            "ai_reason": "Top breakfast choice",
+            "confidence_score": 0.96,
+            "is_locked": false,
+            "metadata": {{
+              "tips": ["Try traditional specialty"],
+              "things_to_carry": ["Cash"],
+              "photo_rating": 4.5,
+              "nearby": {{
+                "restaurants": ["Local Diner"],
+                "washrooms": ["Public Restroom"],
+                "parking": ["Market Parking"]
+              }},
+              "weather": {{ "rain_backup": "Indoor Seating" }},
+              "booking": {{ "required": false, "url": null }}
+            }}
+          }}
+        ]
+      }}
+    ]
+  }}
+}}

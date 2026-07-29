@@ -2,19 +2,13 @@ import Sidebar from './Sidebar';
 
 export default function Layout({ children }) {
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
+    <div className="flex min-h-screen w-full bg-[var(--bg-app)] text-[var(--text-secondary)] font-sans transition-colors duration-300">
       {/* Fixed Sidebar */}
       <Sidebar />
       
       {/* Main Content Area */}
-      <main style={{
-        flex: 1,
-        marginLeft: '240px', // Matches sidebar width
-        padding: '1.5rem',
-        boxSizing: 'border-box',
-        minHeight: '100vh',
-      }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <main className="flex-1 ml-[280px] p-6 box-border min-h-screen">
+        <div className="max-w-7xl mx-auto">
           {children}
         </div>
       </main>

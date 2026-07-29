@@ -1,16 +1,28 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from typing import Optional
 from app.database.connection import get_db
 from app.models.trip import Trip
 from app.models.expense import Expense
-import math
+from app.models.user import User
+from app.routes.auth import get_current_user_optional
 
 router = APIRouter(prefix="/api/analytics", tags=["Analytics"])
 
 
+@router.get("")
+@router.get("/")
 @router.get("/{user_id}")
-def get_analytics(user_id: int, db: Session = Depends(get_db)):
-    trips = db.query(Trip).filter(Trip.user_id == user_id).all()
+def get_analytics(
+    user_id: Optional[int] = None,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    target_user_id = current_user.id if current_user else user_id
+    if not target_user_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User identification required")
+
+    trips = db.query(Trip).filter(Trip.user_id == target_user_id).all()
 
     if not trips:
         return {
@@ -25,10 +37,8 @@ def get_analytics(user_id: int, db: Session = Depends(get_db)):
             "recent_trips": [],
         }
 
-    # Extract unique cities/countries (simple heuristic: destination field)
     destinations = [t.destination for t in trips]
     cities = len(set(destinations))
-    # Naive country detection: look for ", CountryName" pattern
     countries = set()
     for d in destinations:
         parts = d.split(",")
@@ -39,17 +49,16 @@ def get_analytics(user_id: int, db: Session = Depends(get_db)):
 
     total_budget = sum(t.budget for t in trips if t.budget)
 
-    # Aggregate expenses
+    # Aggregate expenses for this user's trips only
     trip_ids = [t.id for t in trips]
-    all_expenses = db.query(Expense).filter(Expense.trip_id.in_(trip_ids)).all()
+    all_expenses = db.query(Expense).filter(Expense.trip_id.in_(trip_ids)).all() if trip_ids else []
     total_spent = sum(e.amount for e in all_expenses)
 
     spending_by_category: dict = {}
     for e in all_expenses:
-        cat = e.category or "Other"
-        spending_by_category[cat] = spending_by_category.get(cat, 0) + e.amount
+        cat = e.category.value if hasattr(e.category, "value") else (e.category or "Other")
+        spending_by_category[cat] = spending_by_category.get(cat, 0) + float(e.amount)
 
-    # Round values
     spending_by_category = {k: round(v, 2) for k, v in spending_by_category.items()}
 
     trips_by_type: dict = {}
@@ -57,7 +66,7 @@ def get_analytics(user_id: int, db: Session = Depends(get_db)):
         tt = t.travel_type or "leisure"
         trips_by_type[tt] = trips_by_type.get(tt, 0) + 1
 
-    budget_utilization = round((total_spent / total_budget * 100) if total_budget > 0 else 0, 1)
+    budget_utilization = round((float(total_spent) / float(total_budget) * 100) if total_budget > 0 else 0, 1)
 
     recent_trips = [
         {
@@ -75,8 +84,8 @@ def get_analytics(user_id: int, db: Session = Depends(get_db)):
         "total_trips": len(trips),
         "cities_visited": cities,
         "countries_visited": len(countries),
-        "total_budget": round(total_budget, 2),
-        "total_spent": round(total_spent, 2),
+        "total_budget": round(float(total_budget), 2),
+        "total_spent": round(float(total_spent), 2),
         "budget_utilization": budget_utilization,
         "spending_by_category": spending_by_category,
         "trips_by_type": trips_by_type,

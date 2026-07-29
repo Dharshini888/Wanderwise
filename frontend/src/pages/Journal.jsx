@@ -1,5 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import {
+  IconBook,
+  IconPlus,
+  IconLoader,
+  IconCalendar,
+  IconPencil,
+  IconX,
+} from '@tabler/icons-react';
 
 const API = 'http://localhost:8000/api';
 
@@ -42,59 +50,86 @@ export default function Journal() {
     setSubmitting(false);
   };
 
-  const inputStyle = { width: '100%', padding: '12px 14px', borderRadius: '8px', border: '1px solid #c8dff0', background: 'rgba(255,255,255,0.9)', color: '#1a2a3a', fontSize: '14px', outline: 'none', boxSizing: 'border-box' };
-  const labelStyle = { display: 'block', marginBottom: '6px', fontSize: '12px', fontWeight: 600, color: '#5a7a9a', textTransform: 'uppercase' };
-
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2rem' }}>
+    <div className="flex flex-col gap-6 pb-12">
+      
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
         <div>
-          <h1 className="text-primary-dark" style={{ margin: '0 0 4px', fontSize: '1.8rem', letterSpacing: '-0.5px' }}>📖 Travel Journal</h1>
-          <p className="text-secondary" style={{ margin: 0, fontSize: '14px' }}>Document your memories and experiences.</p>
+          <h1 className="text-3xl font-extrabold text-[var(--text-primary)] tracking-tight font-heading mb-1 flex items-center gap-2">
+            <IconBook className="text-[var(--color-primary-600)]" size={32} /> Travel Journal
+          </h1>
+          <p className="text-sm text-[var(--text-muted)] font-medium">Document your travel memories, reflections, and discoveries.</p>
         </div>
-        <button onClick={() => setShowForm(!showForm)}
-          style={{ padding: '10px 20px', background: showForm ? 'rgba(220, 38, 38, 0.1)' : '#185FA5', border: showForm ? '1px solid rgba(220, 38, 38, 0.2)' : 'none', borderRadius: '10px', color: showForm ? '#dc2626' : '#fff', fontWeight: 600, cursor: 'pointer', fontSize: '13px', boxShadow: showForm ? 'none' : '0 4px 10px rgba(24, 95, 165, 0.2)' }}>
-          {showForm ? 'Cancel' : '+ Write Entry'}
+        <button 
+          onClick={() => setShowForm(!showForm)}
+          className={`px-5 py-3 rounded-lg text-sm font-semibold flex items-center gap-1.5 cursor-pointer transition-all w-fit ${
+            showForm 
+              ? 'bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800' 
+              : 'btn btn-primary shadow-md shadow-blue-500/10'
+          }`}
+        >
+          {showForm ? <><IconX size={16} /> Cancel</> : <><IconPencil size={16} /> Write Entry</>}
         </button>
       </div>
 
+      {/* Form */}
       {showForm && (
-        <form className="glass-card" onSubmit={addEntry} style={{ padding: '24px', marginBottom: '2rem', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <form className="glass-card p-6 flex flex-col gap-4 bg-[var(--bg-card)] animate-fadeIn max-w-2xl" onSubmit={addEntry}>
           <div>
-            <label style={labelStyle}>Title</label>
-            <input style={inputStyle} value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g. Day 1: Exploring Montmartre" required />
+            <label className="block mb-1 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Title</label>
+            <input 
+              className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--color-primary-500)]" 
+              value={form.title} 
+              onChange={e => setForm(f => ({ ...f, title: e.target.value }))} 
+              placeholder="e.g. Day 1: Exploring Montmartre" 
+              required 
+            />
           </div>
           <div>
-            <label style={labelStyle}>Content</label>
-            <textarea style={{ ...inputStyle, minHeight: '150px', resize: 'vertical' }} value={form.content} onChange={e => setForm(f => ({ ...f, content: e.target.value }))} placeholder="What happened today?" required />
+            <label className="block mb-1 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Content</label>
+            <textarea 
+              className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--color-primary-500)] min-h-[150px] resize-y" 
+              value={form.content} 
+              onChange={e => setForm(f => ({ ...f, content: e.target.value }))} 
+              placeholder="What happened today?" 
+              required 
+            />
           </div>
-          <button type="submit" disabled={submitting}
-            style={{ width: '100%', padding: '12px', background: '#185FA5', border: 'none', borderRadius: '10px', color: 'white', fontWeight: 600, cursor: submitting ? 'not-allowed' : 'pointer', opacity: submitting ? 0.7 : 1 }}>
-            {submitting ? 'Saving...' : 'Save Entry'}
+          <button 
+            type="submit" 
+            disabled={submitting}
+            className="btn btn-primary w-full py-3.5 text-sm font-semibold flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/10 cursor-pointer disabled:opacity-50"
+          >
+            {submitting ? <><IconLoader className="animate-spin" size={16} /> Saving...</> : <><IconPlus size={16} /> Save Entry</>}
           </button>
         </form>
       )}
 
+      {/* Entries */}
       {loading ? (
-        <div className="text-secondary" style={{ textAlign: 'center', padding: '3rem' }}>Loading entries...</div>
+        <div className="flex justify-center items-center py-16 text-[var(--text-muted)]">
+          <IconLoader className="animate-spin text-[var(--color-primary-500)] mr-2" size={20} />
+          <span className="text-sm font-semibold">Loading journal...</span>
+        </div>
       ) : entries.length === 0 ? (
-        <div className="glass-card" style={{ textAlign: 'center', padding: '4rem', border: '1px dashed rgba(200, 225, 245, 0.9)' }}>
-          <p style={{ fontSize: '3rem', margin: '0 0 1rem' }}>✍️</p>
-          <p className="text-secondary" style={{ margin: 0 }}>No entries yet. Start writing your travel story!</p>
+        <div className="glass-card p-16 text-center flex flex-col items-center justify-center gap-3 border border-dashed border-[var(--border-color)]">
+          <span className="text-4xl">✍️</span>
+          <div className="text-base font-bold text-[var(--text-primary)]">No entries yet</div>
+          <p className="text-xs text-[var(--text-muted)] max-w-xs leading-relaxed">Start writing your travel memories by clicking the "Write Entry" button above.</p>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div className="flex flex-col gap-5 max-w-2xl">
           {entries.map(entry => (
-            <div key={entry.id} className="glass-card" style={{ padding: '24px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid rgba(200, 225, 245, 0.5)', paddingBottom: '12px' }}>
-                <h3 className="text-primary-dark" style={{ margin: 0, fontSize: '18px' }}>{entry.title}</h3>
-                <span className="label-text" style={{ fontSize: '11px', background: 'rgba(24, 95, 165, 0.1)', color: '#185FA5', padding: '4px 10px', borderRadius: '12px' }}>
+            <div key={entry.id} className="glass-card p-6 bg-[var(--bg-card)] border border-[var(--border-color)]">
+              <div className="flex justify-between items-center mb-4 border-b border-[var(--border-color)] pb-3">
+                <h3 className="text-base font-bold text-[var(--text-primary)] font-heading">{entry.title}</h3>
+                <span className="text-[10px] font-bold bg-blue-50 dark:bg-blue-950/20 text-[var(--color-primary-600)] dark:text-blue-400 px-2.5 py-1 rounded-full flex items-center gap-1">
+                  <IconCalendar size={10} />
                   {new Date(entry.created_at).toLocaleDateString()}
                 </span>
               </div>
-              <p style={{ margin: 0, whiteSpace: 'pre-wrap', color: '#4a6080', fontSize: '14px', lineHeight: 1.6 }}>
-                {entry.content}
-              </p>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">{entry.content}</p>
             </div>
           ))}
         </div>

@@ -1,11 +1,21 @@
 import { useState, useEffect } from 'react';
+import {
+  IconHeart,
+  IconPlus,
+  IconLoader,
+  IconTrash,
+  IconX,
+  IconSparkles,
+  IconMapPin,
+  IconCalendar,
+} from '@tabler/icons-react';
 
 const API = 'http://localhost:8000/api';
 
 const PRIORITIES = [
-  { id: 'dream', label: 'Dream', color: '#185FA5' },
-  { id: 'soon', label: 'Soon', color: '#0891b2' },
-  { id: 'someday', label: 'Someday', color: '#4a6080' },
+  { id: 'dream', label: 'Dream', color: 'text-blue-600 bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900', border: 'border-t-blue-500' },
+  { id: 'soon', label: 'Soon', color: 'text-teal-600 bg-teal-50 dark:bg-teal-950/20 border-teal-200 dark:border-teal-900', border: 'border-t-teal-500' },
+  { id: 'someday', label: 'Someday', color: 'text-slate-600 bg-slate-50 dark:bg-slate-950/20 border-slate-200 dark:border-slate-900', border: 'border-t-slate-400' },
 ];
 
 export default function Wishlist() {
@@ -26,13 +36,10 @@ export default function Wishlist() {
     try {
       const res = await fetch(`${API}/wishlist/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) setItems(await res.json());
-
-      // Fetch AI recommendations
       try {
         const recRes = await fetch(`${API}/wishlist/recommendations/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
         if (recRes.ok) setRecommendations(await recRes.json());
-      } catch (e) { console.error(e); }
-
+      } catch (e) {}
     } catch (_) {}
     setLoading(false);
   };
@@ -68,101 +75,121 @@ export default function Wishlist() {
   const filtered = filter === 'all' ? items : items.filter(i => i.priority === filter);
   const getPriority = (id) => PRIORITIES.find(p => p.id === id) || PRIORITIES[2];
 
-  const inputStyle = {
-    width: '100%', padding: '12px 14px', borderRadius: '8px', border: '1px solid #c8dff0',
-    background: 'rgba(255,255,255,0.9)', color: '#1a2a3a', fontSize: '14px', outline: 'none', boxSizing: 'border-box'
-  };
-
-  const labelStyle = { display: 'block', marginBottom: '6px', fontSize: '12px', fontWeight: 600, color: '#5a7a9a', textTransform: 'uppercase' };
-
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+    <div className="flex flex-col gap-6 pb-12">
+      
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
         <div>
-          <h1 className="text-primary-dark" style={{ margin: '0 0 4px', fontSize: '1.8rem', letterSpacing: '-0.5px' }}>❤️ Travel Wishlist</h1>
-          <p className="text-secondary" style={{ margin: 0, fontSize: '14px' }}>{items.length} destinations in your bucket list</p>
+          <h1 className="text-3xl font-extrabold text-[var(--text-primary)] tracking-tight font-heading mb-1 flex items-center gap-2">
+            <IconHeart className="text-red-500" size={32} /> Travel Wishlist
+          </h1>
+          <p className="text-sm text-[var(--text-muted)] font-medium">{items.length} dream destinations in your bucket list</p>
         </div>
-        <button onClick={() => setShowForm(!showForm)}
-          style={{ padding: '10px 20px', background: showForm ? 'rgba(220, 38, 38, 0.1)' : '#185FA5', border: showForm ? '1px solid rgba(220, 38, 38, 0.2)' : 'none', borderRadius: '10px', color: showForm ? '#dc2626' : '#fff', fontWeight: 600, cursor: 'pointer', fontSize: '13px', boxShadow: showForm ? 'none' : '0 4px 10px rgba(24, 95, 165, 0.2)' }}>
-          {showForm ? 'Cancel' : '+ Add Destination'}
+        <button 
+          onClick={() => setShowForm(!showForm)}
+          className={`px-5 py-3 rounded-lg text-sm font-semibold flex items-center gap-1.5 cursor-pointer transition-all w-fit ${
+            showForm 
+              ? 'bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800' 
+              : 'btn btn-primary shadow-md shadow-blue-500/10'
+          }`}
+        >
+          {showForm ? <><IconX size={16} /> Cancel</> : <><IconPlus size={16} /> Add Destination</>}
         </button>
       </div>
 
+      {/* Add Form */}
       {showForm && (
-        <form className="glass-card" onSubmit={addItem} style={{ padding: '24px', marginBottom: '2rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px' }}>
-            <div>
-              <label style={labelStyle}>Destination *</label>
-              <input style={inputStyle} value={form.destination} onChange={e => setForm(f => ({ ...f, destination: e.target.value }))} placeholder="e.g. Santorini, Northern Lights in Norway" required />
+        <form className="glass-card p-6 bg-[var(--bg-card)] animate-fadeIn" onSubmit={addItem}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="sm:col-span-1">
+              <label className="block mb-1 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Destination *</label>
+              <input className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--color-primary-500)]" value={form.destination} onChange={e => setForm(f => ({ ...f, destination: e.target.value }))} placeholder="e.g. Santorini, Northern Lights" required />
             </div>
             <div>
-              <label style={labelStyle}>Country</label>
-              <input style={inputStyle} value={form.country} onChange={e => setForm(f => ({ ...f, country: e.target.value }))} placeholder="e.g. Greece" />
+              <label className="block mb-1 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Country</label>
+              <input className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-sm focus:outline-none" value={form.country} onChange={e => setForm(f => ({ ...f, country: e.target.value }))} placeholder="e.g. Greece" />
             </div>
             <div>
-              <label style={labelStyle}>Priority</label>
-              <div style={{ display: 'flex', gap: '8px' }}>
+              <label className="block mb-1 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Priority</label>
+              <div className="flex gap-2">
                 {PRIORITIES.map(p => (
                   <button key={p.id} type="button" onClick={() => setForm(f => ({ ...f, priority: p.id }))}
-                    style={{ flex: 1, padding: '10px', borderRadius: '8px', border: `1px solid ${form.priority === p.id ? p.color : 'rgba(200, 225, 245, 0.9)'}`, background: form.priority === p.id ? `${p.color}15` : 'rgba(255,255,255,0.7)', color: form.priority === p.id ? p.color : '#4a6080', cursor: 'pointer', fontWeight: 600, fontSize: '12px', transition: 'all 0.2s' }}>
+                    className={`flex-1 py-2.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
+                      form.priority === p.id ? `${p.color} border` : 'border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:bg-[var(--bg-app)]'
+                    }`}>
                     {p.label}
                   </button>
                 ))}
               </div>
             </div>
             <div>
-              <label style={labelStyle}>Notes</label>
-              <input style={inputStyle} value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} placeholder="Why do you want to go?" />
+              <label className="block mb-1 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Notes</label>
+              <input className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-sm focus:outline-none" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} placeholder="Why do you want to go?" />
             </div>
           </div>
-          <button type="submit" disabled={submitting}
-            style={{ marginTop: '20px', width: '100%', padding: '12px', background: '#185FA5', border: 'none', borderRadius: '10px', color: 'white', fontWeight: 600, cursor: submitting ? 'not-allowed' : 'pointer', opacity: submitting ? 0.7 : 1 }}>
-            {submitting ? 'Adding...' : 'Add to Bucket List'}
+          <button type="submit" disabled={submitting} className="btn btn-primary w-full py-3.5 mt-5 text-sm font-semibold flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/10 cursor-pointer disabled:opacity-50">
+            {submitting ? <><IconLoader className="animate-spin" size={16} /> Adding...</> : 'Add to Bucket List'}
           </button>
         </form>
       )}
 
-      {/* Filter tabs */}
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '1.5rem' }}>
-        {[{ id: 'all', label: `All (${items.length})` }, ...PRIORITIES.map(p => ({ id: p.id, label: `${p.label} (${items.filter(i => i.priority === p.id).length})` }))].map(f => (
+      {/* Filter Tabs */}
+      <div className="flex gap-2 flex-wrap">
+        {[
+          { id: 'all', label: `All (${items.length})` }, 
+          ...PRIORITIES.map(p => ({ id: p.id, label: `${p.label} (${items.filter(i => i.priority === p.id).length})` }))
+        ].map(f => (
           <button key={f.id} onClick={() => setFilter(f.id)}
-            style={{ padding: '8px 16px', borderRadius: '20px', border: filter === f.id ? '1px solid rgba(24, 95, 165, 0.3)' : '1px solid transparent', cursor: 'pointer', fontWeight: 600, fontSize: '13px', background: filter === f.id ? 'rgba(24, 95, 165, 0.1)' : 'transparent', color: filter === f.id ? '#185FA5' : '#5a7a9a', transition: 'all 0.2s' }}>
+            className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
+              filter === f.id 
+                ? 'bg-blue-50 dark:bg-blue-950/20 text-[var(--color-primary-600)] dark:text-blue-400 border border-blue-200 dark:border-blue-900' 
+                : 'text-[var(--text-muted)] hover:bg-[var(--bg-app)] border border-transparent'
+            }`}>
             {f.label}
           </button>
         ))}
       </div>
 
+      {/* Wishlist Grid */}
       {loading ? (
-        <div className="text-secondary" style={{ textAlign: 'center', padding: '3rem' }}>Loading your wishlist...</div>
+        <div className="flex justify-center items-center py-16 text-[var(--text-muted)]">
+          <IconLoader className="animate-spin text-[var(--color-primary-500)] mr-2" size={20} />
+          <span className="text-sm font-semibold">Loading wishlist...</span>
+        </div>
       ) : filtered.length === 0 ? (
-        <div className="glass-card" style={{ textAlign: 'center', padding: '4rem', border: '1px dashed rgba(200, 225, 245, 0.9)' }}>
-          <p style={{ fontSize: '3rem', margin: '0 0 1rem' }}>🌍</p>
-          <p className="text-secondary" style={{ margin: 0 }}>{items.length === 0 ? 'Your bucket list is empty. Add your dream destinations!' : 'No destinations in this category.'}</p>
+        <div className="glass-card p-16 text-center flex flex-col items-center justify-center gap-3 border border-dashed border-[var(--border-color)]">
+          <span className="text-4xl">🌍</span>
+          <div className="text-base font-bold text-[var(--text-primary)]">{items.length === 0 ? 'Your bucket list is empty' : 'No destinations in this category'}</div>
+          <p className="text-xs text-[var(--text-muted)] max-w-xs leading-relaxed">Add your dream destinations to start planning.</p>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {filtered.map(item => {
             const priority = getPriority(item.priority);
             return (
-              <div key={item.id} className="glass-card" style={{ padding: '24px', position: 'relative', borderTop: `4px solid ${priority.color}` }}>
-                
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                  <span style={{ background: `${priority.color}15`, color: priority.color, padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase' }}>
+              <div key={item.id} className={`glass-card p-6 bg-[var(--bg-card)] border-t-4 ${priority.border} flex flex-col gap-3 group relative`}>
+                <div className="flex justify-between items-start">
+                  <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${priority.color}`}>
                     {priority.label}
                   </span>
-                  <button onClick={() => removeItem(item.id)} style={{ background: 'none', border: 'none', color: '#5a7a9a', cursor: 'pointer', fontSize: '18px', padding: 0, lineHeight: 1 }}>✕</button>
+                  <button onClick={() => removeItem(item.id)} className="p-1 rounded-lg text-[var(--text-muted)] hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 opacity-0 group-hover:opacity-100 transition-all">
+                    <IconTrash size={14} />
+                  </button>
                 </div>
-
-                <h3 className="text-primary-dark" style={{ margin: '0 0 6px', fontSize: '16px' }}>📍 {item.destination}</h3>
-                {item.country && <p className="text-secondary" style={{ margin: '0 0 12px', fontSize: '13px' }}>{item.country}</p>}
-                
+                <div>
+                  <h3 className="text-base font-bold text-[var(--text-primary)] font-heading flex items-center gap-1.5">
+                    <IconMapPin size={16} className="text-[var(--color-primary-500)]" /> {item.destination}
+                  </h3>
+                  {item.country && <p className="text-xs text-[var(--text-muted)] mt-0.5 font-medium">{item.country}</p>}
+                </div>
                 {item.notes && (
-                  <div style={{ background: 'rgba(255,255,255,0.6)', padding: '10px 12px', borderRadius: '8px', fontSize: '13px', color: '#4a6080', fontStyle: 'italic', marginBottom: '16px' }}>
+                  <div className="bg-[var(--bg-app)] border border-[var(--border-color)] p-3 rounded-lg text-xs text-[var(--text-secondary)] italic leading-relaxed">
                     "{item.notes}"
                   </div>
                 )}
-
-                <div className="text-muted" style={{ fontSize: '11px', marginTop: 'auto' }}>
+                <div className="text-[10px] text-[var(--text-muted)] font-semibold flex items-center gap-1 mt-auto pt-2">
+                  <IconCalendar size={10} />
                   Added {item.created_at ? new Date(item.created_at).toLocaleDateString('en', { month: 'short', year: 'numeric' }) : ''}
                 </div>
               </div>
@@ -171,36 +198,38 @@ export default function Wishlist() {
         </div>
       )}
 
-      {/* AI Recommendations Section */}
+      {/* AI Recommendations */}
       {recommendations.length > 0 && (
-        <div style={{ marginTop: '3rem' }}>
-          <h2 className="text-primary-dark" style={{ margin: '0 0 8px', fontSize: '1.5rem' }}>✨ AI Suggested for You</h2>
-          <p className="text-secondary" style={{ margin: '0 0 16px', fontSize: '13px' }}>Based on your travel history and wishlist</p>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+        <div className="mt-6 flex flex-col gap-4">
+          <div>
+            <h2 className="text-xl font-bold text-[var(--text-primary)] font-heading flex items-center gap-2">
+              <IconSparkles className="text-amber-500 animate-pulse" size={22} /> AI Suggested For You
+            </h2>
+            <p className="text-xs text-[var(--text-muted)] mt-0.5">Based on your travel history and current wishlist</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {recommendations.map((rec, idx) => (
-              <div key={idx} className="glass-card" style={{ padding: '20px', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                  <h3 className="text-primary-dark" style={{ margin: 0, fontSize: '15px' }}>{rec.destination}</h3>
-                  <span style={{ fontSize: '10px', background: 'rgba(24, 95, 165, 0.1)', color: '#185FA5', padding: '2px 8px', borderRadius: '10px', fontWeight: 600 }}>{rec.vibe}</span>
+              <div key={idx} className="glass-card p-5 bg-[var(--bg-card)] flex flex-col gap-3">
+                <div className="flex justify-between items-start">
+                  <h3 className="text-sm font-bold text-[var(--text-primary)] font-heading">{rec.destination}</h3>
+                  <span className="text-[9px] font-bold bg-blue-50 dark:bg-blue-950/20 text-[var(--color-primary-600)] dark:text-blue-400 px-2 py-0.5 rounded-full uppercase tracking-wider">{rec.vibe}</span>
                 </div>
-                <p style={{ fontSize: '12px', color: '#4a6080', lineHeight: 1.5, marginBottom: '16px', flex: 1 }}>{rec.reason}</p>
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed flex-1">{rec.reason}</p>
                 <button 
                   onClick={() => {
-                    setForm({ destination: rec.destination, country: '', notes: `AI Suggestion: ${rec.reason}`, priority: 'dream' });
+                    setForm({ destination: rec.destination, country: '', notes: `AI: ${rec.reason}`, priority: 'dream' });
                     setShowForm(true);
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  style={{ background: 'rgba(24, 95, 165, 0.1)', color: '#185FA5', border: '1px solid rgba(24, 95, 165, 0.2)', padding: '8px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}
+                  className="text-xs font-bold text-[var(--color-primary-600)] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900 py-2 rounded-lg hover:bg-[var(--color-primary-600)] hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all cursor-pointer flex items-center justify-center gap-1"
                 >
-                  + Add to Wishlist
+                  <IconPlus size={14} /> Add to Wishlist
                 </button>
               </div>
             ))}
           </div>
         </div>
       )}
-
     </div>
   );
 }

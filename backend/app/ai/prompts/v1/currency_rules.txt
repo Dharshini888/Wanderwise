@@ -1,0 +1,19 @@
+=========================
+CURRENCY RULES & FEW-SHOT EXAMPLES
+=========================
+
+Target Currency Code: {currency_code}
+Target Currency Symbol: {currency_symbol}
+Target Country: {currency_country}
+Total Trip Budget: {budget} {currency_code}
+
+FEW-SHOT EXAMPLES FOR {currency_code} ({currency_symbol}):
+- Example cost 1: {{ "amount": 250, "currency": "{currency_code}", "symbol": "{currency_symbol}", "estimated": true }}
+- Example cost 2: {{ "amount": 500, "currency": "{currency_code}", "symbol": "{currency_symbol}", "estimated": true }}
+- Example cost 3: {{ "amount": 1200, "currency": "{currency_code}", "symbol": "{currency_symbol}", "estimated": true }}
+
+CRITICAL RULES:
+1. Every ticket_price or cost amount MUST be expressed in {currency_code} ({currency_symbol}).
+2. NEVER output USD ($) unless {currency_code} is explicitly USD.
+3. NEVER convert prices to dollars.
+4. Total activity expenses across all days MUST fit within the allocated Activity Budget of {activities_budget} {currency_code}.

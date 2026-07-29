@@ -1,4 +1,14 @@
-import React from 'react';
+import {
+  IconUsers,
+  IconReceipt,
+  IconArrowsRightLeft,
+  IconScan,
+  IconArrowRight,
+  IconCash,
+  IconAlertCircle,
+  IconUser,
+  IconWallet,
+} from '@tabler/icons-react';
 
 export default function SmartBudget() {
   const splits = [
@@ -7,49 +17,88 @@ export default function SmartBudget() {
   ];
 
   return (
-    <div style={{ minHeight: '100vh', padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#f4f7fa' }}>
-      <h1 className="text-primary-dark" style={{ marginBottom: '1rem' }}>Smart Group Budget</h1>
+    <div className="flex flex-col gap-6 pb-12">
       
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', width: '100%', maxWidth: '1000px' }}>
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-extrabold text-[var(--text-primary)] tracking-tight font-heading mb-1 flex items-center gap-2">
+          <IconUsers className="text-[var(--color-primary-600)]" size={32} /> Smart Group Budget
+        </h1>
+        <p className="text-sm text-[var(--text-muted)] font-medium">Split bills, scan receipts, and balance expenses with travelers.</p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start max-w-5xl">
         
         {/* Settlement Suggestions */}
-        <div className="glass-card" style={{ padding: '2rem', borderRadius: '24px' }}>
-          <h2 style={{ fontSize: '1.3rem', marginBottom: '1.5rem', color: '#185FA5' }}>Settle-Up Suggestions</h2>
-          <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '1.5rem' }}>Optimized transactions to balance the group.</p>
+        <div className="glass-card p-6 flex flex-col gap-5 bg-[var(--bg-card)]">
+          <div>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] font-heading mb-1 flex items-center gap-2">
+              <IconArrowsRightLeft size={20} className="text-blue-500" /> Settle-Up Suggestions
+            </h2>
+            <p className="text-xs text-[var(--text-muted)] font-medium">Optimized transactions to balance the group ledger.</p>
+          </div>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div className="flex flex-col gap-3">
             {splits.map((s, idx) => (
-              <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: '#fff', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ width: '35px', height: '35px', borderRadius: '50%', background: '#ff7a45', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>{s.from[0]}</div>
-                  <span style={{ color: '#8c8c8c' }}>→</span>
-                  <div style={{ width: '35px', height: '35px', borderRadius: '50%', background: '#36cfc9', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>{s.to[0]}</div>
+              <div key={idx} className="flex justify-between items-center p-4 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-xl">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-950 text-[var(--color-primary-600)] dark:text-blue-400 flex items-center justify-center font-bold text-xs shadow-sm">
+                    {s.from[0]}
+                  </div>
+                  <span className="text-[var(--text-muted)]"><IconArrowRight size={16} /></span>
+                  <div className="w-9 h-9 rounded-full bg-teal-100 dark:bg-teal-950 text-teal-600 dark:text-teal-400 flex items-center justify-center font-bold text-xs shadow-sm">
+                    {s.to[0]}
+                  </div>
+                  <div className="text-xs font-semibold text-[var(--text-secondary)] pl-1">
+                    {s.from} pays {s.to}
+                  </div>
                 </div>
-                <div style={{ fontWeight: 'bold', fontSize: '1.1rem', color: '#333' }}>${s.amount.toFixed(2)}</div>
+                <div className="text-base font-black text-[var(--text-primary)] font-heading">${s.amount.toFixed(2)}</div>
               </div>
             ))}
           </div>
-          <button style={{ marginTop: '1.5rem', padding: '10px 20px', width: '100%', background: '#52c41a', color: '#fff', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold' }}>
-            Settle All
+
+          <button className="btn btn-primary w-full py-3.5 mt-2 text-sm font-semibold shadow-md shadow-blue-500/10 cursor-pointer">
+            Settle All Balances
           </button>
         </div>
 
         {/* Auto Categorization OCR */}
-        <div className="glass-card" style={{ padding: '2rem', borderRadius: '24px' }}>
-          <h2 style={{ fontSize: '1.3rem', marginBottom: '1.5rem', color: '#185FA5' }}>Add Expense</h2>
-          <div style={{ padding: '2rem', border: '2px dashed #185FA5', borderRadius: '12px', textAlign: 'center', background: 'rgba(24, 95, 165, 0.05)', cursor: 'pointer' }}>
-            <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🧾</div>
-            <p style={{ color: '#185FA5', margin: 0, fontWeight: 500 }}>Scan Receipt</p>
-            <p style={{ fontSize: '0.8rem', color: '#666', marginTop: '5px' }}>AI will extract amount and category</p>
+        <div className="glass-card p-6 flex flex-col gap-6 bg-[var(--bg-card)]">
+          <div>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] font-heading mb-1 flex items-center gap-2">
+              <IconReceipt size={20} className="text-emerald-500" /> Add Splitted Expense
+            </h2>
+            <p className="text-xs text-[var(--text-muted)] font-medium">Scan receipts with OCR or type entries manually.</p>
+          </div>
+
+          {/* OCR Box */}
+          <div className="border-2 border-dashed border-[var(--color-primary-500)]/30 rounded-xl p-8 text-center bg-blue-50/5 dark:bg-blue-950/5 hover:bg-blue-50/10 dark:hover:bg-blue-950/10 transition-colors cursor-pointer group flex flex-col items-center justify-center gap-2">
+            <span className="text-4xl text-[var(--color-primary-500)] group-hover:scale-110 transition-transform"><IconScan size={36} /></span>
+            <div className="text-xs font-bold text-[var(--color-primary-600)] dark:text-blue-400">Scan Bill Receipt</div>
+            <p className="text-[10px] text-[var(--text-muted)] max-w-[180px] leading-relaxed">AI will automatically analyze photo, extract totals, and categorize merchant.</p>
           </div>
           
-          <div style={{ marginTop: '2rem' }}>
-            <input type="text" placeholder="Amount" style={{ width: '100%', padding: '12px', marginBottom: '1rem', borderRadius: '8px', border: '1px solid #d9d9d9', boxSizing: 'border-box' }} />
-            <select style={{ width: '100%', padding: '12px', marginBottom: '1rem', borderRadius: '8px', border: '1px solid #d9d9d9', boxSizing: 'border-box' }}>
-              <option>Split Equally</option>
-              <option>Exact Amounts</option>
-            </select>
-            <button style={{ padding: '12px', width: '100%', background: '#185FA5', color: '#fff', border: 'none', borderRadius: '10px', cursor: 'pointer' }}>Add Expense</button>
+          <div className="flex flex-col gap-4">
+            <div>
+              <label className="block mb-1 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Amount</label>
+              <input 
+                type="text" 
+                placeholder="$ 0.00" 
+                className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--color-primary-500)]" 
+              />
+            </div>
+            <div>
+              <label className="block mb-1 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Split Type</label>
+              <select className="w-full px-3 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-sm focus:outline-none cursor-pointer">
+                <option>Split Equally</option>
+                <option>Exact Amounts</option>
+                <option>Percentage Split</option>
+              </select>
+            </div>
+            <button className="btn btn-primary w-full py-3.5 text-sm font-semibold shadow-md shadow-blue-500/10 cursor-pointer">
+              Add Expense
+            </button>
           </div>
         </div>
 

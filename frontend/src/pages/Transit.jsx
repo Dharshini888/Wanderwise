@@ -2,6 +2,19 @@ import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import {
+  IconMapPin,
+  IconClock,
+  IconCoin,
+  IconWalk,
+  IconBus,
+
+  IconTrain,
+  IconCar,
+  IconNavigation,
+  IconAlertCircle,
+  IconRoad,
+} from '@tabler/icons-react';
 
 // Fix leaflet marker icon issue in React
 delete L.Icon.Default.prototype._getIconUrl;
@@ -26,7 +39,14 @@ function MapUpdater({ bounds, center }) {
   return null;
 }
 
-const TYPE_ICONS = { walk: '🚶', bus: '🚌', metro: '🚇', train: '🚆', auto: '🛺', taxi: '🚕' };
+const TYPE_ICONS = {
+  walk: <IconWalk size={16} />,
+  bus: <IconBus size={16} />,
+  metro: <IconTrain size={16} />,
+  train: <IconTrain size={16} />,
+  auto: <IconCar size={16} />,
+  taxi: <IconCar size={16} />,
+};
 
 export default function Transit() {
   const [form, setForm] = useState({ from_location: '', to_location: '', city: '' });
@@ -79,11 +99,9 @@ export default function Transit() {
         const osrmRes = await fetch(osrmUrl).then(r => r.json());
         
         if (osrmRes.code === 'Ok' && osrmRes.routes.length > 0) {
-          // OSRM returns [lon, lat], leaflet needs [lat, lon]
           const coords = osrmRes.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
           setRouteLine(coords);
           
-          // Calculate bounding box
           const lats = coords.map(c => c[0]);
           const lons = coords.map(c => c[1]);
           setMapBounds([
@@ -91,11 +109,9 @@ export default function Transit() {
             [Math.max(...lats), Math.max(...lons)]
           ]);
         } else {
-          // Just center on the two points if no route found
           setMapBounds([ [fromLat, fromLon], [toLat, toLon] ]);
         }
       } else {
-        // Fallback geocode just the city
         const resCity = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(form.city)}&limit=1`).then(r => r.json());
         if (resCity[0]) setMapCenter([parseFloat(resCity[0].lat), parseFloat(resCity[0].lon)]);
       }
@@ -104,76 +120,121 @@ export default function Transit() {
     setLoading(false);
   };
 
-  const inputStyle = { width: '100%', padding: '12px 14px', borderRadius: '8px', border: '1px solid #c8dff0', background: 'rgba(255,255,255,0.9)', color: '#1a2a3a', fontSize: '13px', outline: 'none', boxSizing: 'border-box' };
-  const labelStyle = { display: 'block', marginBottom: '6px', fontSize: '11px', fontWeight: 600, color: '#5a7a9a', textTransform: 'uppercase' };
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 3rem)', gap: '1.5rem' }}>
+    <div className="flex flex-col h-[calc(100vh-3rem)] gap-6">
       
+      {/* Title */}
       <div>
-        <h1 className="text-primary-dark" style={{ margin: '0 0 4px', fontSize: '1.8rem', letterSpacing: '-0.5px' }}>📍 Maps & Transit</h1>
-        <p className="text-secondary" style={{ margin: 0, fontSize: '14px' }}>Navigate unfamiliar cities with step-by-step guidance.</p>
+        <h1 className="text-3xl font-extrabold text-[var(--text-primary)] tracking-tight font-heading mb-1 flex items-center gap-2">
+          <IconRoad className="text-[var(--color-primary-600)]" size={32} /> Maps & Transit
+        </h1>
+        <p className="text-sm text-[var(--text-muted)] font-medium">Navigate unfamiliar cities seamlessly with step-by-step guidance.</p>
       </div>
 
-      <div style={{ display: 'flex', gap: '1.5rem', flex: 1, overflow: 'hidden' }}>
+      <div className="flex flex-col lg:flex-row gap-6 flex-1 overflow-hidden">
         
-        {/* Sidebar: Search & Route Info */}
-        <div style={{ width: '400px', display: 'flex', flexDirection: 'column', gap: '1.5rem', overflowY: 'auto', paddingRight: '4px' }}>
+        {/* Sidebar */}
+        <div className="w-full lg:w-[400px] flex flex-col gap-6 overflow-y-auto pr-2 custom-scrollbar">
           
-          <form className="glass-card" onSubmit={handleSearch} style={{ padding: '20px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div>
-                <label style={labelStyle}>From Location</label>
-                <input style={inputStyle} value={form.from_location} onChange={e => setForm(f => ({ ...f, from_location: e.target.value }))} placeholder="e.g. Hotel Radisson" required />
-              </div>
-              <div>
-                <label style={labelStyle}>To Destination</label>
-                <input style={inputStyle} value={form.to_location} onChange={e => setForm(f => ({ ...f, to_location: e.target.value }))} placeholder="e.g. India Gate" required />
-              </div>
-              <div>
-                <label style={labelStyle}>City</label>
-                <input style={inputStyle} value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="e.g. New Delhi" required />
-              </div>
+          <form className="glass-card p-6 flex flex-col gap-4 bg-[var(--bg-card)]" onSubmit={handleSearch}>
+            <div>
+              <label className="block mb-1 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">From Location</label>
+              <input 
+                className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--color-primary-500)]" 
+                value={form.from_location} 
+                onChange={e => setForm(f => ({ ...f, from_location: e.target.value }))} 
+                placeholder="e.g. Hotel Radisson" 
+                required 
+              />
             </div>
-            <button type="submit" disabled={loading}
-              style={{ marginTop: '16px', width: '100%', padding: '12px', background: '#185FA5', border: 'none', borderRadius: '8px', color: 'white', fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}>
-              {loading ? 'Computing route...' : 'Get Directions'}
+            <div>
+              <label className="block mb-1 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">To Destination</label>
+              <input 
+                className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--color-primary-500)]" 
+                value={form.to_location} 
+                onChange={e => setForm(f => ({ ...f, to_location: e.target.value }))} 
+                placeholder="e.g. India Gate" 
+                required 
+              />
+            </div>
+            <div>
+              <label className="block mb-1 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">City</label>
+              <input 
+                className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--color-primary-500)]" 
+                value={form.city} 
+                onChange={e => setForm(f => ({ ...f, city: e.target.value }))} 
+                placeholder="e.g. New Delhi" 
+                required 
+              />
+            </div>
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="btn btn-primary py-3 mt-2 text-sm font-semibold flex items-center justify-center gap-2 shadow-md shadow-blue-500/10 cursor-pointer disabled:opacity-50"
+            >
+              {loading ? (
+                <>
+                  <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin"></div>
+                  <span>Computing route...</span>
+                </>
+              ) : (
+                <>
+                  <IconNavigation size={18} />
+                  <span>Get Directions</span>
+                </>
+              )}
             </button>
           </form>
 
-          {error && <div style={{ background: 'rgba(220, 38, 38, 0.1)', border: '1px solid rgba(220, 38, 38, 0.2)', borderRadius: '8px', padding: '12px', color: '#dc2626', fontSize: '14px', fontWeight: 500 }}>⚠️ {error}</div>}
+          {error && (
+            <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-600 dark:text-red-400 text-sm font-semibold flex items-center gap-2">
+              <IconAlertCircle size={20} />
+              <span>{error}</span>
+            </div>
+          )}
 
           {result && (
-            <div className="glass-card" style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+            <div className="glass-card p-6 flex flex-col bg-[var(--bg-card)] animate-fadeIn">
+              <h3 className="text-base font-bold text-[var(--text-primary)] font-heading mb-3">Route Summary</h3>
               
-              <h3 className="text-primary-dark" style={{ margin: '0 0 12px', fontSize: '15px' }}>Route Summary</h3>
-              <div style={{ background: 'rgba(24, 95, 165, 0.05)', borderRadius: '8px', padding: '12px', marginBottom: '16px' }}>
-                <p className="text-secondary" style={{ margin: '0 0 12px', fontSize: '13px', lineHeight: 1.5 }}>{result.summary}</p>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', textAlign: 'center' }}>
-                  <div><div className="label-text">Time</div><div className="text-primary-dark" style={{ fontWeight: 700, fontSize: '14px' }}>{result.total_time}</div></div>
-                  <div><div className="label-text">Fare</div><div className="text-primary-dark" style={{ fontWeight: 700, fontSize: '14px' }}>{result.total_fare}</div></div>
-                  <div><div className="label-text">Walk</div><div className="text-primary-dark" style={{ fontWeight: 700, fontSize: '14px' }}>{result.walking_distance}</div></div>
+              <div className="bg-blue-50/20 dark:bg-blue-950/5 border border-blue-200/50 dark:border-blue-900/10 p-4 rounded-xl mb-5">
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-4">{result.summary}</p>
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div className="bg-[var(--bg-card)] border border-[var(--border-color)] p-2 rounded-lg">
+                    <div className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-wider flex items-center justify-center gap-1"><IconClock size={10} /> Time</div>
+                    <div className="text-xs font-bold text-[var(--text-primary)] mt-0.5">{result.total_time}</div>
+                  </div>
+                  <div className="bg-[var(--bg-card)] border border-[var(--border-color)] p-2 rounded-lg">
+                    <div className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-wider flex items-center justify-center gap-1"><IconCoin size={10} /> Fare</div>
+                    <div className="text-xs font-bold text-[var(--text-primary)] mt-0.5">{result.total_fare}</div>
+                  </div>
+                  <div className="bg-[var(--bg-card)] border border-[var(--border-color)] p-2 rounded-lg">
+                    <div className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-wider flex items-center justify-center gap-1"><IconWalk size={10} /> Walk</div>
+                    <div className="text-xs font-bold text-[var(--text-primary)] mt-0.5">{result.walking_distance}</div>
+                  </div>
                 </div>
               </div>
 
               {result.steps && (
                 <>
-                  <h3 className="text-primary-dark" style={{ margin: '0 0 12px', fontSize: '15px' }}>Steps</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+                  <h3 className="text-sm font-bold text-[var(--text-muted)] uppercase tracking-wider mb-4">Route Steps</h3>
+                  <div className="flex flex-col">
                     {result.steps.map((step, i) => (
-                      <div key={i} style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
-                          <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(24, 95, 165, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', color: '#185FA5' }}>
-                            {TYPE_ICONS[step.type] || '📍'}
+                      <div key={i} className="flex gap-4 items-start">
+                        <div className="flex flex-col items-center flex-shrink-0">
+                          <div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-950 text-[var(--color-primary-600)] dark:text-blue-400 flex items-center justify-center border border-blue-100 dark:border-blue-900">
+                            {TYPE_ICONS[step.type] || <IconMapPin size={16} />}
                           </div>
-                          {i < result.steps.length - 1 && <div style={{ width: 2, background: 'rgba(200, 225, 245, 0.9)', flex: 1, minHeight: 30, margin: '4px 0' }} />}
+                          {i < result.steps.length - 1 && (
+                            <div className="w-0.5 bg-[var(--border-color)] h-12 my-1" />
+                          )}
                         </div>
-                        <div style={{ flex: 1, paddingBottom: '16px', paddingTop: '4px' }}>
-                          <div className="text-primary-dark" style={{ fontWeight: 600, fontSize: '13px', marginBottom: '4px' }}>{step.instruction}</div>
-                          {step.detail && <div className="text-secondary" style={{ fontSize: '12px', marginBottom: '6px' }}>{step.detail}</div>}
-                          <div style={{ display: 'flex', gap: '8px' }}>
-                            {step.duration && <span style={{ background: 'rgba(255,255,255,0.8)', border: '1px solid #c8dff0', borderRadius: '12px', padding: '2px 8px', fontSize: '11px', color: '#5a7a9a' }}>⏱️ {step.duration}</span>}
-                            {step.fare && <span style={{ background: 'rgba(255,255,255,0.8)', border: '1px solid #c8dff0', borderRadius: '12px', padding: '2px 8px', fontSize: '11px', color: '#5a7a9a' }}>💰 {step.fare}</span>}
+                        <div className="flex-1 pb-6 pt-1">
+                          <div className="text-xs font-extrabold text-[var(--text-primary)] mb-1 font-heading">{step.instruction}</div>
+                          {step.detail && <div className="text-xs text-[var(--text-muted)] leading-relaxed mb-2">{step.detail}</div>}
+                          <div className="flex gap-2">
+                            {step.duration && <span className="text-[9px] font-semibold bg-[var(--bg-app)] border border-[var(--border-color)] px-2 py-0.5 rounded-full text-[var(--text-muted)]">⏱️ {step.duration}</span>}
+                            {step.fare && <span className="text-[9px] font-semibold bg-[var(--bg-app)] border border-[var(--border-color)] px-2 py-0.5 rounded-full text-[var(--text-muted)]">💰 {step.fare}</span>}
                           </div>
                         </div>
                       </div>
@@ -185,8 +246,8 @@ export default function Transit() {
           )}
         </div>
 
-        {/* Full Map Area */}
-        <div className="glass-card" style={{ flex: 1, padding: '8px', overflow: 'hidden', display: 'flex' }}>
+        {/* Map */}
+        <div className="glass-card flex-1 p-2 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl overflow-hidden min-h-[300px] lg:min-h-0">
           <MapContainer center={mapCenter} zoom={13} style={{ width: '100%', height: '100%', borderRadius: '12px', zIndex: 1 }}>
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
@@ -194,7 +255,7 @@ export default function Transit() {
             />
             <MapUpdater center={mapCenter} bounds={mapBounds} />
             
-            {routeLine && <Polyline positions={routeLine} color="#185FA5" weight={5} opacity={0.7} />}
+            {routeLine && <Polyline positions={routeLine} color="#2563EB" weight={5} opacity={0.8} />}
             
             {markers.length > 0 ? (
               markers.map((m, i) => (

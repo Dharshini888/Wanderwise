@@ -23,20 +23,18 @@ import {
 
 const MAIN_LINKS = [
   { path: '/dashboard', label: 'Dashboard', icon: IconLayoutDashboard },
-  { path: '/companion', label: 'My Trips', icon: IconMapPins },
+  { path: '/trips', label: 'My Trips', icon: IconMapPins },
   { path: '/chat', label: 'AI Chat', icon: IconMessageChatbot },
+
   { path: '/recommendations', label: 'AI Suggestions', icon: IconSparkles },
-  { path: '/group-consensus', label: 'Consensus', icon: IconUsersGroup },
   { path: '/weather', label: 'Weather', icon: IconCloudStorm },
   { path: '/transit', label: 'Maps', icon: IconMap },
   { path: '/budget', label: 'Expenses', icon: IconReceipt2 },
-  { path: '/smart-budget', label: 'Smart Budget', icon: IconCalculator },
   { path: '/currency', label: 'Currency', icon: IconCoin },
   { path: '/packing', label: 'Packing', icon: IconBackpack },
-  { path: '/journal/1', label: 'Journal', icon: IconBook }, // Using 1 as default for now, can be updated later
+  { path: '/journal/1', label: 'Journal', icon: IconBook },
   { path: '/wishlist', label: 'Wishlist', icon: IconHeart },
   { path: '/safety', label: 'Safety', icon: IconShieldCheck },
-  { path: '/health-docs', label: 'Health & Docs', icon: IconStethoscope },
   { path: '/analytics', label: 'Analytics', icon: IconChartBar },
 ];
 
@@ -45,117 +43,68 @@ const BOTTOM_LINKS = [
   { path: '/profile', label: 'Profile', icon: IconUser },
 ];
 
+import { useAuth } from '../context/AuthContext';
+
 export default function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+  const handleLogout = async () => {
+    await logout();
     navigate('/login');
   };
 
   const NavItem = ({ to, icon: Icon, label }) => {
-    // Simple active check, handles nested routes like /journal/1 slightly better if needed
     const isActive = location.pathname.startsWith(to) && (to !== '/' || location.pathname === '/');
     
     return (
       <Link
         to={to}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          padding: '10px 14px',
-          textDecoration: 'none',
-          borderRadius: '10px',
-          fontSize: '13px',
-          fontWeight: isActive ? 600 : 500,
-          color: isActive ? '#185FA5' : '#5a7a9a',
-          background: isActive ? 'rgba(24, 95, 165, 0.12)' : 'transparent',
-          transition: 'all 0.2s ease',
-        }}
-        onMouseEnter={(e) => {
-          if (!isActive) {
-            e.currentTarget.style.background = 'rgba(24, 95, 165, 0.05)';
-            e.currentTarget.style.color = '#4a6080';
-          }
-        }}
-        onMouseLeave={(e) => {
-          if (!isActive) {
-            e.currentTarget.style.background = 'transparent';
-            e.currentTarget.style.color = '#5a7a9a';
-          }
-        }}
+        className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+          isActive 
+            ? 'bg-blue-50 dark:bg-blue-900/30 text-[var(--color-primary-600)] dark:text-blue-400 font-semibold shadow-sm' 
+            : 'text-[var(--text-secondary)] hover:bg-[var(--bg-app)] hover:text-[var(--text-primary)]'
+        }`}
       >
-        <Icon size={18} stroke={isActive ? 2.5 : 2} />
+        <Icon size={20} stroke={isActive ? 2.5 : 2} className={isActive ? 'text-[var(--color-primary-600)] dark:text-blue-400' : 'text-[var(--text-muted)]'} />
         <span>{label}</span>
       </Link>
     );
   };
 
   return (
-    <aside className="glass-panel" style={{
-      width: '240px', // slightly wider for breathing room
-      height: '100vh',
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      display: 'flex',
-      flexDirection: 'column',
-      padding: '24px 16px',
-      boxSizing: 'border-box',
-      zIndex: 100,
-    }}>
+    <aside className="glass-panel fixed top-0 left-0 w-[280px] h-screen flex flex-col p-6 z-50 bg-[var(--bg-card)] border-r border-[var(--border-color)]">
       {/* Logo */}
-      <div style={{ marginBottom: '32px', paddingLeft: '8px' }}>
-        <Link to="/dashboard" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '24px' }}>✈️</span>
-          <span style={{ fontSize: '20px', fontWeight: 800, color: '#185FA5', letterSpacing: '-0.5px' }}>
+      <div className="mb-8 pl-2 flex items-center gap-3">
+        <Link to="/dashboard" className="flex items-center gap-3 no-underline">
+          <span className="text-3xl">✈️</span>
+          <span className="text-2xl font-extrabold text-[var(--color-primary-600)] dark:text-blue-400 tracking-tight font-heading">
             WanderWise
           </span>
         </Link>
       </div>
 
       {/* Main Navigation */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px', overflowY: 'auto' }}>
-        <div className="label-text" style={{ paddingLeft: '14px', marginBottom: '8px', marginTop: '8px' }}>Menu</div>
+      <div className="flex-1 flex flex-col gap-1 overflow-y-auto pr-2 custom-scrollbar">
+        <div className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider pl-3 mb-2 mt-2">
+          Menu
+        </div>
         {MAIN_LINKS.map((link) => (
           <NavItem key={link.path} to={link.path} icon={link.icon} label={link.label} />
         ))}
       </div>
 
       {/* Bottom Actions */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '20px', paddingTop: '20px', borderTop: '1px solid rgba(200, 225, 245, 0.6)' }}>
+      <div className="flex flex-col gap-1 mt-6 pt-5 border-t border-[var(--border-color)]">
         {BOTTOM_LINKS.map((link) => (
           <NavItem key={link.path} to={link.path} icon={link.icon} label={link.label} />
         ))}
         <button
           onClick={handleLogout}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            padding: '10px 14px',
-            borderRadius: '10px',
-            fontSize: '13px',
-            fontWeight: 500,
-            color: '#dc2626', // Danger color
-            background: 'transparent',
-            border: 'none',
-            cursor: 'pointer',
-            textAlign: 'left',
-            width: '100%',
-            transition: 'all 0.2s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(220, 38, 38, 0.08)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'transparent';
-          }}
+          className="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200 w-full text-left"
         >
-          <IconLogout size={18} />
+          <IconLogout size={20} stroke={2} />
           <span>Logout</span>
         </button>
       </div>

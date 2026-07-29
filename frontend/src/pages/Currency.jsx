@@ -1,7 +1,15 @@
 import { useState, useEffect } from 'react';
+import {
+  IconCoin,
+  IconArrowsExchange,
+  IconAlertCircle,
+  IconLoader,
+  IconWallet,
+  IconArrowsRightLeft,
+  IconTrendingUp,
+} from '@tabler/icons-react';
 
 const API = 'http://localhost:8000/api';
-
 const COMMON_CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'INR', 'AUD', 'CAD', 'SGD', 'CHF', 'CNY'];
 
 export default function Currency() {
@@ -34,64 +42,106 @@ export default function Currency() {
     setTo(from);
   };
 
-  const inputStyle = { width: '100%', padding: '14px 16px', borderRadius: '10px', border: '1px solid #c8dff0', background: 'rgba(255,255,255,0.9)', color: '#1a2a3a', fontSize: '16px', outline: 'none', boxSizing: 'border-box', fontWeight: 600 };
-  const labelStyle = { display: 'block', marginBottom: '8px', fontSize: '12px', fontWeight: 600, color: '#5a7a9a', textTransform: 'uppercase' };
+  useEffect(() => {
+    convertCurrency();
+  }, [from, to]);
 
   return (
-    <div>
-      <div style={{ marginBottom: '2.5rem' }}>
-        <h1 className="text-primary-dark" style={{ margin: '0 0 4px', fontSize: '1.8rem', letterSpacing: '-0.5px' }}>💱 Currency Converter</h1>
-        <p className="text-secondary" style={{ margin: 0, fontSize: '14px' }}>Real-time exchange rates for smarter travel.</p>
+    <div className="flex flex-col gap-6 pb-12">
+      
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-extrabold text-[var(--text-primary)] tracking-tight font-heading mb-1 flex items-center gap-2">
+          <IconCoin className="text-emerald-500" size={32} /> Currency Converter
+        </h1>
+        <p className="text-sm text-[var(--text-muted)] font-medium">Real-time exchange rates for smarter budgeting on the go.</p>
       </div>
 
-      <div className="glass-card" style={{ padding: '32px', maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <div className="glass-card p-6 sm:p-8 max-w-xl mx-auto w-full bg-[var(--bg-card)] flex flex-col gap-6">
         
-        <form onSubmit={convertCurrency} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <form onSubmit={convertCurrency} className="flex flex-col gap-5">
           <div>
-            <label style={labelStyle}>Amount</label>
-            <input style={inputStyle} type="number" step="0.01" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Enter amount..." required />
+            <label className="block mb-1.5 text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">Amount to Convert</label>
+            <input 
+              className="w-full px-4 py-3 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-base font-extrabold focus:outline-none focus:border-[var(--color-primary-500)] focus:ring-2 focus:ring-[var(--color-primary-500)]/15 font-heading" 
+              type="number" 
+              step="0.01" 
+              value={amount} 
+              onChange={e => setAmount(e.target.value)} 
+              placeholder="Enter amount..." 
+              required 
+            />
           </div>
           
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div style={{ flex: 1 }}>
-              <label style={labelStyle}>From</label>
-              <select style={{ ...inputStyle, cursor: 'pointer' }} value={from} onChange={e => setFrom(e.target.value)}>
+          <div className="flex items-center gap-4">
+            <div className="flex-1">
+              <label className="block mb-1.5 text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">From</label>
+              <select 
+                className="w-full px-3.5 py-3 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-sm font-semibold focus:outline-none cursor-pointer"
+                value={from} 
+                onChange={e => setFrom(e.target.value)}
+              >
                 {COMMON_CURRENCIES.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             
-            <button type="button" onClick={handleSwap} style={{ background: 'rgba(24, 95, 165, 0.1)', border: 'none', width: '48px', height: '48px', borderRadius: '50%', color: '#185FA5', fontSize: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '24px', transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(24, 95, 165, 0.1)' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(24, 95, 165, 0.2)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(24, 95, 165, 0.1)'}>
-              ⇄
+            <button 
+              type="button" 
+              onClick={handleSwap} 
+              className="bg-blue-50 dark:bg-blue-950 text-[var(--color-primary-600)] dark:text-blue-400 border border-blue-100 dark:border-blue-900 w-11 h-11 rounded-full flex items-center justify-center cursor-pointer shadow-sm mt-5 hover:bg-[var(--color-primary-600)] hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all transform active:scale-95"
+              title="Swap currencies"
+            >
+              <IconArrowsExchange size={22} />
             </button>
             
-            <div style={{ flex: 1 }}>
-              <label style={labelStyle}>To</label>
-              <select style={{ ...inputStyle, cursor: 'pointer' }} value={to} onChange={e => setTo(e.target.value)}>
+            <div className="flex-1">
+              <label className="block mb-1.5 text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">To</label>
+              <select 
+                className="w-full px-3.5 py-3 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-sm font-semibold focus:outline-none cursor-pointer"
+                value={to} 
+                onChange={e => setTo(e.target.value)}
+              >
                 {COMMON_CURRENCIES.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
           </div>
           
-          <button type="submit" disabled={loading}
-            style={{ width: '100%', padding: '16px', background: '#185FA5', border: 'none', borderRadius: '10px', color: 'white', fontWeight: 600, fontSize: '15px', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1, transition: 'all 0.2s', boxShadow: '0 4px 14px rgba(24, 95, 165, 0.2)', marginTop: '8px' }}
-            onMouseEnter={e => { if(!loading) e.currentTarget.style.transform = 'translateY(-2px)' }}
-            onMouseLeave={e => { if(!loading) e.currentTarget.style.transform = 'translateY(0)' }}>
-            {loading ? 'Converting...' : 'Convert Currency'}
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="btn btn-primary w-full py-4 mt-4 text-sm font-semibold flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/15 cursor-pointer disabled:opacity-50"
+          >
+            {loading ? (
+              <>
+                <IconLoader className="animate-spin" size={18} />
+                <span>Converting...</span>
+              </>
+            ) : (
+              <>
+                <IconArrowsRightLeft size={18} />
+                <span>Convert Currency</span>
+              </>
+            )}
           </button>
         </form>
 
-        {error && <div style={{ background: 'rgba(220, 38, 38, 0.1)', border: '1px solid rgba(220, 38, 38, 0.2)', borderRadius: '8px', padding: '12px', color: '#dc2626', fontSize: '14px', fontWeight: 500 }}>⚠️ {error}</div>}
+        {error && (
+          <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg p-3 text-red-600 dark:text-red-400 text-sm font-semibold flex items-center gap-2">
+            <IconAlertCircle size={18} />
+            <span>{error}</span>
+          </div>
+        )}
 
         {result && (
-          <div style={{ marginTop: '16px', padding: '24px', background: 'rgba(24, 95, 165, 0.05)', borderRadius: '12px', border: '1px solid rgba(200, 225, 245, 0.5)', textAlign: 'center' }}>
-            <div className="text-secondary" style={{ fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>
+          <div className="p-6 bg-blue-50/20 dark:bg-blue-950/5 border border-blue-200/50 dark:border-blue-900/10 rounded-2xl text-center flex flex-col gap-2 animate-fadeIn">
+            <div className="text-xs text-[var(--text-muted)] font-semibold">
               {parseFloat(amount).toLocaleString()} {from} =
             </div>
-            <div className="text-primary-dark" style={{ fontSize: '42px', fontWeight: 800, color: '#185FA5', lineHeight: 1, letterSpacing: '-1px' }}>
-              {result.converted_amount?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontSize: '20px', fontWeight: 600, color: '#4a6080' }}>{to}</span>
+            <div className="text-3xl sm:text-4xl font-black text-[var(--color-primary-600)] dark:text-blue-400 font-heading">
+              {result.converted_amount?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-lg font-bold text-[var(--text-secondary)]">{to}</span>
             </div>
-            <div className="text-muted" style={{ fontSize: '12px', marginTop: '12px' }}>
-              Exchange Rate: 1 {from} = {result.rate?.toFixed(4)} {to}
+            <div className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-wider mt-3 flex items-center justify-center gap-1.5">
+              <IconTrendingUp size={12} className="text-emerald-500" /> Exchange Rate: 1 {from} = {result.rate?.toFixed(4)} {to}
             </div>
           </div>
         )}

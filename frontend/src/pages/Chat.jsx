@@ -1,169 +1,293 @@
-import { useState, useRef, useEffect } from 'react'; // Trigger Vite HMR
-import ReactMarkdown from 'react-markdown';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  IconSend, IconMessageChatbot, IconSparkles, IconPlus,
+  IconCompass, IconWallet, IconSun, IconMapPin, IconMap
+} from '@tabler/icons-react';
 import api from '../api/axios';
+import ChatSidebar from '../components/chat/ChatSidebar';
+import ChatMessage from '../components/chat/ChatMessage';
+import TripWizard from '../components/trips/TripWizard';
+
+const QUICK_PROMPTS = [
+  { label: '✨ Plan my next trip', query: 'Plan my next 5 day adventure to Japan' },
+  { label: '💰 Analyze my budget', query: 'Can I afford my current expenses and budget?' },
+  { label: '🌦 Check today\'s plan', query: 'What should I do today based on current weather?' },
+  { label: '📍 Suggest destinations', query: 'Suggest top beach destinations for my travel style' },
+  { label: '🗺 Improve itinerary', query: 'Move outdoor beach activity to evening slot' },
+];
 
 export default function Chat() {
+  const navigate = useNavigate();
+
+  const [sessions, setSessions] = useState([]);
+  const [activeSessionId, setActiveSessionId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const [showWizard, setShowWizard] = useState(false);
+  const [wizardDest, setWizardDest] = useState('');
+
   const messagesEndRef = useRef(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const token = localStorage.getItem('token');
+  const userStr = localStorage.getItem('user');
+  const user = userStr ? JSON.parse(userStr) : {};
+
+  let userId = user.id;
+  try {
+    if (!userId && token) {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      userId = payload.sub || payload.user_id || payload.id;
+    }
+  } catch (_) {}
+
+  // 1. Fetch User Sessions
+  const loadSessions = async () => {
+    try {
+      const res = await api.get('/api/chat/sessions');
+      const sessionList = res.data || [];
+      setSessions(sessionList);
+
+      if (sessionList.length > 0 && !activeSessionId) {
+        setActiveSessionId(sessionList[0].id);
+      }
+    } catch (_) {}
+  };
+
+  // 2. Fetch Messages for Active Session
+  const loadMessages = async (sessionId) => {
+    if (!sessionId) return;
+    try {
+      const res = await api.get(`/api/chat/sessions/${sessionId}/messages`);
+      setMessages(res.data || []);
+    } catch (_) {}
   };
 
   useEffect(() => {
-    scrollToBottom();
+    loadSessions();
+  }, []);
+
+  useEffect(() => {
+    if (activeSessionId) {
+      loadMessages(activeSessionId);
+    }
+  }, [activeSessionId]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
 
+  // Create New Session
+  const handleCreateNewSession = async () => {
+    try {
+      const res = await api.post('/api/chat/sessions', { title: 'New Travel Conversation' });
+      const newSession = res.data;
+      setSessions(prev => [newSession, ...prev]);
+      setActiveSessionId(newSession.id);
+      setMessages([]);
+    } catch (_) {}
+  };
+
+  // Delete Session
+  const handleDeleteSession = async (sessionId) => {
+    try {
+      await api.delete(`/api/chat/sessions/${sessionId}`);
+      setSessions(prev => prev.filter(s => s.id !== sessionId));
+      if (activeSessionId === sessionId) {
+        const remaining = sessions.filter(s => s.id !== sessionId);
+        if (remaining.length > 0) {
+          setActiveSessionId(remaining[0].id);
+        } else {
+          setActiveSessionId(null);
+          setMessages([]);
+        }
+      }
+    } catch (_) {}
+  };
+
+  // Action Card Triggers
+  const handleActionTrigger = (actionType, actionData) => {
+    if (actionType === 'create_itinerary') {
+      if (actionData?.destination) setWizardDest(actionData.destination);
+      setShowWizard(true);
+    } else if (actionType === 'update_itinerary') {
+      alert(`Schedule changes applied: ${JSON.stringify(actionData.changes || actionData)}`);
+    }
+  };
+
+  // Submit User Message
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!input.trim() || loading) return;
 
-    const userMsg = { role: 'user', content: input };
-    setMessages(prev => [...prev, userMsg]);
+    const userText = input.trim();
     setInput('');
+
+    // Optimistic UI insert
+    const tempUserMsg = { role: 'user', content: userText };
+    setMessages(prev => [...prev, tempUserMsg]);
     setLoading(true);
 
     try {
-      const res = await api.post('/api/chat/message', { message: userMsg.content });
-      setMessages(prev => [...prev, { role: 'assistant', content: res.data.response }]);
+      const res = await api.post('/api/chat/message', {
+        session_id: activeSessionId,
+        message: userText
+      });
+
+      const data = res.data;
+      if (data.session_id && data.session_id !== activeSessionId) {
+        setActiveSessionId(data.session_id);
+        loadSessions();
+      }
+
+      setMessages(prev => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: data.reply || data.response,
+          actions: data.actions || []
+        }
+      ]);
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' }]);
+      setMessages(prev => [
+        ...prev,
+        { role: 'assistant', content: 'Sorry, I encountered an error retrieving context. Please try again.' }
+      ]);
     }
     setLoading(false);
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 3rem)' }}>
-      
-      {/* Header */}
-      <div style={{ marginBottom: '1.5rem' }}>
-        <h1 className="text-primary-dark" style={{ margin: '0 0 4px', fontSize: '1.8rem', letterSpacing: '-0.5px' }}>
-          AI Travel Assistant
-        </h1>
-        <p className="text-secondary" style={{ margin: 0, fontSize: '14px' }}>
-          Ask me anything about your travel plans, destinations, or itineraries.
-        </p>
-      </div>
-
-      {/* Chat Area */}
-      <div className="glass-card" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        
-        {/* Messages List */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {messages.length === 0 && (
-            <div style={{ textAlign: 'center', color: '#5a7a9a', margin: 'auto', maxWidth: '400px' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💬</div>
-              <h3 className="text-primary-dark" style={{ margin: '0 0 8px', fontSize: '1.1rem' }}>Start a Conversation</h3>
-              <p style={{ margin: 0, fontSize: '0.9rem', lineHeight: 1.5 }}>
-                Ask for destination ideas, packing lists, or local customs for your next trip.
-              </p>
-            </div>
-          )}
-
-          {messages.map((msg, idx) => (
-            <div key={idx} style={{
-              display: 'flex',
-              justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start'
-            }}>
-              <div style={{
-                maxWidth: '75%',
-                padding: '12px 16px',
-                borderRadius: msg.role === 'user' ? '16px 16px 0 16px' : '16px 16px 16px 0',
-                background: msg.role === 'user' ? '#185FA5' : 'rgba(24, 95, 165, 0.1)',
-                color: msg.role === 'user' ? 'white' : '#1a2a3a',
-                fontSize: '14px',
-                lineHeight: 1.5,
-                boxShadow: msg.role === 'user' ? '0 4px 10px rgba(24, 95, 165, 0.2)' : 'none',
-              }}>
-                <ReactMarkdown
-                  components={{
-                    p: ({node, ...props}) => <p style={{margin: '0 0 0.5em 0', lastChild: {marginBottom: 0}}} {...props} />,
-                    a: ({node, ...props}) => <a style={{color: msg.role === 'user' ? '#eef6fd' : '#185FA5'}} {...props} />,
-                    ul: ({node, ...props}) => <ul style={{margin: '0 0 0.5em 0', paddingLeft: '1.5em'}} {...props} />,
-                    ol: ({node, ...props}) => <ol style={{margin: '0 0 0.5em 0', paddingLeft: '1.5em'}} {...props} />,
-                  }}
-                >
-                  {msg.content}
-                </ReactMarkdown>
-              </div>
-            </div>
-          ))}
-
-          {loading && (
-            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-              <div style={{
-                padding: '12px 16px',
-                borderRadius: '16px 16px 16px 0',
-                background: 'rgba(24, 95, 165, 0.1)',
-                color: '#4a6080',
-                fontSize: '14px',
-                display: 'flex',
-                gap: '4px'
-              }}>
-                <span className="typing-dot">.</span><span className="typing-dot">.</span><span className="typing-dot">.</span>
-              </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
+    <div className="flex flex-col h-[calc(100vh-3.5rem)] gap-4 pb-4">
+      {/* Top Header Bar matching Dashboard layout */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 glass-card p-4 rounded-2xl shrink-0">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--color-primary-600)] dark:text-blue-400">
+            <IconMessageChatbot size={16} /> AI Travel Assistant
+          </div>
+          <h1 className="text-xl font-bold font-heading text-[var(--text-primary)] mt-0.5">
+            Personal Conversational Companion
+          </h1>
         </div>
 
-        {/* Input Area */}
-        <div style={{ padding: '16px', borderTop: '1px solid rgba(200, 225, 245, 0.9)' }}>
-          <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '12px' }}>
+        <button
+          onClick={handleCreateNewSession}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--color-primary-600)] text-white hover:bg-blue-700 font-extrabold text-xs transition-all shadow-md shrink-0"
+        >
+          <IconPlus size={16} /> New Chat
+        </button>
+      </div>
+
+      {/* Main Chat Workspace Grid (Sidebar + Chat Area) */}
+      <div className="flex-1 flex flex-col lg:flex-row gap-4 overflow-hidden min-h-0">
+        {/* Chat Session Sidebar */}
+        <ChatSidebar
+          sessions={sessions}
+          activeSessionId={activeSessionId}
+          onSelectSession={setActiveSessionId}
+          onCreateNewSession={handleCreateNewSession}
+          onDeleteSession={handleDeleteSession}
+        />
+
+        {/* Chat Area Container */}
+        <div className="flex-1 glass-card flex flex-col overflow-hidden rounded-2xl border border-[var(--border-color)]">
+          {/* Message History Stream */}
+          <div className="flex-1 overflow-y-auto p-4 sm:p-5 custom-scrollbar">
+            {messages.length === 0 && (
+              <div className="m-auto text-center max-w-md flex flex-col items-center gap-3 py-12">
+                <div className="w-14 h-14 rounded-2xl bg-blue-500/10 text-[var(--color-primary-600)] dark:text-blue-400 border border-blue-500/20 flex items-center justify-center shadow-sm">
+                  <IconSparkles size={28} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold font-heading text-[var(--text-primary)]">
+                    Hello, {user.name?.split(' ')[0] || 'Traveler'} 👋
+                  </h3>
+                  <p className="text-xs text-[var(--text-muted)] mt-1 leading-relaxed">
+                    Ask me anything about destination ideas, active trip execution, weather advice, or budget tracking.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {messages.map((msg, idx) => (
+              <ChatMessage
+                key={idx}
+                message={msg}
+                onActionTrigger={handleActionTrigger}
+              />
+            ))}
+
+            {loading && (
+              <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-semibold py-2">
+                <IconSparkles className="animate-spin text-blue-500" size={16} />
+                <span>WanderWise AI is thinking...</span>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Quick Prompts Bar */}
+          <div className="px-4 py-2 border-t border-[var(--border-color)] bg-[var(--bg-app)]/50 flex items-center gap-1.5 overflow-x-auto custom-scrollbar shrink-0">
+            {QUICK_PROMPTS.map((qp, i) => (
+              <button
+                key={i}
+                onClick={() => setInput(qp.query)}
+                className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--color-primary-600)] dark:hover:text-blue-400 hover:border-blue-400 transition-all shrink-0 cursor-pointer"
+              >
+                {qp.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Message Input Box */}
+          <form onSubmit={handleSubmit} className="p-3 border-t border-[var(--border-color)] flex items-center gap-2 bg-[var(--bg-card)] shrink-0">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Message WanderWise AI..."
-              style={{
-                flex: 1,
-                padding: '14px 18px',
-                borderRadius: '24px',
-                border: '1px solid #c8dff0',
-                background: 'rgba(255,255,255,0.9)',
-                color: '#1a2a3a',
-                fontSize: '14px',
-                outline: 'none',
-                transition: 'all 0.2s ease'
-              }}
-              onFocus={e => {
-                e.target.style.border = '1px solid #185FA5';
-                e.target.style.boxShadow = '0 0 0 3px rgba(24, 95, 165, 0.15)';
-              }}
-              onBlur={e => {
-                e.target.style.border = '1px solid #c8dff0';
-                e.target.style.boxShadow = 'none';
-              }}
+              placeholder="Ask WanderWise AI anything about your trips, budget, or destinations..."
+              className="flex-1 px-4 py-2.5 bg-[var(--bg-app)] border border-[var(--border-color)] text-[var(--text-primary)] rounded-xl text-xs font-semibold focus:outline-none focus:border-[var(--color-primary-500)]"
             />
+
             <button
               type="submit"
-              disabled={loading || !input.trim()}
-              style={{
-                background: '#185FA5',
-                color: 'white',
-                border: 'none',
-                width: '48px',
-                height: '48px',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: loading || !input.trim() ? 'not-allowed' : 'pointer',
-                opacity: loading || !input.trim() ? 0.6 : 1,
-                transition: 'all 0.2s ease',
-                boxShadow: '0 4px 10px rgba(24, 95, 165, 0.2)'
-              }}
+              disabled={!input.trim() || loading}
+              className="px-4 py-2.5 rounded-xl bg-[var(--color-primary-600)] text-white hover:bg-blue-700 font-bold text-xs disabled:opacity-40 transition-all shadow-md flex items-center gap-1 shrink-0"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="22" y1="2" x2="11" y2="13"></line>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-              </svg>
+              <IconSend size={15} /> Send
             </button>
           </form>
         </div>
       </div>
+
+      {/* Collapsed Future AI Features Section */}
+      <details className="glass-card p-3 px-4 rounded-2xl text-xs text-[var(--text-muted)] cursor-pointer shrink-0">
+        <summary className="font-bold text-[var(--text-primary)] flex items-center gap-2 list-none">
+          <IconSparkles className="text-amber-400" size={16} />
+          <span>Upcoming Future AI Modules</span>
+        </summary>
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2 mt-2 border-t border-[var(--border-color)]">
+          <div className="p-2 rounded-xl bg-[var(--bg-app)] text-center text-[10px] font-bold">🔮 Crowd Prediction</div>
+          <div className="p-2 rounded-xl bg-[var(--bg-app)] text-center text-[10px] font-bold">✈️ Delay Predictor</div>
+          <div className="p-2 rounded-xl bg-[var(--bg-app)] text-center text-[10px] font-bold">🧳 AI Packing Helper</div>
+          <div className="p-2 rounded-xl bg-[var(--bg-app)] text-center text-[10px] font-bold">📖 Personal Memories</div>
+          <div className="p-2 rounded-xl bg-[var(--bg-app)] text-center text-[10px] font-bold">🎙️ Voice Travel Assistant</div>
+        </div>
+      </details>
+
+      {/* Trip Creation Wizard Modal Triggered by Action Cards */}
+      <TripWizard
+        userId={userId}
+        isOpen={showWizard}
+        onClose={() => setShowWizard(false)}
+        initialDestination={wizardDest}
+        onSuccess={() => {
+          setShowWizard(false);
+          navigate('/trips');
+        }}
+      />
     </div>
   );
 }

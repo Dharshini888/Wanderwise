@@ -1,52 +1,56 @@
 import { useState } from 'react';
+import {
+  IconShieldCheck,
+  IconSearch,
+  IconAlertCircle,
+  IconAlertTriangle,
+  IconPhone,
+  IconLoader,
+  IconShieldHalf,
+  IconInfoCircle,
+  IconBulb,
+} from '@tabler/icons-react';
 
 const API = 'http://localhost:8000/api';
 
-const RISK_COLORS = {
-  Low: '#16a34a', // green
-  Medium: '#d97706', // orange
-  High: '#dc2626', // red
-};
-
 function RiskDial({ label, score, size = 100, isOverall = false }) {
-  // Score is 0-100 (100 = 100% Risk / High Danger)
-  const safeColor = 'var(--success)';
-  const warnColor = 'var(--warning)';
-  const dangerColor = 'var(--danger)';
+  let color = 'text-emerald-500';
+  let bgColor = 'text-emerald-500';
+  if (score > 33) { color = 'text-amber-500'; bgColor = 'text-amber-500'; }
+  if (score > 66) { color = 'text-red-500'; bgColor = 'text-red-500'; }
+
+  const circumference = 2 * Math.PI * (size / 2 - 8);
+  const offset = circumference - (score / 100) * circumference;
   
-  let color = safeColor;
-  if (score > 33) color = warnColor;
-  if (score > 66) color = dangerColor;
-  
-  // Inverse color logic: High risk score = red
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-      <div style={{ 
-        width: size, 
-        height: size, 
-        borderRadius: '50%', 
-        background: `conic-gradient(${color} ${score}%, var(--card-border) ${score}%)`,
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        position: 'relative'
-      }}>
-        <div style={{ 
-          width: size - (isOverall ? 16 : 12), 
-          height: size - (isOverall ? 16 : 12), 
-          borderRadius: '50%', 
-          background: 'var(--card-bg)',
-          display: 'flex', 
-          flexDirection: 'column',
-          alignItems: 'center', 
-          justifyContent: 'center',
-        }}>
-          <span className="text-primary-dark" style={{ fontSize: isOverall ? '28px' : '18px', fontWeight: 800 }}>
+    <div className="flex flex-col items-center gap-2">
+      <div className="relative" style={{ width: size, height: size }}>
+        <svg width={size} height={size} className="transform -rotate-90">
+          <circle 
+            cx={size/2} cy={size/2} r={size/2-8} 
+            fill="none" 
+            stroke="var(--border-color)" 
+            strokeWidth={isOverall ? 8 : 6} 
+          />
+          <circle 
+            cx={size/2} cy={size/2} r={size/2-8} 
+            fill="none" 
+            stroke="currentColor"
+            className={bgColor}
+            strokeWidth={isOverall ? 8 : 6}
+            strokeDasharray={circumference}
+            strokeDashoffset={offset}
+            strokeLinecap="round"
+            style={{ transition: 'stroke-dashoffset 1s ease' }}
+          />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className={`font-black font-heading ${color} ${isOverall ? 'text-2xl' : 'text-base'}`}>
             {score}%
           </span>
         </div>
       </div>
-      <div className="label-text" style={{ fontSize: isOverall ? '13px' : '11px' }}>{label}</div>
+      <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{label}</div>
     </div>
   );
 }
@@ -73,114 +77,141 @@ export default function Safety() {
     setLoading(false);
   };
 
-  const inputStyle = { width: '100%', padding: '12px 16px', borderRadius: '10px', border: '1px solid #c8dff0', background: 'rgba(255,255,255,0.9)', color: '#1a2a3a', fontSize: '14px', outline: 'none', boxSizing: 'border-box' };
-
   return (
-    <div>
-      <div style={{ marginBottom: '2rem' }}>
-        <h1 className="text-primary-dark" style={{ margin: '0 0 4px', fontSize: '1.8rem', letterSpacing: '-0.5px' }}>🛡️ Safety Hub</h1>
-        <p className="text-secondary" style={{ margin: 0, fontSize: '14px' }}>Real-time risk scores, scam alerts, and emergency contacts.</p>
+    <div className="flex flex-col gap-6 pb-12">
+      
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-extrabold text-[var(--text-primary)] tracking-tight font-heading mb-1 flex items-center gap-2">
+          <IconShieldCheck className="text-emerald-500" size={32} /> Safety Hub
+        </h1>
+        <p className="text-sm text-[var(--text-muted)] font-medium">Real-time risk assessment, scam alerts, and emergency contacts.</p>
       </div>
 
-      <form onSubmit={fetchSafety} style={{ display: 'flex', gap: '12px', marginBottom: '2rem' }}>
-        <input style={inputStyle} value={destination} onChange={e => setDestination(e.target.value)} placeholder="Search destination (e.g. Paris, Brazil)..." />
-        <button type="submit" disabled={loading || !destination.trim()}
-          style={{ padding: '12px 24px', background: '#185FA5', border: 'none', borderRadius: '10px', color: 'white', fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading || !destination.trim() ? 0.7 : 1, boxShadow: '0 4px 10px rgba(24, 95, 165, 0.2)' }}>
-          {loading ? 'Checking...' : 'Check Safety'}
+      {/* Search */}
+      <form onSubmit={fetchSafety} className="glass-card p-4 flex gap-3 bg-[var(--bg-card)]">
+        <div className="relative flex-1">
+          <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--text-muted)]">
+            <IconSearch size={18} />
+          </span>
+          <input 
+            value={destination} 
+            onChange={e => setDestination(e.target.value)} 
+            placeholder="Check safety for: Paris, Brazil, Bangkok..." 
+            className="w-full pl-10 pr-4 py-3 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--color-primary-500)] focus:ring-2 focus:ring-[var(--color-primary-500)]/10"
+          />
+        </div>
+        <button 
+          type="submit" 
+          disabled={loading || !destination.trim()}
+          className="btn btn-primary px-6 font-semibold flex items-center gap-1.5 shadow-md shadow-blue-500/10 cursor-pointer disabled:opacity-50"
+        >
+          {loading ? <><IconLoader className="animate-spin" size={16} /> Checking...</> : 'Check Safety'}
         </button>
       </form>
 
-      {error && <div style={{ background: 'rgba(220, 38, 38, 0.1)', border: '1px solid rgba(220, 38, 38, 0.2)', borderRadius: '8px', padding: '12px', color: '#dc2626', marginBottom: '1.5rem', fontSize: '14px', fontWeight: 500 }}>⚠️ {error}</div>}
+      {error && (
+        <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-600 dark:text-red-400 text-sm font-semibold flex items-center gap-2">
+          <IconAlertCircle size={20} /> {error}
+        </div>
+      )}
 
       {safetyData && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fadeIn">
           
-          <div className="glass-card" style={{ padding: '24px', gridColumn: 'span 2', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(to right, rgba(220, 38, 38, 0.1), rgba(220, 38, 38, 0.05))', border: '1px solid rgba(220, 38, 38, 0.3)' }}>
+          {/* SOS Banner */}
+          <div className="glass-card p-6 lg:col-span-2 flex justify-between items-center bg-red-50/50 dark:bg-red-950/10 border border-red-200/50 dark:border-red-900/10 rounded-2xl">
             <div>
-              <h3 style={{ margin: '0 0 8px', fontSize: '18px', color: '#dc2626', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '24px' }}>🚨</span> Emergency SOS
+              <h3 className="text-base font-bold text-red-600 dark:text-red-400 font-heading flex items-center gap-2 mb-1">
+                <IconShieldHalf size={22} /> Emergency SOS
               </h3>
-              <p style={{ margin: 0, fontSize: '13px', color: '#7f1d1d' }}>Press and hold in case of an immediate life-threatening emergency.</p>
+              <p className="text-xs text-red-700/70 dark:text-red-300/60 font-medium">Press and hold for immediate life-threatening emergency alert.</p>
             </div>
             <button 
-              onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
+              onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.9)'}
               onMouseUp={(e) => {
                 e.currentTarget.style.transform = 'scale(1)';
                 alert("🚨 EMERGENCY SOS INITIATED! Contacting local authorities...");
               }}
               onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-              style={{
-                background: 'linear-gradient(135deg, #dc2626, #991b1b)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '50%',
-                width: '80px',
-                height: '80px',
-                fontSize: '24px',
-                fontWeight: 800,
-                cursor: 'pointer',
-                boxShadow: '0 8px 24px rgba(220, 38, 38, 0.4), inset 0 2px 4px rgba(255,255,255,0.3)',
-                transition: 'all 0.2s',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+              className="w-20 h-20 rounded-full bg-gradient-to-br from-red-500 to-red-700 text-white font-black text-lg shadow-lg shadow-red-500/30 cursor-pointer flex items-center justify-center transition-transform border-2 border-red-400/50"
             >
               SOS
             </button>
           </div>
 
-          <div className="glass-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <h3 className="text-primary-dark" style={{ margin: '0 0 24px', fontSize: '18px' }}>Risk Assessment</h3>
-            
-            <div style={{ display: 'flex', gap: '32px', marginBottom: '24px' }}>
-              <RiskDial label="Overall Risk" score={safetyData.overall_score || 0} size={140} isOverall={true} />
-            </div>
-
-            <div style={{ display: 'flex', gap: '24px', width: '100%', justifyContent: 'center' }}>
+          {/* Risk Assessment Dials */}
+          <div className="glass-card p-8 flex flex-col items-center gap-6 bg-[var(--bg-card)]">
+            <h3 className="text-sm font-bold text-[var(--text-muted)] uppercase tracking-wider">Risk Assessment</h3>
+            <RiskDial label="Overall Risk" score={safetyData.overall_score || 0} size={150} isOverall={true} />
+            <div className="flex gap-8 mt-2">
               <RiskDial label="Weather" score={safetyData.weather_risk || 0} size={80} />
               <RiskDial label="Crowd" score={safetyData.crowd_risk || 0} size={80} />
               <RiskDial label="Safety" score={safetyData.safety_risk || 0} size={80} />
             </div>
-            
-            <div style={{ marginTop: '24px', fontSize: '14px', fontWeight: 600, color: RISK_COLORS[safetyData.overall_risk] || 'var(--text-secondary)' }}>
+            <div className={`text-xs font-bold px-3 py-1 rounded-full mt-2 ${
+              safetyData.overall_risk === 'Low' ? 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400' :
+              safetyData.overall_risk === 'Medium' ? 'bg-amber-50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400' :
+              'bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400'
+            }`}>
               Status: {safetyData.overall_risk}
             </div>
           </div>
 
-          <div className="glass-card" style={{ padding: '24px' }}>
-            <h3 className="text-primary-dark" style={{ margin: '0 0 16px', fontSize: '16px' }}>Local Emergency Numbers</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          {/* Emergency Numbers */}
+          <div className="glass-card p-6 bg-[var(--bg-card)]">
+            <h3 className="text-sm font-bold text-[var(--text-muted)] uppercase tracking-wider mb-4 flex items-center gap-1.5">
+              <IconPhone size={16} className="text-red-500" /> Local Emergency Numbers
+            </h3>
+            <div className="grid grid-cols-2 gap-3">
               {[
                 { label: 'Police', val: safetyData.emergency_numbers.police, icon: '🚓' },
                 { label: 'Ambulance', val: safetyData.emergency_numbers.ambulance, icon: '🚑' },
                 { label: 'Fire', val: safetyData.emergency_numbers.fire, icon: '🚒' },
                 { label: 'General', val: safetyData.emergency_numbers.general, icon: '🚨' }
               ].map(({ label, val, icon }) => (
-                <div key={label} style={{ background: 'rgba(255,255,255,0.8)', border: '1px solid rgba(200, 225, 245, 0.5)', padding: '12px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <span style={{ fontSize: '20px' }}>{icon}</span>
+                <div key={label} className="bg-[var(--bg-app)] border border-[var(--border-color)] rounded-xl p-4 flex items-center gap-3">
+                  <span className="text-2xl">{icon}</span>
                   <div>
-                    <div className="label-text" style={{ fontSize: '10px', marginBottom: '2px' }}>{label}</div>
-                    <div className="text-primary-dark" style={{ fontWeight: 700, fontSize: '16px' }}>{val || '112'}</div>
+                    <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-0.5">{label}</div>
+                    <div className="text-lg font-black text-[var(--text-primary)] font-heading">{val || '112'}</div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="glass-card" style={{ padding: '24px', gridColumn: 'span 2' }}>
-            <h3 className="text-primary-dark" style={{ margin: '0 0 16px', fontSize: '16px' }}>Common Scams & Alerts</h3>
-            <ul style={{ margin: 0, paddingLeft: '20px', color: '#4a6080', fontSize: '14px', lineHeight: 1.6 }}>
-              {safetyData.common_scams.map((scam, i) => <li key={i} style={{ marginBottom: '8px' }}>{scam}</li>)}
-            </ul>
+          {/* Common Scams */}
+          <div className="glass-card p-6 lg:col-span-2 bg-[var(--bg-card)]">
+            <h3 className="text-sm font-bold text-[var(--text-muted)] uppercase tracking-wider mb-4 flex items-center gap-1.5">
+              <IconAlertTriangle size={16} className="text-amber-500" /> Common Scams & Alerts
+            </h3>
+            <div className="flex flex-col gap-2.5">
+              {safetyData.common_scams.map((scam, i) => (
+                <div key={i} className="flex items-start gap-3 bg-amber-50/30 dark:bg-amber-950/5 border border-amber-100/50 dark:border-amber-900/10 p-3.5 rounded-xl">
+                  <span className="text-amber-500 mt-0.5 flex-shrink-0"><IconAlertTriangle size={16} /></span>
+                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-medium">{scam}</p>
+                </div>
+              ))}
+            </div>
           </div>
           
-          <div className="glass-card" style={{ padding: '24px', gridColumn: 'span 2' }}>
-            <h3 className="text-primary-dark" style={{ margin: '0 0 16px', fontSize: '16px' }}>Recommended Actions</h3>
-            <ul style={{ margin: 0, paddingLeft: '20px', color: '#4a6080', fontSize: '14px', lineHeight: 1.6 }}>
-              {safetyData.recommended_actions?.map((adv, i) => <li key={i} style={{ marginBottom: '8px' }}>{adv}</li>)}
-            </ul>
-          </div>
+          {/* Recommended Actions */}
+          {safetyData.recommended_actions && (
+            <div className="glass-card p-6 lg:col-span-2 bg-[var(--bg-card)]">
+              <h3 className="text-sm font-bold text-[var(--text-muted)] uppercase tracking-wider mb-4 flex items-center gap-1.5">
+                <IconBulb size={16} className="text-blue-500" /> Recommended Actions
+              </h3>
+              <div className="flex flex-col gap-2.5">
+                {safetyData.recommended_actions.map((adv, i) => (
+                  <div key={i} className="flex items-start gap-3 bg-blue-50/30 dark:bg-blue-950/5 border border-blue-100/50 dark:border-blue-900/10 p-3.5 rounded-xl">
+                    <span className="text-blue-500 mt-0.5 flex-shrink-0"><IconInfoCircle size={16} /></span>
+                    <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-medium">{adv}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
         </div>
       )}

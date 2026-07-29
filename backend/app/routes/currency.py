@@ -1,8 +1,14 @@
 from fastapi import APIRouter, HTTPException
 import urllib.request
 import json
+from app.core.currencies import get_all_currencies, get_currency_info, load_currency_registry
 
 router = APIRouter(prefix="/api/currency", tags=["Currency"])
+
+@router.get("/registry")
+def get_currency_registry():
+    """Return dataset of 100+ world currencies for frontend dropdowns."""
+    return get_all_currencies()
 
 @router.get("/convert")
 def convert_currency(from_curr: str, to_curr: str, amount: float):
@@ -25,7 +31,7 @@ def convert_currency(from_curr: str, to_curr: str, amount: float):
             "rate": rate,
             "converted_amount": converted_amount
         }
-    except Exception as e:
+    except Exception:
         # Fallback offline mock rates
         fallback_rates = {"USD": 1.0, "EUR": 0.92, "GBP": 0.79, "INR": 83.0, "JPY": 150.0, "AUD": 1.5, "CAD": 1.3}
         f = from_curr.upper()

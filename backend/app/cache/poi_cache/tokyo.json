@@ -1,0 +1,170 @@
+{
+  "destination": "tokyo",
+  "version": "2.2",
+  "pois": [
+    {
+      "name": "Senso-ji Temple",
+      "category": "Sightseeing",
+      "address": "2 Chome-3-1 Asakusa, Taito City, Tokyo 111-0032",
+      "latitude": 35.7148,
+      "longitude": 139.7967,
+      "opening_time": "06:00 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "JPY",
+      "rating": 4.7,
+      "crowd": "High",
+      "description": "Walk through the iconic Kaminarimon Gate into Tokyo's oldest and most sacred Buddhist temple. Explore vibrant Nakamise shopping stalls, traditional incense burners, and magnificent five-story pagodas.",
+      "ai_reason": "\u2713 Best visited in the morning before crowds arrive\n\u2713 Free historic attraction within your budget\n\u2713 Only 400m from your breakfast spot\n\u2713 4.7\u2605 reviews with iconic architecture",
+      "tip": "Visit before 9:00 AM to enjoy peaceful photo opportunities before large tour groups arrive.",
+      "signature_dish": null,
+      "nearby": [
+        "Nakamise Shopping Street",
+        "Asakusa Shrine",
+        "Kaminarimon Gate"
+      ],
+      "source": "google_places",
+      "confidence": 0.99
+    },
+    {
+      "name": "Tokyo Skytree",
+      "category": "Observation Deck",
+      "address": "1 Chome-1-2 Oshiage, Sumida City, Tokyo 131-0045",
+      "latitude": 35.7101,
+      "longitude": 139.8107,
+      "opening_time": "10:00 AM",
+      "closing_time": "09:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 2100.0,
+      "currency": "JPY",
+      "rating": 4.6,
+      "crowd": "High",
+      "description": "Ascend 350 meters above ground to panoramic glass observation decks featuring 360-degree views of Mount Fuji and the expansive Tokyo skyline.",
+      "ai_reason": "\u2713 Iconic 360-degree panoramic skyline views\n\u2713 Fits JPY 2,100 ticket budget\n\u2713 High photo spot rating\n\u2713 Direct metro connection from Asakusa",
+      "tip": "Pre-book tickets online to skip the main entrance line during peak afternoon hours.",
+      "signature_dish": null,
+      "nearby": [
+        "Sumida Aquarium",
+        "Tokyo Solamachi",
+        "Planetarium Tenku"
+      ],
+      "source": "google_places",
+      "confidence": 0.98
+    },
+    {
+      "name": "Ichiran Ramen Asakusa",
+      "category": "Restaurant",
+      "address": "1 Chome-1-16 Asakusa, Taito City, Tokyo 111-0032",
+      "latitude": 35.7118,
+      "longitude": 139.7972,
+      "opening_time": "10:00 AM",
+      "closing_time": "11:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 1200.0,
+      "currency": "JPY",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Savor world-famous tonkotsu ramen served in private solo dining booths customized with your choice of noodle firmness, broth richness, and spicy red sauce.",
+      "ai_reason": "\u2713 Only 350m walk from Senso-ji Temple\n\u2713 Fits lunch timing (12:00 PM)\n\u2713 High rating for authentic Japanese ramen\n\u2713 Budget-friendly meal",
+      "tip": "Use the ticket vending machine at the entrance to select your meal before taking a booth seat.",
+      "signature_dish": "Classic Tonkotsu Ramen with Secret Spicy Red Sauce",
+      "nearby": [
+        "Asakusa Station",
+        "Kaminarimon Gate",
+        "Sumida River Walk"
+      ],
+      "source": "google_places",
+      "confidence": 0.97
+    },
+    {
+      "name": "Tokyo National Museum",
+      "category": "Museum",
+      "address": "13-9 Uenokoen, Taito City, Tokyo 110-8712",
+      "latitude": 35.7188,
+      "longitude": 139.7765,
+      "opening_time": "09:30 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 1000.0,
+      "currency": "JPY",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Explore Japan's oldest and largest art museum, holding comprehensive collections of ancient samurai armor, national treasure kimonos, and Buddhist statues.",
+      "ai_reason": "\u2713 Premier cultural institution in Ueno Park\n\u2713 Air-conditioned indoor gallery ideal for afternoon\n\u2713 Matches cultural interest\n\u2713 4.6\u2605 reviews",
+      "tip": "Check the Japanese Gallery (Honkan) first for samurai swords and ancient pottery.",
+      "signature_dish": null,
+      "nearby": [
+        "Ueno Park",
+        "National Museum of Nature and Science",
+        "Ueno Zoo"
+      ],
+      "source": "google_places",
+      "confidence": 0.98
+    },
+    {
+      "name": "Shibuya Sky",
+      "category": "Viewpoint",
+      "address": "2 Chome-24-12 Shibuya, Shibuya City, Tokyo 150-0002",
+      "latitude": 35.6585,
+      "longitude": 139.7013,
+      "opening_time": "10:00 AM",
+      "closing_time": "10:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 2000.0,
+      "currency": "JPY",
+      "rating": 4.8,
+      "crowd": "High",
+      "description": "Stand on an open-air rooftop sky deck 229 meters above Shibuya Crossing, offering stunning unobstructed sunset views of Tokyo and Mount Fuji.",
+      "ai_reason": "\u2713 Top-rated sunset spot (4.8\u2605)\n\u2713 Panoramic open-air glass rooftop\n\u2713 Excellent photography opportunities\n\u2713 Direct elevator from Shibuya Station",
+      "tip": "Book sunset time slots at least 2 weeks in advance as golden hour tickets sell out fast.",
+      "signature_dish": null,
+      "nearby": [
+        "Shibuya Crossing",
+        "Hachiko Statue",
+        "Shibuya Scramble Square"
+      ],
+      "source": "google_places",
+      "confidence": 0.99
+    }
+  ]
+}
