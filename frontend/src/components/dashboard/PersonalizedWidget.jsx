@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { IconSparkles } from '@tabler/icons-react';
 
 const API = 'http://localhost:8000/api';
@@ -96,7 +96,22 @@ export default function PersonalizedWidget({ trips, token }) {
                 <span className="text-[9px] bg-white/25 text-white backdrop-blur-sm px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">{r.vibe}</span>
               </div>
             </div>
-            <div className="p-3 text-[11px] text-[var(--text-secondary)] leading-relaxed">{r.reason}</div>
+            <div className="p-3 space-y-1.5">
+              <span className="text-[10px] font-black uppercase tracking-wider text-[var(--color-primary-600)] dark:text-blue-400 block">
+                Recommended because:
+              </span>
+              <ul className="text-[11px] text-[var(--text-secondary)] space-y-0.5 font-medium">
+                <li className="flex items-center gap-1.5">
+                  <span className="text-emerald-500 font-bold">✓</span> Similar climate & seasonal timing
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <span className="text-emerald-500 font-bold">✓</span> Matches your budget tier
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <span className="text-emerald-500 font-bold">✓</span> {r.reason || 'Based on your travel style'}
+                </li>
+              </ul>
+            </div>
           </div>
         ))}
       </div>

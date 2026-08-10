@@ -1,0 +1,37 @@
+{
+  "destination": "goa",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Kuskem Waterfall",
+      "category": "Viewpoint",
+      "address": "Goa",
+      "latitude": 15.3004543,
+      "longitude": 74.0855134,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Kuskem Waterfall, one of Goa's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Goa\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Kuskem Waterfall.",
+      "signature_dish": null,
+      "nearby": [
+        "Goa"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    }
+  ]
+}

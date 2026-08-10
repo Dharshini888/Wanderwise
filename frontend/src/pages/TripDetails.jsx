@@ -92,6 +92,34 @@ export default function TripDetails() {
     setGenerating(false);
   };
 
+  const handleLockToggle = async (dayNumber, activityId) => {
+    try {
+      await toggleActivityLock(tripId, activityId);
+      loadTripData();
+    } catch (_) {}
+  };
+
+  const handleDeleteActivity = async (dayNumber, activityId) => {
+    try {
+      await deleteActivity(tripId, activityId);
+      loadTripData();
+    } catch (_) {}
+  };
+
+  const handleRegenerateDay = async (dayNumber) => {
+    try {
+      await regenerateDay(tripId, dayNumber);
+      loadTripData();
+    } catch (_) {}
+  };
+
+  const handleAddActivity = async (dayNumber, activityData) => {
+    try {
+      await addCustomActivity(tripId, dayNumber, activityData);
+      loadTripData();
+    } catch (_) {}
+  };
+
   const scrollToTimeline = () => {
     if (timelineRef.current) {
       timelineRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -133,6 +161,13 @@ export default function TripDetails() {
 
         <div className="flex items-center gap-2">
           <Link
+            to={`/trips/${tripId}/live`}
+            state={{ origin: "Home City", destination: trip.destination, budget: trip.budget_limit || 50000 }}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-extrabold shadow-sm transition-all"
+          >
+            <IconMap size={16} /> Start Trip Session
+          </Link>
+          <Link
             to={`/expenses/${tripId}`}
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-sm transition-all"
           >
@@ -166,8 +201,18 @@ export default function TripDetails() {
             onResumeClick={scrollToTimeline}
           />
 
+          {/* Upcoming Trip Notice Banner */}
+          {(todayData?.is_upcoming_trip || (trip?.start_date && new Date().toISOString().split('T')[0] < String(trip.start_date).split('T')[0])) && (
+            <div className="p-4 rounded-2xl glass-card border border-blue-500/30 bg-blue-500/10 flex items-center gap-3 text-blue-300">
+              <IconCalendar size={22} className="text-blue-400 shrink-0" />
+              <p className="text-xs sm:text-sm font-semibold">
+                {todayData?.upcoming_notice || `Your trip begins on ${trip.start_date || 'the start date'}. Your itinerary is ready and will become active on the start date.`}
+              </p>
+            </div>
+          )}
+
           {/* Smart Weather Replanning Card */}
-          {todayData?.smart_recommendation && (
+          {todayData?.smart_recommendation && !todayData?.is_upcoming_trip && (
             <SmartReplanningCard recommendation={todayData.smart_recommendation} />
           )}
 
@@ -206,10 +251,16 @@ export default function TripDetails() {
               <div className="w-12 h-12 rounded-full bg-purple-500/10 text-purple-400 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
                 <IconMap size={28} />
               </div>
-              <p className="text-xs font-bold text-[var(--text-primary)]">Interactive Route Map</p>
-              <p className="text-[11px] text-[var(--text-muted)] mt-0.5 max-w-sm">
-                Route optimization & live GPS turn-by-turn navigation preview
+              <p className="text-xs font-bold text-[var(--text-primary)]">AI Smart Transit Assistant</p>
+              <p className="text-[11px] text-[var(--text-muted)] mt-0.5 max-w-sm mb-3">
+                Live maps, delay predictions, multimodal comparisons, and AI routing optimization
               </p>
+              <button 
+                onClick={() => navigate(`/trips/${tripId}/transit`)}
+                className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl flex items-center gap-2 transition-colors shadow-lg shadow-purple-500/20"
+              >
+                <IconMap size={14} /> Open AI Transit Map
+              </button>
             </div>
           </div>
         </>

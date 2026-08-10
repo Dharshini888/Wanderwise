@@ -56,14 +56,56 @@ class RuleRecommendationService:
             }
 
     @staticmethod
-    def compute_activity_status(start_time: str, end_time: str, is_completed: bool, now_dt: Optional[datetime] = None) -> Dict[str, Any]:
+    def compute_activity_status(
+        start_time: str,
+        end_time: str,
+        is_completed: bool,
+        now_dt: Optional[datetime] = None,
+        activity_date: Optional[date] = None,
+        trip_start_date: Optional[date] = None,
+        trip_end_date: Optional[date] = None
+    ) -> Dict[str, Any]:
         """
-        Determine activity status and live countdown.
-        Statuses: 'completed', 'current', 'upcoming', 'missed'
+        Determine activity status from trip dates and current date/time:
+        - If today < tripStartDate: status = 'upcoming' (🔵 Blue)
+        - If today > tripEndDate: status = 'completed' if is_completed else 'missed' (🔴 Red)
+        - Else (During trip):
+            - If is_completed: 'completed' (🟢 Green)
+            - Else if activity date/time > now: 'upcoming' (🔵 Blue)
+            - Else: 'pending' (🟡 Yellow) if today, or 'missed' (🔴 Red) if past day
         """
         if not now_dt:
             now_dt = datetime.now()
 
+        today = now_dt.date()
+
+        # 1. Before Trip Starts
+        if trip_start_date and today < trip_start_date:
+            return {
+                "status": "upcoming",
+                "badge": "Upcoming",
+                "color": "blue",
+                "countdown": f"Starts on {trip_start_date.strftime('%d %b %Y')}"
+            }
+
+        # 2. After Trip Ends
+        if trip_end_date and today > trip_end_date:
+            if is_completed:
+                return {
+                    "status": "completed",
+                    "badge": "Completed",
+                    "color": "emerald",
+                    "countdown": "Completed"
+                }
+            else:
+                return {
+                    "status": "missed",
+                    "badge": "Missed",
+                    "color": "rose",
+                    "countdown": "Trip ended"
+                }
+
+        # 3. During Trip
         if is_completed:
             return {
                 "status": "completed",
@@ -86,6 +128,22 @@ class RuleRecommendationService:
         st_mins = parse_mins(start_time, 9 * 60)
         end_mins = parse_mins(end_time, st_mins + 90)
 
+        if activity_date and activity_date > today:
+            return {
+                "status": "upcoming",
+                "badge": "Upcoming",
+                "color": "blue",
+                "countdown": f"Scheduled for {activity_date.strftime('%d %b')}"
+            }
+        elif activity_date and activity_date < today:
+            return {
+                "status": "missed",
+                "badge": "Missed",
+                "color": "rose",
+                "countdown": "Past day"
+            }
+
+        # Activity is for TODAY
         if st_mins <= cur_mins <= end_mins:
             mins_left = end_mins - cur_mins
             return {
@@ -96,10 +154,7 @@ class RuleRecommendationService:
             }
         elif cur_mins < st_mins:
             mins_start = st_mins - cur_mins
-            if mins_start <= 60:
-                countdown_text = f"Starts in {mins_start} mins"
-            else:
-                countdown_text = f"Starts at {start_time or '09:00'}"
+            countdown_text = f"Starts in {mins_start} mins" if mins_start <= 60 else f"Starts at {start_time or '09:00'}"
             return {
                 "status": "upcoming",
                 "badge": "Upcoming",
@@ -108,10 +163,10 @@ class RuleRecommendationService:
             }
         else:
             return {
-                "status": "missed",
-                "badge": "Overdue",
-                "color": "rose",
-                "countdown": "Time passed"
+                "status": "pending",
+                "badge": "Pending",
+                "color": "amber",
+                "countdown": "Pending completion"
             }
 
     @staticmethod

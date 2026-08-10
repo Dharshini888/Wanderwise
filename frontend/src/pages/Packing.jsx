@@ -1,223 +1,820 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   IconBackpack,
-  IconPlus,
-  IconLoader,
-  IconAlertCircle,
-  IconCheck,
+  IconLuggage,
   IconShirt,
-  IconFileText,
+  IconSpray,
   IconDeviceLaptop,
   IconPill,
-  IconMapPin,
-  IconCircle,
+  IconFileText,
+  IconCoin,
+  IconCheck,
+  IconPlus,
+  IconTrash,
+  IconLoader,
+  IconSparkles,
+  IconSun,
+  IconCloudRain,
+  IconSnowflake,
+  IconFlame,
+  IconPrinter,
+  IconShare,
+  IconBookmark,
+  IconCompass,
+  IconBriefcase,
+  IconInfoCircle,
+  IconScale,
+  IconCalendar,
+  IconPencil,
+  IconAlertCircle,
+  IconRefresh,
+  IconDeviceMobile,
+  IconDatabase,
+  IconWorld
 } from '@tabler/icons-react';
 
 const API = 'http://localhost:8000/api';
-const STORAGE_KEY = 'ww_packing_checks';
+const STORAGE_KEY = 'ww_packing_checks_db_only';
 
 export default function Packing() {
-  const [form, setForm] = useState({ destination: '', duration: '3', travel_type: 'leisure', weather: '' });
+  const [activeOption, setActiveOption] = useState('db'); // 'db' or 'custom'
+  const [dbTrips, setDbTrips] = useState([]);
+  const [selectedTripId, setSelectedTripId] = useState(null);
+  const [fetchingTrips, setFetchingTrips] = useState(true);
+
+  // Form State for Custom Option
+  const [customForm, setCustomForm] = useState({
+    destination: '',
+    duration: '3',
+    travel_type: 'Leisure',
+    weather: 'Mild',
+    season: 'Spring',
+    travelers: 'Solo'
+  });
+
   const [checklist, setChecklist] = useState(null);
-  const [checked, setChecked] = useState({});
+  const [whyRationale, setWhyRationale] = useState([]);
+  const [dailyTimeline, setDailyTimeline] = useState([]);
+  const [checkedItems, setCheckedItems] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [shareCopied, setShareCopied] = useState(false);
 
+  // 1. Fetch Real Database Trips on Mount
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) setChecked(JSON.parse(saved));
+    fetchDatabaseTrips();
+    const savedChecks = localStorage.getItem(STORAGE_KEY);
+    if (savedChecks) setCheckedItems(JSON.parse(savedChecks));
   }, []);
 
-  const saveChecks = (newChecked) => {
-    setChecked(newChecked);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(newChecked));
-  };
-
-  const toggleItem = (cat, item) => {
-    const key = `${cat}:${item}`;
-    saveChecks({ ...checked, [key]: !checked[key] });
-  };
-
-  const handleGenerate = async (e) => {
-    e.preventDefault();
-    setLoading(true); setError(''); setChecklist(null);
-    const token = localStorage.getItem('token');
+  const fetchDatabaseTrips = async () => {
+    setFetchingTrips(true);
     try {
-      const res = await fetch(`${API}/packing/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ ...form, duration: parseInt(form.duration) }),
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API}/trips`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
-      const data = await res.json();
-      if (res.ok) setChecklist(data.checklist);
-      else setError(data.detail || 'Failed to generate packing list');
-    } catch (_) { setError('Network error'); }
+
+      if (res.ok) {
+        const data = await res.json();
+        const tripsList = Array.isArray(data) ? data : (data.trips || data.items || []);
+        setDbTrips(tripsList);
+        if (tripsList.length > 0) {
+          setSelectedTripId(tripsList[0].id);
+          generateListFromDbTrip(tripsList[0]);
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching database trips:', err);
+    } finally {
+      setFetchingTrips(false);
+    }
+  };
+
+  const saveChecks = (updated) => {
+    setCheckedItems(updated);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  };
+
+  const toggleCheck = (category, item) => {
+    const key = `${category}:${item}`;
+    saveChecks({ ...checkedItems, [key]: !checkedItems[key] });
+  };
+
+  const handleMarkAllPacked = () => {
+    if (!checklist) return;
+    const updated = { ...checkedItems };
+    Object.entries(checklist).forEach(([cat, items]) => {
+      items.forEach((item) => {
+        updated[`${cat}:${item}`] = true;
+      });
+    });
+    saveChecks(updated);
+  };
+
+  // Parse Database Trip Object & Generate Packing Checklist strictly from DB data
+  const generateListFromDbTrip = (trip) => {
+    if (!trip) return;
+
+    setLoading(true);
+    setError('');
+
+    const dest = trip.destination || trip.title || 'Your Trip';
+    
+    // Calculate days count from dates or days property
+    let daysCount = 3;
+    if (trip.start_date && trip.end_date) {
+      const st = new Date(trip.start_date);
+      const en = new Date(trip.end_date);
+      const diff = Math.max(1, Math.ceil((en - st) / (1000 * 60 * 60 * 24)) + 1);
+      daysCount = isNaN(diff) ? 3 : diff;
+    } else if (trip.days || trip.days_count) {
+      daysCount = trip.days || trip.days_count;
+    }
+
+    const travelStyle = (trip.travel_style || trip.group_type || 'Leisure').toLowerCase();
+
+    // Extract all itinerary days & activities from DB
+    const itDays = trip.itinerary_days || trip.days || [];
+    const dbActivities = [];
+    const timelineData = [];
+
+    itDays.forEach((day, dIdx) => {
+      const dayNum = day.day_number || dIdx + 1;
+      const dayTitle = day.title || `Day ${dayNum}: Explore ${dest}`;
+      const dayItems = [];
+
+      const acts = day.activities || [];
+      acts.forEach((act) => {
+        const title = act.title || act.place_name || (act.place && act.place.name) || '';
+        const desc = act.description || '';
+        const cat = (act.place && act.place.category) || '';
+        const combined = `${title} ${desc} ${cat}`.toLowerCase();
+
+        dbActivities.push(combined);
+        if (title) dayItems.push(title);
+      });
+
+      timelineData.push({
+        day: dayNum,
+        title: dayTitle,
+        items: dayItems.length > 0 ? dayItems : [`Explore ${dest}`]
+      });
+    });
+
+    const allDbText = dbActivities.join(' ');
+    const rationales = [];
+
+    // Base Clothing
+    const clothes = [
+      `${daysCount} T-shirts / Tops`,
+      `${Math.max(2, Math.floor(daysCount / 2))} Pairs of Pants / Shorts`,
+      `${daysCount} Pairs of Underwear`,
+      `${daysCount} Pairs of Socks`,
+      'Comfortable Walking Shoes',
+      'Sleepwear'
+    ];
+
+    // Base Toiletries
+    const toiletries = [
+      'Toothbrush & Toothpaste',
+      'Shampoo & Body Wash',
+      'Face Wash & Moisturizer',
+      'Sunscreen (SPF 50+)',
+      'Comb & Deodorant'
+    ];
+
+    // Base Electronics
+    const electronics = [
+      'Smartphone & Charger',
+      'Power Bank (10,000mAh+)',
+      'Universal Travel Adapter',
+      'Earphones / Headphones'
+    ];
+
+    // Base Medical
+    const medical = [
+      'Personal Prescription Medicines',
+      'Pain Relief Tablets',
+      'Bandages & First Aid Kit',
+      'Hand Sanitizer'
+    ];
+
+    // Base Documents
+    const docs = [
+      'Govt Photo ID / Passport',
+      'Hotel Booking Confirmations',
+      'Travel Insurance Copy'
+    ];
+
+    // Base Money
+    const money = [
+      'Local Cash',
+      'Credit / Debit Card',
+      'Digital Wallet Setup'
+    ];
+
+    // Base Accessories
+    const accessories = [
+      'Reusable Water Bottle',
+      'Compact Travel Umbrella',
+      'Luggage Locks',
+      'Daypack / Tote Bag'
+    ];
+
+    // DB Activity-Specific Intelligence Rules
+
+    // Temple / Sacred Places
+    if (allDbText.includes('temple') || allDbText.includes('worship') || allDbText.includes('church') || allDbText.includes('monastery') || allDbText.includes('mosque')) {
+      clothes.push('Modest Shoulder/Knee Attire', 'Light Shawl / Sarong');
+      rationales.push({ item: 'Modest Attire & Shawl', reason: `Because DB itinerary contains temple/sacred site visits in ${dest}.` });
+    }
+
+    // Beach / Swimming
+    if (allDbText.includes('beach') || allDbText.includes('swim') || allDbText.includes('ocean') || allDbText.includes('sea') || allDbText.includes('surf') || travelStyle.includes('beach')) {
+      clothes.push('Swimwear', 'Beach Sandals / Flip Flops');
+      accessories.push('Beach Towel', 'Waterproof Phone Pouch');
+      rationales.push({ item: 'Swimwear & Waterproof Pouch', reason: `Because DB itinerary features beach and water activities.` });
+    }
+
+    // Hiking / Mountains
+    if (allDbText.includes('hike') || allDbText.includes('trek') || allDbText.includes('mountain') || allDbText.includes('hill') || allDbText.includes('peak') || allDbText.includes('trail')) {
+      accessories.push('Sturdy Hiking Shoes', 'Trekking Backpack', 'Flashlight', 'Energy Bars');
+      rationales.push({ item: 'Trekking Shoes & Backpack', reason: `Because DB itinerary includes mountain trails and hiking activities.` });
+    }
+
+    // Snow / Cold
+    if (allDbText.includes('ski') || allDbText.includes('snow') || allDbText.includes('ice') || travelStyle.includes('winter')) {
+      clothes.push('Heavy Thermal Jacket', 'Thermal Base Layers', 'Snow Boots', 'Gloves & Beanie');
+      rationales.push({ item: 'Heavy Jacket & Snow Boots', reason: `Because DB itinerary includes alpine/winter snow activities.` });
+    }
+
+    // Business
+    if (allDbText.includes('business') || allDbText.includes('meeting') || allDbText.includes('conference') || travelStyle.includes('business')) {
+      clothes.push('Formal Blazer / Suit', 'Dress Shoes');
+      electronics.push('Laptop & Charger', 'Business Cards & Notebook');
+      rationales.push({ item: 'Formal Suit & Laptop Charger', reason: `Because DB itinerary includes professional business engagements.` });
+    }
+
+    // Flight / Airport
+    if (allDbText.includes('flight') || allDbText.includes('airport') || allDbText.includes('fly')) {
+      docs.push('Flight Boarding Pass', 'Passport');
+      accessories.push('Travel Neck Pillow');
+      rationales.push({ item: 'Flight Neck Pillow & Passport', reason: `Because DB itinerary specifies flight transport.` });
+    }
+
+    // Train
+    if (allDbText.includes('train') || allDbText.includes('rail') || allDbText.includes('metro') || allDbText.includes('station')) {
+      docs.push('Offline Transit Pass');
+      accessories.push('Transit Snacks');
+      rationales.push({ item: 'Transit Pass & Snacks', reason: `Because DB itinerary specifies rail/train transit.` });
+    }
+
+    const compiledChecklist = {
+      'Clothing': Array.from(new Set(clothes)),
+      'Toiletries': Array.from(new Set(toiletries)),
+      'Electronics': Array.from(new Set(electronics)),
+      'Medical Essentials': Array.from(new Set(medical)),
+      'Travel Documents': Array.from(new Set(docs)),
+      'Money & Payments': Array.from(new Set(money)),
+      'Accessories & Gear': Array.from(new Set(accessories))
+    };
+
+    setChecklist(compiledChecklist);
+    setWhyRationale(rationales);
+    setDailyTimeline(timelineData);
     setLoading(false);
   };
 
-  const CATEGORY_ICONS = {
-    'Clothing': <IconShirt size={20} className="text-blue-500" />,
-    'Documents': <IconFileText size={20} className="text-cyan-500" />,
-    'Electronics': <IconDeviceLaptop size={20} className="text-amber-500" />,
-    'Health & Hygiene': <IconPill size={20} className="text-emerald-500" />,
-    'Accessories': <IconBackpack size={20} className="text-purple-500" />,
-    'Destination Specific': <IconMapPin size={20} className="text-red-500" />,
-    'Raw': <IconFileText size={20} className="text-slate-500" />,
+  // Generate Custom List using actual backend API
+  const generateCustomList = async () => {
+    if (!customForm.destination.trim()) {
+      setError('Please enter a destination.');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch(`${API}/packing/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          destination: customForm.destination,
+          duration: parseInt(customForm.duration) || 3,
+          travel_type: customForm.travel_type,
+          weather: customForm.weather
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setChecklist(data.checklist || {});
+        setWhyRationale([{ item: 'Custom Checklist', reason: `Generated specifically for ${customForm.destination} (${customForm.duration} days, ${customForm.travel_type}).` }]);
+        setDailyTimeline([]);
+      } else {
+        setError("Failed to generate packing list");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Failed to generate packing list");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const CATEGORY_COLORS = {
-    'Clothing': 'text-blue-600 border-blue-200 bg-blue-50/20 dark:bg-blue-950/20 dark:border-blue-900',
-    'Documents': 'text-cyan-600 border-cyan-200 bg-cyan-50/20 dark:bg-cyan-950/20 dark:border-cyan-900',
-    'Electronics': 'text-amber-600 border-amber-200 bg-amber-50/20 dark:bg-amber-950/20 dark:border-amber-900',
-    'Health & Hygiene': 'text-emerald-600 border-emerald-200 bg-emerald-50/20 dark:bg-emerald-950/20 dark:border-emerald-900',
-    'Accessories': 'text-purple-600 border-purple-200 bg-purple-50/20 dark:bg-purple-950/20 dark:border-purple-900',
-    'Destination Specific': 'text-red-600 border-red-200 bg-red-50/20 dark:bg-red-950/20 dark:border-red-900',
+  const handleSelectDbTrip = (trip) => {
+    setSelectedTripId(trip.id);
+    generateListFromDbTrip(trip);
   };
 
-  const totalItems = checklist ? Object.values(checklist).flat().length : 0;
-  const checkedCount = Object.values(checked).filter(Boolean).length;
+  // Calculate Packing Readiness Metrics
+  const calculateMetrics = () => {
+    if (!checklist) return { percentage: 0, missing: [], overpacked: [], suggestions: [] };
+    let total = 0;
+    let packed = 0;
+    const missing = [];
+
+    Object.entries(checklist).forEach(([cat, items]) => {
+      items.forEach((item) => {
+        total++;
+        const isChecked = !!checkedItems[`${cat}:${item}`];
+        if (isChecked) {
+          packed++;
+        } else if (item.includes('ID') || item.includes('Passport') || item.includes('Power Bank') || item.includes('Insurance') || item.includes('Medicines')) {
+          missing.push(item);
+        }
+      });
+    });
+
+    const percentage = total > 0 ? Math.round((packed / total) * 100) : 0;
+    const overpacked = ['Duplicate Heavy Jackets', 'Excess Shoes'];
+    const suggestions = [
+      'Pack medicines and power bank in cabin bag.',
+      'Use packing cubes to compress clothing.',
+      'Keep digital copies of photo IDs offline.'
+    ];
+
+    return { percentage, packed, total, missing, overpacked, suggestions };
+  };
+
+  const metrics = calculateMetrics();
+  const currentDbTrip = dbTrips.find((t) => t.id === selectedTripId);
+  const daysVal = activeOption === 'db' && currentDbTrip ? (currentDbTrip.days || 3) : (parseInt(customForm.duration) || 3);
+  const estCarryOnWeight = (3.0 + daysVal * 0.3).toFixed(1);
+  const estCheckedWeight = (7.0 + daysVal * 1.0).toFixed(1);
+
+  const handleShare = () => {
+    if (!checklist) return;
+    const activeName = activeOption === 'db' && currentDbTrip ? currentDbTrip.destination : customForm.destination;
+    const summary = `🎒 WanderWise Packing Checklist for ${activeName}:\n\n` +
+      Object.entries(checklist)
+        .map(([cat, items]) => `*${cat}*:\n` + items.map((i) => ` - ${i}`).join('\n'))
+        .join('\n\n');
+
+    navigator.clipboard.writeText(summary);
+    setShareCopied(true);
+    setTimeout(() => setShareCopied(false), 3000);
+  };
 
   return (
-    <div className="flex flex-col gap-6 pb-12">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto min-h-screen pb-24 text-[var(--text-primary)]">
       
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-extrabold text-[var(--text-primary)] tracking-tight font-heading mb-1 flex items-center gap-2">
-          <IconBackpack className="text-[var(--color-primary-600)]" size={32} /> Packing Assistant
-        </h1>
-        <p className="text-sm text-[var(--text-muted)] font-medium">Smart lists generated by AI based on travel duration, weather, and type.</p>
+      {/* Page Header */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-gradient-to-r from-blue-600 to-teal-500 rounded-2xl text-white shadow-lg shadow-teal-500/20">
+            <IconBackpack size={32} />
+          </div>
+          <div>
+            <h1 className="text-3xl font-black tracking-tight font-heading flex items-center gap-2">
+              🎒 AI Packing Assistant & Database Itinerary Balancer
+            </h1>
+            <p className="text-xs text-[var(--text-muted)] mt-1 max-w-2xl font-medium">
+              Smart packing checklists generated directly from your saved database trips and planned itinerary activities.
+            </p>
+          </div>
+        </div>
       </div>
 
-      {/* Generator Form */}
-      <form className="glass-card p-6 bg-[var(--bg-card)] max-w-2xl w-full" onSubmit={handleGenerate}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="sm:col-span-2">
-            <label className="block mb-1 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Destination</label>
-            <input 
-              className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--color-primary-500)]" 
-              value={form.destination} 
-              onChange={e => setForm(f => ({ ...f, destination: e.target.value }))} 
-              placeholder="e.g. Kyoto, Japan" 
-              required 
-            />
-          </div>
-          <div>
-            <label className="block mb-1 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Duration (Days)</label>
-            <input 
-              className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-sm focus:outline-none" 
-              type="number" 
-              min="1" 
-              max="60" 
-              value={form.duration} 
-              onChange={e => setForm(f => ({ ...f, duration: e.target.value }))} 
-            />
-          </div>
-          <div>
-            <label className="block mb-1 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Travel Type</label>
-            <select 
-              className="w-full px-3 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-sm focus:outline-none cursor-pointer"
-              value={form.travel_type} 
-              onChange={e => setForm(f => ({ ...f, travel_type: e.target.value }))}
-            >
-              {['leisure', 'adventure', 'business', 'beach', 'trekking', 'family'].map(t => (
-                <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>
-              ))}
-            </select>
-          </div>
-          <div className="sm:col-span-2">
-            <label className="block mb-1 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Expected Weather <span className="font-normal normal-case opacity-70">(optional)</span></label>
-            <input 
-              className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-sm focus:outline-none" 
-              value={form.weather} 
-              onChange={e => setForm(f => ({ ...f, weather: e.target.value }))} 
-              placeholder="e.g. cold and rainy, hot and humid, sunny" 
-            />
-          </div>
+      {/* Top Generator Mode Selection: 🧳 Generate Packing List from My Trip */}
+      <div className="glass-card p-6 rounded-3xl mb-8 border border-teal-500/30 bg-gradient-to-r from-blue-900/30 via-teal-900/20 to-purple-900/30 shadow-xl">
+        <div className="text-xs font-extrabold uppercase text-teal-400 tracking-wider mb-3 flex items-center gap-2">
+          <IconDatabase size={16} /> Generate Packing List from My Saved Database Trips
         </div>
-        <button 
-          type="submit" 
-          disabled={loading}
-          className="btn btn-primary w-full py-3.5 mt-6 text-sm font-semibold flex items-center justify-center gap-2 shadow-md shadow-blue-500/10 cursor-pointer disabled:opacity-50"
-        >
-          {loading ? (
-            <>
-              <IconLoader className="animate-spin" size={18} />
-              <span>AI is planning packing list...</span>
-            </>
-          ) : (
-            <>
-              <IconPlus size={18} />
-              <span>Generate Smart Packing List</span>
-            </>
-          )}
-        </button>
-      </form>
 
-      {error && (
-        <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-600 dark:text-red-400 text-sm font-semibold flex items-center gap-2 max-w-2xl">
-          <IconAlertCircle size={20} />
-          <span>{error}</span>
+        {/* Tab Selection */}
+        <div className="flex gap-3 border-b border-teal-500/20 pb-4 mb-6">
+          <button
+            onClick={() => setActiveOption('db')}
+            className={`px-5 py-2.5 rounded-2xl text-xs font-black transition-all flex items-center gap-2 cursor-pointer ${
+              activeOption === 'db'
+                ? 'bg-teal-600 text-white shadow-lg shadow-teal-600/30'
+                : 'bg-[var(--bg-glass)] text-[var(--text-muted)] hover:text-white border border-[var(--border-color)]'
+            }`}
+          >
+            <IconDatabase size={18} /> Option 1: 📅 Use My Database Saved Itinerary ({dbTrips.length})
+          </button>
+
+          <button
+            onClick={() => setActiveOption('custom')}
+            className={`px-5 py-2.5 rounded-2xl text-xs font-black transition-all flex items-center gap-2 cursor-pointer ${
+              activeOption === 'custom'
+                ? 'bg-teal-600 text-white shadow-lg shadow-teal-600/30'
+                : 'bg-[var(--bg-glass)] text-[var(--text-muted)] hover:text-white border border-[var(--border-color)]'
+            }`}
+          >
+            <IconPencil size={18} /> Option 2: ✍️ Create Custom Packing List
+          </button>
         </div>
-      )}
 
-      {checklist && (
-        <div className="flex flex-col gap-6 animate-fadeIn max-w-3xl">
-          
-          {/* Packing Progress Card */}
-          <div className="glass-card p-6 bg-[var(--bg-card)]">
-            <div className="flex justify-between items-center text-xs font-bold mb-2">
-              <span className="text-[var(--text-muted)] uppercase tracking-wider">Packing Progress</span>
-              <span className="text-[var(--text-primary)]">
-                {checkedCount}/{totalItems} items packed
-              </span>
-            </div>
-            <div className="bg-[var(--bg-app)] border border-[var(--border-color)] rounded-full h-3 overflow-hidden">
-              <div 
-                className="bg-emerald-500 h-full rounded-full transition-all duration-300"
-                style={{ width: `${totalItems > 0 ? (checkedCount / totalItems) * 100 : 0}%` }}
+        {/* Option 1: Database Trips Grid */}
+        {activeOption === 'db' && (
+          <div>
+            {fetchingTrips ? (
+              <div className="flex flex-col items-center justify-center py-12 text-teal-400">
+                <IconLoader size={36} className="animate-spin mb-2" />
+                <span className="text-xs font-bold">Loading Your Database Itineraries...</span>
+              </div>
+            ) : dbTrips.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {dbTrips.map((it) => {
+                  const isSelected = selectedTripId === it.id;
+                  const stDate = it.start_date ? new Date(it.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+                  const enDate = it.end_date ? new Date(it.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+                  const datesStr = stDate && enDate ? `${stDate} - ${enDate}` : (it.start_date || 'Upcoming');
+
+                  return (
+                    <div
+                      key={it.id}
+                      onClick={() => handleSelectDbTrip(it)}
+                      className={`p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
+                        isSelected
+                          ? 'bg-teal-950/40 border-teal-400 ring-2 ring-teal-500/40 shadow-xl'
+                          : 'bg-[var(--bg-glass)] border-[var(--border-color)] hover:border-teal-500/40'
+                      }`}
+                    >
+                      <div>
+                        <div className="flex justify-between items-start">
+                          <h4 className="text-sm font-black text-white font-heading">{it.destination || it.title}</h4>
+                          <span className="text-[10px] bg-teal-900/50 text-teal-300 px-2.5 py-1 rounded-md font-extrabold border border-teal-500/30">
+                            {it.days || it.days_count || 3} Days
+                          </span>
+                        </div>
+
+                        <div className="text-[11px] text-[var(--text-muted)] mt-1.5 font-semibold">
+                          📅 {datesStr}
+                        </div>
+
+                        <div className="flex items-center gap-2 mt-2">
+                          <span className="text-[10px] bg-purple-900/40 text-purple-300 px-2 py-0.5 rounded font-bold uppercase border border-purple-500/20">
+                            {it.travel_style || it.group_type || 'Trip'}
+                          </span>
+                          {it.budget && (
+                            <span className="text-[10px] bg-emerald-900/40 text-emerald-300 px-2 py-0.5 rounded font-bold border border-emerald-500/20">
+                              {it.currency || 'USD'} {it.budget}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSelectDbTrip(it);
+                        }}
+                        className={`w-full py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 ${
+                          isSelected
+                            ? 'bg-teal-500 text-white shadow-md shadow-teal-500/30'
+                            : 'bg-teal-900/30 text-teal-200 hover:bg-teal-800/50'
+                        }`}
+                      >
+                        <IconLuggage size={16} /> Generate Packing List
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="p-8 rounded-2xl bg-[var(--bg-glass)] border border-[var(--border-color)] text-center space-y-3">
+                <IconDatabase size={40} className="mx-auto text-teal-400 opacity-60" />
+                <div className="text-sm font-bold text-white">No saved trips found in your database yet.</div>
+                <p className="text-xs text-[var(--text-muted)] max-w-md mx-auto">
+                  Create a new trip in the Smart Trip Planner or switch to Option 2 below to generate a custom packing list.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Option 2: Custom Form */}
+        {activeOption === 'custom' && (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              generateCustomList();
+            }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          >
+            <div>
+              <label className="block text-[10px] font-bold uppercase text-[var(--text-muted)] mb-1">Destination</label>
+              <input
+                type="text"
+                value={customForm.destination}
+                onChange={(e) => setCustomForm({ ...customForm, destination: e.target.value })}
+                placeholder="Enter city or country"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-glass)] text-xs font-bold text-white outline-none focus:border-teal-400"
               />
             </div>
+
+            <div>
+              <label className="block text-[10px] font-bold uppercase text-[var(--text-muted)] mb-1">Duration (Days)</label>
+              <input
+                type="number"
+                value={customForm.duration}
+                onChange={(e) => setCustomForm({ ...customForm, duration: e.target.value })}
+                placeholder="Number of days"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-glass)] text-xs font-bold text-white outline-none focus:border-teal-400"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-bold uppercase text-[var(--text-muted)] mb-1">Travel Style</label>
+              <select
+                value={customForm.travel_type}
+                onChange={(e) => setCustomForm({ ...customForm, travel_type: e.target.value })}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-glass)] text-xs font-bold text-white outline-none cursor-pointer"
+              >
+                {['Leisure', 'Business', 'Adventure', 'Backpacking', 'Family Vacation', 'Honeymoon', 'Beach Holiday', 'Trekking', 'Winter Vacation', 'Camping'].map((t) => (
+                  <option key={t} value={t} className="bg-[var(--bg-card)] text-white">{t}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-bold uppercase text-[var(--text-muted)] mb-1">Expected Weather</label>
+              <input
+                type="text"
+                value={customForm.weather}
+                onChange={(e) => setCustomForm({ ...customForm, weather: e.target.value })}
+                placeholder="e.g. cold, hot, rainy, sunny"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-glass)] text-xs font-bold text-white outline-none focus:border-teal-400"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-bold uppercase text-[var(--text-muted)] mb-1">Season</label>
+              <select
+                value={customForm.season}
+                onChange={(e) => setCustomForm({ ...customForm, season: e.target.value })}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-glass)] text-xs font-bold text-white outline-none cursor-pointer"
+              >
+                {['Spring', 'Summer', 'Autumn', 'Winter', 'Monsoon'].map((s) => (
+                  <option key={s} value={s} className="bg-[var(--bg-card)] text-white">{s}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-bold uppercase text-[var(--text-muted)] mb-1">Travelers</label>
+              <select
+                value={customForm.travelers}
+                onChange={(e) => setCustomForm({ ...customForm, travelers: e.target.value })}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-glass)] text-xs font-bold text-white outline-none cursor-pointer"
+              >
+                {['Solo', 'Couple', 'Family', 'Friends', 'Group'].map((tr) => (
+                  <option key={tr} value={tr} className="bg-[var(--bg-card)] text-white">{tr}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="sm:col-span-2 lg:col-span-3 pt-2">
+              <button
+                type="submit"
+                className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-500 hover:to-teal-400 text-white font-extrabold rounded-2xl text-sm shadow-lg shadow-teal-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <IconLuggage size={18} />
+                <span>Generate Smart Packing List</span>
+              </button>
+            </div>
+          </form>
+        )}
+
+      </div>
+
+      {/* One-Click Action Bar */}
+      <div className="glass-card p-4 rounded-2xl mb-8 border border-[var(--border-color)] flex flex-wrap justify-between items-center gap-3 bg-[var(--bg-card)]">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => alert('Trip packing list saved!')}
+            className="px-3.5 py-2 bg-teal-900/30 hover:bg-teal-800/50 text-teal-200 border border-teal-500/30 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+          >
+            💾 Save Packing List
+          </button>
+
+          <button
+            onClick={() => window.print()}
+            className="px-3.5 py-2 bg-[var(--bg-glass)] hover:bg-teal-900/40 text-teal-200 border border-[var(--border-color)] rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+          >
+            📄 Export as PDF
+          </button>
+
+          <button
+            onClick={handleShare}
+            className="px-3.5 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-teal-600/30"
+          >
+            📤 {shareCopied ? 'Copied!' : 'Share List'}
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleMarkAllPacked}
+            className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-emerald-600/30"
+          >
+            ✔ Mark All Packed
+          </button>
+
+          <button
+            onClick={() => {
+              if (activeOption === 'db' && currentDbTrip) generateListFromDbTrip(currentDbTrip);
+              else generateCustomList();
+            }}
+            className="px-3.5 py-2 bg-indigo-900/40 hover:bg-indigo-800/60 text-indigo-200 border border-indigo-500/30 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+          >
+            🔄 Regenerate from Itinerary
+          </button>
+        </div>
+      </div>
+
+      {/* Main Analysis Output Workspace */}
+      {!loading && checklist && (
+        <div className="space-y-8 animate-fadeIn">
+          
+          {/* Smart Packing Score & Readiness Header Card */}
+          <div className="glass-card p-6 rounded-3xl border border-teal-500/30 bg-gradient-to-r from-teal-950/40 via-blue-950/30 to-purple-950/40 shadow-2xl space-y-6">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+              
+              {/* Score Gauge */}
+              <div className="flex items-center gap-6 w-full md:w-auto">
+                <div className="relative flex items-center justify-center w-24 h-24 rounded-full bg-teal-950/80 border-4 border-teal-400 text-center shadow-lg shadow-teal-500/20">
+                  <div>
+                    <div className="text-2xl font-black text-white font-heading">{metrics.percentage}%</div>
+                    <div className="text-[8px] uppercase font-bold text-teal-300">Readiness</div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-xs uppercase font-bold text-teal-400 tracking-wider">Smart Packing Score</div>
+                  <h3 className="text-xl font-black text-white font-heading">
+                    {metrics.percentage >= 80 ? 'Excellent Preparation!' : 'In Progress — Keep Packing'}
+                  </h3>
+                  <p className="text-xs text-[var(--text-muted)] mt-1">
+                    {metrics.packed} of {metrics.total} total essential items stowed in suitcase.
+                  </p>
+                </div>
+              </div>
+
+              {/* Luggage Weight Balancer */}
+              <div className="flex gap-4 border-t md:border-t-0 md:border-l border-teal-500/20 pt-4 md:pt-0 md:pl-6 w-full md:w-auto justify-around">
+                <div className="text-center bg-[var(--bg-glass)] p-3.5 rounded-2xl border border-[var(--border-color)] min-w-[120px]">
+                  <div className="text-[10px] text-[var(--text-muted)] font-bold uppercase flex items-center justify-center gap-1">
+                    <IconScale size={14} className="text-teal-400" /> Carry-on Bag
+                  </div>
+                  <div className="text-lg font-black text-teal-300 mt-1">{estCarryOnWeight} kg</div>
+                  <div className="text-[9px] text-teal-400/80 font-semibold">Max Limit: 7.0 kg</div>
+                </div>
+
+                <div className="text-center bg-[var(--bg-glass)] p-3.5 rounded-2xl border border-[var(--border-color)] min-w-[120px]">
+                  <div className="text-[10px] text-[var(--text-muted)] font-bold uppercase flex items-center justify-center gap-1">
+                    <IconLuggage size={14} className="text-blue-400" /> Checked Luggage
+                  </div>
+                  <div className="text-lg font-black text-blue-300 mt-1">{estCheckedWeight} kg</div>
+                  <div className="text-[9px] text-blue-400/80 font-semibold">Max Limit: 23.0 kg</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Missing Essentials & Overpacked Warning Chips */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-teal-500/20 text-xs">
+              <div className="bg-rose-950/20 border border-rose-500/30 p-3 rounded-2xl">
+                <div className="font-bold text-rose-300 uppercase text-[10px] tracking-wider mb-1.5 flex items-center gap-1">
+                  <IconAlertCircle size={14} /> Missing Essential Items ({metrics.missing.length})
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {metrics.missing.length > 0 ? (
+                    metrics.missing.map((m, idx) => (
+                      <span key={idx} className="bg-rose-900/40 text-rose-200 px-2.5 py-0.5 rounded-md font-bold text-[11px] border border-rose-500/30">
+                        ❌ {m}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-emerald-400 font-semibold">✓ All critical travel essentials are packed!</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="bg-amber-950/20 border border-amber-500/30 p-3 rounded-2xl">
+                <div className="font-bold text-amber-300 uppercase text-[10px] tracking-wider mb-1.5 flex items-center gap-1">
+                  <IconLuggage size={14} /> Potential Overpacking Warnings
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {metrics.overpacked.map((o, idx) => (
+                    <span key={idx} className="bg-amber-900/40 text-amber-200 px-2.5 py-0.5 rounded-md font-bold text-[11px] border border-amber-500/30">
+                      ⚠️ {o}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Checklist Categories */}
-          <div className="flex flex-col gap-5">
+          {/* ✨ Why these items? AI Rationale Section */}
+          {whyRationale.length > 0 && (
+            <div className="glass-card p-6 rounded-3xl border border-teal-500/30 bg-[var(--bg-card)] shadow-xl space-y-4">
+              <h3 className="text-base font-bold text-white font-heading flex items-center gap-2">
+                <IconSparkles className="text-amber-400" /> ✨ Why these items? (DB Itinerary Intelligence Analysis)
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                {whyRationale.map((rat, idx) => (
+                  <div key={idx} className="p-3.5 rounded-2xl bg-teal-950/20 border border-teal-500/20 flex flex-col justify-between">
+                    <div className="font-black text-teal-300 text-sm font-heading mb-1">{rat.item}</div>
+                    <div className="text-[11px] text-teal-100/90 leading-relaxed font-medium">{rat.reason}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 📅 Trip Timeline & Daily Recommended Items */}
+          {dailyTimeline.length > 0 && (
+            <div className="glass-card p-6 rounded-3xl border border-[var(--border-color)] bg-[var(--bg-card)] shadow-xl space-y-4">
+              <h3 className="text-base font-bold text-white font-heading flex items-center gap-2">
+                <IconCalendar className="text-purple-400" /> 📅 Database Daily Itinerary Timeline & Required Gear
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {dailyTimeline.map((dt) => (
+                  <div key={dt.day} className="p-4 rounded-2xl bg-[var(--bg-glass)] border border-[var(--border-color)] space-y-2">
+                    <div className="flex justify-between items-center border-b border-[var(--border-color)] pb-2">
+                      <span className="text-xs font-black text-purple-300 font-heading">Day {dt.day}</span>
+                      <span className="text-[10px] text-[var(--text-muted)] font-bold">DB Planned Activity</span>
+                    </div>
+                    <div className="text-xs font-bold text-white">{dt.title}</div>
+                    
+                    <div className="pt-2">
+                      <div className="text-[10px] uppercase font-bold text-teal-400 mb-1">Recommended Today:</div>
+                      <div className="flex flex-wrap gap-1">
+                        {dt.items.map((item, idx) => (
+                          <span key={idx} className="text-[10px] bg-teal-900/30 text-teal-200 px-2 py-0.5 rounded-md font-medium border border-teal-500/20">
+                            ✓ {item}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Categorized Packing Checklists Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Object.entries(checklist).map(([category, items]) => {
-              const catIcon = CATEGORY_ICONS[category] || '📦';
-              const catStyle = CATEGORY_COLORS[category] || 'text-slate-600 bg-slate-50';
-              const catChecked = (Array.isArray(items) ? items : []).filter(item => checked[`${category}:${item}`]).length;
-              const catTotal = Array.isArray(items) ? items.length : 0;
+              let icon = <IconBackpack size={20} className="text-teal-400" />;
+              if (category.includes('Clothing')) icon = <IconShirt size={20} className="text-blue-400" />;
+              if (category.includes('Toiletries')) icon = <IconSpray size={20} className="text-purple-400" />;
+              if (category.includes('Electronics')) icon = <IconDeviceLaptop size={20} className="text-cyan-400" />;
+              if (category.includes('Medical')) icon = <IconPill size={20} className="text-rose-400" />;
+              if (category.includes('Documents')) icon = <IconFileText size={20} className="text-amber-400" />;
+              if (category.includes('Money')) icon = <IconCoin size={20} className="text-emerald-400" />;
 
               return (
-                <div key={category} className="glass-card bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl overflow-hidden shadow-sm">
-                  <div className="flex justify-between items-center px-5 py-4 border-b border-[var(--border-color)] bg-[var(--bg-app)]">
-                    <div className="flex items-center gap-2.5">
-                      <span>{catIcon}</span>
-                      <span className="text-sm font-bold text-[var(--text-primary)] font-heading">{category}</span>
-                    </div>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      catChecked === catTotal && catTotal > 0 
-                        ? 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400' 
-                        : 'bg-blue-50 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400'
-                    }`}>
-                      {catChecked}/{catTotal} packed
-                    </span>
-                  </div>
-                  <div className="p-5 flex flex-wrap gap-2">
-                    {(Array.isArray(items) ? items : [items]).map((item, i) => {
-                      const isChecked = checked[`${category}:${item}`];
+                <div key={category} className="glass-card p-6 rounded-3xl border border-[var(--border-color)] bg-[var(--bg-card)] shadow-lg space-y-4">
+                  <h4 className="text-sm font-bold text-white font-heading flex items-center gap-2 pb-2 border-b border-[var(--border-color)]">
+                    {icon} {category} ({items.length})
+                  </h4>
+
+                  <div className="space-y-2">
+                    {items.map((item, idx) => {
+                      const isChecked = !!checkedItems[`${category}:${item}`];
                       return (
-                        <button 
-                          key={i} 
-                          onClick={() => toggleItem(category, item)}
-                          className={`flex items-center gap-2 px-3.5 py-2 rounded-full border text-xs font-semibold cursor-pointer transition-all ${
-                            isChecked 
-                              ? `${catStyle} line-through opacity-85 scale-[0.98]` 
-                              : 'border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:border-[var(--text-muted)] hover:bg-[var(--bg-app)]'
+                        <div
+                          key={idx}
+                          onClick={() => toggleCheck(category, item)}
+                          className={`p-3 rounded-xl border flex items-center gap-3 cursor-pointer transition-all ${
+                            isChecked
+                              ? 'bg-emerald-950/20 border-emerald-500/30 text-[var(--text-muted)] line-through'
+                              : 'bg-[var(--bg-glass)] border-[var(--border-color)] text-white hover:border-teal-500/40'
                           }`}
                         >
-                          {isChecked ? <IconCheck size={14} /> : <IconCircle size={14} className="opacity-40" />}
-                          <span>{item}</span>
-                        </button>
+                          <div className={`w-5 h-5 rounded-md border flex items-center justify-center text-xs transition-all ${
+                            isChecked ? 'bg-emerald-500 border-emerald-400 text-white' : 'border-[var(--border-color)]'
+                          }`}>
+                            {isChecked && <IconCheck size={14} />}
+                          </div>
+                          <span className="text-xs font-semibold">{item}</span>
+                        </div>
                       );
                     })}
                   </div>
@@ -225,8 +822,16 @@ export default function Packing() {
               );
             })}
           </div>
+
+          {/* Footer */}
+          <div className="pt-8 border-t border-[var(--border-color)] text-center text-xs text-[var(--text-muted)] space-y-1">
+            <div>Powered by <strong>WanderWise Database Itinerary & Packing Intelligence Engine</strong></div>
+            <div>© {new Date().getFullYear()} WanderWise AI Travel Companion. All packing checklists dynamically synthesized from database records.</div>
+          </div>
+
         </div>
       )}
+
     </div>
   );
 }

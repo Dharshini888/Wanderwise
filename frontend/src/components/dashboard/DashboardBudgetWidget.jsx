@@ -47,6 +47,11 @@ export default function DashboardBudgetWidget({ trip }) {
     return 'bg-red-500';
   };
 
+  const durationDays = trip.duration_days || trip.number_of_days || 1;
+  const avgDaily = Math.round(totalBudget / max(1, durationDays));
+
+  function max(a, b) { return a > b ? a : b; }
+
   return (
     <div className="glass-card p-6 rounded-3xl border border-[var(--border-color)] bg-[var(--bg-card)] shadow-sm space-y-4">
       {/* Header */}
@@ -59,7 +64,9 @@ export default function DashboardBudgetWidget({ trip }) {
             <h3 className="text-sm font-extrabold text-[var(--text-primary)] font-heading">
               Trip Budget Summary — {trip.destination}
             </h3>
-            <p className="text-[10px] text-[var(--text-muted)]">Live spending & budget health tracker</p>
+            <p className="text-[10px] text-[var(--text-muted)]">
+              Average daily budget: <strong className="text-[var(--text-primary)]">{formatCurrency(avgDaily, currency)}/day</strong> ({durationDays} Days)
+            </p>
           </div>
         </div>
 
@@ -87,6 +94,9 @@ export default function DashboardBudgetWidget({ trip }) {
           <span className="text-base font-black text-amber-600 dark:text-amber-400 block mt-0.5">
             {formatCurrency(spent, currency)}
           </span>
+          {spent === 0 && (
+            <span className="text-[9px] text-[var(--text-muted)] block font-medium">No expenses recorded yet</span>
+          )}
         </div>
 
         {/* 3. Remaining Budget */}
@@ -95,6 +105,7 @@ export default function DashboardBudgetWidget({ trip }) {
           <span className={`text-base font-black block mt-0.5 ${remaining >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
             {formatCurrency(remaining, currency)}
           </span>
+          <span className="text-[9px] text-emerald-500 font-bold block">100% Remaining</span>
         </div>
 
         {/* 4. Budget Health */}

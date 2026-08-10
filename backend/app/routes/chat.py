@@ -7,7 +7,7 @@ from app.database.connection import get_db
 from app.models.user import User
 from app.models.chat import ChatSession, ChatMessage
 from app.services.ai_chat_service import AIChatService
-from app.routes.auth import get_current_user_optional, get_current_user
+from app.routes.auth import get_current_user, get_current_user
 
 router = APIRouter(prefix="/api/chat", tags=["AI Travel Companion Chat"])
 

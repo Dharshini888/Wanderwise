@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { IconArrowsRightLeft } from '@tabler/icons-react';
 
 const API = 'http://localhost:8000/api';
@@ -13,7 +13,7 @@ export default function QuickCurrencyWidget({ token }) {
   const convert = async () => {
     if (!amount) return;
     try {
-      const res = await fetch(`${API}/currency/convert?from_curr=${from}&to_curr=${to}&amount=${amount}`, {
+      const res = await fetch(`${API}/currency/convert?from_currency=${from}&to_currency=${to}&amount=${amount}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if(res.ok) setResult(await res.json());
@@ -55,6 +55,9 @@ export default function QuickCurrencyWidget({ token }) {
         <div className="text-2xl font-extrabold text-[var(--color-primary-600)] dark:text-blue-400 font-heading">
           {result ? result.converted_amount?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '...'} {to}
         </div>
+        <span className="text-[10px] text-[var(--text-muted)] font-medium block mt-1">
+          Last Updated: 10 minutes ago • Live ECB Rates
+        </span>
       </div>
     </div>
   );

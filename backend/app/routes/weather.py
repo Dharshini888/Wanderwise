@@ -62,44 +62,7 @@ CITY_ALIASES = {
 
 def _get_fallback_weather(city: str) -> dict:
     """Fallback weather response when Open-Meteo or geocoding is unavailable or encounters errors."""
-    return {
-        "city": city.title(),
-        "country": "Popular Destination",
-        "latitude": 0.0,
-        "longitude": 0.0,
-        "timezone": "UTC",
-        "current": {
-            "temperature": 27.5,
-            "feels_like": 29.0,
-            "humidity": 65,
-            "wind_speed": 12.0,
-            "wind_direction": "SE",
-            "wind_degrees": 135,
-            "precipitation": 0.0,
-            "uv_index": 6.0,
-            "visibility": 10000,
-            "pressure": 1012.0,
-            "is_day": 1,
-            "description": "Partly cloudy",
-            "weather_code": 2,
-        },
-        "forecast": [
-            {
-                "date": "2026-07-24",
-                "weather_code": 2,
-                "description": "Partly cloudy",
-                "max_temp": 29.0,
-                "min_temp": 22.0,
-                "precipitation": 0.0,
-                "precipitation_probability": 10,
-                "uv_index_max": 7.0,
-                "wind_speed_max": 14.0,
-                "sunrise": "06:00",
-                "sunset": "18:30"
-            }
-        ],
-        "hourly": []
-    }
+    raise HTTPException(status_code=404, detail=f"No weather data available for {city}")
 
 
 @router.get("/{city}")
@@ -122,15 +85,35 @@ def get_weather(city: str):
         with urllib.request.urlopen(req, timeout=5) as resp:
             geo_data = json.loads(resp.read())
 
-        if not geo_data.get("results"):
-            return _get_fallback_weather(city)
+        lat = None
+        lon = None
+        name = city
+        country = ""
+        timezone = "auto"
 
-        loc = geo_data["results"][0]
-        lat = loc["latitude"]
-        lon = loc["longitude"]
-        name = loc.get("name", city)
-        country = loc.get("country", "")
-        timezone = loc.get("timezone", "auto")
+        if geo_data.get("results"):
+            loc = geo_data["results"][0]
+            lat = loc["latitude"]
+            lon = loc["longitude"]
+            name = loc.get("name", city)
+            country = loc.get("country", "")
+            timezone = loc.get("timezone", "auto")
+        else:
+            # Step 1b: Fallback to Nominatim / Photon geocoding for regions, states, islands, etc.
+            try:
+                from app.services.maps.nominatim_service import geocode_place
+                fallback_geo = geocode_place(search_city)
+                if fallback_geo and fallback_geo.get("source") != "Estimated Coordinates" and "lat" in fallback_geo and "lon" in fallback_geo:
+                    lat = fallback_geo["lat"]
+                    lon = fallback_geo["lon"]
+                    parts = fallback_geo.get("display_name", city).split(",")
+                    name = parts[0].strip()
+                    country = parts[-1].strip() if len(parts) > 1 else ""
+            except Exception:
+                pass
+
+        if lat is None or lon is None:
+            return _get_fallback_weather(city)
 
         # Step 2: Fetch current + daily + hourly weather from Open-Meteo
         weather_url = (
@@ -237,9 +220,11 @@ def get_weather(city: str):
             "forecast": forecast,
             "hourly": hourly_forecast,
         }
+    except HTTPException as he:
+        raise he
     except Exception as e:
-        print(f"[Weather Warning] Live weather lookup failed for '{city}': {e}. Returning fallback weather.")
-        return _get_fallback_weather(city)
+        print(f"[Weather Error] Live weather lookup failed for '{city}': {e}.")
+        raise HTTPException(status_code=503, detail=f"Weather service unavailable for {city}")
 
 
 @router.post("/activities")

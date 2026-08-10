@@ -44,21 +44,27 @@ export default function ActiveTripWorkspace({ widgetData, onRefresh }) {
   const dateStr = currentTime.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
   const timeStr = currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
+  // Trip Start/End Date Check
+  const todayYMD = currentTime.toISOString().split('T')[0];
+  const tripStart = activeTrip.start_date ? String(activeTrip.start_date).split('T')[0] : null;
+  const tripEnd = activeTrip.end_date ? String(activeTrip.end_date).split('T')[0] : null;
+  const isUpcomingTrip = Boolean(widgetData?.is_upcoming_trip || (tripStart && todayYMD < tripStart) || activeTrip.status === 'Upcoming' || activeTrip.trip_status === 'Upcoming');
+
   // Today Progress calculations
   const totalCount = activities.length;
-  const completedCount = activities.filter(a => a.completed || a.activity_status === 'completed').length;
-  const remainingCount = totalCount - completedCount;
-  const progressPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+  const completedCount = isUpcomingTrip ? 0 : activities.filter(a => a.completed || a.activity_status === 'completed').length;
+  const remainingCount = isUpcomingTrip ? totalCount : totalCount - completedCount;
+  const progressPct = (!isUpcomingTrip && totalCount > 0) ? Math.round((completedCount / totalCount) * 100) : 0;
 
-  const distanceKm = widgetData?.today_progress?.distance_travelled_today_km || (completedCount * 1.2).toFixed(1);
-  const walkingMins = widgetData?.today_progress?.walking_minutes_today || (completedCount * 20);
-  const moneySpent = widgetData?.today_progress?.money_spent_today || (completedCount * 250);
+  const distanceKm = isUpcomingTrip ? 0 : (widgetData?.today_progress?.distance_travelled_today_km || (completedCount * 1.2).toFixed(1));
+  const walkingMins = isUpcomingTrip ? 0 : (widgetData?.today_progress?.walking_minutes_today || (completedCount * 20));
+  const moneySpent = isUpcomingTrip ? 0 : (widgetData?.today_progress?.money_spent_today || (completedCount * 250));
   const remainingBudget = widgetData?.today_progress?.remaining_budget || (widgetData?.budget_remaining || 2150);
   const currCode = widgetData?.currency || activeTrip.currency || 'USD';
 
   // Identify Current & Next Activity
-  const currentActivity = activities.find(a => a.activity_status === 'current') || widgetData?.current_activity || activities.find(a => !a.completed);
-  const nextActivity = activities.find(a => a.id !== currentActivity?.id && !a.completed) || widgetData?.next_activity;
+  const currentActivity = isUpcomingTrip ? null : (activities.find(a => a.activity_status === 'current') || widgetData?.current_activity || activities.find(a => !a.completed));
+  const nextActivity = isUpcomingTrip ? activities[0] : (activities.find(a => a.id !== currentActivity?.id && !a.completed) || widgetData?.next_activity);
 
   const toggleActivityCompletion = async (activityId, isCurrentlyCompleted) => {
     setUpdatingId(activityId);
@@ -358,14 +364,23 @@ export default function ActiveTripWorkspace({ widgetData, onRefresh }) {
 
       {/* 3. Today's Journey Timeline & Statuses */}
       <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-6 md:p-8 shadow-xl backdrop-blur-md">
+        {isUpcomingTrip && (
+          <div className="mb-6 p-4 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center gap-3 text-blue-300">
+            <IconCalendarEvent className="w-6 h-6 text-blue-400 shrink-0" />
+            <p className="text-sm font-semibold">
+              {widgetData?.upcoming_notice || `Your trip begins on ${activeTrip.start_date || 'the start date'}. Your itinerary is ready and will become active on the start date.`}
+            </p>
+          </div>
+        )}
+
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl font-black text-white flex items-center gap-2.5">
               <IconRoute className="w-6 h-6 text-teal-400" />
-              <span>Today's Journey Timeline</span>
+              <span>{isUpcomingTrip ? "Upcoming Journey Schedule" : "Today's Journey Timeline"}</span>
             </h2>
             <p className="text-xs text-slate-400 mt-1">
-              Real-time activity status tracker (Completed ✔ • Current 🟢 • Upcoming ○ • Missed 🔴)
+              Real-time activity status tracker (Completed ✔ • Current 🟢 • Pending 🟡 • Upcoming 🔵 • Missed 🔴)
             </p>
           </div>
 
@@ -376,15 +391,18 @@ export default function ActiveTripWorkspace({ widgetData, onRefresh }) {
 
         {activities.length === 0 ? (
           <div className="text-center py-12 text-slate-500 text-sm">
-            No activities scheduled for today. View full trip details to manage itinerary.
+            No activities scheduled yet. View full trip details to manage itinerary.
           </div>
         ) : (
           <div className="relative border-l-2 border-slate-800 ml-4 space-y-6 pl-6 my-4">
             {activities.map((act, idx) => {
-              const status = act.activity_status || (act.completed ? 'completed' : 'upcoming');
+              const status = isUpcomingTrip ? 'upcoming' : (act.activity_status || act.status || (act.completed ? 'completed' : 'upcoming'));
               const isCompleted = status === 'completed';
               const isCurrent = status === 'current';
+              const isPending = status === 'pending';
               const isMissed = status === 'missed';
+              const isUpcoming = status === 'upcoming';
+              const badgeText = isUpcomingTrip ? 'Upcoming' : (act.status_badge || (status === 'upcoming' ? 'Upcoming' : status === 'pending' ? 'Pending' : status));
 
               return (
                 <div key={act.id || idx} className="relative group">
@@ -395,9 +413,11 @@ export default function ActiveTripWorkspace({ widgetData, onRefresh }) {
                         ? 'bg-emerald-500 border-emerald-400 text-slate-950 shadow-md shadow-emerald-500/50'
                         : isCurrent
                         ? 'bg-teal-400 border-white ring-4 ring-teal-500/40 animate-pulse'
+                        : isPending
+                        ? 'bg-amber-400 border-amber-300 shadow-amber-500/30'
                         : isMissed
                         ? 'bg-rose-500 border-rose-400'
-                        : 'bg-slate-900 border-slate-700'
+                        : 'bg-blue-500 border-blue-400 shadow-blue-500/30'
                     }`}
                   />
 
@@ -412,7 +432,7 @@ export default function ActiveTripWorkspace({ widgetData, onRefresh }) {
                       <div className="flex items-start gap-3.5">
                         <button
                           onClick={() => toggleActivityCompletion(act.id, act.completed)}
-                          disabled={updatingId === act.id}
+                          disabled={updatingId === act.id || isUpcomingTrip}
                           className={`mt-0.5 w-6 h-6 rounded-lg border flex items-center justify-center transition-all ${
                             isCompleted
                               ? 'bg-emerald-500 border-emerald-400 text-slate-950 font-bold'
@@ -436,10 +456,11 @@ export default function ActiveTripWorkspace({ widgetData, onRefresh }) {
                             <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full border ${
                               isCompleted ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' :
                               isCurrent ? 'bg-teal-500/20 text-teal-300 border-teal-500/40' :
+                              isPending ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' :
                               isMissed ? 'bg-rose-500/20 text-rose-300 border-rose-500/40' :
-                              'bg-slate-800 text-slate-400 border-slate-700'
+                              'bg-blue-500/20 text-blue-300 border-blue-500/40'
                             }`}>
-                              {act.status_badge || status}
+                              {badgeText}
                             </span>
                           </div>
 

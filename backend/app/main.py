@@ -53,6 +53,10 @@ app.include_router(ai_suggestions.router)
 # v2.7 AI Recommendation Engine
 app.include_router(ai_rec_router)
 
+# v3.2 Trip Execution
+from app.routes import trip_execution
+app.include_router(trip_execution.router)
+
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):

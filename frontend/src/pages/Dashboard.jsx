@@ -16,10 +16,10 @@ import QuickCurrencyWidget from '../components/dashboard/QuickCurrencyWidget';
 import TripCard from '../components/dashboard/TripCard';
 import DashboardBudgetWidget from '../components/dashboard/DashboardBudgetWidget';
 import ActiveTripWorkspace from '../components/dashboard/ActiveTripWorkspace';
+import TripReadinessWidget from '../components/dashboard/TripReadinessWidget';
 import TripWizard from '../components/trips/TripWizard';
 import { createTrip } from '../api/trips';
-
-
+import { IconWallet } from '@tabler/icons-react';
 
 const API = 'http://localhost:8000/api';
 
@@ -37,7 +37,7 @@ export default function Dashboard() {
   const token = localStorage.getItem('token');
   const userStr = localStorage.getItem('user');
   const user = userStr ? JSON.parse(userStr) : { name: 'Traveler', email: '' };
-  
+
   let userId = null;
   try {
     if (token) {
@@ -74,10 +74,8 @@ export default function Dashboard() {
     setLoading(false);
   };
 
-
   const deleteTrip = async (id) => {
     if (!window.confirm("Are you sure you want to delete this trip itinerary?")) return;
-    // Optimistic UI update
     setTrips(prev => prev.filter(t => t.id !== id));
     try {
       let res = await fetch(`${API}/trips/${id}`, {
@@ -109,7 +107,6 @@ export default function Dashboard() {
   };
 
   const handleChange = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
-
 
   const submitTripForm = async (overrides = {}) => {
     setSubmitting(true);
@@ -201,11 +198,11 @@ export default function Dashboard() {
   const initials = user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'U';
 
   const quickActions = [
-    { label: 'Create Trip', icon: <IconPlus size={20}/>, path: '#', onClick: () => setShowForm(true), color: 'bg-blue-500' },
-    { label: 'Plan with AI', icon: <IconSparkles size={20}/>, path: '/recommendations', color: 'bg-purple-500' },
-    { label: 'Transit Guide', icon: <IconMap size={20}/>, path: '/transit', color: 'bg-emerald-500' },
-    { label: 'Packing Checklist', icon: <IconBackpack size={20}/>, path: '/packing', color: 'bg-amber-500' },
-    { label: 'Safety & Emergency', icon: <IconShieldCheck size={20}/>, path: '/safety', color: 'bg-red-500' },
+    { label: 'AI Itinerary', badge: '✓ Ready', badgeClass: 'bg-emerald-500/20 text-emerald-400', icon: <IconSparkles size={20}/>, path: '/recommendations', color: 'bg-purple-500' },
+    { label: 'Transit Guide', badge: '✓ Generated', badgeClass: 'bg-emerald-500/20 text-emerald-400', icon: <IconMap size={20}/>, path: '/transit', color: 'bg-emerald-500' },
+    { label: 'Packing Checklist', badge: '🟡 Review', badgeClass: 'bg-amber-500/20 text-amber-400', icon: <IconBackpack size={20}/>, path: '/packing', color: 'bg-amber-500' },
+    { label: 'Budget Planner', badge: '✓ Healthy', badgeClass: 'bg-emerald-500/20 text-emerald-400', icon: <IconWallet size={20}/>, path: '/expenses', color: 'bg-blue-500' },
+    { label: 'Safety Advisory', badge: '✓ Active', badgeClass: 'bg-emerald-500/20 text-emerald-400', icon: <IconShieldCheck size={20}/>, path: '/safety', color: 'bg-red-500' },
   ];
 
   return (
@@ -219,9 +216,19 @@ export default function Dashboard() {
           </div>
           <div>
             <h1 className="text-lg font-bold text-[var(--text-primary)] font-heading leading-tight">
-              Hello, {user.name?.split(' ')[0] || 'Traveler'} 👋
+              {nextTrip && !isDisplayTripActive 
+                ? `Next Trip: 📍 ${nextTrip.destination.split(',')[0]}` 
+                : isDisplayTripActive 
+                ? `Currently Exploring 📍 ${displayTrip.destination.split(',')[0]}` 
+                : `Hello, ${user.name?.split(' ')[0] || 'Traveler'} 👋`}
             </h1>
-            <p className="text-xs text-[var(--text-muted)] font-medium">Ready for your next adventure?</p>
+            <p className="text-xs text-[var(--text-muted)] font-medium">
+              {nextTrip && !isDisplayTripActive 
+                ? `Starts in ${getDaysCountdown(nextTrip.start_date)} days • Everything is prepared.` 
+                : isDisplayTripActive 
+                ? `Day ${getCurrentDayNumber(displayTrip.start_date)} of ${getDays(displayTrip)} • Today's itinerary is ready.` 
+                : `Ready for your next adventure?`}
+            </p>
           </div>
         </div>
         
@@ -245,53 +252,66 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Active Trip Workspace or Generic Active Trip Banner */}
+      {/* Active Trip Workspace or Next Adventure Banner Card */}
       {(widgetData?.has_active_trip || isDisplayTripActive) ? (
         <ActiveTripWorkspace widgetData={widgetData} onRefresh={fetchTrips} />
       ) : displayTrip ? (
         <>
           <div 
-            className="p-6 text-white rounded-3xl shadow-xl relative overflow-hidden animate-fadeIn border-0"
-            style={{ background: 'linear-gradient(135deg, #1d4ed8 0%, #4338ca 50%, #6d28d9 100%)', color: '#ffffff' }}
+            className="p-6 md:p-8 text-white rounded-3xl shadow-xl relative overflow-hidden animate-fadeIn border-0"
+            style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)', color: '#ffffff' }}
           >
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
               <div>
-                <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2 text-white" style={{ color: '#ffffff' }}>
-                  <span className="w-2 h-2 rounded-full bg-blue-400"></span> Upcoming Trip
+                <div className="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-500/40 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 text-blue-300">
+                  <span className="w-2.5 h-2.5 rounded-full bg-blue-400"></span> Next Adventure
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-black font-heading flex items-center gap-2 text-white !text-white" style={{ color: '#ffffff' }}>
-                  🗓️ Upcoming: {displayTrip.destination}
+                <h2 className="text-3xl font-black font-heading text-white">
+                  📍 {displayTrip.destination}
                 </h2>
-                <p className="text-sm mt-1 font-medium text-white/90 !text-white/90" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
-                  {formatDateStr(displayTrip.start_date)} to {formatDateStr(displayTrip.end_date)}
+                <p className="text-sm mt-2 font-medium text-slate-300 flex items-center gap-3 flex-wrap">
+                  <span>📅 {formatDateStr(displayTrip.start_date)} → {formatDateStr(displayTrip.end_date)}</span>
+                  <span>•</span>
+                  <span>⏱️ {getDays(displayTrip)} Days</span>
+                  <span>•</span>
+                  <span>💰 {formatCurrency(displayTrip.budget || 100000, displayTrip.currency || 'INR')}</span>
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-3">
-                <Link to={`/trips/${displayTrip.id}`} className="px-5 py-2.5 rounded-xl bg-white text-blue-700 font-bold text-xs shadow-md hover:bg-blue-50 transition-colors flex items-center gap-1.5" style={{ backgroundColor: '#ffffff', color: '#1d4ed8' }}>
+              <div className="flex items-center gap-4 bg-slate-800/80 border border-slate-700/80 p-4 rounded-2xl backdrop-blur-md">
+                <div>
+                  <div className="text-[10px] font-extrabold text-blue-400 uppercase tracking-wider">Countdown</div>
+                  <div className="text-xl font-black text-white font-mono mt-0.5">
+                    Starts in {getDaysCountdown(displayTrip.start_date)} days
+                  </div>
+                </div>
+                <Link to={`/trips/${displayTrip.id}`} className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs shadow-md transition-colors flex items-center gap-1.5 shrink-0">
                   <IconSparkles size={16}/> View Itinerary
                 </Link>
               </div>
             </div>
           </div>
+
+          <TripReadinessWidget trip={displayTrip} daysLeft={getDaysCountdown(displayTrip.start_date)} />
           <DashboardBudgetWidget trip={displayTrip} />
         </>
       ) : null}
 
-
-      {/* Quick Access Cards */}
-
+      {/* Quick Access Cards with Progress Badges */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {quickActions.map((action, i) => (
           <div 
             key={i} 
             onClick={action.onClick ? action.onClick : () => navigate(action.path)}
-            className="glass-card p-4 flex flex-col items-center justify-center gap-3 cursor-pointer hover:scale-105 transition-transform duration-200 group"
+            className="glass-card p-4 flex flex-col items-center justify-center gap-2.5 cursor-pointer hover:scale-105 transition-transform duration-200 group relative"
           >
-            <div className={`w-12 h-12 rounded-xl text-white flex items-center justify-center shadow-md ${action.color} group-hover:shadow-lg transition-shadow`}>
+            <div className={`w-11 h-11 rounded-xl text-white flex items-center justify-center shadow-md ${action.color} group-hover:shadow-lg transition-shadow`}>
               {action.icon}
             </div>
             <span className="text-xs font-bold text-[var(--text-primary)] text-center">{action.label}</span>
+            <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${action.badgeClass}`}>
+              {action.badge}
+            </span>
           </div>
         ))}
       </div>
@@ -469,10 +489,10 @@ export default function Dashboard() {
             
             <div className="relative pl-6 border-l-2 border-[var(--border-color)] flex flex-col gap-6">
               {[
-                { title: nextTrip ? `Planned Trip to ${nextTrip.destination.split(',')[0]}` : 'Explored Recommendations', time: 'Recently', icon: <IconPlane size={14}/>, color: 'text-blue-500 bg-blue-50 dark:bg-blue-900/20' },
-                { title: 'AI Itinerary & Transit Generated', time: 'Today', icon: <IconSparkles size={14}/>, color: 'text-amber-500 bg-amber-50 dark:bg-amber-900/20' },
-                { title: 'Preferences Updated', time: 'Active Profile', icon: <IconHeart size={14}/>, color: 'text-red-500 bg-red-50 dark:bg-red-950/20' },
-                { title: 'Budget Analysis Verified', time: 'Active', icon: <IconReceipt2 size={14}/>, color: 'text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' },
+                { title: nextTrip ? `AI Itinerary Generated for ${nextTrip.destination.split(',')[0]}` : 'AI Itinerary Generated', time: 'Today', icon: <IconSparkles size={14}/>, color: 'text-amber-500 bg-amber-50 dark:bg-amber-900/20' },
+                { title: 'Transit Route Updated', time: 'Yesterday', icon: <IconMap size={14}/>, color: 'text-blue-500 bg-blue-50 dark:bg-blue-900/20' },
+                { title: 'Budget & Expense Planner Active', time: '2 days ago', icon: <IconReceipt2 size={14}/>, color: 'text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' },
+                { title: 'Destination Preferences Saved', time: '3 days ago', icon: <IconHeart size={14}/>, color: 'text-red-500 bg-red-50 dark:bg-red-950/20' },
               ].map((act, i) => (
                 <div key={i} className="relative">
                   <div className={`absolute -left-[35px] w-7 h-7 rounded-full border-4 border-[var(--bg-card)] flex items-center justify-center ${act.color}`}>
@@ -488,17 +508,34 @@ export default function Dashboard() {
           </div>
           
           {/* Today's Travel Brief (AI Summary) */}
-          <div className="glass-card p-6 bg-gradient-to-br from-[var(--bg-card)] to-blue-50/30 dark:to-blue-950/20 border border-blue-100 dark:border-blue-900/30">
-            <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider mb-3 flex items-center gap-2">
+          <div className="glass-card p-6 bg-gradient-to-br from-[var(--bg-card)] to-blue-50/30 dark:to-blue-950/20 border border-blue-100 dark:border-blue-900/30 space-y-3">
+            <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-2">
               <IconTrendingUp size={16} className="text-blue-500"/> Today's Travel Brief
             </h3>
-            <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-4">
-              {nextTrip 
-                ? `You're exploring ${nextTrip.destination.split(',')[0]}! Check your personalized itinerary, transit steps, and budget updates.` 
-                : "No active trip right now. Enter a destination above or try AI Discover to find top attractions & hidden gems!"}
-            </p>
-            <Link to="/chat" className="btn btn-outline w-full justify-center text-sm">
-              <IconMessageChatbot size={16}/> Chat with AI Assistant
+            {nextTrip && !isDisplayTripActive ? (
+              <>
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-semibold">
+                  Your next adventure begins in {getDaysCountdown(nextTrip.start_date)} days. Your AI itinerary, transit guidance and packing checklist are ready.
+                </p>
+                <ul className="text-xs text-[var(--text-muted)] space-y-1 font-medium pt-1">
+                  <li className="flex items-center gap-1.5"><span className="text-emerald-500 font-bold">✓</span> Itinerary fully prepared</li>
+                  <li className="flex items-center gap-1.5"><span className="text-emerald-500 font-bold">✓</span> Transit guide generated</li>
+                  <li className="flex items-center gap-1.5"><span className="text-amber-500 font-bold">🟡</span> Packing checklist pending review</li>
+                  <li className="flex items-center gap-1.5"><span className="text-blue-500 font-bold">ℹ</span> Weather will be refreshed before departure</li>
+                  <li className="flex items-center gap-1.5"><span className="text-emerald-500 font-bold">✓</span> Budget planner active</li>
+                </ul>
+              </>
+            ) : isDisplayTripActive ? (
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-semibold">
+                You're currently exploring {displayTrip.destination.split(',')[0]}! Today's itinerary is ready.
+              </p>
+            ) : (
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-semibold">
+                Welcome back! Your travel journal and memory vault are ready for your past trips.
+              </p>
+            )}
+            <Link to="/chat" className="btn btn-outline w-full justify-center text-xs font-extrabold mt-2">
+              <IconMessageChatbot size={16}/> Chat with AI Companion
             </Link>
           </div>
           

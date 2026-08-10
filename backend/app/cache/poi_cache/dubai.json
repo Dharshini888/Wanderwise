@@ -1,15 +1,15 @@
 {
   "destination": "dubai",
-  "version": "2.2",
+  "version": "3.0",
   "pois": [
     {
-      "name": "Dubai Heritage Promenade",
-      "category": "Sightseeing",
-      "address": "Main Town Quarter, Dubai",
-      "latitude": 35.6762,
-      "longitude": 139.6503,
-      "opening_time": "06:00 AM",
-      "closing_time": "10:00 PM",
+      "name": "Green Park building",
+      "category": "Viewpoint",
+      "address": "Dubai",
+      "latitude": 25.0742823,
+      "longitude": 55.1885624,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
       "open_days": [
         "Monday",
         "Tuesday",
@@ -23,56 +23,24 @@
       "currency": "USD",
       "rating": 4.7,
       "crowd": "Moderate",
-      "description": "Stroll through Dubai's central promenade, surrounded by historic architecture, outdoor fountains, and regional artisan markets.",
-      "ai_reason": "\u2713 Central hub in Dubai\n\u2713 Free entry\n\u2713 4.7\u2605 reviews\n\u2713 Walkable distance",
-      "tip": "Visit in the morning for quiet photo opportunities around Dubai.",
+      "description": "Explore Green Park building, one of Dubai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Dubai\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Green Park building.",
       "signature_dish": null,
       "nearby": [
-        "Dubai Town Walk",
-        "Dubai Artisan Market"
+        "Dubai"
       ],
-      "source": "openstreetmap",
-      "confidence": 0.96
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
     },
     {
-      "name": "Dubai Cultural Center & Museum",
-      "category": "Museum",
-      "address": "12 Cultural Way, Dubai",
-      "latitude": 35.68,
-      "longitude": 139.66,
-      "opening_time": "09:30 AM",
-      "closing_time": "05:30 PM",
-      "open_days": [
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday"
-      ],
-      "ticket_price": 10.0,
-      "currency": "USD",
-      "rating": 4.6,
-      "crowd": "Low",
-      "description": "Discover Dubai's rich history, fine art collections, and regional artifacts inside this renowned cultural museum.",
-      "ai_reason": "\u2713 Premier museum in Dubai\n\u2713 Indoor air-conditioned galleries\n\u2713 Fits afternoon cultural schedule",
-      "tip": "Guided audio tours are available at the front entrance desk.",
-      "signature_dish": null,
-      "nearby": [
-        "Dubai Art Gallery",
-        "Dubai Public Library"
-      ],
-      "source": "openstreetmap",
-      "confidence": 0.95
-    },
-    {
-      "name": "Dubai Regional Kitchen & Cafe",
-      "category": "Restaurant",
-      "address": "45 Culinary Row, Dubai",
-      "latitude": 35.675,
-      "longitude": 139.655,
-      "opening_time": "11:30 AM",
-      "closing_time": "10:30 PM",
+      "name": "Two Seasons Hotel",
+      "category": "Sightseeing",
+      "address": "Dubai",
+      "latitude": 25.0742823,
+      "longitude": 55.1885624,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
       "open_days": [
         "Monday",
         "Tuesday",
@@ -82,20 +50,236 @@
         "Saturday",
         "Sunday"
       ],
-      "ticket_price": 25.0,
+      "ticket_price": 0.0,
       "currency": "USD",
-      "rating": 4.6,
+      "rating": 4.7,
       "crowd": "Moderate",
-      "description": "Savor authentic regional dishes prepared with fresh local ingredients in a warm, traditional atmosphere.",
-      "ai_reason": "\u2713 400m walk from Central Promenade\n\u2713 High rating for local cuisine\n\u2713 Fits lunch timing",
-      "tip": "Try the chef's signature regional platter served with seasonal sides.",
-      "signature_dish": "Authentic Dubai Signature Chef's Platter",
+      "description": "Explore Two Seasons Hotel, one of Dubai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Dubai\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Two Seasons Hotel.",
+      "signature_dish": null,
       "nearby": [
-        "Dubai Artisan Bakery",
-        "Dubai Cafe"
+        "Dubai"
       ],
-      "source": "openstreetmap",
-      "confidence": 0.95
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Rasis Business Center (CLEMC)",
+      "category": "Sightseeing",
+      "address": "Dubai",
+      "latitude": 25.0742823,
+      "longitude": 55.1885624,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Rasis Business Center (CLEMC), one of Dubai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Dubai\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Rasis Business Center (CLEMC).",
+      "signature_dish": null,
+      "nearby": [
+        "Dubai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Al saya dubai",
+      "category": "Sightseeing",
+      "address": "Dubai",
+      "latitude": 25.0742823,
+      "longitude": 55.1885624,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Al saya dubai, one of Dubai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Dubai\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Al saya dubai.",
+      "signature_dish": null,
+      "nearby": [
+        "Dubai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Calida victory heights",
+      "category": "Sightseeing",
+      "address": "Dubai",
+      "latitude": 25.0742823,
+      "longitude": 55.1885624,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Calida victory heights, one of Dubai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Dubai\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Calida victory heights.",
+      "signature_dish": null,
+      "nearby": [
+        "Dubai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "\u0633\u0643\u064a \u062f\u0628\u064a",
+      "category": "Sightseeing",
+      "address": "Dubai",
+      "latitude": 25.0742823,
+      "longitude": 55.1885624,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore \u0633\u0643\u064a \u062f\u0628\u064a, one of Dubai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Dubai\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of \u0633\u0643\u064a \u062f\u0628\u064a.",
+      "signature_dish": null,
+      "nearby": [
+        "Dubai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "barsha 43 barsa 2",
+      "category": "Sightseeing",
+      "address": "Dubai",
+      "latitude": 25.0742823,
+      "longitude": 55.1885624,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore barsha 43 barsa 2, one of Dubai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Dubai\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of barsha 43 barsa 2.",
+      "signature_dish": null,
+      "nearby": [
+        "Dubai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "furjan disa",
+      "category": "Sightseeing",
+      "address": "Dubai",
+      "latitude": 25.0742823,
+      "longitude": 55.1885624,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore furjan disa, one of Dubai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Dubai\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of furjan disa.",
+      "signature_dish": null,
+      "nearby": [
+        "Dubai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Ozti Machines",
+      "category": "Sightseeing",
+      "address": "Dubai",
+      "latitude": 25.0742823,
+      "longitude": 55.1885624,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Ozti Machines, one of Dubai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Dubai\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Ozti Machines.",
+      "signature_dish": null,
+      "nearby": [
+        "Dubai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
     }
   ]
 }

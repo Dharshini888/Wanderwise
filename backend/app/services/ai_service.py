@@ -2,6 +2,7 @@ import google.generativeai as genai
 import os
 import json
 import urllib.parse
+from typing import List, Dict, Any, Optional
 from groq import Groq
 
 from dotenv import load_dotenv
@@ -96,6 +97,84 @@ def check_budget_alert(destination: str, days: int, budget: float, currency: str
     return {"has_warning": False, "estimated_minimum": estimated_minimum, "user_budget": budget, "currency": currency}
 
 
+from .poi_service import fetch_real_pois_for_destination
+
+def schedule_unique_multiday_itinerary(destination: str, days: int) -> Dict[int, Dict[str, Any]]:
+    """
+    Unique Itinerary Scheduler:
+    1. Collects all real POIs for destination via OpenStreetMap / Wikipedia APIs.
+    2. De-duplicates POIs and maintains a `used_places` set across ALL days.
+    3. Distributes POIs intelligently:
+       - Morning -> Sightseeing / Nature / Park
+       - Afternoon -> Museum / Culture / Heritage
+       - Lunch -> Local Restaurant / Dining
+       - Evening -> Shopping / Viewpoint / Market
+    4. If days exceed available unique POIs:
+       - Schedules day trips to nearby towns, scenic drives, cultural workshops, or food trails.
+       - Appends notice: "Additional exploration day generated due to limited unique attractions."
+    5. Zero generic placeholder names.
+    """
+    pois = fetch_real_pois_for_destination(destination)
+    used_places = set()
+    daily_schedule = {}
+
+    for d in range(1, days + 1):
+        day_pois = []
+        is_extended_exploration = False
+
+        # Morning: Sightseeing / Nature / Park
+        m_poi = next((p for p in pois if p["name"] not in used_places and p.get("category") in ["Sightseeing", "Viewpoint"]), None)
+        if not m_poi:
+            m_poi = next((p for p in pois if p["name"] not in used_places), None)
+        if m_poi:
+            used_places.add(m_poi["name"])
+            day_pois.append({"time": "Morning (09:00 AM)", "category": "Sightseeing", "name": m_poi["name"], "desc": m_poi.get("description", "")})
+
+        # Lunch: Local Dining
+        l_poi = next((p for p in pois if p["name"] not in used_places and p.get("category") == "Restaurant"), None)
+        if not l_poi:
+            l_poi = next((p for p in pois if p["name"] not in used_places), None)
+        if l_poi:
+            used_places.add(l_poi["name"])
+            day_pois.append({"time": "Lunch (01:00 PM)", "category": "Restaurant", "name": l_poi["name"], "desc": l_poi.get("description", "")})
+
+        # Afternoon: Museum / Culture / Heritage
+        a_poi = next((p for p in pois if p["name"] not in used_places and p.get("category") in ["Museum", "Culture"]), None)
+        if not a_poi:
+            a_poi = next((p for p in pois if p["name"] not in used_places), None)
+        if a_poi:
+            used_places.add(a_poi["name"])
+            day_pois.append({"time": "Afternoon (03:00 PM)", "category": "Museum/Culture", "name": a_poi["name"], "desc": a_poi.get("description", "")})
+
+        # Evening: Shopping / Viewpoint / Market
+        e_poi = next((p for p in pois if p["name"] not in used_places and p.get("category") in ["Shopping", "Viewpoint"]), None)
+        if not e_poi:
+            e_poi = next((p for p in pois if p["name"] not in used_places), None)
+        if e_poi:
+            used_places.add(e_poi["name"])
+            day_pois.append({"time": "Evening (06:00 PM)", "category": "Shopping/Viewpoint", "name": e_poi["name"], "desc": e_poi.get("description", "")})
+
+        # If day has fewer than 2 unique POIs, schedule an extended exploration activity
+        if len(day_pois) < 2:
+            is_extended_exploration = True
+            extended_activities = [
+                {"name": f"Day Trip to Nearby Towns & Countryside around {destination}", "desc": f"Explore picturesque villages and scenic mountain drives surrounding {destination}."},
+                {"name": f"Local Culinary & Cooking Workshop in {destination}", "desc": f"Learn authentic regional recipes from local chefs in {destination}."},
+                {"name": f"Heritage Walking Trail & Local Artisan Craft Experience", "desc": f"Walk through historic quarters and meet traditional artisans in {destination}."},
+                {"name": "Scenic Mountain Railway & Leisure Trail", "desc": f"Enjoy scenic train journeys and relaxing nature trails near {destination}."}
+            ]
+            ext = extended_activities[(d - 1) % len(extended_activities)]
+            day_pois.append({"time": "Full Day", "category": "Extended Experience", "name": ext["name"], "desc": ext["desc"]})
+
+        daily_schedule[d] = {
+            "day": d,
+            "pois": day_pois,
+            "is_extended_exploration": is_extended_exploration,
+            "notice": "Additional exploration day generated due to limited unique attractions." if is_extended_exploration else None
+        }
+
+    return daily_schedule
+
 def generate_complete_itinerary(destination: str, days: int, budget: float,
                                 interests: str, travel_type: str,
                                 group_size: int = 1, currency: str = "USD",
@@ -106,7 +185,19 @@ def generate_complete_itinerary(destination: str, days: int, budget: float,
     budget_note = "Focus on budget hostels, free sights, street food, and public transit." if is_budget_friendly else ""
     origin = origin_city if origin_city else "Coimbatore"
 
+    # Pre-calculate unique POI assignments across all days
+    unique_schedule = schedule_unique_multiday_itinerary(destination, days)
+
     parts = []
+
+    # Format assigned POIs for Days 1 to min(days, 3)
+    p1_day_assignments = []
+    for d in range(1, min(days, 3) + 1):
+        sched = unique_schedule[d]
+        p_list = "\n".join([f"  - {p['time']}: {p['name']} ({p['category']})" for p in sched["pois"]])
+        note_str = f"\n  - Note: {sched['notice']}" if sched["notice"] else ""
+        p1_day_assignments.append(f"Day {d} Assigned Unique Sights:\n{p_list}{note_str}")
+    p1_assigned_str = "\n\n".join(p1_day_assignments)
 
     # PART 1: Overview, Home-to-Destination Transport, Hotel Options, and Initial Days (1..min(days, 3))
     p1_prompt = f"""
@@ -119,6 +210,9 @@ def generate_complete_itinerary(destination: str, days: int, budget: float,
     Travel Style: {travel_type}
     Group Size: {group_size} person(s)
     {budget_note}
+
+    ASSIGNED UNIQUE POIS (MUST USE EXACTLY THESE NAMES FOR EACH DAY. DO NOT REUSE NAMES OR INVENT PLACEHOLDERS LIKE 'HERITAGE PROMENADE'):
+    {p1_assigned_str}
 
     MUST INCLUDE IN THIS EXACT FORMAT:
 
@@ -133,35 +227,26 @@ def generate_complete_itinerary(destination: str, days: int, budget: float,
     - **Best Season**: Spring / Autumn
     - **Currency**: {currency}
     - **Language**: Local Language
-    - **Time Zone**: GMT+9
     - **Emergency Numbers**: Police: 110 | Ambulance: 119
-    - **Visa Required**: Verify local passport rules
     - **Estimated Total Cost**: {currency} {budget*0.85:,.0f}
-    - **Budget Remaining**: {currency} {budget*0.15:,.0f}
-    - **Overall AI Match**: 98%
-    - **Trip Difficulty**: Easy / Moderate
-    - **Average Walking**: 6-8 km/day
 
     ## ✈️ Transport from {origin} to {destination}
-    - **Recommended Flight**: IndiGo / ANA (~11 hrs, {currency} {budget*0.25:,.0f}) | Bag: 23kg
-    - **Alternative Flight**: Air India (~13 hrs, {currency} {budget*0.28:,.0f})
-    - **Budget Option**: Low-Cost Transit (~15 hrs, {currency} {budget*0.20:,.0f})
-    - **Local Airport Transport**: Airport Express Metro / Taxi ({currency} {budget*0.02:,.0f})
+    - **Recommended Flight**: Express Transit (~11 hrs, {currency} {budget*0.25:,.0f}) | Bag: 23kg
+    - **Alternative Option**: Connecting Train / Flight (~14 hrs, {currency} {budget*0.28:,.0f})
 
     ## 🏨 Hotel Recommendations
-    - 🌟 **Recommended**: Central City Hotel ({currency} {budget*0.05:,.0f}/night) | 0.5 km from metro
+    - 🌟 **Recommended**: Central City Hotel ({currency} {budget*0.05:,.0f}/night)
     - 💰 **Budget Hostels**: Backpacker Hub ({currency} {budget*0.02:,.0f}/night)
-    - 💎 **Luxury Stay**: Grand Resort ({currency} {budget*0.12:,.0f}/night)
 
     ---
     Generate Days 1 to {min(days, 3)} now.
     For EVERY Day include:
     - **Weather Suggestion**: Temp, Rain Chance, UV Index, Clothing Tip.
-    - **Daily Timeline**: 8:00 AM Breakfast -> 9:00 AM Travel -> 9:30 AM Explore -> 12:00 PM Lunch -> 2:00 PM Activity -> 6:00 PM Dinner -> 8:00 PM Evening Walk.
-    - **Morning, Afternoon, Evening, Night** Schedule.
-    - **Transport Between Attractions**: Previous Place -> Next Place (Distance km, Travel Time, Preferred Transport, Alternatives with fares, Google Maps search link, coordinates).
-    - **AI Tips**: Best photo spot, hidden spot, crowd avoidance, washroom, ATM.
-    - **Restaurant Recommendations**: Breakfast, Lunch, Dinner, Local Specialty, Veg option.
+    - **Daily Timeline**: Timeline featuring the assigned unique POIs for this day.
+    - **Morning, Afternoon, Evening, Night** Schedule using assigned POIs.
+    - **Transport Between Attractions**: Previous Place -> Next Place (Distance km, Travel Time, Preferred Transport).
+    - **AI Tips**: Best photo spot, hidden spot, crowd avoidance.
+    - **Restaurant Recommendations**: Breakfast, Lunch, Dinner.
     - **Daily Expense Breakdown**: Food, Transport, Entry Fees, Shopping, Hotel, Daily Total.
     """
     try:
@@ -172,49 +257,70 @@ def generate_complete_itinerary(destination: str, days: int, budget: float,
         current_day = 4
         while current_day <= days:
             end_chunk = min(current_day + 2, days)
+
+            chunk_assignments = []
+            for cd in range(current_day, end_chunk + 1):
+                sched = unique_schedule[cd]
+                p_list = "\n".join([f"  - {p['time']}: {p['name']} ({p['category']})" for p in sched["pois"]])
+                note_str = f"\n  - Note: {sched['notice']}" if sched["notice"] else ""
+                chunk_assignments.append(f"Day {cd} Assigned Unique Sights:\n{p_list}{note_str}")
+            chunk_assigned_str = "\n\n".join(chunk_assignments)
+
             p_chunk_prompt = f"""
             Continue the {destination} travel planner. Generate ONLY Days {current_day} to {end_chunk}.
             Origin City: {origin} | Total Days: {days} | Currency: {currency} | Budget: {budget}
 
+            ASSIGNED UNIQUE POIS FOR THESE DAYS (STRICT ZERO DUPLICATE RULE - DO NOT INVENT PLACEHOLDERS):
+            {chunk_assigned_str}
+
             For EACH Day ({current_day} to {end_chunk}), include:
             ### Day X: [Catchy Day Title]
             - **Weather Suggestion**: Temp, Rain Chance %, Clothing Recommendation.
-            - **Daily Timeline**: 8:00 AM Breakfast -> 9:00 AM Transport -> 9:30 AM Sightseeing ...
+            - **Daily Timeline**: Timeline using assigned unique POIs.
             - **Morning, Afternoon, Evening, Night** activities with place name, hours, duration, fee.
-            - **Transport Between Attractions**: Previous Place -> Next Place (Distance km, Travel Time, Preferred Transport, Alternatives with fares, Google Maps link, coordinates).
-            - **AI Travel Tips**: Best Photo Spot, Hidden Spot, Avoid Crowds, Waiting Time, ATM.
-            - **Restaurant Recommendations**: Breakfast, Lunch, Dinner, Local Specialty.
-            - **Daily Expense Breakdown**: Breakfast, Lunch, Dinner, Transport, Entry Tickets, Hotel, Daily Total.
-
-            Do NOT repeat Overview or Hotel Info. Output ONLY Day {current_day} to Day {end_chunk}.
+            - **Transport Between Attractions**: Previous Place -> Next Place.
+            - **AI Travel Tips**: Best Photo Spot, Hidden Spot, Avoid Crowds.
+            - **Restaurant Recommendations**: Breakfast, Lunch, Dinner.
+            - **Daily Expense Breakdown**: Daily Total.
             """
+
             chunk_text = _ai(p_chunk_prompt)
             parts.append(chunk_text)
             current_day = end_chunk + 1
 
         # PART 3: Return Journey Plan & Overall Budget Calculation
+        ret_cost = int(budget * 0.25)
+        round_transit = int(budget * 0.50)
+        acc_cost = int(budget * 0.25)
+        food_cost = int(budget * 0.15)
+        local_cost = int(budget * 0.05)
+        act_cost = int(budget * 0.05)
+        buf_cost = int(budget * 0.05)
+        grand_total = int(budget * 0.90)
+        rem_budget = int(budget * 0.10)
+
         p_final_prompt = f"""
         Provide the Return Journey Plan and Overall Budget Summary for {destination} trip ({days} days, budget: {budget} {currency}, origin: {origin}).
 
         MUST INCLUDE:
-        ## 🔄 Return Journey Plan
+        ## Return Journey Plan
         - **Route**: {destination} -> Airport / Main Station -> Flight / Train -> {origin}
-        - **Estimated Return Cost**: {currency} {budget*0.25:,.0f}
-        - **Total Round Trip Transit Cost**: {currency} {budget*0.50:,.0f}
+        - **Estimated Return Cost**: {currency} {ret_cost:,}
+        - **Total Round Trip Transit Cost**: {currency} {round_transit:,}
 
-        ## 💵 Overall Budget Calculation
-        - ✈️ **Round-trip Flights/Transit**: {currency} {budget*0.45:,.0f}
-        - 🏨 **Hotels / Accommodation**: {currency} {budget*0.25:,.0f}
-        - 🍲 **Food & Dining**: {currency} {budget*0.15:,.0f}
-        - 🚕 **Local Transport**: {currency} {budget*0.05:,.0f}
-        - 🎟️ **Entry Tickets & Activities**: {currency} {budget*0.05:,.0f}
-        - 🛡️ **Emergency Buffer & Visa**: {currency} {budget*0.05:,.0f}
+        ## Overall Budget Calculation
+        - **Round-trip Flights/Transit**: {currency} {round_transit:,}
+        - **Hotels / Accommodation**: {currency} {acc_cost:,}
+        - **Food & Dining**: {currency} {food_cost:,}
+        - **Local Transport**: {currency} {local_cost:,}
+        - **Entry Tickets & Activities**: {currency} {act_cost:,}
+        - **Emergency Buffer & Visa**: {currency} {buf_cost:,}
         - ---
-        - 💳 **Grand Total Estimated Cost**: {currency} {budget*0.90:,.0f}
-        - 💰 **Remaining Budget**: {currency} {budget*0.10:,.0f}
-        - 📊 **Budget Usage**: 90%
+        - **Grand Total Estimated Cost**: {currency} {grand_total:,}
+        - **Remaining Budget**: {currency} {rem_budget:,}
+        - **Budget Usage**: 90%
 
-        ## 🧳 Smart Packing Recommendations
+        ## Smart Packing Recommendations
         - Clothing for local climate, Walking Shoes, Universal Power Adapter, Travel Documents.
         """
         final_summary = _ai(p_final_prompt)
@@ -231,10 +337,10 @@ def generate_complete_itinerary(destination: str, days: int, budget: float,
 
         if missing_days:
             for md in missing_days:
-                repair_prompt = f"""
-                Generate missing Day {md} for {destination} travel planner ({days} days, currency: {currency}).
-                Include Daily Timeline, Morning, Afternoon, Evening, Night, Transport Between Attractions, AI Tips, Restaurants, and Daily Expense Breakdown.
-                """
+                repair_prompt = (
+                    "Generate missing Day " + str(md) + " for " + str(destination) + " travel planner (" + str(days) + " days, currency: " + str(currency) + ").\n"
+                    "Include Daily Timeline, Morning, Afternoon, Evening, Night, Transport Between Attractions, AI Tips, Restaurants, and Daily Expense Breakdown."
+                )
                 repaired_day = _ai(repair_prompt)
                 full_itinerary += f"\n\n### Day {md}: Additional Highlights of {destination}\n" + repaired_day
 
@@ -263,18 +369,13 @@ def generate_itinerary(destination: str, days: int, budget: float,
 
 
 def replan_itinerary(current_itinerary: str, modification_request: str) -> str:
-    prompt = f"""
-    You are an AI travel assistant. The user wants to modify their existing itinerary.
-    
-    Current Itinerary:
-    {current_itinerary}
-    
-    User's modification request:
-    {modification_request}
-    
-    Please provide the updated itinerary in the exact same complete format as the original, 
-    incorporating the requested changes smoothly without omitting any existing days.
-    """
+    prompt = (
+        "You are an AI travel assistant. The user wants to modify their existing itinerary.\n\n"
+        "Current Itinerary:\n" + str(current_itinerary) + "\n\n"
+        "User's modification request:\n" + str(modification_request) + "\n\n"
+        "Please provide the updated itinerary in the exact same complete format as the original, "
+        "incorporating the requested changes smoothly without omitting any existing days."
+    )
     try:
         return _ai(prompt)
     except Exception as e:
@@ -467,13 +568,13 @@ def analyze_travel_risk(destination: str, travel_dates: str, budget: float) -> s
     Return a JSON object with scores out of 100 (where 100 = 100% risk / highest danger, 0 = 0% risk / totally safe).
     Format exactly like this:
     {{
-      "overall_score": <integer 0-100>,
-      "overall_label": "<Safe | Moderate Risk | High Risk>",
-      "weather_risk": <integer 0-100>,
-      "crowd_risk": <integer 0-100>,
-      "safety_risk": <integer 0-100>,
+      "overall_score": 20,
+      "overall_label": "Safe | Moderate Risk | High Risk",
+      "weather_risk": 15,
+      "crowd_risk": 30,
+      "safety_risk": 10,
       "top_recommendations": ["...", "...", "..."],
-      "emergency_numbers": {{"police": "<local police number>", "ambulance": "<local ambulance number>", "fire": "<local fire number>", "tourist_helpline": "<if applicable>"}}
+      "emergency_numbers": {{"police": "112", "ambulance": "108", "fire": "101", "tourist_helpline": "1363"}}
     }}
 
     Only return JSON.
@@ -548,7 +649,7 @@ def get_hidden_gems(destination: str, interests: str = "") -> str:
     Discover hidden gems, offbeat attractions, and authentic local experiences in {destination}.
     Interests: {interests if interests else 'general'}
 
-    These should be places most tourists don't know about — local favorites, lesser-known spots.
+    These should be places most tourists do not know about - local favorites, lesser-known spots.
 
     Return JSON array of 6 items:
     [
@@ -646,7 +747,7 @@ def weather_activity_advisor(destination: str, weather_desc: str,
                               temperature: float) -> str:
     prompt = f"""
     A traveler is in {destination}.
-    Current weather: {weather_desc}, {temperature}°C
+    Current weather: {weather_desc}, {temperature} deg C
 
     Suggest smart activity recommendations based on this weather.
 
@@ -678,13 +779,14 @@ def generate_trip_memory(destination: str, start_date: str, end_date: str,
     entries_text = "\n".join(
         [f"- {e.get('title', 'Entry')}: {e.get('content', '')[:200]}" for e in journal_entries[:10]]
     )
+    spent_val = int(total_spent)
     prompt = f"""
     Generate a warm, poetic AI travel memory summary for a completed trip.
 
     Trip details:
     - Destination: {destination}
     - Dates: {start_date} to {end_date}
-    - Total spent: ${total_spent:.0f}
+    - Total spent: ${spent_val:,}
     - Attractions visited: {attractions_count}
     - Journal entries:
     {entries_text if entries_text else "No journal entries recorded."}
@@ -707,13 +809,13 @@ def generate_trip_memory(destination: str, start_date: str, end_date: str,
 def companion_suggestions(destination: str, current_day: int, total_days: int,
                           itinerary_snippet: str, weather: str = "") -> str:
     prompt = f"""
-    You are WanderWise AI Companion — a proactive travel guide.
+    You are WanderWise AI Companion - a proactive travel guide.
     
     Traveler info:
     - Destination: {destination}
     - Day {current_day} of {total_days}
     - Current weather: {weather if weather else 'not specified'}
-    - Today's planned activities: {itinerary_snippet[:500] if itinerary_snippet else 'free day'}
+    - Todays planned activities: {itinerary_snippet[:500] if itinerary_snippet else "free day"}
 
     Generate proactive, real-time travel companion suggestions.
 
@@ -726,7 +828,7 @@ def companion_suggestions(destination: str, current_day: int, total_days: int,
       ],
       "reminders": ["Reminder 1", "Reminder 2"],
       "did_you_know": "An interesting local fact about the destination",
-      "progress_message": "You're on day X of Y — keep exploring!"
+      "progress_message": "You are on day X of Y - keep exploring!"
     }}
 
     Only return JSON.
@@ -853,9 +955,8 @@ def generate_structured_itinerary(destination: str, days: int, budget: float,
 
     # Guarantee fallback if days_list is empty
     if not days_list or len(days_list) == 0:
-        from app.services.poi_service import fetch_real_pois_for_destination
-        print(f"[Pipeline Warning Log] Generated days list was empty for '{destination}'. Invoking fetch_real_pois_for_destination fallback.")
-        pois = fetch_real_pois_for_destination(destination)
+        print(f"[Pipeline Warning Log] Generated days list was empty for '{destination}'. Invoking Unique Itinerary Scheduler fallback.")
+        sched = schedule_unique_multiday_itinerary(destination, days)
         fallback_days = []
         time_slots = [
             ("08:30", "09:30", "morning", 60),
@@ -865,23 +966,30 @@ def generate_structured_itinerary(destination: str, days: int, budget: float,
             ("16:30", "18:30", "evening", 120)
         ]
         for d in range(1, max(days, 1) + 1):
+            day_info = sched[d]
             acts = []
-            for p_idx, poi in enumerate(pois[:5]):
+            for p_idx, poi in enumerate(day_info["pois"]):
                 st, et, slot, dur_m = time_slots[min(p_idx, len(time_slots) - 1)]
                 acts.append({
                     "start_time": st, "end_time": et, "duration_minutes": dur_m, "time_slot": slot,
-                    "title": f"📍 Explore {poi['name']}",
-                    "description": poi.get("description") or f"Visit {poi['name']} in {destination}.",
-                    "place": poi,
-                    "cost": {"amount": poi.get("ticket_price", 0.0), "currency": currency, "symbol": curr_info.symbol, "estimated": False},
-                    "ticket_price": poi.get("ticket_price", 0.0),
+                    "title": f"Explore {poi['name']}",
+                    "description": poi.get("desc") or f"Experience {poi['name']} in {destination}.",
+                    "place": {"name": poi['name'], "category": poi.get('category')},
+                    "cost": {"amount": 0.0, "currency": currency, "symbol": curr_info.symbol, "estimated": False},
+                    "ticket_price": 0.0,
                     "transport_mode": "Walking", "transport_duration": "8 mins", "distance": "0.6 km",
-                    "weather_suitability": "Mixed", "crowd_level": poi.get("crowd", "Moderate"),
-                    "ai_reason": poi.get("ai_reason") or f"✓ Best visited in the morning\n✓ Walking distance\n✓ 4.7★ reviews",
-                    "confidence_score": poi.get("confidence", 0.98),
-                    "metadata": {"tips": [poi.get("tip") or f"Visit early to enjoy quiet atmosphere."], "nearby": poi.get("nearby", [])}
+                    "weather_suitability": "Mixed", "crowd_level": "Moderate",
+                    "ai_reason": f"Unique sight selected for Day {d}",
+                    "confidence_score": 0.98,
+                    "metadata": {"tips": [f"Enjoy {poi['name']} at your own pace."], "nearby": []}
                 })
-            fallback_days.append({"day_number": d, "title": f"Day {d}: {destination.title()} Highlights", "theme_note": "Explore top attractions & local culture", "activities": acts})
+            theme_title = f"Day {d}: {destination.title()} Exploration" if not day_info["is_extended_exploration"] else f"Day {d}: Extended Experience & Scenic Trail"
+            fallback_days.append({
+                "day_number": d,
+                "title": theme_title,
+                "theme_note": day_info["notice"] or "Explore unique top attractions & local culture",
+                "activities": acts
+            })
         trip_data["days"] = fallback_days
 
     return trip_data
@@ -894,16 +1002,16 @@ def regenerate_day_itinerary(destination: str, day_number: int,
     Regenerate activities for a single day while respecting user locked activities.
     """
     locked_str = json.dumps(locked_activities or [])
+    notes_val = notes if notes else "Fresh new mix of attractions"
     system_instruction = "You are WanderWise AI. Return ONLY a valid JSON array of 4-5 activity objects for a single day."
-    prompt = f"""
-    Regenerate Day {day_number} itinerary for {destination}.
-    Special Requests / Notes: {notes if notes else 'Fresh new mix of attractions'}
-    LOCKED ACTIVITIES (DO NOT CHANGE OR OMIT THESE): {locked_str}
-
-    Return a JSON array of 4-5 activity objects with start_time, end_time, time_slot, title, description, location, place_category, estimated_duration, ticket_price, transport_mode, weather_suitability, crowd_level, ai_reason, confidence_score.
-    Ensure locked activities are preserved exactly in their original time slots.
-    Only return JSON array.
-    """
+    prompt = (
+        "Regenerate Day " + str(day_number) + " itinerary for " + str(destination) + ".\n"
+        "Special Requests / Notes: " + str(notes_val) + "\n"
+        "LOCKED ACTIVITIES (DO NOT CHANGE OR OMIT THESE): " + str(locked_str) + "\n\n"
+        "Return a JSON array of 4-5 activity objects with start_time, end_time, time_slot, title, description, location, place_category, estimated_duration, ticket_price, transport_mode, weather_suitability, crowd_level, ai_reason, confidence_score.\n"
+        "Ensure locked activities are preserved exactly in their original time slots.\n"
+        "Only return JSON array."
+    )
     try:
         raw_resp = _ai(prompt, system=system_instruction)
         res = _clean_json_response(raw_resp)

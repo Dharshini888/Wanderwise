@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { IconWind, IconDroplet, IconCloudRain } from '@tabler/icons-react';
 
 const API = 'http://localhost:8000/api';
@@ -67,14 +67,26 @@ export default function WeatherWidget({ trip }) {
   const cur = weather.current;
   const icon = WMO_ICONS[cur.weather_code] || '🌡️';
 
+  const todayStr = new Date().toISOString().split('T')[0];
+  const startStr = trip?.start_date ? String(trip.start_date).split('T')[0] : null;
+  const endStr = trip?.end_date ? String(trip.end_date).split('T')[0] : null;
+  const isActive = startStr && endStr && (startStr <= todayStr && todayStr <= endStr);
+
+  const tripMonth = startStr ? new Date(startStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'long' }) : 'your trip';
+
   return (
     <div className="glass-card p-6 flex flex-col gap-4">
       <div className="flex justify-between items-start">
         <div>
           <h3 className="text-sm font-bold text-[var(--text-muted)] uppercase tracking-wider mb-0.5">
-            Live Weather
+            {isActive ? 'Live Trip Weather' : 'Current Destination Weather (Today)'}
           </h3>
           <div className="text-lg font-bold text-[var(--text-primary)] font-heading">{weather.city}, {weather.country}</div>
+          {!isActive && (
+            <span className="text-[11px] text-amber-500 font-semibold block mt-0.5">
+              * Expected weather during your travel in {tripMonth} may differ.
+            </span>
+          )}
         </div>
         <span className="text-4xl">{icon}</span>
       </div>

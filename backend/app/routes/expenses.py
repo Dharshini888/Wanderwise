@@ -19,7 +19,7 @@ from app.services.expense_service import (
 from app.services.expense_ocr_service import process_receipt_ocr
 from app.services.expense_ai_service import generate_ai_expense_insights
 from app.utils.currency_formatter import format_currency
-from app.routes.auth import get_current_user_optional
+from app.routes.auth import get_current_user
 
 router = APIRouter(prefix="/api/expenses", tags=["Expenses"])
 
@@ -65,7 +65,7 @@ def _serialize_expense(e: Expense) -> dict:
 def create_expense_endpoint(
     data: ExpenseCreate,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     _verify_trip_access(data.trip_id, db, current_user)
     expense = create_new_expense(db, data)
@@ -76,7 +76,7 @@ def create_expense_endpoint(
 def get_trip_expenses_endpoint(
     trip_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     _verify_trip_access(trip_id, db, current_user)
     expenses = get_trip_expenses(db, trip_id)
@@ -87,7 +87,7 @@ def get_trip_expenses_endpoint(
 def get_expense_analytics_endpoint(
     trip_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     _verify_trip_access(trip_id, db, current_user)
     analytics = get_trip_budget_analytics(db, trip_id)
@@ -98,7 +98,7 @@ def get_expense_analytics_endpoint(
 def get_trip_budget_endpoint(
     trip_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     trip = _verify_trip_access(trip_id, db, current_user)
     b = get_or_create_budget(db, trip)
@@ -129,7 +129,7 @@ def get_trip_budget_endpoint(
 def get_ai_expense_insights_endpoint(
     trip_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     _verify_trip_access(trip_id, db, current_user)
     return generate_ai_expense_insights(db, trip_id)
@@ -146,7 +146,7 @@ def receipt_ocr_endpoint(file: UploadFile = File(...)):
 def export_csv_endpoint(
     trip_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     _verify_trip_access(trip_id, db, current_user)
     csv_data = export_expenses_csv(db, trip_id)
@@ -161,7 +161,7 @@ def export_csv_endpoint(
 def export_pdf_endpoint(
     trip_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     trip = _verify_trip_access(trip_id, db, current_user)
     expenses = get_trip_expenses(db, trip_id)
@@ -179,7 +179,7 @@ def export_pdf_endpoint(
 def get_expense_by_id_endpoint(
     id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     expense = db.query(Expense).filter(Expense.id == id).first()
     if not expense:
@@ -194,7 +194,7 @@ def update_expense_endpoint(
     id: int,
     data: ExpenseUpdate,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     expense_obj = db.query(Expense).filter(Expense.id == id).first()
     if not expense_obj:
@@ -210,7 +210,7 @@ def update_expense_endpoint(
 def delete_expense_endpoint(
     id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     expense_obj = db.query(Expense).filter(Expense.id == id).first()
     if not expense_obj:
@@ -226,7 +226,7 @@ def delete_expense_endpoint(
 def settle_up(
     trip_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     _verify_trip_access(trip_id, db, current_user)
     expenses = db.query(Expense).filter(Expense.trip_id == trip_id).all()

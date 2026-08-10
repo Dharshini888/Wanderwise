@@ -1,6 +1,6 @@
 {
   "destination": "tokyo",
-  "version": "2.2",
+  "version": "3.0",
   "pois": [
     {
       "name": "Senso-ji Temple",
@@ -23,9 +23,9 @@
       "currency": "JPY",
       "rating": 4.7,
       "crowd": "High",
-      "description": "Walk through the iconic Kaminarimon Gate into Tokyo's oldest and most sacred Buddhist temple. Explore vibrant Nakamise shopping stalls, traditional incense burners, and magnificent five-story pagodas.",
-      "ai_reason": "\u2713 Best visited in the morning before crowds arrive\n\u2713 Free historic attraction within your budget\n\u2713 Only 400m from your breakfast spot\n\u2713 4.7\u2605 reviews with iconic architecture",
-      "tip": "Visit before 9:00 AM to enjoy peaceful photo opportunities before large tour groups arrive.",
+      "description": "Walk through the iconic Kaminarimon Gate into Tokyo's oldest and most sacred Buddhist temple.",
+      "ai_reason": "\u2713 Best visited in the morning before crowds arrive\n\u2713 Free historic attraction\n\u2713 4.7\u2605 reviews",
+      "tip": "Visit before 9:00 AM for quiet photo opportunities.",
       "signature_dish": null,
       "nearby": [
         "Nakamise Shopping Street",
@@ -56,14 +56,13 @@
       "currency": "JPY",
       "rating": 4.6,
       "crowd": "High",
-      "description": "Ascend 350 meters above ground to panoramic glass observation decks featuring 360-degree views of Mount Fuji and the expansive Tokyo skyline.",
-      "ai_reason": "\u2713 Iconic 360-degree panoramic skyline views\n\u2713 Fits JPY 2,100 ticket budget\n\u2713 High photo spot rating\n\u2713 Direct metro connection from Asakusa",
-      "tip": "Pre-book tickets online to skip the main entrance line during peak afternoon hours.",
+      "description": "Ascend 350 meters above ground to panoramic glass observation decks.",
+      "ai_reason": "\u2713 Iconic 360-degree panoramic skyline views\n\u2713 High photo spot rating",
+      "tip": "Pre-book tickets online to skip entrance lines.",
       "signature_dish": null,
       "nearby": [
         "Sumida Aquarium",
-        "Tokyo Solamachi",
-        "Planetarium Tenku"
+        "Tokyo Solamachi"
       ],
       "source": "google_places",
       "confidence": 0.98
@@ -89,14 +88,13 @@
       "currency": "JPY",
       "rating": 4.6,
       "crowd": "Moderate",
-      "description": "Savor world-famous tonkotsu ramen served in private solo dining booths customized with your choice of noodle firmness, broth richness, and spicy red sauce.",
-      "ai_reason": "\u2713 Only 350m walk from Senso-ji Temple\n\u2713 Fits lunch timing (12:00 PM)\n\u2713 High rating for authentic Japanese ramen\n\u2713 Budget-friendly meal",
-      "tip": "Use the ticket vending machine at the entrance to select your meal before taking a booth seat.",
-      "signature_dish": "Classic Tonkotsu Ramen with Secret Spicy Red Sauce",
+      "description": "Savor world-famous tonkotsu ramen served in private solo dining booths.",
+      "ai_reason": "\u2713 350m walk from Senso-ji Temple\n\u2713 High rating for authentic Japanese ramen",
+      "tip": "Use the ticket vending machine at the entrance.",
+      "signature_dish": "Classic Tonkotsu Ramen",
       "nearby": [
         "Asakusa Station",
-        "Kaminarimon Gate",
-        "Sumida River Walk"
+        "Kaminarimon Gate"
       ],
       "source": "google_places",
       "confidence": 0.97
@@ -121,14 +119,13 @@
       "currency": "JPY",
       "rating": 4.6,
       "crowd": "Moderate",
-      "description": "Explore Japan's oldest and largest art museum, holding comprehensive collections of ancient samurai armor, national treasure kimonos, and Buddhist statues.",
-      "ai_reason": "\u2713 Premier cultural institution in Ueno Park\n\u2713 Air-conditioned indoor gallery ideal for afternoon\n\u2713 Matches cultural interest\n\u2713 4.6\u2605 reviews",
-      "tip": "Check the Japanese Gallery (Honkan) first for samurai swords and ancient pottery.",
+      "description": "Explore Japan's oldest and largest art museum holding samurai armor and national treasures.",
+      "ai_reason": "\u2713 Premier cultural institution in Ueno Park",
+      "tip": "Check the Japanese Gallery (Honkan) first.",
       "signature_dish": null,
       "nearby": [
         "Ueno Park",
-        "National Museum of Nature and Science",
-        "Ueno Zoo"
+        "National Museum of Nature and Science"
       ],
       "source": "google_places",
       "confidence": 0.98
@@ -154,14 +151,13 @@
       "currency": "JPY",
       "rating": 4.8,
       "crowd": "High",
-      "description": "Stand on an open-air rooftop sky deck 229 meters above Shibuya Crossing, offering stunning unobstructed sunset views of Tokyo and Mount Fuji.",
-      "ai_reason": "\u2713 Top-rated sunset spot (4.8\u2605)\n\u2713 Panoramic open-air glass rooftop\n\u2713 Excellent photography opportunities\n\u2713 Direct elevator from Shibuya Station",
-      "tip": "Book sunset time slots at least 2 weeks in advance as golden hour tickets sell out fast.",
+      "description": "Stand on an open-air rooftop sky deck 229 meters above Shibuya Crossing.",
+      "ai_reason": "\u2713 Top-rated sunset spot (4.8\u2605)\n\u2713 Panoramic open-air glass rooftop",
+      "tip": "Book sunset time slots at least 2 weeks in advance.",
       "signature_dish": null,
       "nearby": [
         "Shibuya Crossing",
-        "Hachiko Statue",
-        "Shibuya Scramble Square"
+        "Hachiko Statue"
       ],
       "source": "google_places",
       "confidence": 0.99

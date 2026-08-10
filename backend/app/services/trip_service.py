@@ -943,7 +943,16 @@ def get_dashboard_widgets(db: Session, user_id: int) -> Dict[str, Any]:
                 et = act.get("end_time") or "10:30"
                 is_done = bool(act.get("completed"))
 
-                status_info = RuleRecommendationService.compute_activity_status(st, et, is_done, now_dt)
+                target_day_date = getattr(target_day, 'date', None) if target_day else None
+                status_info = RuleRecommendationService.compute_activity_status(
+                    start_time=st,
+                    end_time=et,
+                    is_completed=is_done,
+                    now_dt=now_dt,
+                    activity_date=target_day_date,
+                    trip_start_date=target_trip.start_date,
+                    trip_end_date=target_trip.end_date
+                )
 
                 cat = act.get("place", {}).get("category", "") if act.get("place") else ""
                 w_badge = RuleRecommendationService.get_weather_badge(act.get("title", ""), cat, act.get("weather_suitability", ""), weather_data, st)
@@ -1092,6 +1101,7 @@ def get_today_itinerary(trip_id: int, db: Session, user_id: Optional[int] = None
     from app.models.itinerary import ItineraryDay, ItineraryActivity
     from app.models.expense import Expense
     from app.services.smart_replanner import SmartReplanner
+    from app.services.recommendation_engine import RuleRecommendationService
 
     # 1. User Isolation & Trip Retrieval
     query = db.query(Trip).filter(Trip.id == trip_id)
@@ -1105,6 +1115,7 @@ def get_today_itinerary(trip_id: int, db: Session, user_id: Optional[int] = None
     start_date = trip.start_date or today
     end_date = trip.end_date or today
     total_days = max(1, (end_date - start_date).days + 1)
+    is_upcoming_trip = bool(trip.start_date and today < trip.start_date)
 
     # 2. Day Calculation Rules
     if today < start_date:
@@ -1147,17 +1158,21 @@ def get_today_itinerary(trip_id: int, db: Session, user_id: Optional[int] = None
     for act in raw_activities:
         s_time = act.start_time or "09:00"
         e_time = act.end_time or "10:30"
+        act_date = getattr(day, 'date', None) if day else None
         
-        # Rule-based activity status calculation
+        # Rule-based activity status calculation with trip date hierarchy
+        status_info = RuleRecommendationService.compute_activity_status(
+            start_time=s_time,
+            end_time=e_time,
+            is_completed=bool(act.is_completed),
+            now_dt=now_dt,
+            activity_date=act_date,
+            trip_start_date=trip.start_date,
+            trip_end_date=trip.end_date
+        )
+        status = status_info["status"]
         if act.is_completed:
-            status = "completed"
             completed_count += 1
-        elif s_time <= now_time_str <= e_time:
-            status = "current"
-        elif now_time_str < s_time:
-            status = "upcoming"
-        else:
-            status = "missed"
 
         processed_activities.append({
             "id": act.id,
@@ -1173,7 +1188,12 @@ def get_today_itinerary(trip_id: int, db: Session, user_id: Optional[int] = None
             "weather_suitability": act.weather_suitability or "all-weather",
             "crowd_level": act.crowd_level or "moderate",
             "status": status,
+            "activity_status": status,
+            "status_badge": status_info["badge"],
+            "status_color": status_info["color"],
+            "countdown": status_info["countdown"],
             "is_completed": act.is_completed or False,
+            "completed": act.is_completed or False,
             "completed_at": act.completed_at.strftime("%I:%M %p") if act.completed_at else None,
             "is_locked": act.is_locked or False,
             "ticket_price": act.ticket_price or 0.0
@@ -1183,7 +1203,7 @@ def get_today_itinerary(trip_id: int, db: Session, user_id: Optional[int] = None
     smart_rec = SmartReplanner.evaluate_weather_recommendation(weather_summary, processed_activities)
 
     # Today's Progress Metrics
-    pct = round((completed_count / total_activities) * 100.0, 1) if total_activities > 0 else 0.0
+    pct = 0.0 if is_upcoming_trip else (round((completed_count / total_activities) * 100.0, 1) if total_activities > 0 else 0.0)
 
     # Today's Expenses
     today_expenses_dec = db.query(func.coalesce(func.sum(Expense.amount), Decimal("0"))).filter(
@@ -1191,11 +1211,15 @@ def get_today_itinerary(trip_id: int, db: Session, user_id: Optional[int] = None
         Expense.expense_date == today
     ).scalar() or Decimal("0")
 
+    formatted_start = trip.start_date.strftime("%d %b %Y") if trip.start_date else "the start date"
+
     return {
         "trip_id": trip.id,
         "destination": trip.destination,
         "country": trip.country,
         "trip_status": status_label,
+        "is_upcoming_trip": is_upcoming_trip,
+        "upcoming_notice": f"Your trip begins on {formatted_start}. Your itinerary is ready and will become active on the start date." if is_upcoming_trip else None,
         "date": today.strftime("%Y-%m-%d"),
         "date_formatted": today.strftime("%d %B %Y"),
         "current_day": current_day,
@@ -1211,9 +1235,9 @@ def get_today_itinerary(trip_id: int, db: Session, user_id: Optional[int] = None
             "completed_count": completed_count,
             "total_count": total_activities,
             "percentage": pct,
-            "walking_distance_km": round(len(processed_activities) * 1.8, 1),
-            "walking_time_mins": len(processed_activities) * 20,
-            "spent_today": float(today_expenses_dec)
+            "walking_distance_km": round(completed_count * 1.2, 1) if not is_upcoming_trip else 0.0,
+            "walking_time_mins": completed_count * 20 if not is_upcoming_trip else 0,
+            "spent_today": float(today_expenses_dec) if not is_upcoming_trip else 0.0
         }
     }
 

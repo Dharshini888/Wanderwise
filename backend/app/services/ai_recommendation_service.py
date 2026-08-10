@@ -106,14 +106,14 @@ class AIRecommendationService:
                 favorite_categories=categories,
                 visited_destinations=visited,
                 liked_activities=["Sunset Photography", "Local Food Tour"],
-                average_budget=avg_budget,
+                average_trip_budget=avg_budget,
                 average_trip_duration=5,
-                preferred_season="Oct-Apr"
+                preferred_months=["October", "November"]
             )
             db.add(profile)
         else:
             profile.visited_destinations = visited
-            profile.average_budget = avg_budget
+            profile.average_trip_budget = avg_budget
             profile.updated_at = datetime.now(timezone.utc)
         
         db.commit()
@@ -138,7 +138,7 @@ class AIRecommendationService:
         common_cats = user_cats.intersection(dest_cats)
         interest_score = min(40, (len(common_cats) / max(1, len(user_cats))) * 40)
         if common_cats:
-            reasons.append(f"Matches your favorite categories: {', '.join(list(common_cats)[:2])}")
+            reasons.append(f"Strong match for {', '.join(list(common_cats)[:2])}")
 
         # 2. Past Trip Similarity (25%)
         visited = profile.visited_destinations or []
@@ -147,7 +147,7 @@ class AIRecommendationService:
             reasons.append(f"Similar style to your previous trip to {visited[0]}")
 
         # 3. Budget Compatibility (15%)
-        user_b = profile.average_budget or 800.0
+        user_b = profile.average_trip_budget or 800.0
         dest_b = dest.average_budget or 600.0
         diff = abs(user_b - dest_b)
         budget_score = 15 if diff <= 300 else 10

@@ -22,27 +22,37 @@ export default function TodayTimeline({ activities, onToggleComplete }) {
         };
       case 'current':
         return {
-          bg: 'bg-blue-500 text-white animate-pulse',
-          border: 'border-blue-500',
+          bg: 'bg-teal-500 text-white animate-pulse',
+          border: 'border-teal-500',
           dot: '🔵',
           label: 'Currently Active',
-          chip: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20 font-bold'
+          chip: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20 font-bold'
+        };
+      case 'pending':
+        return {
+          bg: 'bg-amber-500 text-white',
+          border: 'border-amber-500',
+          dot: '🟡',
+          label: 'Pending',
+          chip: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
         };
       case 'missed':
         return {
-          bg: 'bg-red-500 text-white',
-          border: 'border-red-500',
+          bg: 'bg-rose-500 text-white',
+          border: 'border-rose-500',
           dot: '🔴',
           label: 'Missed',
-          chip: 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20'
+          chip: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'
         };
+      case 'upcoming':
+      case 'scheduled':
       default:
         return {
-          bg: 'bg-slate-400 text-white',
-          border: 'border-slate-400',
-          dot: '⚪',
+          bg: 'bg-blue-500 text-white',
+          border: 'border-blue-500',
+          dot: '🔵',
           label: 'Upcoming',
-          chip: 'bg-slate-500/10 text-slate-500 border-slate-500/20'
+          chip: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
         };
     }
   };

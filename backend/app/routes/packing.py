@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from app.services.ai_service import generate_packing_list
 import json
@@ -15,12 +15,16 @@ class PackingRequest(BaseModel):
 
 @router.post("/generate")
 def generate_list(data: PackingRequest):
-    raw = generate_packing_list(
-        destination=data.destination,
-        duration=data.duration,
-        travel_type=data.travel_type,
-        weather=data.weather,
-    )
+    try:
+        raw = generate_packing_list(
+            destination=data.destination,
+            duration=data.duration,
+            travel_type=data.travel_type,
+            weather=data.weather,
+        )
+    except Exception as e:
+        raise HTTPException(status_code=503, detail="AI generation failed")
+
     # Try to parse JSON from Gemini
     try:
         # Strip markdown code fences if present

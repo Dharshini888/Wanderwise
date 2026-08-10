@@ -11,6 +11,7 @@ import Chat from "./pages/Chat";
 import Weather from "./pages/Weather";
 import AISuggestions from "./pages/AISuggestions";
 import Transit from "./pages/Transit";
+import ActiveTrip from "./pages/ActiveTrip";
 import Packing from "./pages/Packing";
 import Safety from "./pages/Safety";
 import Budget from "./pages/Budget";
@@ -74,6 +75,8 @@ function App() {
             <Route path="/weather" element={<Layout><Weather /></Layout>} />
             <Route path="/recommendations" element={<Layout><AISuggestions /></Layout>} />
             <Route path="/transit" element={<Layout><Transit /></Layout>} />
+            <Route path="/trips/:tripId/transit" element={<Layout><Transit /></Layout>} />
+            <Route path="/trips/:tripId/live" element={<Layout><ActiveTrip /></Layout>} />
             <Route path="/packing" element={<Layout><Packing /></Layout>} />
             <Route path="/safety" element={<Layout><Safety /></Layout>} />
             <Route path="/budget" element={<Layout><Budget /></Layout>} />
@@ -81,6 +84,7 @@ function App() {
             <Route path="/expenses/:tripId" element={<Layout><ExpenseDashboard /></Layout>} />
             <Route path="/currency" element={<Layout><Currency /></Layout>} />
 
+            <Route path="/journal" element={<Layout><Journal /></Layout>} />
             <Route path="/journal/:tripId" element={<Layout><Journal /></Layout>} />
             <Route path="/wishlist" element={<Layout><Wishlist /></Layout>} />
             <Route path="/analytics" element={<Layout><Analytics /></Layout>} />

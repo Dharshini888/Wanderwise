@@ -24,7 +24,7 @@ from app.services.trip_service import (
 from app.services.ai_service import (
     generate_structured_itinerary, regenerate_day_itinerary, check_budget_alert, replan_itinerary, generate_itinerary
 )
-from app.routes.auth import get_current_user_optional
+from app.routes.auth import get_current_user
 
 router = APIRouter(prefix="/api/trips", tags=["Smart Trip Planner"])
 
@@ -62,7 +62,7 @@ def check_budget(destination: str, days: int, budget: float, currency: str = "US
 def create_new_trip(
     data: TripCreate,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     if current_user:
         data.user_id = current_user.id
@@ -268,7 +268,7 @@ def search_user_trips(
     query: str,
     user_id: Optional[int] = None,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     target_user_id = current_user.id if current_user else user_id
     if not target_user_id:
@@ -287,7 +287,7 @@ def filter_user_trips(
     is_favorite: Optional[bool] = None,
     is_archived: Optional[bool] = None,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     target_user_id = current_user.id if current_user else user_id
     if not target_user_id:
@@ -311,7 +311,7 @@ def filter_user_trips(
 def get_user_dashboard_widgets(
     user_id: Optional[int] = None,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     target_user_id = current_user.id if current_user else user_id
     if not target_user_id:
@@ -325,7 +325,7 @@ def get_user_dashboard_widgets(
 def get_trip_stats_endpoint(
     user_id: Optional[int] = None,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     target_user_id = current_user.id if current_user else user_id
     if not target_user_id:
@@ -338,7 +338,7 @@ def get_trip_stats_endpoint(
 def get_spotlight_endpoint(
     user_id: Optional[int] = None,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     target_user_id = current_user.id if current_user else user_id
     if not target_user_id:
@@ -352,7 +352,7 @@ def get_spotlight_endpoint(
 def get_recently_viewed_endpoint(
     user_id: Optional[int] = None,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     target_user_id = current_user.id if current_user else user_id
     if not target_user_id:
@@ -365,7 +365,7 @@ def get_recently_viewed_endpoint(
 def check_duplicate_endpoint(
     payload: dict,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     target_user_id = current_user.id if current_user else payload.get("user_id")
     if not target_user_id:
@@ -394,7 +394,7 @@ def get_user_trips(
     sort: Optional[str] = Query(None),
     paginated: Optional[bool] = Query(False),
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     target_user_id = current_user.id if current_user else user_id
     if not target_user_id:
@@ -413,7 +413,7 @@ def get_user_trips(
 def touch_trip_endpoint(
     trip_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     trip = _get_user_trip(trip_id, db, current_user)
     return touch_trip(db, trip.id, trip.user_id)
@@ -423,7 +423,7 @@ def touch_trip_endpoint(
 def get_single_trip(
     trip_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     trip = _get_user_trip(trip_id, db, current_user)
     res = enrich_trip_response(trip, db)
@@ -437,7 +437,7 @@ def update_existing_trip(
     trip_id: int,
     data: TripUpdate,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     trip = _get_user_trip(trip_id, db, current_user)
     updated = update_trip(db, trip, data)
@@ -449,7 +449,7 @@ def update_existing_trip(
 def delete_existing_trip(
     trip_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     trip = _get_user_trip(trip_id, db, current_user)
     db.delete(trip)
@@ -462,7 +462,7 @@ def duplicate_trip_endpoint(
     trip_id: int,
     user_id: Optional[int] = None,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     trip = _get_user_trip(trip_id, db, current_user)
     target_user_id = current_user.id if current_user else (user_id or trip.user_id)
@@ -477,7 +477,7 @@ def duplicate_trip_endpoint(
 def archive_trip_endpoint(
     trip_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     trip = _get_user_trip(trip_id, db, current_user)
     trip.is_archived = True
@@ -491,7 +491,7 @@ def archive_trip_endpoint(
 def restore_trip_endpoint(
     trip_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     trip = _get_user_trip(trip_id, db, current_user)
     trip.is_archived = False
@@ -511,7 +511,7 @@ def restore_trip_endpoint(
 def toggle_favorite_endpoint(
     trip_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     trip = _get_user_trip(trip_id, db, current_user)
     trip.is_favorite = not trip.is_favorite
@@ -524,7 +524,7 @@ def toggle_favorite_endpoint(
 def complete_trip_endpoint(
     trip_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     trip = _get_user_trip(trip_id, db, current_user)
     trip.status = "Completed"
@@ -537,7 +537,7 @@ def complete_trip_endpoint(
 def cancel_trip_endpoint(
     trip_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     trip = _get_user_trip(trip_id, db, current_user)
     trip.status = "Cancelled"
@@ -554,7 +554,7 @@ activities_router = APIRouter(prefix="/api/activities", tags=["Activities"])
 def complete_activity_endpoint(
     activity_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     act = _get_user_activity(activity_id, db, current_user)
     act.is_completed = True
@@ -575,7 +575,7 @@ def complete_activity_endpoint(
 def undo_activity_endpoint(
     activity_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     act = _get_user_activity(activity_id, db, current_user)
     act.is_completed = False
@@ -597,7 +597,7 @@ def undo_activity_endpoint(
 def share_trip_endpoint(
     trip_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     trip = _get_user_trip(trip_id, db, current_user)
     if not trip.share_token:
@@ -615,7 +615,7 @@ def share_trip_endpoint(
 def generate_trip_itinerary(
     trip_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     trip = _get_user_trip(trip_id, db, current_user)
     days = max(1, (trip.end_date - trip.start_date).days + 1)
@@ -637,7 +637,7 @@ def regenerate_day_endpoint(
     trip_id: int,
     data: RegenerateDayRequest,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     trip = _get_user_trip(trip_id, db, current_user)
     it_day = db.query(ItineraryDay).filter(ItineraryDay.trip_id == trip_id, ItineraryDay.day_number == data.day_number).first()
@@ -711,7 +711,7 @@ def replan_trip_endpoint(
     trigger_reason: str = Query(..., description="E.g., weather_delay, budget_exceeded, miss_attraction"),
     user_notes: Optional[str] = Query(None),
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     trip = _get_user_trip(trip_id, db, current_user)
     trip_dict = enrich_trip_response(trip, db)
@@ -728,7 +728,7 @@ def replan_trip_endpoint(
 def toggle_activity_lock(
     activity_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     act = _get_user_activity(activity_id, db, current_user)
     act.is_locked = not act.is_locked
@@ -741,7 +741,7 @@ def toggle_activity_lock(
 def delete_activity(
     activity_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     act = _get_user_activity(activity_id, db, current_user)
     db.delete(act)
@@ -754,7 +754,7 @@ def reorder_trip_activities(
     trip_id: int,
     data: ActivityReorder,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     trip = _get_user_trip(trip_id, db, current_user)
     act = db.query(ItineraryActivity).filter(ItineraryActivity.id == data.activity_id).first()
@@ -775,7 +775,7 @@ def add_custom_activity(
     trip_id: int,
     data: ActivityCreate,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     trip = _get_user_trip(trip_id, db, current_user)
     place = None
@@ -815,7 +815,7 @@ def add_custom_activity(
 def get_today_execution_itinerary(
     trip_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     """Fetch today's active execution itinerary with user isolation."""
     from app.services.trip_service import get_today_itinerary
@@ -831,7 +831,7 @@ def toggle_activity_complete_status(
     trip_id: int,
     activity_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional)
+    current_user: User = Depends(get_current_user)
 ):
     """Toggle completion status for an itinerary activity with strict user isolation."""
     from app.services.trip_service import toggle_activity_completion

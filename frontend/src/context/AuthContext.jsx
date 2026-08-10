@@ -54,7 +54,8 @@ export function AuthProvider({ children }) {
           localStorage.setItem('user', JSON.stringify(res.data));
         }
       } catch (err) {
-        // If 401, axios interceptor handles refresh or logout
+        // Stale or invalid token - clear session cleanly
+        setSession(null, null, null);
       } finally {
         setLoading(false);
       }
