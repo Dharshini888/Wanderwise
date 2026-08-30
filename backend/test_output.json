@@ -1,0 +1,1 @@
+{"detail":{"error":"AI_SERVICE_UNAVAILABLE","message":"AI provider authentication failed. The configured AI provider rejected the API key.","details":"Groq authentication failed: Error code: 401 - {'error': {'message': 'Invalid API Key', 'type': 'invalid_request_error', 'code': 'invalid_api_key'}}"}}

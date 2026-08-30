@@ -11,6 +11,8 @@ import {
   IconLoader,
   IconTrendingUp,
 } from '@tabler/icons-react';
+import { calculateTripDuration } from '../utils/date_helpers';
+import { getStoredUserId } from '../utils/formatters';
 
 const API = 'http://localhost:8000/api';
 const PIE_COLORS = ['#185FA5', '#0891b2', '#059669', '#d97706', '#7c3aed', '#db2777'];
@@ -36,16 +38,15 @@ export default function Analytics() {
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem('token');
 
-  let userId = null;
-  try { const p = JSON.parse(atob(token.split('.')[1])); userId = p.sub || p.user_id || p.id; } catch (_) {}
+  const userId = getStoredUserId();
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId || userId === 'undefined' || String(userId) === 'undefined') { setLoading(false); return; }
     fetch(`${API}/trips/user/${userId}`, { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json()).then(setTrips).catch(() => {}).finally(() => setLoading(false));
   }, [userId, token]);
 
-  const getDays = (t) => Math.max(1, Math.round((new Date(t.end_date) - new Date(t.start_date)) / 86400000) + 1);
+  const getDays = (t) => calculateTripDuration(t.start_date, t.end_date);
   const totalTrips  = trips.length;
   const totalDays   = trips.reduce((acc, t) => acc + getDays(t), 0);
   const totalBudget = trips.reduce((acc, t) => acc + (t.budget || 0), 0);

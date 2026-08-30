@@ -8,7 +8,8 @@ from app.routes import (
     packing, transit, safety, weather,
     recommendations, journal as journal_router,
     wishlist as wishlist_router, analytics, companion, currency,
-    consensus, intelligence, health_safety, ai_suggestions
+    consensus, intelligence, health_safety, ai_suggestions,
+    notifications, activity, documents, checklist, local_guide
 )
 from app.routes.recommendations import ai_rec_router
 
@@ -16,9 +17,16 @@ app = FastAPI(title="WanderWise API", version="2.0.0")
 
 Base.metadata.create_all(bind=engine)
 
+origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -31,6 +39,9 @@ app.include_router(trips.activities_router)
 
 app.include_router(expenses.router)
 app.include_router(chat.router)
+app.include_router(documents.router)
+app.include_router(checklist.router)
+app.include_router(local_guide.router)
 
 # New feature routes
 app.include_router(packing.router)
@@ -43,6 +54,8 @@ app.include_router(wishlist_router.router)
 app.include_router(analytics.router)
 app.include_router(companion.router)
 app.include_router(currency.router)
+app.include_router(notifications.router)
+app.include_router(activity.router)
 
 # v2 Routes
 app.include_router(consensus.router)

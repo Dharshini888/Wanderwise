@@ -7,6 +7,7 @@ from app.ai.validators.distance_validator import DistanceValidator
 from app.ai.validators.weather_validator import WeatherValidator
 from app.ai.validators.business_validator import BusinessValidator
 from app.ai.validators.normalizer import Normalizer
+from app.ai.validators.language_validator import LanguageValidator
 
 class ItineraryValidator:
     """Orchestrates JSON parsing, Schema, Placeholder, Opening Hours, Distance, Weather, Business validation, and Normalization."""
@@ -15,7 +16,8 @@ class ItineraryValidator:
     def validate_and_normalize(
         raw_response: str,
         currency_code: str = "USD",
-        weather_info: Optional[Dict[str, Any]] = None
+        weather_info: Optional[Dict[str, Any]] = None,
+        requested_language: str = "English"
     ) -> Tuple[bool, Optional[Dict[str, Any]], Optional[str]]:
         # Layer 1: JSON Parsing
         ok_json, data, err_json = JSONValidator.parse(raw_response)
@@ -51,6 +53,11 @@ class ItineraryValidator:
         ok_biz, err_biz = BusinessValidator.validate(data, target_currency=currency_code)
         if not ok_biz:
             return False, None, err_biz
+
+        # Layer 7.5: Language Validation
+        ok_lang, err_lang = LanguageValidator.validate(data, requested_language=requested_language)
+        if not ok_lang:
+            return False, None, err_lang
 
         # Layer 8: Normalization & Google Maps URLs
         try:

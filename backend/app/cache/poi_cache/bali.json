@@ -1,0 +1,161 @@
+{
+  "destination": "bali",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "FREE waterfall entrance!",
+      "category": "Viewpoint",
+      "address": "Bali",
+      "latitude": -8.2271303,
+      "longitude": 115.1919203,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore FREE waterfall entrance!, one of Bali's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bali\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of FREE waterfall entrance!.",
+      "signature_dish": null,
+      "nearby": [
+        "Bali"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Natural water slide",
+      "category": "Sightseeing",
+      "address": "Bali",
+      "latitude": -8.2271303,
+      "longitude": 115.1919203,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Natural water slide, one of Bali's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bali\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Natural water slide.",
+      "signature_dish": null,
+      "nearby": [
+        "Bali"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "SCAMERS here! (200k for entrance to waterfall)",
+      "category": "Viewpoint",
+      "address": "Bali",
+      "latitude": -8.2271303,
+      "longitude": 115.1919203,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore SCAMERS here! (200k for entrance to waterfall), one of Bali's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bali\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of SCAMERS here! (200k for entrance to waterfall).",
+      "signature_dish": null,
+      "nearby": [
+        "Bali"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Free entrance to temple",
+      "category": "Sightseeing",
+      "address": "Bali",
+      "latitude": -8.2271303,
+      "longitude": 115.1919203,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Free entrance to temple, one of Bali's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bali\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Free entrance to temple.",
+      "signature_dish": null,
+      "nearby": [
+        "Bali"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Dinosaur shadehouse",
+      "category": "Sightseeing",
+      "address": "Bali",
+      "latitude": -8.2271303,
+      "longitude": 115.1919203,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Dinosaur shadehouse, one of Bali's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bali\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Dinosaur shadehouse.",
+      "signature_dish": null,
+      "nearby": [
+        "Bali"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    }
+  ]
+}

@@ -497,6 +497,37 @@ def ai_recommendation_feedback(
         logger.warning(f"Feedback recording failed: {e}")
         return {"status": "success", "destination": data.destination, "action": data.action}
 
+@ai_rec_router.delete("/recommendations/feedback")
+def ai_remove_recommendation_feedback(
+    destination: str,
+    action: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    DELETE /api/ai/recommendations/feedback
+    Removes an interaction history (e.g., undo like or save).
+    """
+    try:
+        from app.models.recommendations import RecommendationHistory
+        # Remove the history record
+        query = db.query(RecommendationHistory).filter(
+            RecommendationHistory.user_id == current_user.id,
+            RecommendationHistory.destination == destination
+        )
+        
+        if action == "like":
+            query = query.filter(RecommendationHistory.clicked == True)
+        elif action in ["save", "collection"]:
+            query = query.filter(RecommendationHistory.saved == True)
+            
+        query.delete()
+        db.commit()
+        return {"status": "success", "message": f"Feedback '{action}' removed for {destination}"}
+    except Exception as e:
+        db.rollback()
+        return {"status": "error", "message": "Failed to remove feedback"}
+
 
 @ai_rec_router.post("/recommendations/simulate")
 def ai_simulate_trip_cost(

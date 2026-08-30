@@ -13,6 +13,8 @@ import {
   IconArrowRight,
   IconLoader,
 } from '@tabler/icons-react';
+import { calculateTripDuration } from '../utils/date_helpers';
+import { getStoredUserId } from '../utils/formatters';
 
 const API = 'http://localhost:8000/api';
 
@@ -24,14 +26,10 @@ export default function Companion() {
   const [replanning, setReplanning] = useState(false);
   const token = localStorage.getItem('token');
 
-  let userId = null;
-  try { 
-    const p = JSON.parse(atob(token.split('.')[1])); 
-    userId = p.sub || p.user_id || p.id; 
-  } catch (_) {}
+  const userId = getStoredUserId();
 
   const fetchTrips = async () => {
-    if (!userId) return;
+    if (!userId || userId === 'undefined' || String(userId) === 'undefined') { setLoading(false); return; }
     try {
       const res = await fetch(`${API}/trips/user/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) {
@@ -64,7 +62,7 @@ export default function Companion() {
     setReplanning(false);
   };
 
-  const getDays = (t) => Math.round((new Date(t.end_date) - new Date(t.start_date)) / 86400000) + 1;
+  const getDays = (t) => calculateTripDuration(t.start_date, t.end_date);
 
   return (
     <div className="flex flex-col h-[calc(100vh-3rem)] gap-6">

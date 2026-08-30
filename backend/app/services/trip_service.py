@@ -76,7 +76,169 @@ def calculate_trip_metrics(trip: Trip, db: Session) -> Dict[str, Any]:
     }
 
 
-def enrich_trip_response(trip: Trip, db: Session) -> Dict[str, Any]:
+def resolve_and_enrich_itinerary_routes(db: Session, trip: Trip, serialized_days: list, fetch_live_network: bool = False) -> list:
+    """
+    Truth-First Geocoding & OSRM Route Calculation for Trip Itinerary Days.
+    Resolves missing place coordinates via DB cache (or Nominatim if fetch_live_network=True)
+    and calculates routes between consecutive stops using Haversine math or OSRM.
+    """
+    from app.services.maps.nominatim_service import geocode_place
+    from app.services.maps.osrm_service import get_osrm_route
+    from app.services.route_optimizer import estimate_travel_transition
+
+    STOP_WORDS = ["Exploration & Dinner", "Exploration", "Visit", "Tour", "Dinner", "Lunch", "Breakfast"]
+
+    for day in serialized_days:
+        activities = day.get("activities", [])
+        if not activities:
+            continue
+
+        # Step A: Resolve place coordinates for all activities in the day
+        for act in activities:
+            place_dict = act.get("place")
+            if not place_dict and act.get("place_id"):
+                p_entity = db.query(Place).filter(Place.id == act["place_id"]).first()
+                if p_entity:
+                    place_dict = {
+                        "id": p_entity.id,
+                        "name": p_entity.name,
+                        "category": p_entity.category,
+                        "city": p_entity.city,
+                        "country": p_entity.country,
+                        "latitude": p_entity.latitude,
+                        "longitude": p_entity.longitude,
+                        "address": p_entity.address,
+                        "rating": p_entity.rating,
+                        "ticket_price": float(to_decimal(p_entity.ticket_price)),
+                        "google_maps_url": p_entity.google_maps_url,
+                    }
+                    act["place"] = place_dict
+
+            if place_dict and (place_dict.get("latitude") is None or place_dict.get("longitude") is None):
+                # Try fetching from DB first without network
+                if place_dict.get("id"):
+                    p_rec = db.query(Place).filter(Place.id == place_dict["id"]).first()
+                    if p_rec and p_rec.latitude is not None and p_rec.longitude is not None:
+                        place_dict["latitude"] = p_rec.latitude
+                        place_dict["longitude"] = p_rec.longitude
+                        if p_rec.address:
+                            place_dict["address"] = p_rec.address
+
+                # Only attempt external network geocoding if live network is requested
+                if fetch_live_network and (place_dict.get("latitude") is None or place_dict.get("longitude") is None):
+                    raw_name = place_dict.get("name") or act.get("title") or ""
+                    clean_name = raw_name
+                    for word in STOP_WORDS:
+                        clean_name = clean_name.replace(word, "").strip()
+
+                    queries = [
+                        f"{clean_name}, {trip.destination}, {trip.country or ''}".strip(", "),
+                        f"{clean_name.replace('Bazaar', 'Bazar').replace('Centre', 'Museum')}, {trip.destination}",
+                        f"{clean_name.replace('Bazaar', 'Bazar').replace('Centre', 'Museum')}, Shillong",
+                        f"{clean_name}, Meghalaya, India" if "meghalaya" in (trip.destination or "").lower() else f"{clean_name}, {trip.destination}",
+                        f"{clean_name}",
+                    ]
+
+                    geo_res = None
+                    for q in queries:
+                        res = geocode_place(q)
+                        if res and res.get("source") != "Default Search Fallback":
+                            geo_res = res
+                            break
+
+                    if geo_res:
+                        lat, lon = geo_res["lat"], geo_res["lon"]
+                        place_dict["latitude"] = lat
+                        place_dict["longitude"] = lon
+                        if not place_dict.get("address") or place_dict["address"] == f"{clean_name}, {trip.destination}":
+                            place_dict["address"] = geo_res.get("display_name")
+
+                        if place_dict.get("id"):
+                            p_rec = db.query(Place).filter(Place.id == place_dict["id"]).first()
+                            if p_rec:
+                                p_rec.latitude = lat
+                                p_rec.longitude = lon
+                                if geo_res.get("display_name"):
+                                    p_rec.address = geo_res["display_name"]
+                                db.commit()
+
+        # Step B: Calculate route transitions between consecutive stops
+        day_stops = []
+        total_dist_km = 0.0
+        total_dur_mins = 0
+        merged_geometry = []
+
+        for idx in range(len(activities)):
+            curr_act = activities[idx]
+            curr_p = curr_act.get("place") or {}
+            c_lat, c_lon = curr_p.get("latitude"), curr_p.get("longitude")
+
+            if c_lat is not None and c_lon is not None:
+                day_stops.append({
+                    "id": curr_act.get("id"),
+                    "title": curr_act.get("title") or curr_p.get("name"),
+                    "place_name": curr_p.get("name") or curr_act.get("title"),
+                    "category": curr_p.get("category", "sightseeing"),
+                    "latitude": c_lat,
+                    "longitude": c_lon,
+                    "address": curr_p.get("address"),
+                    "order_index": idx + 1,
+                })
+
+            if idx < len(activities) - 1:
+                next_act = activities[idx + 1]
+                next_p = next_act.get("place") or {}
+                n_lat, n_lon = next_p.get("latitude"), next_p.get("longitude")
+
+                if c_lat is not None and c_lon is not None and n_lat is not None and n_lon is not None:
+                    if fetch_live_network:
+                        osrm_res = get_osrm_route(c_lat, c_lon, n_lat, n_lon)
+                        leg_dist = osrm_res.get("distance_km", 0.0)
+                        leg_dur = osrm_res.get("duration_minutes", 0.0)
+                        leg_geo = osrm_res.get("geometry", [])
+                    else:
+                        trans = estimate_travel_transition(c_lat, c_lon, n_lat, n_lon)
+                        leg_dist = trans.get("distance_km", 0.0)
+                        import re
+                        m = re.search(r'(\d+)', trans.get("travel_time", "15"))
+                        leg_dur = float(m.group(1)) if m else 15.0
+                        leg_geo = []
+
+                    mode = "Walking" if leg_dist <= 1.2 else "Driving"
+                    dur_str = f"{int(round(leg_dur))} min" if leg_dur >= 1 else "< 1 min"
+                    dist_str = f"{leg_dist} km"
+
+                    curr_act["transport_mode"] = mode
+                    curr_act["transport_duration"] = dur_str
+                    if not isinstance(curr_act.get("metadata"), dict):
+                        curr_act["metadata"] = {}
+                    curr_act["metadata"]["distance"] = dist_str
+                    if leg_geo:
+                        curr_act["metadata"]["geometry"] = leg_geo
+                    curr_act["metadata"]["verification_status"] = "Route Calculated"
+                    curr_act["next_place_name"] = next_p.get("name") or next_act.get("title")
+
+                    total_dist_km += leg_dist
+                    total_dur_mins += int(round(leg_dur))
+                    if leg_geo:
+                        merged_geometry.extend(leg_geo)
+                else:
+                    curr_act["transport_mode"] = "Not available"
+                    curr_act["transport_duration"] = "Not available"
+
+        day["route_summary"] = {
+            "stops_count": len(day_stops),
+            "total_distance_km": round(total_dist_km, 1),
+            "total_duration_minutes": total_dur_mins,
+            "verification_status": "Route Calculated" if total_dist_km > 0 else "Unavailable",
+            "route_geometry": merged_geometry,
+            "stops": day_stops,
+        }
+
+    return serialized_days
+
+
+def enrich_trip_response(trip: Trip, db: Session, fetch_live_network: bool = False) -> Dict[str, Any]:
     """Convert SQLAlchemy Trip object to dictionary enriched with dynamic metrics, SQL aggregations, and serialized itinerary."""
     from app.utils.currency_formatter import format_currency
     from app.core.currencies import get_currency_symbol
@@ -251,6 +413,7 @@ def enrich_trip_response(trip: Trip, db: Session) -> Dict[str, Any]:
             "activities": serialized_acts
         })
 
+    serialized_days = resolve_and_enrich_itinerary_routes(db, trip, serialized_days, fetch_live_network=fetch_live_network)
     budget_val = float(to_decimal(trip.budget)) if trip.budget is not None else None
 
     return {

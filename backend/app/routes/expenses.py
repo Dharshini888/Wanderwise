@@ -67,7 +67,12 @@ def create_expense_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    _verify_trip_access(data.trip_id, db, current_user)
+    trip = _verify_trip_access(data.trip_id, db, current_user)
+    
+    if trip.start_date and trip.end_date:
+        if data.expense_date < trip.start_date or data.expense_date > trip.end_date:
+            raise HTTPException(status_code=400, detail="Expense date must be within the trip start and end dates.")
+            
     expense = create_new_expense(db, data)
     return _serialize_expense(expense)
 
@@ -200,7 +205,13 @@ def update_expense_endpoint(
     if not expense_obj:
         raise HTTPException(status_code=404, detail="Expense not found")
     if current_user:
-        _verify_trip_access(expense_obj.trip_id, db, current_user)
+        trip = _verify_trip_access(expense_obj.trip_id, db, current_user)
+    else:
+        trip = db.query(Trip).filter(Trip.id == expense_obj.trip_id).first()
+        
+    if data.expense_date and trip and trip.start_date and trip.end_date:
+        if data.expense_date < trip.start_date or data.expense_date > trip.end_date:
+            raise HTTPException(status_code=400, detail="Expense date must be within the trip start and end dates.")
     
     updated = update_existing_expense(db, id, data)
     return _serialize_expense(updated)
@@ -274,3 +285,27 @@ def settle_up(
             j += 1
             
     return {"transactions": transactions, "balances": balances}
+
+@router.get("/{trip_id}/export/csv")
+def export_csv_endpoint(
+    trip_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    _verify_trip_access(trip_id, db, current_user)
+    csv_data = export_expenses_csv(db, trip_id)
+    return Response(content=csv_data, media_type="text/csv", headers={"Content-Disposition": f"attachment; filename=expenses_trip_{trip_id}.csv"})
+
+@router.get("/{trip_id}/export/pdf")
+def export_pdf_endpoint(
+    trip_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    from app.services.expense_service import export_expenses_pdf
+    _verify_trip_access(trip_id, db, current_user)
+    try:
+        pdf_data = export_expenses_pdf(db, trip_id)
+        return Response(content=pdf_data, media_type="application/pdf", headers={"Content-Disposition": f"attachment; filename=expenses_trip_{trip_id}.pdf"})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

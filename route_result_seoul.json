@@ -1,0 +1,407 @@
+{
+  "request_id": "req_2b74411a6249",
+  "status": "ROUTE_GUIDANCE_AVAILABLE",
+  "result_level": 4,
+  "verified": false,
+  "journey_scale": "INTERCONTINENTAL",
+  "origin": "Current GPS Location",
+  "destination": "Seoul",
+  "origin_source": "BROWSER_GPS",
+  "origin_accuracy_m": 10.0,
+  "origin_coords": {
+    "lat": 11.0168,
+    "lon": 76.9558,
+    "accuracy": 10.0
+  },
+  "dest_coords": {
+    "lat": 37.5665,
+    "lon": 126.978
+  },
+  "preferred_mode": "fastest",
+  "distance_summary": {
+    "total_distance_km": 5776.2,
+    "distance_type": "STRAIGHT_LINE",
+    "source": "Haversine Distance",
+    "status": "ESTIMATED"
+  },
+  "duration_summary": {
+    "total_duration_min": null,
+    "source": "Unavailable",
+    "status": "UNAVAILABLE"
+  },
+  "journey_segments": [
+    {
+      "mode": "Travel Guidance",
+      "from": "Current GPS Location",
+      "to": "Seoul",
+      "distance_km": 5776.2,
+      "duration_min": null,
+      "status": "UNAVAILABLE",
+      "source": "Derived Coordinates",
+      "confidence": "LOW"
+    }
+  ],
+  "journey_timeline": [
+    {
+      "time": "1",
+      "title": "\ud83c\udfe0 Current GPS Location",
+      "description": "Origin location",
+      "status": "ESTIMATED",
+      "type": "ORIGIN"
+    },
+    {
+      "time": "2",
+      "title": "\ud83c\udf10 Travel Guidance \u00b7 Current GPS Location \u2192 Seoul",
+      "description": "Consider air travel for this long-distance journey. No verified FlightProvider or RailRadar itinerary is currently available.",
+      "status": "ESTIMATED",
+      "mode": "Travel Guidance",
+      "source": "AI Guidance",
+      "distance_km": 5776.2,
+      "duration_min": null,
+      "type": "SEGMENT"
+    },
+    {
+      "time": "3",
+      "title": "\ud83d\udccd Seoul",
+      "description": "Destination location",
+      "status": "ESTIMATED",
+      "type": "DESTINATION"
+    }
+  ],
+  "route_options": [
+    {
+      "provider": "RailRadar",
+      "mode": "Rail",
+      "status": "UNAVAILABLE",
+      "message": "No verified RailRadar itinerary available"
+    },
+    {
+      "provider": "FlightProvider",
+      "mode": "Flight",
+      "status": "UNAVAILABLE",
+      "message": "No verified flight options available"
+    },
+    {
+      "provider": "OSRM",
+      "mode": "Driving",
+      "status": "UNAVAILABLE",
+      "message": "Road route unavailable"
+    }
+  ],
+  "provider_diagnostics": [
+    {
+      "provider": "RailRadar",
+      "configured": true,
+      "status": "UNAVAILABLE",
+      "message": "No verified RailRadar itinerary returned"
+    },
+    {
+      "provider": "FlightProvider",
+      "configured": true,
+      "status": "UNAVAILABLE",
+      "message": "No verified flight returned"
+    },
+    {
+      "provider": "OSRM",
+      "configured": true,
+      "status": "UNAVAILABLE",
+      "message": "Road route unavailable"
+    },
+    {
+      "provider": "Overpass",
+      "configured": true,
+      "status": "FALLBACK_USED",
+      "message": "Live query unavailable; verified geographic fallback used"
+    },
+    {
+      "provider": "Nominatim",
+      "configured": true,
+      "status": "VERIFIED",
+      "message": "Origin/destination geocoded"
+    }
+  ],
+  "provider_audit": {
+    "RailRadar": {
+      "configured": true,
+      "attempted": true,
+      "status": "NO_ITINERARY",
+      "reason": "No verified rail itinerary returned"
+    },
+    "FlightProvider": {
+      "configured": true,
+      "attempted": true,
+      "status": "NO_RESULT",
+      "reason": "No verified flight returned"
+    },
+    "OSRM": {
+      "configured": true,
+      "attempted": true,
+      "status": "NO_RESULT",
+      "reason": "No road route returned"
+    },
+    "Overpass": {
+      "configured": true,
+      "attempted": true,
+      "status": "SUCCESS",
+      "reason": "Live query unavailable; verified geographic fallback used"
+    },
+    "Nominatim": {
+      "configured": true,
+      "attempted": true,
+      "status": "SUCCESS",
+      "reason": "Origin and destination geocoded successfully"
+    }
+  },
+  "strategy_analysis": {
+    "fastest": {
+      "title": "Fastest Route",
+      "recommendation": "Insufficient verified data",
+      "status": "UNAVAILABLE",
+      "note": ""
+    },
+    "cheapest": {
+      "title": "Cheapest Option",
+      "recommendation": "Insufficient verified fare data",
+      "status": "UNAVAILABLE",
+      "note": ""
+    },
+    "safest": {
+      "title": "Safest Transportation",
+      "recommendation": "No verified comparison available",
+      "status": "UNAVAILABLE",
+      "note": ""
+    },
+    "greenest": {
+      "title": "Lowest CO2 Impact",
+      "recommendation": "No verified multimodal comparison available",
+      "status": "UNAVAILABLE",
+      "note": ""
+    },
+    "least_walking": {
+      "title": "Least Walking",
+      "recommendation": "No verified walking comparison available",
+      "status": "UNAVAILABLE",
+      "note": ""
+    },
+    "best_overall": {
+      "title": "Best Overall",
+      "recommendation": "Air travel is the practical high-level option, but no verified itinerary is available.",
+      "status": "ESTIMATED",
+      "note": ""
+    }
+  },
+  "why_this_route": [
+    "RailRadar was queried but returned no verified transit itinerary.",
+    "FlightProvider was queried but returned no verified flight itinerary (Flight provider returned no verified flight itinerary)."
+  ],
+  "nearby": [
+    {
+      "name": "Coimbatore North Railway Station",
+      "category": "Railway Station",
+      "latitude": 11.0264155,
+      "longitude": 76.9577965,
+      "distance_km": 1.1,
+      "source": "Verified Transit Infrastructure",
+      "source_type": "VERIFIED_INFRASTRUCTURE",
+      "verified": true,
+      "map_url": "https://www.google.com/maps/search/?api=1&query=11.0264155,76.9577965",
+      "type": "Railway Station",
+      "lat": 11.0264155,
+      "lon": 76.9577965,
+      "walk_time_mins": 13
+    },
+    {
+      "name": "Gandhipuram Central Bus Stand",
+      "category": "Bus Stop",
+      "latitude": 11.0183,
+      "longitude": 76.9654,
+      "distance_km": 1.1,
+      "source": "Verified Transit Infrastructure",
+      "source_type": "VERIFIED_INFRASTRUCTURE",
+      "verified": true,
+      "map_url": "https://www.google.com/maps/search/?api=1&query=11.0183,76.9654",
+      "type": "Bus Stop",
+      "lat": 11.0183,
+      "lon": 76.9654,
+      "walk_time_mins": 13
+    },
+    {
+      "name": "CBE (Coimbatore Junction)",
+      "category": "Railway Station",
+      "latitude": 11.0010168,
+      "longitude": 76.9664539,
+      "distance_km": 2.1,
+      "source": "Verified Transit Infrastructure",
+      "source_type": "VERIFIED_INFRASTRUCTURE",
+      "verified": true,
+      "map_url": "https://www.google.com/maps/search/?api=1&query=11.0010168,76.9664539",
+      "type": "Railway Station",
+      "lat": 11.0010168,
+      "lon": 76.9664539,
+      "walk_time_mins": 25
+    },
+    {
+      "name": "Ukkadam Bus Stand",
+      "category": "Bus Stop",
+      "latitude": 10.9912,
+      "longitude": 76.9615,
+      "distance_km": 2.9,
+      "source": "Verified Transit Infrastructure",
+      "source_type": "VERIFIED_INFRASTRUCTURE",
+      "verified": true,
+      "map_url": "https://www.google.com/maps/search/?api=1&query=10.9912,76.9615",
+      "type": "Bus Stop",
+      "lat": 10.9912,
+      "lon": 76.9615,
+      "walk_time_mins": 35
+    }
+  ],
+  "nearby_provenance": {
+    "provider": "Verified Transit Infrastructure",
+    "origin_source": "BROWSER_GPS",
+    "origin_lat": 11.0168,
+    "origin_lon": 76.9558,
+    "origin_accuracy_m": 10.0,
+    "radius_km": 5.0,
+    "queried": true,
+    "fallback_used": true,
+    "fallback_reason": "Live Overpass API query returned no results or timed out",
+    "result_count": 4
+  },
+  "weather_obj": {
+    "stops": [
+      {
+        "location": "Current GPS Location",
+        "temp": "--\u00b0C",
+        "icon": "\u2753"
+      },
+      {
+        "location": "Seoul",
+        "temp": "--\u00b0C",
+        "icon": "\u2753"
+      }
+    ]
+  },
+  "discovered_infrastructure": {
+    "nearby_stations": [
+      {
+        "name": "Coimbatore North Railway Station",
+        "category": "Railway Station",
+        "latitude": 11.0264155,
+        "longitude": 76.9577965,
+        "distance_km": 1.1,
+        "source": "Verified Transit Infrastructure",
+        "source_type": "VERIFIED_INFRASTRUCTURE",
+        "verified": true,
+        "map_url": "https://www.google.com/maps/search/?api=1&query=11.0264155,76.9577965",
+        "type": "Railway Station",
+        "lat": 11.0264155,
+        "lon": 76.9577965,
+        "walk_time_mins": 13
+      },
+      {
+        "name": "Gandhipuram Central Bus Stand",
+        "category": "Bus Stop",
+        "latitude": 11.0183,
+        "longitude": 76.9654,
+        "distance_km": 1.1,
+        "source": "Verified Transit Infrastructure",
+        "source_type": "VERIFIED_INFRASTRUCTURE",
+        "verified": true,
+        "map_url": "https://www.google.com/maps/search/?api=1&query=11.0183,76.9654",
+        "type": "Bus Stop",
+        "lat": 11.0183,
+        "lon": 76.9654,
+        "walk_time_mins": 13
+      },
+      {
+        "name": "CBE (Coimbatore Junction)",
+        "category": "Railway Station",
+        "latitude": 11.0010168,
+        "longitude": 76.9664539,
+        "distance_km": 2.1,
+        "source": "Verified Transit Infrastructure",
+        "source_type": "VERIFIED_INFRASTRUCTURE",
+        "verified": true,
+        "map_url": "https://www.google.com/maps/search/?api=1&query=11.0010168,76.9664539",
+        "type": "Railway Station",
+        "lat": 11.0010168,
+        "lon": 76.9664539,
+        "walk_time_mins": 25
+      },
+      {
+        "name": "Ukkadam Bus Stand",
+        "category": "Bus Stop",
+        "latitude": 10.9912,
+        "longitude": 76.9615,
+        "distance_km": 2.9,
+        "source": "Verified Transit Infrastructure",
+        "source_type": "VERIFIED_INFRASTRUCTURE",
+        "verified": true,
+        "map_url": "https://www.google.com/maps/search/?api=1&query=10.9912,76.9615",
+        "type": "Bus Stop",
+        "lat": 10.9912,
+        "lon": 76.9615,
+        "walk_time_mins": 35
+      }
+    ]
+  },
+  "nearby_places": [],
+  "journey": null,
+  "road_alternative": null,
+  "route_guidance": {
+    "type": "AI_MODE_GUIDANCE",
+    "recommended_mode": "Flight",
+    "verification": "estimated",
+    "title": "Flight Recommended",
+    "reason": "The journey is intercontinental and approximately 5776.2 km by straight-line distance, making flight the practical primary mode. However, no live flight itinerary was verified.",
+    "provider_status": {
+      "railradar": "no_verified_itinerary",
+      "flight_provider": "no_verified_itinerary"
+    },
+    "limitations": [
+      "No verified FlightProvider itinerary was available",
+      "No verified RailRadar itinerary was available"
+    ]
+  },
+  "ai_strategy": {
+    "type": "AI_MODE_GUIDANCE",
+    "recommended_mode": "Flight",
+    "verification": "estimated",
+    "title": "Flight Recommended",
+    "reason": "The journey is intercontinental and approximately 5776.2 km by straight-line distance, making flight the practical primary mode. However, no live flight itinerary was verified.",
+    "provider_status": {
+      "railradar": "no_verified_itinerary",
+      "flight_provider": "no_verified_itinerary"
+    },
+    "limitations": [
+      "No verified FlightProvider itinerary was available",
+      "No verified RailRadar itinerary was available"
+    ]
+  },
+  "provider_trace": [
+    {
+      "provider": "RailRadar",
+      "status": "NO_ITINERARY",
+      "note": "RailRadar returned zero matching train itineraries for these coordinates."
+    },
+    {
+      "provider": "FlightProvider",
+      "status": "PROVIDER_UNAVAILABLE",
+      "note": "Flight provider returned no verified flight itinerary"
+    }
+  ],
+  "data_quality": {
+    "provider_engine": "AI Route Guidance",
+    "schedule_timestamps": "Schedule Unavailable",
+    "platform_information": "Unavailable",
+    "distance_source": "Unavailable",
+    "walking_navigation": "N/A",
+    "geocoding_engine": "Browser Geolocation",
+    "ai_guidance": "Used for high-level structure only"
+  },
+  "provenance": {
+    "routing": "AI Route Guidance (Unverified)",
+    "geocoding": "Browser Geolocation"
+  }
+}

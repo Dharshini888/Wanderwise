@@ -11,6 +11,7 @@ export const createTrip = async (data) => {
 };
 
 export const getUserTrips = async (userId) => {
+  if (!userId || userId === 'undefined' || String(userId) === 'undefined') return [];
   const res = await api.get(`/api/trips/user/${userId}`);
   return res.data;
 };

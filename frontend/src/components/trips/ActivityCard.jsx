@@ -4,6 +4,7 @@ import {
   IconSparkles, IconWalk, IconCamera, IconInfoCircle, IconExternalLink, IconSoup, IconArrowRight
 } from '@tabler/icons-react';
 import { formatCurrency } from '../../utils/currencyFormatter';
+import VerificationBadge from '../ui/VerificationBadge';
 
 export default function ActivityCard({ activity, tripCurrency = 'USD', onLockToggle, onDelete, isDragging }) {
   if (!activity) return null;
@@ -13,8 +14,13 @@ export default function ActivityCard({ activity, tripCurrency = 'USD', onLockTog
   const currCode = activity.cost?.currency || tripCurrency || 'USD';
   const formattedCost = activity.formatted_cost || (costAmt > 0 ? formatCurrency(costAmt, currCode) : 'Free Entry');
 
-  const meta = activity.metadata || {};
+  const meta = activity.metadata || activity.activity_metadata || {};
   const place = activity.place || {};
+
+  const isTravelAvailable = activity.transport_mode && activity.transport_mode !== 'Not available';
+  const travelDist = meta.distance || activity.distance;
+  const travelDur = activity.transport_duration && activity.transport_duration !== 'Not available' ? activity.transport_duration : null;
+  const travelVerification = meta.verification_status || (isTravelAvailable ? 'Route Calculated' : 'Unavailable');
 
   // Clean single tip extraction
   let tipText = '';
@@ -157,13 +163,22 @@ export default function ActivityCard({ activity, tripCurrency = 'USD', onLockTog
       </div>
 
       {/* 5. Rich Travel Transition */}
-      {activity.transport_mode && (
-        <div className="p-2.5 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/40 text-indigo-900 dark:text-indigo-200 text-xs font-bold flex items-center justify-between gap-2 border border-indigo-100 dark:border-indigo-900/40">
-          <div className="flex items-center gap-1.5">
-            <IconWalk size={15} className="text-indigo-600 dark:text-indigo-400" />
+      {(activity.transport_mode || travelDist) && (
+        <div className="p-2.5 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/40 text-indigo-900 dark:text-indigo-200 text-xs font-bold flex items-center justify-between gap-2 border border-indigo-100 dark:border-indigo-900/40 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap">
+            <IconWalk size={15} className="text-indigo-600 dark:text-indigo-400 shrink-0" />
             <span>
-              Travel: {activity.transport_mode} • {activity.transport_duration || '8 mins'} ({activity.distance || '0.6 km'})
+              {isTravelAvailable ? (
+                <>
+                  Travel: <span className="capitalize">{activity.transport_mode}</span>
+                  {travelDur ? ` • ${travelDur}` : ''}
+                  {travelDist && travelDist !== 'Not available' ? ` (${travelDist})` : ''}
+                </>
+              ) : (
+                <>Travel: Unavailable</>
+              )}
             </span>
+            <VerificationBadge status={travelVerification} size="xs" />
           </div>
           {activity.next_place_name && (
             <div className="flex items-center gap-1 text-[11px] text-indigo-700 dark:text-indigo-300 font-semibold">

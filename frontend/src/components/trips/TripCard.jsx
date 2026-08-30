@@ -45,13 +45,26 @@ const TripCard = React.memo(({ trip, onFavorite, onArchive, onDuplicate, onDelet
   const healthBarColor = budgetHealth === 'Exceeded' ? 'bg-red-500' : budgetHealth === 'Warning' ? 'bg-amber-500' : 'bg-emerald-500';
   const healthTextColor = budgetHealth === 'Exceeded' ? 'text-red-500 dark:text-red-400' : budgetHealth === 'Warning' ? 'text-amber-500 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400';
 
+  const calculateTripDuration = (start, end) => {
+    if (!start || !end) return 1;
+    const st = new Date(start);
+    const en = new Date(end);
+    if (isNaN(st) || isNaN(en)) return 1;
+    const diffTime = Math.abs(en - st);
+    return Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1);
+  };
+  
+  const computedDuration = trip.start_date && trip.end_date 
+    ? calculateTripDuration(trip.start_date, trip.end_date)
+    : (trip.duration_days || trip.number_of_days || 1);
+
   const quick = trip.quick_insights || { activities: trip.activities_total || 0, attractions: trip.activities_total || 0, walking_distance: '8.5 km', travel_time: '2h 15m' };
 
   return (
     <div
       onMouseEnter={handleHover}
       data-trip-card="true"
-      className="glass-card flex flex-col justify-between overflow-hidden group hover:scale-[1.01] transition-all duration-200"
+      className="travel-card travel-card-hover flex flex-col justify-between overflow-hidden group rounded-3xl border border-[var(--border-color)] transition-all duration-200"
     >
       {/* Cover Image Banner (Compact h-32 sm:h-36 ~140px) */}
       <div className="h-32 sm:h-36 w-full relative overflow-hidden bg-slate-800 shrink-0">
@@ -85,7 +98,7 @@ const TripCard = React.memo(({ trip, onFavorite, onArchive, onDuplicate, onDelet
           )}
           {isActive && (
             <span className="px-1.5 py-0.5 rounded-full text-[9px] font-extrabold bg-emerald-900/80 text-emerald-200 border border-emerald-400/30 backdrop-blur-md">
-              Day {trip.current_trip_day || 1} of {trip.duration_days || 1}
+              Day {trip.current_trip_day || 1} of {computedDuration}
             </span>
           )}
         </div>
@@ -119,7 +132,7 @@ const TripCard = React.memo(({ trip, onFavorite, onArchive, onDuplicate, onDelet
             </span>
             <span className="flex items-center gap-1 text-gray-300 font-medium shrink-0">
               <IconCalendar size={11} className="text-indigo-300" />
-              {String(trip.start_date).slice(5, 10)} • {trip.duration_days || trip.number_of_days || 1}d
+              {String(trip.start_date).slice(5, 10)} • {computedDuration}d
             </span>
           </div>
         </div>

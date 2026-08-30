@@ -1,0 +1,781 @@
+{
+  "destination": "bangalore",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Peninsular Gneiss",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Peninsular Gneiss, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Peninsular Gneiss.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Muscle Power Exhibit",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Muscle Power Exhibit, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Muscle Power Exhibit.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Freedom Park",
+      "category": "Viewpoint",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Freedom Park, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Freedom Park.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Railway Locomotive",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Railway Locomotive, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Railway Locomotive.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Indira Gandhi Musical Fountain",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Indira Gandhi Musical Fountain, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Indira Gandhi Musical Fountain.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Kempe Gowda Tower",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Kempe Gowda Tower, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Kempe Gowda Tower.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Kannada Flag",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Kannada Flag, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Kannada Flag.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Chickpet Cross",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Chickpet Cross, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Chickpet Cross.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "World War I Memorial",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore World War I Memorial, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of World War I Memorial.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Sangolli Rayanna",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Sangolli Rayanna, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Sangolli Rayanna.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Bangalore Palace",
+      "category": "Museum",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Bangalore Palace, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Bangalore Palace.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Tippu's Summer Palace",
+      "category": "Museum",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Tippu's Summer Palace, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Tippu's Summer Palace.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Tank Model",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Tank Model, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Tank Model.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Topiary Garden",
+      "category": "Viewpoint",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Topiary Garden, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Topiary Garden.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Lalbagh Glasshouse",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Lalbagh Glasshouse, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Lalbagh Glasshouse.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Peninsular Gneiss National Monument",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Peninsular Gneiss National Monument, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Peninsular Gneiss National Monument.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Kota Venkataramana Swamy Temple",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Kota Venkataramana Swamy Temple, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Kota Venkataramana Swamy Temple.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "V. V. Puram Food Street",
+      "category": "Shopping",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore V. V. Puram Food Street, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of V. V. Puram Food Street.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Pigeon Hole",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Pigeon Hole, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Pigeon Hole.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Tank",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Tank, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Tank.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Mysore Lancer's Haifa Memorial",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Mysore Lancer's Haifa Memorial, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Mysore Lancer's Haifa Memorial.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "GTS Baseline Survey Point",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore GTS Baseline Survey Point, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of GTS Baseline Survey Point.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Panchavati",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Panchavati, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Panchavati.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Bangalore World Trade Center",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Bangalore World Trade Center, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Bangalore World Trade Center.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Bengaluru Santhe",
+      "category": "Sightseeing",
+      "address": "Bangalore",
+      "latitude": 12.9767936,
+      "longitude": 77.590082,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Bengaluru Santhe, one of Bangalore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Bangalore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Bengaluru Santhe.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangalore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    }
+  ]
+}

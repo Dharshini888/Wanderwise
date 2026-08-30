@@ -23,3 +23,15 @@ class ExpenseSource(str, Enum):
     OCR = "OCR"
     AI = "AI"
     IMPORT = "IMPORT"
+
+class DocumentCategory(str, Enum):
+    PASSPORT = "Passport"
+    VISA = "Visa"
+    IDENTITY = "Identity"
+    FLIGHT = "Flight"
+    TRAIN = "Train"
+    HOTEL = "Hotel"
+    INSURANCE = "Insurance"
+    DRIVING = "Driving"
+    OTHER = "Other"
+

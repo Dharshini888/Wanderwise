@@ -9,18 +9,36 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+class AIServiceUnavailable(Exception):
+    pass
+
+class AIProviderAuthenticationError(Exception):
+    pass
+
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+import logging
+logger = logging.getLogger(__name__)
 
 # Try models in order — fall back if quota/unavailable
 MODELS = ["gemini-2.5-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash-latest", "gemini-1.5-pro-latest"]
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 GROQ_MODEL = "llama-3.3-70b-versatile"
 
+gemini_key = os.getenv("GEMINI_API_KEY", "")
+logger.info(f"[AI] Provider: Gemini")
+logger.info(f"[AI] API key configured: {'true' if gemini_key else 'false'}")
+logger.info(f"[AI] API key length: {len(gemini_key)}")
+
+logger.info(f"[AI] Provider: Groq")
+logger.info(f"[AI] API key configured: {'true' if GROQ_API_KEY else 'false'}")
+logger.info(f"[AI] API key length: {len(GROQ_API_KEY)}")
+
 
 def _groq(prompt: str, system: str = None) -> str:
     """Call Groq API using the official SDK."""
     if not GROQ_API_KEY:
-        return "⚠️ AI quota exceeded and no Groq API key configured."
+        raise AIProviderAuthenticationError("No Groq API key configured.")
     client = Groq(api_key=GROQ_API_KEY)
     messages = []
     if system:
@@ -47,7 +65,15 @@ def _ai(prompt: str, system: str = None) -> str:
             return response.text
         except Exception as e:
             err = str(e)
-            # Fall through to next model on quota OR model-not-found errors
+            if (
+                "401" in err
+                or "403" in err
+                or "invalid authentication" in err.lower()
+                or "api key" in err.lower()
+            ):
+                # We could raise AIProviderAuthenticationError immediately, but we want to fall back to Groq
+                pass
+
             if (
                 "429" in err
                 or "quota" in err.lower()
@@ -56,15 +82,27 @@ def _ai(prompt: str, system: str = None) -> str:
                 or "NotFound" in err
                 or "not found" in err.lower()
                 or "not supported" in err.lower()
+                or "401" in err
+                or "403" in err
+                or "invalid authentication" in err.lower()
+                or "api key" in err.lower()
             ):
                 continue
-            raise  # Re-raise unexpected errors
+            
+            # If it's a completely unexpected error, we'll still log it but try to fall back to Groq
+            print(f"Gemini API Error: {err}")
+            break # Break out of Gemini loop and try Groq
 
     # All Gemini models exhausted — try Groq
     try:
         return _groq(prompt, system)
+    except AIProviderAuthenticationError:
+        raise
     except Exception as e:
-        return f"⚠️ All AI providers failed. Last error: {str(e)}"
+        err_msg = str(e).lower()
+        if "401" in err_msg or "invalid_api_key" in err_msg or "authentication" in err_msg:
+            raise AIProviderAuthenticationError(f"Groq authentication failed: {str(e)}")
+        raise AIServiceUnavailable(f"All AI providers failed. Last error: {str(e)}")
 
 
 # ──────────────────────────────────────────────
@@ -467,25 +505,95 @@ def chat_with_assistant(user_message: str, destination: str = "") -> str:
 # PACKING LIST
 # ──────────────────────────────────────────────
 
-def generate_packing_list(destination: str, duration: int,
-                          travel_type: str, weather: str = "") -> str:
+def generate_packing_list(destination: str, start_date: str, end_date: str, duration: int,
+                          travel_type: str, daily_activities: list, weather: str = "", season: str = "", climate: str = "") -> str:
+    import json
+    daily_activities_str = json.dumps(daily_activities, indent=2) if daily_activities else "[]"
     prompt = f"""
-    Generate a smart AI packing checklist for a trip to {destination}.
-    Duration: {duration} days
-    Travel type: {travel_type}
-    Expected weather: {weather if weather else 'unknown'}
+    You are an expert AI Travel Packing Assistant. Generate a highly personalized packing list.
+    
+    Context:
+    - Destination: {destination}
+    - Dates: {start_date} to {end_date}
+    - Duration: {duration} days
+    - Travel Style: {travel_type}
+    - Season: {season}
+    - Climate: {climate}
+    - Expected Weather: {weather if weather else 'Unknown'}
+    - Planned Daily Activities & Recommended Gear: {daily_activities_str}
 
-    Format your response as a JSON object with these categories:
+    Rules:
+    1. The itinerary provided is authoritative. Never invent dummy activities (e.g. no "Explore Hawaii" placeholders).
+    2. Use the supplied daily activities and their mapped recommended gear to plan the packing.
+    3. Calculate quantities logically based on duration, climate, and laundry availability (e.g., for 13 days, suggest 5-7 shirts, not 13).
+    4. Exclude completely irrelevant items (e.g., no heavy coats for a tropical summer trip).
+    5. Avoid 1 item per trip day, and avoid unnecessary duplicate items. Provide context-aware overpacking warnings.
+    6. Calculate a packing_score out of 100 based on preparedness for the specific climate and activities.
+    
+    Output exactly this JSON structure and nothing else:
     {{
-      "Clothing": ["item1", "item2", ...],
-      "Documents": ["item1", ...],
-      "Electronics": ["item1", ...],
-      "Health & Hygiene": ["item1", ...],
-      "Accessories": ["item1", ...],
-      "Destination Specific": ["item1", ...]
+      "context": {{
+        "destination": "{destination}",
+        "start_date": "{start_date}",
+        "end_date": "{end_date}",
+        "duration_days": {duration},
+        "season": "{season}",
+        "climate": "{climate}",
+        "temperature": "estimated temperature range",
+        "rain_probability": "estimated rain probability",
+        "weather_source": "LLM seasonal estimation based on destination and dates",
+        "activities": {daily_activities_str}
+      }},
+      "categories": [
+        {{
+          "name": "Clothing",
+          "items": [
+            {{
+              "name": "Item Name",
+              "quantity": 1,
+              "weight_kg": 0.5,
+              "essential": true,
+              "rationale": "Reason for inclusion based on climate/activity",
+              "packed": false
+            }}
+          ]
+        }}
+      ],
+      "warnings": [
+        {{
+          "type": "overpacking",
+          "message": "Specific contextual warning"
+        }}
+      ],
+      "missing_essentials": ["Item that is highly recommended but often forgotten"],
+      "packing_score": 85,
+      "daily_gear": [
+        {{
+          "day": 1,
+          "date": "2026-08-08",
+          "activities": [
+            {{
+              "name": "Actual DB activity name",
+              "recommended_gear": [
+                "sunscreen",
+                "water bottle"
+              ]
+            }}
+          ]
+        }}
+      ]
     }}
-
-    Only return the JSON. No extra text.
+    
+    CRITICAL JSON RULES:
+    1. You MUST return ONLY valid JSON.
+    2. Do not use Markdown. Do not wrap the response in ```json or ``` blocks.
+    3. Do not include any explanations before or after the JSON.
+    4. Use double quotes for every JSON key and every string value. Never use Python single-quoted strings.
+    5. Booleans must be true/false (lowercase). Null must be null.
+    6. No comments, no trailing commas.
+    7. The activities field must be a valid JSON array of strings.
+    
+    The response must be directly parseable using JSON.parse / json.loads.
     """
     return _ai(prompt)
 
@@ -917,7 +1025,9 @@ def generate_structured_itinerary(destination: str, days: int, budget: float,
                                   transportation: str = "flight",
                                   travel_companion: str = "solo",
                                   start_date: str = "", end_date: str = "",
-                                  trip_preferences: dict = None) -> dict:
+                                  trip_preferences: dict = None,
+                                  language: str = "English",
+                                  generation_id: str = "") -> dict:
     """
     Generate day-by-day structured activities using AIEngine Orchestrator and 5-stage validation pipeline.
     """
@@ -940,7 +1050,9 @@ def generate_structured_itinerary(destination: str, days: int, budget: float,
         "activities_budget": activities_alloc,
         "travel_style": travel_style,
         "interests": interests,
-        "trip_preferences": trip_preferences or {}
+        "trip_preferences": trip_preferences or {},
+        "language": language,
+        "generation_id": generation_id
     }
     
     engine = AIEngine()
@@ -977,9 +1089,9 @@ def generate_structured_itinerary(destination: str, days: int, budget: float,
                     "place": {"name": poi['name'], "category": poi.get('category')},
                     "cost": {"amount": 0.0, "currency": currency, "symbol": curr_info.symbol, "estimated": False},
                     "ticket_price": 0.0,
-                    "transport_mode": "Walking", "transport_duration": "8 mins", "distance": "0.6 km",
-                    "weather_suitability": "Mixed", "crowd_level": "Moderate",
-                    "ai_reason": f"Unique sight selected for Day {d}",
+                    "transport_mode": "Not available", "transport_duration": "Not available", "distance": "Not available",
+                    "weather_suitability": "Not available", "crowd_level": "Not available",
+                    "ai_reason": f"System selected verified POI",
                     "confidence_score": 0.98,
                     "metadata": {"tips": [f"Enjoy {poi['name']} at your own pace."], "nearby": []}
                 })
@@ -997,12 +1109,19 @@ def generate_structured_itinerary(destination: str, days: int, budget: float,
 
 
 def regenerate_day_itinerary(destination: str, day_number: int,
-                             locked_activities: list = None, notes: str = None) -> list:
+                             locked_activities: list = None,
+                             notes: str = "",
+                             generation_id: str = "") -> list:
     """
     Regenerate activities for a single day while respecting user locked activities.
     """
     locked_str = json.dumps(locked_activities or [])
     notes_val = notes if notes else "Fresh new mix of attractions"
+    context_dict = {
+        "locked_activities": locked_activities or [],
+        "notes": notes,
+        "generation_id": generation_id
+    }
     system_instruction = "You are WanderWise AI. Return ONLY a valid JSON array of 4-5 activity objects for a single day."
     prompt = (
         "Regenerate Day " + str(day_number) + " itinerary for " + str(destination) + ".\n"

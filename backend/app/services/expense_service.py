@@ -343,3 +343,48 @@ def export_expenses_csv(db: Session, trip_id: int) -> str:
             e.notes or ""
         ])
     return output.getvalue()
+
+def export_expenses_pdf(db: Session, trip_id: int) -> bytes:
+    """Generate PDF bytes of expenses for export."""
+    try:
+        from fpdf import FPDF
+    except ImportError:
+        raise ValueError("fpdf2 is not installed.")
+
+    expenses = get_trip_expenses(db, trip_id)
+    trip = db.query(Trip).filter(Trip.id == trip_id).first()
+    
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("helvetica", size=16)
+    pdf.cell(0, 10, text=f"Expense Report - {trip.destination if trip else 'Trip'}", new_x="LMARGIN", new_y="NEXT", align='C')
+    
+    pdf.set_font("helvetica", size=10)
+    pdf.ln(10)
+    
+    # Table header
+    pdf.set_font("helvetica", style='B', size=10)
+    pdf.cell(40, 10, text="Date", border=1)
+    pdf.cell(60, 10, text="Title / Merchant", border=1)
+    pdf.cell(40, 10, text="Category", border=1)
+    pdf.cell(40, 10, text="Amount", border=1, new_x="LMARGIN", new_y="NEXT")
+    
+    pdf.set_font("helvetica", size=10)
+    total = 0
+    for e in expenses:
+        total += float(e.amount)
+        date_str = str(e.expense_date)[:10]
+        title_str = (e.merchant_normalized or e.title)[:25]
+        cat_str = (e.category.value if hasattr(e.category, "value") else str(e.category))[:15]
+        amt_str = f"{e.currency} {float(e.amount):.2f}"
+        
+        pdf.cell(40, 10, text=date_str, border=1)
+        pdf.cell(60, 10, text=title_str, border=1)
+        pdf.cell(40, 10, text=cat_str, border=1)
+        pdf.cell(40, 10, text=amt_str, border=1, new_x="LMARGIN", new_y="NEXT")
+        
+    pdf.ln(5)
+    pdf.set_font("helvetica", style='B', size=12)
+    pdf.cell(0, 10, text=f"Total Expenses: {total:.2f}", new_x="LMARGIN", new_y="NEXT", align='R')
+    
+    return bytes(pdf.output())

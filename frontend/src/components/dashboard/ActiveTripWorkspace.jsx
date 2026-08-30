@@ -121,11 +121,15 @@ export default function ActiveTripWorkspace({ widgetData, onRefresh }) {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold uppercase tracking-wider mb-3">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
-              Currently Exploring {activeTrip.destination}
+              {activeTrip.status === 'Upcoming' ? `Upcoming Trip: ${activeTrip.destination}` : `Currently Exploring ${activeTrip.destination}`}
             </div>
             
             <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight flex items-center gap-3">
-              <span>Day {widgetData?.current_trip_day || 3} of {widgetData?.total_days || activeTrip.duration_days || 11}</span>
+              {activeTrip.status === 'Upcoming' ? (
+                <span>Trip starts: {activeTrip.start_date}</span>
+              ) : (
+                <span>Day {widgetData?.current_trip_day || 1} of {widgetData?.total_days || activeTrip.duration_days || 1}</span>
+              )}
             </h1>
 
             <p className="text-slate-400 text-sm mt-1.5 flex items-center gap-3 flex-wrap">
@@ -233,7 +237,7 @@ export default function ActiveTripWorkspace({ widgetData, onRefresh }) {
                     <span className="text-slate-400 block text-[11px]">Walking Transit</span>
                     <span className="font-bold text-teal-300 flex items-center gap-1 mt-0.5">
                       <IconWalk className="w-3.5 h-3.5" />
-                      {currentActivity.transport_duration || '8 mins'} ({currentActivity.distance_km || '650 m'})
+                      {currentActivity.transport_duration || 'Not available'} ({currentActivity.activity_metadata?.distance || 'Not available'})
                     </span>
                   </div>
 
@@ -288,10 +292,9 @@ export default function ActiveTripWorkspace({ widgetData, onRefresh }) {
               </div>
             </div>
           ) : (
-            <div className="h-full rounded-3xl bg-slate-900/80 border border-slate-800 p-8 text-center flex flex-col justify-center items-center">
-              <IconCircleCheck className="w-12 h-12 text-emerald-400 mb-3" />
+            <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-8 py-12 text-center flex flex-col justify-center items-center min-w-0">
+              <IconCircleCheck className="w-12 h-12 text-emerald-400 mb-3 shrink-0" />
               <h3 className="text-xl font-bold text-white">All Activities Completed Today!</h3>
-
               <p className="text-slate-400 text-sm mt-1">Enjoy your evening in {activeTrip.destination}.</p>
             </div>
           )}
@@ -313,30 +316,30 @@ export default function ActiveTripWorkspace({ widgetData, onRefresh }) {
 
               {/* Progress Stats Grid */}
               <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="p-3.5 rounded-2xl bg-slate-800/50 border border-slate-700/60">
-                  <span className="text-xs text-slate-400 font-medium">Activities</span>
-                  <div className="text-xl font-black text-white mt-1">
+                <div className="p-3.5 rounded-2xl bg-slate-800/50 border border-slate-700/60 min-w-0">
+                  <span className="text-xs text-slate-400 font-medium truncate block">Activities</span>
+                  <div className="text-xl font-black text-white mt-1 truncate">
                     {completedCount} <span className="text-xs text-slate-400 font-normal">/ {totalCount}</span>
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-slate-800/50 border border-slate-700/60">
-                  <span className="text-xs text-slate-400 font-medium">Distance Travelled</span>
-                  <div className="text-xl font-black text-teal-300 mt-1">
+                <div className="p-3.5 rounded-2xl bg-slate-800/50 border border-slate-700/60 min-w-0">
+                  <span className="text-xs text-slate-400 font-medium truncate block">Distance Travelled</span>
+                  <div className="text-xl font-black text-teal-300 mt-1 truncate">
                     {distanceKm} <span className="text-xs font-normal">km</span>
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-slate-800/50 border border-slate-700/60">
-                  <span className="text-xs text-slate-400 font-medium">Walking Time</span>
-                  <div className="text-xl font-black text-cyan-300 mt-1">
+                <div className="p-3.5 rounded-2xl bg-slate-800/50 border border-slate-700/60 min-w-0">
+                  <span className="text-xs text-slate-400 font-medium truncate block">Walking Time</span>
+                  <div className="text-xl font-black text-cyan-300 mt-1 truncate">
                     {walkingMins} <span className="text-xs font-normal">mins</span>
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-slate-800/50 border border-slate-700/60">
-                  <span className="text-xs text-slate-400 font-medium">Money Spent</span>
-                  <div className="text-xl font-black text-amber-300 mt-1">
+                <div className="p-3.5 rounded-2xl bg-slate-800/50 border border-slate-700/60 min-w-0">
+                  <span className="text-xs text-slate-400 font-medium truncate block">Money Spent</span>
+                  <div className="text-xl font-black text-amber-300 mt-1 truncate">
                     {formatCurrency(moneySpent, currCode)}
                   </div>
                 </div>

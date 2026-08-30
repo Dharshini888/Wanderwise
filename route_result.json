@@ -1,0 +1,400 @@
+{
+  "request_id": "req_aa06c1bd4eb5",
+  "status": "ROUTE_GUIDANCE_AVAILABLE",
+  "result_level": 4,
+  "verified": false,
+  "journey_scale": "INTERNATIONAL",
+  "origin": "North Coimbatore Flyover",
+  "destination": "\uc11c\uc6b8\ud2b9\ubcc4\uc2dc",
+  "origin_source": "BROWSER_GPS",
+  "origin_accuracy_m": 10.0,
+  "origin_coords": {
+    "lat": 11.0168,
+    "lon": 76.9558,
+    "accuracy": 10.0
+  },
+  "dest_coords": {
+    "lat": 37.5666791,
+    "lon": 126.9782914
+  },
+  "preferred_mode": "fastest",
+  "distance_summary": {
+    "total_distance_km": 5776.3,
+    "distance_type": "STRAIGHT_LINE",
+    "source": "Haversine Distance",
+    "status": "ESTIMATED"
+  },
+  "duration_summary": {
+    "total_duration_min": null,
+    "source": "Unavailable",
+    "status": "UNAVAILABLE"
+  },
+  "journey_segments": [
+    {
+      "mode": "Travel Guidance",
+      "from": "North Coimbatore Flyover",
+      "to": "\uc11c\uc6b8\ud2b9\ubcc4\uc2dc",
+      "distance_km": 5776.3,
+      "duration_min": null,
+      "status": "UNAVAILABLE",
+      "source": "Derived Coordinates",
+      "confidence": "LOW"
+    }
+  ],
+  "journey_timeline": [
+    {
+      "time": "Start",
+      "title": "North Coimbatore Flyover",
+      "description": "Origin location",
+      "status": "ESTIMATED",
+      "type": "ORIGIN"
+    },
+    {
+      "time": "Guidance",
+      "title": "\ud83c\udf10 High-Level Guidance \u00b7 North Coimbatore Flyover \u2192 \uc11c\uc6b8\ud2b9\ubcc4\uc2dc",
+      "description": "5776.3 km straight-line distance",
+      "status": "UNAVAILABLE",
+      "mode": "Guidance",
+      "source": "Derived Coordinates",
+      "distance_km": 5776.3,
+      "duration_min": null,
+      "type": "SEGMENT"
+    },
+    {
+      "time": "End",
+      "title": "\uc11c\uc6b8\ud2b9\ubcc4\uc2dc",
+      "description": "Destination location",
+      "status": "ESTIMATED",
+      "type": "DESTINATION"
+    }
+  ],
+  "route_options": [
+    {
+      "provider": "RailRadar",
+      "mode": "Rail",
+      "status": "UNAVAILABLE",
+      "message": "No verified RailRadar itinerary available"
+    },
+    {
+      "provider": "FlightProvider",
+      "mode": "Flight",
+      "status": "UNAVAILABLE",
+      "message": "No verified flight options available"
+    },
+    {
+      "provider": "OSRM",
+      "mode": "Driving",
+      "status": "UNAVAILABLE",
+      "message": "Road route unavailable"
+    }
+  ],
+  "provider_diagnostics": [
+    {
+      "provider": "RailRadar",
+      "configured": true,
+      "status": "UNAVAILABLE",
+      "message": "No verified RailRadar itinerary returned"
+    },
+    {
+      "provider": "FlightProvider",
+      "configured": true,
+      "status": "UNAVAILABLE",
+      "message": "No verified flight returned"
+    },
+    {
+      "provider": "OSRM",
+      "configured": true,
+      "status": "UNAVAILABLE",
+      "message": "Road route unavailable"
+    },
+    {
+      "provider": "Overpass",
+      "configured": true,
+      "status": "FALLBACK_USED",
+      "message": "Live query unavailable; verified geographic fallback used"
+    },
+    {
+      "provider": "Nominatim",
+      "configured": true,
+      "status": "VERIFIED",
+      "message": "Origin/destination geocoded"
+    }
+  ],
+  "provider_audit": {
+    "RailRadar": {
+      "configured": true,
+      "attempted": true,
+      "status": "NO_ITINERARY",
+      "reason": "No verified rail itinerary returned"
+    },
+    "FlightProvider": {
+      "configured": true,
+      "attempted": true,
+      "status": "NO_RESULT",
+      "reason": "No verified flight returned"
+    },
+    "OSRM": {
+      "configured": true,
+      "attempted": true,
+      "status": "NO_RESULT",
+      "reason": "No road route returned"
+    },
+    "Overpass": {
+      "configured": true,
+      "attempted": true,
+      "status": "SUCCESS",
+      "reason": "Live query unavailable; verified geographic fallback used"
+    },
+    "Nominatim": {
+      "configured": true,
+      "attempted": true,
+      "status": "SUCCESS",
+      "reason": "Origin and destination geocoded successfully"
+    }
+  },
+  "strategy_analysis": {
+    "fastest": {
+      "title": "Fastest Route",
+      "recommendation": "Insufficient verified data",
+      "status": "INSUFFICIENT_DATA"
+    },
+    "cheapest": {
+      "title": "Cheapest Option",
+      "recommendation": "Insufficient verified data",
+      "status": "INSUFFICIENT_DATA",
+      "note": "Provider fares are displayed only when verified ticket prices are returned."
+    },
+    "safest": {
+      "title": "Safest Transportation",
+      "recommendation": "N/A",
+      "status": "INSUFFICIENT_DATA",
+      "note": "Insufficient verified safety data."
+    },
+    "greenest": {
+      "title": "Lowest CO2 Impact",
+      "recommendation": "N/A",
+      "status": "INSUFFICIENT_DATA",
+      "note": "Insufficient verified emissions data."
+    },
+    "least_walking": {
+      "title": "Least Walking",
+      "recommendation": "N/A",
+      "status": "INSUFFICIENT_DATA",
+      "note": "Walking distances not fully verified."
+    },
+    "best_overall": {
+      "title": "Best Overall",
+      "recommendation": "Insufficient verified data",
+      "status": "INSUFFICIENT_DATA"
+    }
+  },
+  "why_this_route": [
+    "RailRadar was queried but returned no verified transit itinerary.",
+    "FlightProvider was queried but returned no verified flight itinerary (Flight provider returned no verified flight itinerary)."
+  ],
+  "nearby": [
+    {
+      "name": "Coimbatore North Railway Station",
+      "category": "Railway Station",
+      "latitude": 11.0264155,
+      "longitude": 76.9577965,
+      "distance_km": 1.1,
+      "source": "Verified Transit Infrastructure",
+      "source_type": "VERIFIED_INFRASTRUCTURE",
+      "verified": true,
+      "map_url": "https://www.google.com/maps/search/?api=1&query=11.0264155,76.9577965",
+      "type": "Railway Station",
+      "lat": 11.0264155,
+      "lon": 76.9577965,
+      "walk_time_mins": 13
+    },
+    {
+      "name": "Gandhipuram Central Bus Stand",
+      "category": "Bus Stop",
+      "latitude": 11.0183,
+      "longitude": 76.9654,
+      "distance_km": 1.1,
+      "source": "Verified Transit Infrastructure",
+      "source_type": "VERIFIED_INFRASTRUCTURE",
+      "verified": true,
+      "map_url": "https://www.google.com/maps/search/?api=1&query=11.0183,76.9654",
+      "type": "Bus Stop",
+      "lat": 11.0183,
+      "lon": 76.9654,
+      "walk_time_mins": 13
+    },
+    {
+      "name": "CBE (Coimbatore Junction)",
+      "category": "Railway Station",
+      "latitude": 11.0010168,
+      "longitude": 76.9664539,
+      "distance_km": 2.1,
+      "source": "Verified Transit Infrastructure",
+      "source_type": "VERIFIED_INFRASTRUCTURE",
+      "verified": true,
+      "map_url": "https://www.google.com/maps/search/?api=1&query=11.0010168,76.9664539",
+      "type": "Railway Station",
+      "lat": 11.0010168,
+      "lon": 76.9664539,
+      "walk_time_mins": 25
+    },
+    {
+      "name": "Ukkadam Bus Stand",
+      "category": "Bus Stop",
+      "latitude": 10.9912,
+      "longitude": 76.9615,
+      "distance_km": 2.9,
+      "source": "Verified Transit Infrastructure",
+      "source_type": "VERIFIED_INFRASTRUCTURE",
+      "verified": true,
+      "map_url": "https://www.google.com/maps/search/?api=1&query=10.9912,76.9615",
+      "type": "Bus Stop",
+      "lat": 10.9912,
+      "lon": 76.9615,
+      "walk_time_mins": 35
+    }
+  ],
+  "nearby_provenance": {
+    "provider": "Verified Transit Infrastructure",
+    "origin_source": "BROWSER_GPS",
+    "origin_lat": 11.0168,
+    "origin_lon": 76.9558,
+    "origin_accuracy_m": 10.0,
+    "radius_km": 5.0,
+    "queried": true,
+    "fallback_used": true,
+    "fallback_reason": "Live Overpass API query returned no results or timed out",
+    "result_count": 4
+  },
+  "weather_obj": {
+    "stops": [
+      {
+        "location": "North Coimbatore Flyover",
+        "temp": "27.7\u00b0C",
+        "icon": "\u2601\ufe0f"
+      },
+      {
+        "location": "\uc11c\uc6b8\ud2b9\ubcc4\uc2dc",
+        "temp": "30.5\u00b0C",
+        "icon": "\u2600\ufe0f"
+      }
+    ]
+  },
+  "discovered_infrastructure": {
+    "nearby_stations": [
+      {
+        "name": "Coimbatore North Railway Station",
+        "category": "Railway Station",
+        "latitude": 11.0264155,
+        "longitude": 76.9577965,
+        "distance_km": 1.1,
+        "source": "Verified Transit Infrastructure",
+        "source_type": "VERIFIED_INFRASTRUCTURE",
+        "verified": true,
+        "map_url": "https://www.google.com/maps/search/?api=1&query=11.0264155,76.9577965",
+        "type": "Railway Station",
+        "lat": 11.0264155,
+        "lon": 76.9577965,
+        "walk_time_mins": 13
+      },
+      {
+        "name": "Gandhipuram Central Bus Stand",
+        "category": "Bus Stop",
+        "latitude": 11.0183,
+        "longitude": 76.9654,
+        "distance_km": 1.1,
+        "source": "Verified Transit Infrastructure",
+        "source_type": "VERIFIED_INFRASTRUCTURE",
+        "verified": true,
+        "map_url": "https://www.google.com/maps/search/?api=1&query=11.0183,76.9654",
+        "type": "Bus Stop",
+        "lat": 11.0183,
+        "lon": 76.9654,
+        "walk_time_mins": 13
+      },
+      {
+        "name": "CBE (Coimbatore Junction)",
+        "category": "Railway Station",
+        "latitude": 11.0010168,
+        "longitude": 76.9664539,
+        "distance_km": 2.1,
+        "source": "Verified Transit Infrastructure",
+        "source_type": "VERIFIED_INFRASTRUCTURE",
+        "verified": true,
+        "map_url": "https://www.google.com/maps/search/?api=1&query=11.0010168,76.9664539",
+        "type": "Railway Station",
+        "lat": 11.0010168,
+        "lon": 76.9664539,
+        "walk_time_mins": 25
+      },
+      {
+        "name": "Ukkadam Bus Stand",
+        "category": "Bus Stop",
+        "latitude": 10.9912,
+        "longitude": 76.9615,
+        "distance_km": 2.9,
+        "source": "Verified Transit Infrastructure",
+        "source_type": "VERIFIED_INFRASTRUCTURE",
+        "verified": true,
+        "map_url": "https://www.google.com/maps/search/?api=1&query=10.9912,76.9615",
+        "type": "Bus Stop",
+        "lat": 10.9912,
+        "lon": 76.9615,
+        "walk_time_mins": 35
+      }
+    ]
+  },
+  "nearby_places": [],
+  "journey": null,
+  "road_alternative": null,
+  "route_guidance": {
+    "verified": false,
+    "type": "AI_GUIDANCE",
+    "warning": "This is a suggested travel structure, not a verified itinerary. Schedules, platforms, and fares could not be verified from live providers.",
+    "journey_scale": "INTERNATIONAL",
+    "recommended_mode": "International Rail / Air Travel",
+    "steps": [
+      {
+        "sequence": 1,
+        "mode": "LOCAL_TRANSFER",
+        "description": "Travel from North Coimbatore Flyover to the nearest international transit hub or airport."
+      },
+      {
+        "sequence": 2,
+        "mode": "INTERNATIONAL_TRAVEL",
+        "description": "Use cross-border high-speed rail, intercity bus, or commercial flight toward \uc11c\uc6b8\ud2b9\ubcc4\uc2dc."
+      },
+      {
+        "sequence": 3,
+        "mode": "LOCAL_TRANSIT",
+        "description": "Use local urban transit (metro/bus) to reach your final destination in \uc11c\uc6b8\ud2b9\ubcc4\uc2dc."
+      }
+    ],
+    "explanation": "Public transit schedule could not be verified from live GTFS providers for North Coimbatore Flyover \u2192 \uc11c\uc6b8\ud2b9\ubcc4\uc2dc. WanderWise did not generate exact timetables or service numbers."
+  },
+  "provider_trace": [
+    {
+      "provider": "RailRadar",
+      "status": "NO_ITINERARY",
+      "note": "RailRadar returned zero matching train itineraries for these coordinates."
+    },
+    {
+      "provider": "FlightProvider",
+      "status": "NO_ITINERARY",
+      "note": "Flight provider returned no verified flight itinerary"
+    }
+  ],
+  "data_quality": {
+    "provider_engine": "AI Route Guidance",
+    "schedule_timestamps": "Schedule Unavailable",
+    "platform_information": "Unavailable",
+    "distance_source": "Unavailable",
+    "walking_navigation": "N/A",
+    "geocoding_engine": "Browser Geolocation",
+    "ai_guidance": "Used for high-level structure only"
+  },
+  "provenance": {
+    "routing": "AI Route Guidance (Unverified)",
+    "geocoding": "Browser Geolocation"
+  }
+}

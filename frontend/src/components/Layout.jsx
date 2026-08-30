@@ -33,12 +33,12 @@ export default function Layout({ children }) {
   }, []);
 
   return (
-    <div className="flex min-h-screen w-full bg-[var(--bg-app)] text-[var(--text-secondary)] font-sans transition-colors duration-300 relative overflow-x-hidden">
+    <div className="flex min-h-screen w-full bg-[var(--bg-app)] text-[var(--text-secondary)] font-sans transition-colors duration-200 relative lg:pl-[260px]">
       {/* Sidebar Component with Mobile Responsive Drawer */}
       <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} isDark={isDark} toggleTheme={toggleTheme} />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col w-full lg:ml-[280px] transition-all duration-300 min-h-screen">
+      <div className="flex-1 flex flex-col min-w-0 transition-all duration-300 min-h-screen w-full">
         {/* Mobile Header Bar */}
         <header className="lg:hidden flex items-center justify-between px-4 py-3 bg-[var(--bg-card)] border-b border-[var(--border-color)] sticky top-0 z-30 shadow-sm">
           <div className="flex items-center gap-3">

@@ -1,41 +1,74 @@
+import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   IconLayoutDashboard,
   IconMapPins,
   IconMessageChatbot,
-  IconCloudStorm,
+  IconSparkles,
   IconMap,
-  IconReceipt2,
+  IconCloudStorm,
   IconBackpack,
+  IconFileText,
+  IconReceipt2,
+  IconCoin,
+  IconChartBar,
   IconBook,
   IconHeart,
   IconShieldCheck,
-  IconChartBar,
   IconSettings,
   IconUser,
   IconLogout,
-  IconSparkles,
-  IconCoin,
   IconSun,
   IconMoon,
-  IconX
+  IconX,
+  IconPlaneDeparture,
+  IconChecklist,
+  IconCompass
 } from '@tabler/icons-react';
 import { useAuth } from '../context/AuthContext';
 
-const MAIN_LINKS = [
-  { path: '/dashboard', label: 'Dashboard', icon: IconLayoutDashboard },
-  { path: '/trips', label: 'My Trips', icon: IconMapPins },
-  { path: '/chat', label: 'AI Chat', icon: IconMessageChatbot },
-  { path: '/recommendations', label: 'AI Suggestions', icon: IconSparkles },
-  { path: '/weather', label: 'Weather', icon: IconCloudStorm },
-  { path: '/transit', label: 'Maps & Transit', icon: IconMap },
-  { path: '/budget', label: 'Expenses', icon: IconReceipt2 },
-  { path: '/currency', label: 'Currency', icon: IconCoin },
-  { path: '/packing', label: 'Packing', icon: IconBackpack },
-  { path: '/journal/1', label: 'Journal', icon: IconBook },
-  { path: '/wishlist', label: 'Wishlist', icon: IconHeart },
-  { path: '/safety', label: 'Safety', icon: IconShieldCheck },
-  { path: '/analytics', label: 'Analytics', icon: IconChartBar },
+const NAV_GROUPS = [
+  {
+    title: 'MAIN',
+    links: [
+      { path: '/dashboard', label: 'Dashboard', icon: IconLayoutDashboard },
+      { path: '/trips', label: 'My Trips', icon: IconMapPins },
+      { path: '/chat', label: 'AI Chat', icon: IconMessageChatbot },
+      { path: '/recommendations', label: 'AI Suggestions', icon: IconSparkles },
+    ]
+  },
+  {
+    title: 'TRAVEL',
+    links: [
+      { path: '/checklist', label: 'Smart Checklist', icon: IconChecklist },
+      { path: '/guide', label: 'Local Travel Guide', icon: IconCompass },
+      { path: '/transit', label: 'Maps & Transit', icon: IconMap },
+      { path: '/weather', label: 'Weather', icon: IconCloudStorm },
+      { path: '/packing', label: 'Packing', icon: IconBackpack },
+      { path: '/documents', label: 'Documents Vault', icon: IconFileText },
+    ]
+  },
+  {
+    title: 'MONEY',
+    links: [
+      { path: '/budget', label: 'Expenses', icon: IconReceipt2 },
+      { path: '/currency', label: 'Currency', icon: IconCoin },
+      { path: '/analytics', label: 'Analytics', icon: IconChartBar },
+    ]
+  },
+  {
+    title: 'MEMORIES',
+    links: [
+      { path: '/journal/1', label: 'Journal', icon: IconBook },
+      { path: '/wishlist', label: 'Wishlist', icon: IconHeart },
+    ]
+  },
+  {
+    title: 'SAFETY',
+    links: [
+      { path: '/safety', label: 'Safety', icon: IconShieldCheck },
+    ]
+  }
 ];
 
 const BOTTOM_LINKS = [
@@ -54,19 +87,19 @@ export default function Sidebar({ mobileOpen, setMobileOpen, isDark, toggleTheme
   };
 
   const NavItem = ({ to, icon: Icon, label }) => {
-    const isActive = location.pathname.startsWith(to) && (to !== '/' || location.pathname === '/');
+    const isActive = location.pathname === to || (to !== '/' && to !== '/dashboard' && location.pathname.startsWith(to));
     
     return (
       <Link
         to={to}
         onClick={() => setMobileOpen && setMobileOpen(false)}
-        className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+        className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
           isActive 
-            ? 'bg-blue-50 dark:bg-blue-900/30 text-[var(--color-primary-600)] dark:text-blue-400 font-semibold shadow-sm border border-blue-200/50 dark:border-blue-800/40' 
-            : 'text-[var(--text-secondary)] hover:bg-[var(--bg-app)] hover:text-[var(--text-primary)]'
+            ? 'bg-blue-600/10 text-blue-600 dark:text-blue-400 font-bold border border-blue-500/20 shadow-xs' 
+            : 'text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)]'
         }`}
       >
-        <Icon size={20} stroke={isActive ? 2.5 : 2} className={isActive ? 'text-[var(--color-primary-600)] dark:text-blue-400' : 'text-[var(--text-muted)]'} />
+        <Icon size={18} stroke={isActive ? 2.2 : 1.8} className={isActive ? 'text-blue-600 dark:text-blue-400' : 'text-[var(--text-muted)]'} />
         <span>{label}</span>
       </Link>
     );
@@ -84,51 +117,60 @@ export default function Sidebar({ mobileOpen, setMobileOpen, isDark, toggleTheme
       )}
 
       {/* Sidebar Container */}
-      <aside className={`glass-panel fixed top-0 left-0 w-[280px] h-screen flex flex-col p-6 z-50 bg-[var(--bg-card)] border-r border-[var(--border-color)] transition-transform duration-300 ease-in-out ${
-        mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      <aside className={`fixed top-0 left-0 w-[260px] h-screen flex flex-col p-5 z-50 bg-[var(--bg-card)] border-r border-[var(--border-color)] transition-transform duration-300 ease-in-out ${
+        mobileOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full lg:translate-x-0'
       }`}>
-        {/* Logo & Mobile Close */}
-        <div className="mb-6 pl-2 flex items-center justify-between">
-          <Link to="/dashboard" onClick={() => setMobileOpen && setMobileOpen(false)} className="flex items-center gap-3 no-underline">
-            <span className="text-3xl">✈️</span>
-            <span className="text-2xl font-extrabold text-[var(--color-primary-600)] dark:text-blue-400 tracking-tight font-heading">
-              WanderWise
-            </span>
+        {/* Brand Header */}
+        <div className="mb-6 pl-1.5 flex items-center justify-between">
+          <Link to="/dashboard" onClick={() => setMobileOpen && setMobileOpen(false)} className="flex items-center gap-2.5 no-underline">
+            <div className="p-2 rounded-xl bg-blue-600 text-white shadow-md shadow-blue-500/20 flex items-center justify-center">
+              <IconPlaneDeparture size={20} />
+            </div>
+            <div>
+              <span className="text-lg font-black text-[var(--text-primary)] tracking-tight font-heading block leading-none">
+                WanderWise
+              </span>
+              <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mt-0.5">
+                Travel OS
+              </span>
+            </div>
           </Link>
 
           {/* Close button for mobile drawer */}
           <button
             onClick={() => setMobileOpen && setMobileOpen(false)}
-            className="lg:hidden p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors"
+            className="lg:hidden p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] transition-colors"
             aria-label="Close Navigation"
           >
-            <IconX size={20} />
+            <IconX size={18} />
           </button>
         </div>
 
-        {/* Main Navigation List */}
-        <div className="flex-1 flex flex-col gap-1 overflow-y-auto pr-2 custom-scrollbar">
-          <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider pl-3 mb-2 mt-1">
-            Main Navigation
-          </div>
-          {MAIN_LINKS.map((link) => (
-            <NavItem key={link.path} to={link.path} icon={link.icon} label={link.label} />
+        {/* Navigation Groups */}
+        <div className="flex-1 flex flex-col gap-4 overflow-y-auto pr-1 custom-scrollbar">
+          {NAV_GROUPS.map((group) => (
+            <div key={group.title} className="space-y-1">
+              <div className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider pl-3 mb-1">
+                {group.title}
+              </div>
+              {group.links.map((link) => (
+                <NavItem key={link.path} to={link.path} icon={link.icon} label={link.label} />
+              ))}
+            </div>
           ))}
         </div>
 
         {/* Bottom Actions & Theme Toggle */}
-        <div className="flex flex-col gap-1.5 mt-4 pt-4 border-t border-[var(--border-color)]">
-          {/* Theme Toggle Button */}
+        <div className="flex flex-col gap-1 mt-4 pt-3 border-t border-[var(--border-color)]">
           {toggleTheme && (
             <button
               onClick={toggleTheme}
-              className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-[var(--text-secondary)] bg-[var(--bg-app)] border border-[var(--border-color)] hover:text-[var(--text-primary)] transition-all"
+              className="flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-semibold text-[var(--text-secondary)] bg-[var(--bg-subtle)] border border-[var(--border-color)] hover:text-[var(--text-primary)] transition-all cursor-pointer mb-1"
             >
               <span className="flex items-center gap-2">
-                {isDark ? <IconSun size={18} className="text-amber-400" /> : <IconMoon size={18} className="text-indigo-600" />}
-                <span>{isDark ? 'Light Theme' : 'Dark Theme'}</span>
+                {isDark ? <IconSun size={16} className="text-amber-400" /> : <IconMoon size={16} className="text-indigo-600" />}
+                <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
               </span>
-              <span className="text-[10px] font-bold uppercase text-[var(--text-muted)]">{isDark ? 'DARK' : 'LIGHT'}</span>
             </button>
           )}
 
@@ -138,9 +180,9 @@ export default function Sidebar({ mobileOpen, setMobileOpen, isDark, toggleTheme
 
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all w-full text-left mt-1"
+            className="flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 transition-all w-full text-left cursor-pointer mt-0.5"
           >
-            <IconLogout size={18} stroke={2} />
+            <IconLogout size={16} stroke={2} />
             <span>Logout</span>
           </button>
         </div>

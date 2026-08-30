@@ -1,0 +1,781 @@
+{
+  "destination": "paris",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Point Zero for French Road Measurements",
+      "category": "Shopping",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Point Zero for French Road Measurements, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Point Zero for French Road Measurements.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Notre Dame",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Notre Dame, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Notre Dame.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Dalle Romaine",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Dalle Romaine, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Dalle Romaine.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Flood Marking",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Flood Marking, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Flood Marking.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Palace of Justice",
+      "category": "Museum",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Palace of Justice, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Palace of Justice.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Memorial to the Martyrs of the Deportation",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Memorial to the Martyrs of the Deportation, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Memorial to the Martyrs of the Deportation.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "PILI RATP",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore PILI RATP, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of PILI RATP.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Rivoli 59",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Rivoli 59, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Rivoli 59.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Luxor Obelisk",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Luxor Obelisk, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Luxor Obelisk.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Universit\u00e9 Paris 1 Panth\u00e9on-Sorbonne - Centre Sorbonne",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Universit\u00e9 Paris 1 Panth\u00e9on-Sorbonne - Centre Sorbonne, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Universit\u00e9 Paris 1 Panth\u00e9on-Sorbonne - Centre Sorbonne.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Presbyt\u00e8re",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Presbyt\u00e8re, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Presbyt\u00e8re.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Louis XVI's execution place",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Louis XVI's execution place, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Louis XVI's execution place.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Pendule de Foucault",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Pendule de Foucault, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Pendule de Foucault.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Pantheon",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Pantheon, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Pantheon.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "H\u00f4tel Lebrun",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore H\u00f4tel Lebrun, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of H\u00f4tel Lebrun.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "La Samaritaine",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore La Samaritaine, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of La Samaritaine.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Appartement de Ernest Hemingway",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Appartement de Ernest Hemingway, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Appartement de Ernest Hemingway.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Maison \u00e0 l'enseigne du Faucheur",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Maison \u00e0 l'enseigne du Faucheur, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Maison \u00e0 l'enseigne du Faucheur.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "H\u00f4tel de la Marine",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore H\u00f4tel de la Marine, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of H\u00f4tel de la Marine.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Maison \u00e0 l'enseigne du Mouton",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Maison \u00e0 l'enseigne du Mouton, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Maison \u00e0 l'enseigne du Mouton.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "R\u00e9sidence Rollin",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore R\u00e9sidence Rollin, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of R\u00e9sidence Rollin.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Maison dite \u00ab de Jacques C\u0153ur \u00bb",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Maison dite \u00ab de Jacques C\u0153ur \u00bb, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Maison dite \u00ab de Jacques C\u0153ur \u00bb.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Ancienne Cr\u00e8merie",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Ancienne Cr\u00e8merie, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Ancienne Cr\u00e8merie.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "H\u00f4tel de Lauzun",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore H\u00f4tel de Lauzun, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of H\u00f4tel de Lauzun.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Rue des Rosiers",
+      "category": "Sightseeing",
+      "address": "paris",
+      "latitude": 48.8588897,
+      "longitude": 2.320041,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Rue des Rosiers, one of paris's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in paris\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Rue des Rosiers.",
+      "signature_dish": null,
+      "nearby": [
+        "paris"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    }
+  ]
+}

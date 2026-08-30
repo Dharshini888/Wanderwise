@@ -170,7 +170,7 @@ def fetch_real_pois_from_api(destination: str, country: Optional[str] = None) ->
 
         # 2. OpenStreetMap Nominatim Search
         try:
-            nom_url = f"https://nominatim.openstreetmap.org/search?q=attractions+in+{urllib.parse.quote(destination)}&format=json&limit=25"
+            nom_url = f"https://nominatim.openstreetmap.org/search?q=attractions+in+{urllib.parse.quote(destination)}&format=json&limit=25&accept-language=en"
             nom_res = requests.get(nom_url, headers=headers, timeout=4.0).json()
             for item in nom_res:
                 name = item.get("display_name", "").split(",")[0]
@@ -215,15 +215,15 @@ def fetch_real_pois_from_api(destination: str, country: Optional[str] = None) ->
                 "address": f"{destination}",
                 "latitude": lat,
                 "longitude": lon,
-                "opening_time": "09:00 AM",
-                "closing_time": "06:00 PM",
+                "opening_time": None,
+                "closing_time": None,
                 "open_days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
                 "ticket_price": 0.0,
                 "currency": "USD",
-                "rating": 4.7,
+                "rating": None,
                 "crowd": "Moderate",
                 "description": f"Explore {title}, one of {destination}'s iconic real attractions.",
-                "ai_reason": f"✓ Verified real landmark in {destination}\n✓ High traveler rating",
+                "ai_reason": f"✓ Verified real landmark in {destination}",
                 "tip": f"Visit early for beautiful photo views of {title}.",
                 "signature_dish": None,
                 "nearby": [destination],

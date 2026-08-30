@@ -24,6 +24,7 @@ class AIEngine:
         curr_symbol = context_dict.get("currency_symbol", "$")
         curr_country = context_dict.get("currency_country", country)
         activities_budget = context_dict.get("activities_budget", round(budget * 0.15, 2))
+        language = context_dict.get("language", "English")
 
         # Render prompt sections from v1 templates
         system_inst = PromptLoader.load("system", version=self.config.PROMPT_VERSION)
@@ -60,11 +61,21 @@ Total Days: {total_days}
 Budget: {budget} {curr_code}
 Travel Style: {context_dict.get("travel_style", "solo")}
 
+=========================
+LANGUAGE REQUIREMENT
+=========================
+Generate ALL user-visible itinerary content exactly in {language}.
+This includes activity names, activity titles, descriptions, tips, rationale, categories, crowd descriptions, meal descriptions, notes, and transport descriptions.
+Do NOT use other languages unless it is an official proper name that genuinely requires the original spelling.
+If requested language is English, do NOT output Devanagari or other local scripts (e.g. use "Sion Fort" instead of "सायन किल्ला").
+
 {curr_rules}
 
 {act_rules}
 
 {schema_rules}
+
+{f"Regeneration ID: {context_dict.get('generation_id')} (Ensure this output is completely unique and different from previous versions)" if context_dict.get('generation_id') else ""}
 """
 
         # 5-Stage Retry & Execution Pipeline
@@ -83,18 +94,19 @@ Travel Style: {context_dict.get("travel_style", "solo")}
                 raw_resp = provider.generate(prompt_str, system_instruction=system_inst)
                 
                 # Validate & Normalize
-                ok, norm_data, err = ItineraryValidator.validate_and_normalize(raw_resp, currency_code=curr_code)
+                ok, norm_data, err = ItineraryValidator.validate_and_normalize(raw_resp, currency_code=curr_code, requested_language=language)
                 if ok and norm_data:
                     final_data = norm_data
                     if p_idx > 0:
                         fallback_used = True
                     break
                 else:
+                    print(f"[LANGUAGE VALIDATION] Retrying generation. Error: {err}")
                     # Retry once if enabled
                     if self.config.ENABLE_RETRY and retry_count < self.config.MAX_RETRIES:
                         retry_count += 1
                         raw_resp2 = provider.generate(prompt_str, system_instruction=system_inst)
-                        ok2, norm_data2, err2 = ItineraryValidator.validate_and_normalize(raw_resp2, currency_code=curr_code)
+                        ok2, norm_data2, err2 = ItineraryValidator.validate_and_normalize(raw_resp2, currency_code=curr_code, requested_language=language)
                         if ok2 and norm_data2:
                             final_data = norm_data2
                             break
@@ -106,7 +118,7 @@ Travel Style: {context_dict.get("travel_style", "solo")}
         if not final_data:
             mock_p = AIProviderFactory.get_provider("mock")
             raw_mock = mock_p.generate(prompt_str, system_instruction=system_inst)
-            _, final_data, _ = ItineraryValidator.validate_and_normalize(raw_mock, currency_code=curr_code)
+            _, final_data, _ = ItineraryValidator.validate_and_normalize(raw_mock, currency_code=curr_code, requested_language=language)
             fallback_used = True
             used_provider_name = "mock"
 

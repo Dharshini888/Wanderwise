@@ -1,3 +1,8 @@
+# Frontend Environment & Secrets
+.env
+.env.*
+!.env.example
+
 # Logs
 logs
 *.log
@@ -7,9 +12,11 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Node modules & build output
 node_modules
 dist
 dist-ssr
+.vite
 *.local
 
 # Editor directories and files
@@ -17,6 +24,7 @@ dist-ssr
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
 *.suo
 *.ntvs*
 *.njsproj

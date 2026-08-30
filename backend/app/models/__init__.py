@@ -17,4 +17,8 @@ from app.models.trip_ai_context import TripAIContext, TripAIMemory
 from app.models.chat import ChatSession, ChatMessage
 from app.models.ai_suggestions import AISuggestion
 from app.models.recommendations import UserTravelProfile, TripPreferenceHistory, DestinationKnowledge, RecommendationHistory
+from app.models.notification import Notification
+from app.models.activity import ActivityLog
+from app.models.checklist import ChecklistItem
+from app.models.packing import PackingList
 

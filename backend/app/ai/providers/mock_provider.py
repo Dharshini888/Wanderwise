@@ -33,6 +33,12 @@ class MockProvider(BaseAIProvider):
 
         all_pois = fetch_real_pois_for_destination(dest)
 
+        regen_match = re.search(r"Regeneration ID:\s*([^\s]+)", prompt)
+        if regen_match and all_pois:
+            import random
+            random.seed(regen_match.group(1))
+            random.shuffle(all_pois)
+
         days_list = []
         used_poi_names = set()
 

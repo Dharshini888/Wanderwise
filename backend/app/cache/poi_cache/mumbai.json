@@ -1,0 +1,254 @@
+{
+  "destination": "mumbai",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "\u0938\u093e\u092f\u0928 \u0915\u093f\u0932\u094d\u0932\u093e",
+      "category": "Sightseeing",
+      "address": "Mumbai",
+      "latitude": 19.054999,
+      "longitude": 72.8692035,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore \u0938\u093e\u092f\u0928 \u0915\u093f\u0932\u094d\u0932\u093e, one of Mumbai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Mumbai\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of \u0938\u093e\u092f\u0928 \u0915\u093f\u0932\u094d\u0932\u093e.",
+      "signature_dish": null,
+      "nearby": [
+        "Mumbai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "\u092e\u093e\u0924\u094b\u0936\u094d\u0930\u0940 \u091f\u0949\u0935\u0930",
+      "category": "Sightseeing",
+      "address": "Mumbai",
+      "latitude": 19.054999,
+      "longitude": 72.8692035,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore \u092e\u093e\u0924\u094b\u0936\u094d\u0930\u0940 \u091f\u0949\u0935\u0930, one of Mumbai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Mumbai\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of \u092e\u093e\u0924\u094b\u0936\u094d\u0930\u0940 \u091f\u0949\u0935\u0930.",
+      "signature_dish": null,
+      "nearby": [
+        "Mumbai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "St John The Baptist Shrine/Oratory",
+      "category": "Sightseeing",
+      "address": "Mumbai",
+      "latitude": 19.054999,
+      "longitude": 72.8692035,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore St John The Baptist Shrine/Oratory, one of Mumbai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Mumbai\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of St John The Baptist Shrine/Oratory.",
+      "signature_dish": null,
+      "nearby": [
+        "Mumbai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Amir Khan House",
+      "category": "Sightseeing",
+      "address": "Mumbai",
+      "latitude": 19.054999,
+      "longitude": 72.8692035,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Amir Khan House, one of Mumbai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Mumbai\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Amir Khan House.",
+      "signature_dish": null,
+      "nearby": [
+        "Mumbai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Sujona chembers",
+      "category": "Sightseeing",
+      "address": "Mumbai",
+      "latitude": 19.054999,
+      "longitude": 72.8692035,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Sujona chembers, one of Mumbai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Mumbai\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Sujona chembers.",
+      "signature_dish": null,
+      "nearby": [
+        "Mumbai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Mannat Lands End (Shah Rukh Khan's Bungalow)",
+      "category": "Sightseeing",
+      "address": "Mumbai",
+      "latitude": 19.054999,
+      "longitude": 72.8692035,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Mannat Lands End (Shah Rukh Khan's Bungalow), one of Mumbai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Mumbai\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Mannat Lands End (Shah Rukh Khan's Bungalow).",
+      "signature_dish": null,
+      "nearby": [
+        "Mumbai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Astro Park-Dadar Salvation Turf",
+      "category": "Viewpoint",
+      "address": "Mumbai",
+      "latitude": 19.054999,
+      "longitude": 72.8692035,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Astro Park-Dadar Salvation Turf, one of Mumbai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Mumbai\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Astro Park-Dadar Salvation Turf.",
+      "signature_dish": null,
+      "nearby": [
+        "Mumbai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Jalsa (Amitabh Bacchan House)",
+      "category": "Sightseeing",
+      "address": "Mumbai",
+      "latitude": 19.054999,
+      "longitude": 72.8692035,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Jalsa (Amitabh Bacchan House), one of Mumbai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Mumbai\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Jalsa (Amitabh Bacchan House).",
+      "signature_dish": null,
+      "nearby": [
+        "Mumbai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    }
+  ]
+}

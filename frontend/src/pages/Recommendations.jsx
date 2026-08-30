@@ -12,7 +12,10 @@ import {
   IconExternalLink,
   IconClock,
   IconSun,
-  IconBus
+  IconBus,
+  IconPassport,
+  IconBook,
+  IconRotateCcw
 } from '@tabler/icons-react';
 
 const API = 'http://localhost:8000/api';
@@ -39,16 +42,56 @@ export default function Recommendations() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [favorites, setFavorites] = useState([]);
+
+  // Phase 2 Intelligence State
+  const [visaData, setVisaData] = useState(null);
+  const [guideData, setGuideData] = useState(null);
+  const [learnedPrefs, setLearnedPrefs] = useState(null);
+  const [passportCountry, setPassportCountry] = useState('IN');
+
   const token = localStorage.getItem('token');
+
+  const fetchLearnedPrefs = async () => {
+    if (!token) return;
+    try {
+      const res = await fetch(`${API}/intelligence/learned-preferences`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setLearnedPrefs(data.learned_preferences);
+      }
+    } catch (_) {}
+  };
+
+  useEffect(() => {
+    fetchLearnedPrefs();
+  }, []);
+
+  const handleResetLearnedPrefs = async () => {
+    if (!token) return;
+    try {
+      const res = await fetch(`${API}/intelligence/learned-preferences/reset`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setLearnedPrefs(data.learned_preferences);
+        alert('AI learned preferences reset to defaults!');
+      }
+    } catch (_) {}
+  };
 
   const fetchRecs = async (e) => {
     if (e) e.preventDefault();
     if (!destination.trim()) return;
-    setLoading(true); setError(''); setRecsData(null);
+    setLoading(true); setError(''); setRecsData(null); setVisaData(null); setGuideData(null);
+
     try {
       const res = await fetch(`${API}/recommendations/places`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json', Authorization: token ? `Bearer ${token}` : '' },
         body: JSON.stringify({
           destination,
           interests: interests || 'sightseeing, local food'
@@ -60,6 +103,21 @@ export default function Recommendations() {
       } else {
         setError(data.detail || 'Could not fetch recommendations');
       }
+
+      // Fetch Phase 2 Official Visa Assistant
+      const visaRes = await fetch(`${API}/intelligence/visa?passport_country=${passportCountry}&destination_country=${destination.slice(0, 2).toUpperCase() || 'GB'}`);
+      if (visaRes.ok) {
+        const vData = await visaRes.json();
+        setVisaData(vData);
+      }
+
+      // Fetch Phase 2 Verified Local Travel Guide
+      const guideRes = await fetch(`${API}/intelligence/guide?destination=${encodeURIComponent(destination)}`);
+      if (guideRes.ok) {
+        const gData = await guideRes.json();
+        setGuideData(gData);
+      }
+
     } catch (_) {
       setError('Network error. Please make sure backend is running.');
     }
@@ -83,11 +141,21 @@ export default function Recommendations() {
             notes: item.description || ''
           })
         });
+
+        // Record feedback signal to AI Learning Engine
+        await fetch(`${API}/intelligence/learned-preferences/feedback`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({
+            action: 'like',
+            category: item.category || 'Attraction'
+          })
+        });
+        fetchLearnedPrefs();
       } catch (_) {}
     }
   };
 
-  // Group items by category or filter flat list
   const getDisplayItems = () => {
     if (!recsData) return [];
     if (recsData.categories && Object.keys(recsData.categories).length > 0) {
@@ -112,13 +180,34 @@ export default function Recommendations() {
     <div className="flex flex-col gap-6 pb-12">
       
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-extrabold text-[var(--text-primary)] tracking-tight font-heading mb-1 flex items-center gap-2">
-          <IconSparkles className="text-amber-500 animate-pulse" size={32} /> AI Personalized Discoveries
-        </h1>
-        <p className="text-sm text-[var(--text-muted)] font-medium">
-          Get tailor-made place recommendations ranked by your unique travel preferences.
-        </p>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold text-[var(--text-primary)] tracking-tight font-heading mb-1 flex items-center gap-2">
+            <IconSparkles className="text-amber-500 animate-pulse" size={32} /> AI Personalized Discoveries & Intelligence
+          </h1>
+          <p className="text-sm text-[var(--text-muted)] font-medium">
+            Tailor-made place recommendations, official visa guidance, verified local customs, and persistent AI preference learning.
+          </p>
+        </div>
+
+        {/* Persistent Learned Preferences Badge Widget */}
+        {learnedPrefs && (
+          <div className="p-3 rounded-2xl bg-[var(--bg-glass)] border border-[var(--border-color)] text-xs flex items-center gap-3">
+            <div>
+              <div className="text-[10px] uppercase font-bold text-indigo-600 dark:text-indigo-400">AI Learned Profile</div>
+              <div className="font-extrabold text-[var(--text-primary)]">
+                Culture: {learnedPrefs.culture_weight}x · Food: {learnedPrefs.food_weight}x
+              </div>
+            </div>
+            <button
+              onClick={handleResetLearnedPrefs}
+              className="p-1.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-muted)] hover:text-rose-500 transition-colors"
+              title="Reset AI Learned Preferences"
+            >
+              <IconRotateCcw size={16} />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Search Form */}
@@ -132,7 +221,7 @@ export default function Recommendations() {
             <input 
               value={destination} 
               onChange={e => setDestination(e.target.value)} 
-              placeholder="e.g. Ooty, Kyoto, Paris, New York" 
+              placeholder="e.g. London, Paris, Tokyo, Coimbatore" 
               required 
               className="w-full pl-10 pr-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--color-primary-500)] focus:ring-2 focus:ring-[var(--color-primary-500)]/10 transition-all"
             />
@@ -148,7 +237,7 @@ export default function Recommendations() {
             <input 
               value={interests} 
               onChange={e => setInterests(e.target.value)} 
-              placeholder="e.g. photography, tea gardens, historic temples, quiet cafes" 
+              placeholder="e.g. museums, cafes, food, architecture" 
               className="w-full pl-10 pr-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--color-primary-500)] focus:ring-2 focus:ring-[var(--color-primary-500)]/10 transition-all"
             />
           </div>
@@ -162,7 +251,7 @@ export default function Recommendations() {
           {loading ? (
             <>
               <IconLoader className="animate-spin" size={18} />
-              <span>Analyzing AI Match...</span>
+              <span>Analyzing Intelligence…</span>
             </>
           ) : (
             <>
@@ -180,6 +269,52 @@ export default function Recommendations() {
         </div>
       )}
 
+      {/* PHASE 2 INTELLIGENCE WIDGETS (Visa Assistant & Local Travel Guide) */}
+      {(visaData || guideData) && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Official Visa Assistant Card */}
+          {visaData && (
+            <div className="glass-card p-5 rounded-2xl border border-indigo-500/30 bg-[var(--bg-card)] space-y-3">
+              <div className="flex justify-between items-center">
+                <h3 className="text-sm font-bold text-[var(--text-primary)] font-heading flex items-center gap-2">
+                  <IconPassport className="text-indigo-500" size={20} /> Official Visa Assistant ({visaData.passport_country} → {visaData.destination_country})
+                </h3>
+                <span className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300">
+                  {visaData.status || 'VERIFIED'}
+                </span>
+              </div>
+              <div className="text-xs text-[var(--text-secondary)] space-y-1.5">
+                <div>Requirement: <span className="font-bold text-[var(--text-primary)]">{visaData.requirement}</span></div>
+                <div>Max Stay: <span className="font-bold text-[var(--text-primary)]">{visaData.max_stay_days} Days</span></div>
+                {visaData.official_portal && (
+                  <a href={visaData.official_portal} target="_blank" rel="noreferrer" className="text-indigo-600 dark:text-indigo-400 underline font-bold inline-flex items-center gap-1">
+                    Official Visa Portal →
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Verified Local Travel Guide Card */}
+          {guideData && (
+            <div className="glass-card p-5 rounded-2xl border border-emerald-500/30 bg-[var(--bg-card)] space-y-3">
+              <div className="flex justify-between items-center">
+                <h3 className="text-sm font-bold text-[var(--text-primary)] font-heading flex items-center gap-2">
+                  <IconBook className="text-emerald-500" size={20} /> Verified Local Travel Guide ({guideData.city})
+                </h3>
+                <span className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300">
+                  LOCAL CUSTOMS
+                </span>
+              </div>
+              <div className="text-xs text-[var(--text-secondary)] space-y-1.5">
+                <div>Transit Etiquette: <span className="font-bold text-[var(--text-primary)]">{guideData.transport_etiquette}</span></div>
+                <div>Tipping Norms: <span className="font-bold text-[var(--text-primary)]">{guideData.tipping_guidelines}</span></div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Category Tabs */}
       {recsData && (
         <div className="flex gap-2 overflow-x-auto pb-2 custom-scrollbar">
@@ -187,7 +322,7 @@ export default function Recommendations() {
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap border ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap border cursor-pointer ${
                 activeCategory === cat
                   ? 'bg-[var(--color-primary-600)] text-white border-[var(--color-primary-600)] shadow-md'
                   : 'bg-[var(--bg-card)] border-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-primary)]'
@@ -256,7 +391,7 @@ export default function Recommendations() {
                         </div>
                         <button 
                           onClick={() => toggleFavorite(r)}
-                          className="p-2 rounded-full text-[var(--text-muted)] hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all flex-shrink-0"
+                          className="p-2 rounded-full text-[var(--text-muted)] hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all flex-shrink-0 cursor-pointer"
                           title={isFav ? "Remove from wishlist" : "Add to wishlist"}
                         >
                           <IconHeart size={20} fill={isFav ? "red" : "none"} className={isFav ? "text-red-500 scale-110" : "transition-transform group-hover:scale-110"} />
@@ -332,7 +467,7 @@ export default function Recommendations() {
             <h3 className="text-lg font-bold text-[var(--text-primary)] font-heading mb-2">Ready to explore?</h3>
             <p className="text-sm text-[var(--text-muted)] max-w-md mx-auto leading-relaxed">
               Tell us where you're going and what you enjoy.<br/>
-              We'll create personalized recommendations, restaurants, cafes, hidden gems, transport, weather insights, and a complete AI itinerary.
+              We'll create personalized recommendations, official visa requirements, local customs, transit, and weather insights.
             </p>
           </div>
         </div>

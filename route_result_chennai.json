@@ -1,0 +1,456 @@
+{
+  "request_id": "req_d43a323ad37b",
+  "status": "VERIFIED_FLIGHT",
+  "result_level": 2,
+  "verified": true,
+  "journey_scale": "DOMESTIC",
+  "origin": "Chennai Corporation",
+  "destination": "Mumbai",
+  "origin_source": "GEOCODED_LOCATION",
+  "origin_accuracy_m": 10.0,
+  "origin_coords": {
+    "lat": 13.0836939,
+    "lon": 80.270186,
+    "accuracy": 10.0
+  },
+  "dest_coords": {
+    "lat": 19.054999,
+    "lon": 72.8692035
+  },
+  "preferred_mode": "fastest",
+  "distance_summary": {
+    "total_distance_km": 1050.8,
+    "distance_type": "MULTIMODAL_AIR",
+    "source": "FlightProvider + Derived Ground",
+    "status": "VERIFIED"
+  },
+  "duration_summary": {
+    "total_duration_min": 152.0,
+    "source": "FlightProvider + Derived Ground",
+    "status": "VERIFIED"
+  },
+  "journey_segments": [
+    {
+      "mode": "Transfer",
+      "from": "Chennai Corporation",
+      "to": "Chennai International Airport Airport",
+      "distance_km": 14.7,
+      "duration_min": 22.0,
+      "status": "ESTIMATED",
+      "source": "DERIVED",
+      "confidence": "MEDIUM"
+    },
+    {
+      "mode": "Flight",
+      "from": "Chennai International Airport Airport",
+      "to": "Chhatrapati Shivaji Maharaj International Airport Airport",
+      "distance_km": 1032.2,
+      "duration_min": 120,
+      "status": "VERIFIED",
+      "source": "FlightProvider",
+      "confidence": "HIGH",
+      "flight_number": "AI2740",
+      "airline": "Air India"
+    },
+    {
+      "mode": "Transfer",
+      "from": "Chhatrapati Shivaji Maharaj International Airport Airport",
+      "to": "Mumbai",
+      "distance_km": 3.9,
+      "duration_min": 10,
+      "status": "ESTIMATED",
+      "source": "DERIVED",
+      "confidence": "MEDIUM"
+    }
+  ],
+  "journey_timeline": [
+    {
+      "time": "Sequence 1",
+      "title": "Chennai Corporation",
+      "description": "Origin location",
+      "status": "VERIFIED",
+      "type": "ORIGIN"
+    },
+    {
+      "time": "35 min",
+      "title": "\ud83d\ude98 Airport Transfer \u00b7 Chennai Corporation \u2192 Chennai International Airport",
+      "description": "Estimated ground transfer to departure airport",
+      "status": "ESTIMATED",
+      "mode": "Transfer",
+      "source": "DERIVED",
+      "distance_km": 14.7,
+      "duration_min": 22.0,
+      "type": "SEGMENT"
+    },
+    {
+      "time": "120 min",
+      "title": "\u2708\ufe0f Verified Flight (AI2740) \u00b7 Chennai International Airport \u2192 Chhatrapati Shivaji Maharaj International Airport",
+      "description": "1032.2 km non-stop flight via FlightProvider",
+      "status": "VERIFIED",
+      "mode": "Flight",
+      "source": "FlightProvider",
+      "distance_km": 1032.2,
+      "duration_min": 120,
+      "type": "SEGMENT"
+    },
+    {
+      "time": "30 min",
+      "title": "\ud83d\ude98 City Transfer \u00b7 Chhatrapati Shivaji Maharaj International Airport \u2192 Mumbai",
+      "description": "Estimated ground transfer to final destination",
+      "status": "ESTIMATED",
+      "mode": "Transfer",
+      "source": "DERIVED",
+      "distance_km": 3.9,
+      "duration_min": 10,
+      "type": "SEGMENT"
+    },
+    {
+      "time": "Sequence 5",
+      "title": "Mumbai",
+      "description": "Destination reached",
+      "status": "VERIFIED",
+      "type": "DESTINATION"
+    }
+  ],
+  "route_options": [
+    {
+      "provider": "RailRadar",
+      "mode": "Rail",
+      "status": "UNAVAILABLE",
+      "message": "No verified RailRadar itinerary available"
+    },
+    {
+      "provider": "FlightProvider",
+      "mode": "Flight",
+      "status": "VERIFIED",
+      "distance_km": 1050.8,
+      "duration_min": 152.0,
+      "message": "Verified flight option (AI2740)"
+    },
+    {
+      "provider": "OSRM",
+      "mode": "Driving",
+      "status": "UNAVAILABLE",
+      "message": "Road route unavailable"
+    }
+  ],
+  "provider_diagnostics": [
+    {
+      "provider": "RailRadar",
+      "configured": true,
+      "status": "UNAVAILABLE",
+      "message": "No verified RailRadar itinerary returned"
+    },
+    {
+      "provider": "FlightProvider",
+      "configured": true,
+      "status": "VERIFIED",
+      "message": "Verified flight options returned"
+    },
+    {
+      "provider": "OSRM",
+      "configured": true,
+      "status": "UNAVAILABLE",
+      "message": "Road route unavailable"
+    },
+    {
+      "provider": "Overpass",
+      "configured": true,
+      "status": "FALLBACK_USED",
+      "message": "Live query unavailable; verified geographic fallback used"
+    },
+    {
+      "provider": "Nominatim",
+      "configured": true,
+      "status": "VERIFIED",
+      "message": "Origin/destination geocoded"
+    }
+  ],
+  "provider_audit": {
+    "RailRadar": {
+      "configured": true,
+      "attempted": true,
+      "status": "NO_ITINERARY",
+      "reason": "No verified rail itinerary returned"
+    },
+    "FlightProvider": {
+      "configured": true,
+      "attempted": true,
+      "status": "SUCCESS",
+      "reason": "Verified flight options returned"
+    },
+    "OSRM": {
+      "configured": true,
+      "attempted": true,
+      "status": "NO_RESULT",
+      "reason": "No road route returned"
+    },
+    "Overpass": {
+      "configured": true,
+      "attempted": true,
+      "status": "SUCCESS",
+      "reason": "Live query unavailable; verified geographic fallback used"
+    },
+    "Nominatim": {
+      "configured": true,
+      "attempted": true,
+      "status": "SUCCESS",
+      "reason": "Origin and destination geocoded successfully"
+    }
+  },
+  "strategy_analysis": {
+    "fastest": {
+      "title": "Fastest Route",
+      "recommendation": "Flight via FlightProvider (152.0 min)",
+      "status": "VERIFIED",
+      "note": ""
+    },
+    "cheapest": {
+      "title": "Cheapest Option",
+      "recommendation": "N/A",
+      "status": "INSUFFICIENT_DATA",
+      "note": "No verified fare data."
+    },
+    "safest": {
+      "title": "Safest Transportation",
+      "recommendation": "N/A",
+      "status": "INSUFFICIENT_DATA",
+      "note": "No verified safety data."
+    },
+    "greenest": {
+      "title": "Lowest CO2 Impact",
+      "recommendation": "N/A",
+      "status": "INSUFFICIENT_DATA",
+      "note": "No verified emissions data."
+    },
+    "least_walking": {
+      "title": "Least Walking",
+      "recommendation": "Exact walking distance unavailable.",
+      "status": "INSUFFICIENT_DATA",
+      "note": "Walking distances not fully verified."
+    },
+    "best_overall": {
+      "title": "Best Overall",
+      "recommendation": "Flight via FlightProvider",
+      "status": "VERIFIED",
+      "note": ""
+    }
+  },
+  "why_this_route": [
+    "RailRadar was queried but returned no verified transit itinerary.",
+    "Verified flight options returned by FlightProvider."
+  ],
+  "nearby": [
+    {
+      "name": "Chennai Central Railway Station",
+      "category": "Railway Station",
+      "latitude": 13.0827,
+      "longitude": 80.2707,
+      "distance_km": 0.1,
+      "source": "Verified Transit Infrastructure",
+      "source_type": "VERIFIED_INFRASTRUCTURE",
+      "verified": true,
+      "map_url": "https://www.google.com/maps/search/?api=1&query=13.0827,80.2707",
+      "type": "Railway Station",
+      "lat": 13.0827,
+      "lon": 80.2707,
+      "walk_time_mins": 1
+    },
+    {
+      "name": "Chennai Egmore Railway Station",
+      "category": "Railway Station",
+      "latitude": 13.0782,
+      "longitude": 80.2612,
+      "distance_km": 1.1,
+      "source": "Verified Transit Infrastructure",
+      "source_type": "VERIFIED_INFRASTRUCTURE",
+      "verified": true,
+      "map_url": "https://www.google.com/maps/search/?api=1&query=13.0782,80.2612",
+      "type": "Railway Station",
+      "lat": 13.0782,
+      "lon": 80.2612,
+      "walk_time_mins": 13
+    }
+  ],
+  "nearby_provenance": {
+    "provider": "Verified Transit Infrastructure",
+    "origin_source": "GEOCODED_LOCATION",
+    "origin_lat": 13.0836939,
+    "origin_lon": 80.270186,
+    "origin_accuracy_m": 10.0,
+    "radius_km": 5.0,
+    "queried": true,
+    "fallback_used": true,
+    "fallback_reason": "Live Overpass API query returned no results or timed out",
+    "result_count": 2
+  },
+  "weather_obj": {
+    "stops": [
+      {
+        "location": "Chennai Corporation",
+        "temp": "31.5\u00b0C",
+        "icon": "\u2601\ufe0f"
+      },
+      {
+        "location": "Mumbai",
+        "temp": "26.8\u00b0C",
+        "icon": "\ud83c\udf27\ufe0f"
+      }
+    ]
+  },
+  "discovered_infrastructure": {
+    "nearby_stations": [
+      {
+        "name": "Chennai Central Railway Station",
+        "category": "Railway Station",
+        "latitude": 13.0827,
+        "longitude": 80.2707,
+        "distance_km": 0.1,
+        "source": "Verified Transit Infrastructure",
+        "source_type": "VERIFIED_INFRASTRUCTURE",
+        "verified": true,
+        "map_url": "https://www.google.com/maps/search/?api=1&query=13.0827,80.2707",
+        "type": "Railway Station",
+        "lat": 13.0827,
+        "lon": 80.2707,
+        "walk_time_mins": 1
+      },
+      {
+        "name": "Chennai Egmore Railway Station",
+        "category": "Railway Station",
+        "latitude": 13.0782,
+        "longitude": 80.2612,
+        "distance_km": 1.1,
+        "source": "Verified Transit Infrastructure",
+        "source_type": "VERIFIED_INFRASTRUCTURE",
+        "verified": true,
+        "map_url": "https://www.google.com/maps/search/?api=1&query=13.0782,80.2612",
+        "type": "Railway Station",
+        "lat": 13.0782,
+        "lon": 80.2612,
+        "walk_time_mins": 13
+      }
+    ]
+  },
+  "nearby_places": [
+    {
+      "name": "Kurla Railway Station",
+      "category": "Railway Station",
+      "latitude": 19.065,
+      "longitude": 72.879,
+      "distance_km": 1.5,
+      "source": "Verified Transit Infrastructure",
+      "source_type": "VERIFIED_INFRASTRUCTURE",
+      "verified": true,
+      "map_url": "https://www.google.com/maps/search/?api=1&query=19.065,72.879",
+      "type": "Railway Station",
+      "lat": 19.065,
+      "lon": 72.879,
+      "walk_time_mins": 18
+    },
+    {
+      "name": "Bandra Bus Station",
+      "category": "Bus Stop",
+      "latitude": 19.0544,
+      "longitude": 72.8402,
+      "distance_km": 3.0,
+      "source": "Verified Transit Infrastructure",
+      "source_type": "VERIFIED_INFRASTRUCTURE",
+      "verified": true,
+      "map_url": "https://www.google.com/maps/search/?api=1&query=19.0544,72.8402",
+      "type": "Bus Stop",
+      "lat": 19.0544,
+      "lon": 72.8402,
+      "walk_time_mins": 36
+    }
+  ],
+  "journey": {
+    "provider": "FlightProvider",
+    "actual_mode": "Flight",
+    "itineraries": [
+      {
+        "origin_airport": "Chennai International Airport",
+        "origin_iata": "MAA",
+        "origin_lat": 12.9941,
+        "origin_lon": 80.1709,
+        "destination_airport": "Chhatrapati Shivaji Maharaj International Airport",
+        "destination_iata": "BOM",
+        "destination_lat": 19.0896,
+        "destination_lon": 72.8656,
+        "flight_number": "AI2740",
+        "departure_time": "2026-08-11T16:00:00+00:00",
+        "arrival_time": "2026-08-11T18:15:00+00:00",
+        "airline": "Air India",
+        "status": "scheduled",
+        "flight_distance_km": 1033.5,
+        "duration_minutes": 120
+      },
+      {
+        "origin_airport": "Chennai International Airport",
+        "origin_iata": "MAA",
+        "origin_lat": 12.9941,
+        "origin_lon": 80.1709,
+        "destination_airport": "Chhatrapati Shivaji Maharaj International Airport",
+        "destination_iata": "BOM",
+        "destination_lat": 19.0896,
+        "destination_lon": 72.8656,
+        "flight_number": "6E5371",
+        "departure_time": "2026-08-11T14:45:00+00:00",
+        "arrival_time": "2026-08-11T16:40:00+00:00",
+        "airline": "IndiGo",
+        "status": "scheduled",
+        "flight_distance_km": 1033.5,
+        "duration_minutes": 120
+      },
+      {
+        "origin_airport": "Chennai International Airport",
+        "origin_iata": "MAA",
+        "origin_lat": 12.9941,
+        "origin_lon": 80.1709,
+        "destination_airport": "Chhatrapati Shivaji Maharaj International Airport",
+        "destination_iata": "BOM",
+        "destination_lat": 19.0896,
+        "destination_lon": 72.8656,
+        "flight_number": "VS9468",
+        "departure_time": "2026-08-11T14:45:00+00:00",
+        "arrival_time": "2026-08-11T16:40:00+00:00",
+        "airline": "Virgin Atlantic",
+        "status": "scheduled",
+        "flight_distance_km": 1033.5,
+        "duration_minutes": 120
+      }
+    ],
+    "data_quality": {
+      "provider_engine": "FlightProvider API",
+      "schedule_timestamps": "Provider Verified",
+      "platform_information": "Unavailable"
+    }
+  },
+  "road_alternative": null,
+  "route_guidance": null,
+  "provider_trace": [
+    {
+      "provider": "RailRadar",
+      "status": "NO_ITINERARY",
+      "note": "RailRadar returned zero matching train itineraries for these coordinates."
+    },
+    {
+      "provider": "FlightProvider",
+      "status": "SUCCESS",
+      "note": "Verified flight options returned."
+    }
+  ],
+  "data_quality": {
+    "provider_engine": "FlightProvider API",
+    "schedule_timestamps": "Provider Verified",
+    "platform_information": "Not applicable",
+    "distance_source": "Provider Air Route Distance",
+    "walking_navigation": "N/A",
+    "geocoding_engine": "Live (Nominatim)",
+    "ai_guidance": "Not used"
+  },
+  "provenance": {
+    "routing": "FlightProvider API",
+    "geocoding": "Live (Nominatim)"
+  }
+}

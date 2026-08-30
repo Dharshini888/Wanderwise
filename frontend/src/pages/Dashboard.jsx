@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { formatCurrency } from '../utils/formatters';
+import { formatCurrency, getStoredUserId } from '../utils/formatters';
+import { calculateTripDuration } from '../utils/date_helpers';
 import {
   IconSearch, IconBell, IconSparkles, IconPlus, IconMapPin, IconCalendar, IconCash,
   IconSun, IconShieldCheck, IconMessageChatbot, IconCompass,
   IconMap, IconBackpack, IconReceipt2, IconChevronRight, IconTrendingUp,
-  IconClock, IconHeart, IconPlane, IconActivity, IconAlertTriangle, IconCheck, IconBus, IconBuildingStore
+  IconClock, IconHeart, IconPlane, IconActivity, IconAlertTriangle, IconCheck, IconBus, IconBuildingStore,
+  IconWallet, IconTrash, IconX
 } from '@tabler/icons-react';
 
 import WeatherWidget from '../components/dashboard/WeatherWidget';
@@ -17,9 +19,10 @@ import TripCard from '../components/dashboard/TripCard';
 import DashboardBudgetWidget from '../components/dashboard/DashboardBudgetWidget';
 import ActiveTripWorkspace from '../components/dashboard/ActiveTripWorkspace';
 import TripReadinessWidget from '../components/dashboard/TripReadinessWidget';
+import DocumentsVaultWidget from '../components/dashboard/DocumentsVaultWidget';
+import SmartChecklistWidget from '../components/checklist/SmartChecklistWidget';
 import TripWizard from '../components/trips/TripWizard';
 import { createTrip } from '../api/trips';
-import { IconWallet } from '@tabler/icons-react';
 
 const API = 'http://localhost:8000/api';
 
@@ -31,20 +34,22 @@ export default function Dashboard() {
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState(null);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [budgetAlert, setBudgetAlert] = useState(null);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
+  const [recentActivities, setRecentActivities] = useState([]);
 
   const token = localStorage.getItem('token');
   const userStr = localStorage.getItem('user');
   const user = userStr ? JSON.parse(userStr) : { name: 'Traveler', email: '' };
 
-  let userId = null;
-  try {
-    if (token) {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      userId = payload.sub || payload.user_id || payload.id;
-    }
-  } catch (_) {}
+  const userId = getStoredUserId();
 
   const [form, setForm] = useState({
     destination: '', origin_city: 'Coimbatore', start_date: '', end_date: '', budget: '',
@@ -55,44 +60,79 @@ export default function Dashboard() {
   const [widgetData, setWidgetData] = useState(null);
 
   const fetchTrips = async () => {
-    if (!userId) { setLoading(false); return; }
+    if (!userId || userId === 'undefined' || String(userId) === 'undefined') { setLoading(false); return; }
     try {
-      const res = await fetch(`${API}/trips/user/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      if (res.ok && Array.isArray(data)) setTrips(data);
-
-      const widgetRes = await fetch(`${API}/trips/dashboard-widgets/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const [tripsRes, widgetRes, notifRes, actRes] = await Promise.all([
+        fetch(`${API}/trips/user/${userId}`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API}/trips/dashboard-widgets/${userId}`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API}/notifications/unread-count`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API}/activity/user/${userId}`, { headers: { Authorization: `Bearer ${token}` } })
+      ]);
+      
+      if (tripsRes.ok) {
+        const data = await tripsRes.json();
+        if (Array.isArray(data)) setTrips(data);
+      }
+      
       if (widgetRes.ok) {
         const wData = await widgetRes.json();
         setWidgetData(wData);
       }
-    } catch (_) {}
-    setLoading(false);
+      
+      if (notifRes.ok) {
+        const notifData = await notifRes.json();
+        setUnreadNotifications(notifData.unread_count);
+      }
+      
+      if (actRes.ok) {
+        const actData = await actRes.json();
+        setRecentActivities(actData);
+      }
+    } catch (_) {
+    } finally {
+      setLoading(false);
+    }
   };
 
   const deleteTrip = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this trip itinerary?")) return;
-    setTrips(prev => prev.filter(t => t.id !== id));
     try {
-      let res = await fetch(`${API}/trips/${id}`, {
+      await fetch(`${API}/trips/${id}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) {
-        res = await fetch(`${API}/trips/delete/${id}`, {
-          method: 'DELETE',
+      setTrips(trips.filter(t => t.id !== id));
+    } catch (_) {}
+  };
+
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults(null);
+      setSearchError(null);
+      return;
+    }
+
+    setIsSearching(true);
+    setSearchError(null);
+    const delayDebounceFn = setTimeout(async () => {
+      try {
+        const res = await fetch(`${API}/trips/search?query=${encodeURIComponent(searchQuery.trim())}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
+        if (res.ok) {
+          const data = await res.json();
+          setSearchResults(data);
+        } else {
+          setSearchError('Search failed');
+        }
+      } catch (err) {
+        setSearchError('Network error');
+      } finally {
+        setIsSearching(false);
       }
-      fetchTrips();
-    } catch (_) {
-      fetchTrips();
-    }
-  };
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery, token]);
 
   useEffect(() => { fetchTrips(); }, []);
 
@@ -156,10 +196,7 @@ export default function Dashboard() {
   };
 
   const getDays = (t) => {
-    if (!t || !t.start_date || !t.end_date) return 0;
-    const start = new Date(formatDateStr(t.start_date) + 'T00:00:00');
-    const end = new Date(formatDateStr(t.end_date) + 'T00:00:00');
-    return Math.max(1, Math.round((end - start) / 86400000) + 1);
+    return calculateTripDuration(t.start_date, t.end_date);
   };
 
   // Dates & Active Trip Tracking
@@ -206,49 +243,65 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="flex flex-col gap-8 pb-10">
-      
-      {/* Top Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 glass-card p-4 rounded-2xl sticky top-4 z-40 bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--border-color)]">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--color-primary-500)] to-[var(--color-primary-700)] text-white flex items-center justify-center font-bold text-sm shadow-md">
-            {initials}
+    <div className="space-y-6 pb-12 animate-fadeIn">
+      {/* 1. TOP HEADER & GREETING BAR */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 glass-card p-6 md:p-8 rounded-3xl border border-[var(--border-color)] bg-[var(--bg-card)] shadow-xl relative overflow-hidden">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+              ✈️ TRAVEL COMMAND CENTER
+            </span>
           </div>
-          <div>
-            <h1 className="text-lg font-bold text-[var(--text-primary)] font-heading leading-tight">
-              {nextTrip && !isDisplayTripActive 
-                ? `Next Trip: 📍 ${nextTrip.destination.split(',')[0]}` 
-                : isDisplayTripActive 
-                ? `Currently Exploring 📍 ${displayTrip.destination.split(',')[0]}` 
-                : `Hello, ${user.name?.split(' ')[0] || 'Traveler'} 👋`}
-            </h1>
-            <p className="text-xs text-[var(--text-muted)] font-medium">
-              {nextTrip && !isDisplayTripActive 
-                ? `Starts in ${getDaysCountdown(nextTrip.start_date)} days • Everything is prepared.` 
-                : isDisplayTripActive 
-                ? `Day ${getCurrentDayNumber(displayTrip.start_date)} of ${getDays(displayTrip)} • Today's itinerary is ready.` 
-                : `Ready for your next adventure?`}
-            </p>
-          </div>
+          <h1 className="text-2xl md:text-3xl font-black text-[var(--text-primary)] font-heading tracking-tight">
+            Good morning, {user.name || 'Traveler'}
+          </h1>
+          <p className="text-xs md:text-sm text-[var(--text-muted)] mt-1 font-normal">
+            Your intelligent travel journey at a glance.
+          </p>
         </div>
-        
-        <div className="flex flex-1 max-w-md items-center gap-2">
-          <div className="relative flex-1">
+
+        <div className="flex items-center gap-3">
+          {/* Universal Search Bar */}
+          <div className="relative w-full sm:w-64">
             <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
-            <input 
-              type="text" 
-              placeholder="Search destinations, guides..." 
-              className="w-full pl-9 pr-4 py-2.5 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-xl text-sm focus:outline-none focus:border-[var(--color-primary-500)] transition-colors"
+            <input
+              type="text"
+              placeholder="Search trips, destinations..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 rounded-xl border border-[var(--border-color)] bg-[var(--bg-app)] text-[var(--text-primary)] text-xs font-semibold focus:ring-2 focus:ring-blue-500 outline-none transition-all"
             />
+            {searchResults && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-2xl z-50 p-2 max-h-60 overflow-y-auto">
+                {searchResults.length > 0 ? (
+                  searchResults.map(trip => (
+                    <Link
+                      key={trip.id}
+                      to={`/trips/${trip.id}`}
+                      className="p-2 hover:bg-[var(--bg-subtle)] rounded-xl flex items-center gap-2 no-underline"
+                    >
+                      <IconMapPin size={16} className="text-blue-500 shrink-0" />
+                      <div className="truncate">
+                        <div className="text-xs font-bold text-[var(--text-primary)] truncate">{trip.destination}</div>
+                        <div className="text-[10px] text-[var(--text-muted)]">{getDays(trip)} days</div>
+                      </div>
+                    </Link>
+                  ))
+                ) : (
+                  <div className="p-3 text-center text-xs text-[var(--text-muted)]">No matching trips found</div>
+                )}
+              </div>
+            )}
           </div>
-          <button className="p-2.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-app)] text-[var(--text-secondary)] hover:text-[var(--color-primary-600)] transition-colors relative">
-            <IconBell size={18} />
-            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-[var(--bg-app)]"></span>
+
+          {/* New Trip Wizard Button */}
+          <button
+            onClick={() => setShowForm(true)}
+            className="btn-primary flex items-center gap-2 px-5 py-2.5 text-xs font-bold shrink-0 cursor-pointer shadow-md shadow-blue-500/20"
+          >
+            <IconPlus size={16} />
+            <span>Plan New Trip</span>
           </button>
-          <Link to="/chat" className="p-2.5 rounded-xl bg-[var(--color-primary-600)] text-white hover:bg-[var(--color-primary-700)] transition-colors shadow-md shadow-blue-500/20 flex items-center gap-1.5">
-            <IconSparkles size={16} />
-            <span className="text-sm font-semibold hidden sm:inline">Ask AI</span>
-          </Link>
         </div>
       </div>
 
@@ -481,6 +534,17 @@ export default function Dashboard() {
           {/* Personalized Recommendations */}
           <PersonalizedWidget trips={trips} token={token} />
           
+          {/* Travel Documents Vault Widget */}
+          <DocumentsVaultWidget />
+          
+          {/* Smart Travel Checklist Widget */}
+          {displayTrip && (
+            <SmartChecklistWidget
+              tripId={displayTrip.id}
+              tripTitle={displayTrip.title || displayTrip.destination}
+            />
+          )}
+          
           {/* Recent Activity Timeline */}
           <div className="glass-card p-6 flex flex-col gap-5">
             <h3 className="text-sm font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2 flex items-center gap-2">
@@ -488,22 +552,34 @@ export default function Dashboard() {
             </h3>
             
             <div className="relative pl-6 border-l-2 border-[var(--border-color)] flex flex-col gap-6">
-              {[
-                { title: nextTrip ? `AI Itinerary Generated for ${nextTrip.destination.split(',')[0]}` : 'AI Itinerary Generated', time: 'Today', icon: <IconSparkles size={14}/>, color: 'text-amber-500 bg-amber-50 dark:bg-amber-900/20' },
-                { title: 'Transit Route Updated', time: 'Yesterday', icon: <IconMap size={14}/>, color: 'text-blue-500 bg-blue-50 dark:bg-blue-900/20' },
-                { title: 'Budget & Expense Planner Active', time: '2 days ago', icon: <IconReceipt2 size={14}/>, color: 'text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' },
-                { title: 'Destination Preferences Saved', time: '3 days ago', icon: <IconHeart size={14}/>, color: 'text-red-500 bg-red-50 dark:bg-red-950/20' },
-              ].map((act, i) => (
-                <div key={i} className="relative">
-                  <div className={`absolute -left-[35px] w-7 h-7 rounded-full border-4 border-[var(--bg-card)] flex items-center justify-center ${act.color}`}>
-                    {act.icon}
+              {recentActivities.length > 0 ? recentActivities.map((act) => {
+                let IconComponent = IconActivity;
+                if (act.icon === 'sparkles') IconComponent = IconSparkles;
+                if (act.icon === 'map') IconComponent = IconMap;
+                if (act.icon === 'receipt') IconComponent = IconReceipt2;
+                if (act.icon === 'heart') IconComponent = IconHeart;
+                
+                let colorClass = 'text-blue-500 bg-blue-50 dark:bg-blue-900/20';
+                if (act.color === 'amber') colorClass = 'text-amber-500 bg-amber-50 dark:bg-amber-900/20';
+                if (act.color === 'emerald') colorClass = 'text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20';
+                if (act.color === 'red') colorClass = 'text-red-500 bg-red-50 dark:bg-red-950/20';
+
+                const timeAgo = new Date(act.created_at).toLocaleDateString();
+
+                return (
+                  <div key={act.id} className="relative">
+                    <div className={`absolute -left-[35px] w-7 h-7 rounded-full border-4 border-[var(--bg-card)] flex items-center justify-center ${colorClass}`}>
+                      <IconComponent size={14}/>
+                    </div>
+                    <div className="text-sm font-bold text-[var(--text-primary)]">{act.title}</div>
+                    <div className="text-xs text-[var(--text-muted)] font-medium flex items-center gap-1 mt-0.5">
+                      <IconClock size={12}/> {timeAgo}
+                    </div>
                   </div>
-                  <div className="text-sm font-bold text-[var(--text-primary)]">{act.title}</div>
-                  <div className="text-xs text-[var(--text-muted)] font-medium flex items-center gap-1 mt-0.5">
-                    <IconClock size={12}/> {act.time}
-                  </div>
-                </div>
-              ))}
+                );
+              }) : (
+                <div className="text-sm text-[var(--text-muted)] italic">No recent activity</div>
+              )}
             </div>
           </div>
           

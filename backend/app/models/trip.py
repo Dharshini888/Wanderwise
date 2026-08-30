@@ -66,4 +66,6 @@ class Trip(Base):
     timeline_events = relationship("TripTimeline", back_populates="trip", cascade="all, delete-orphan")
     health_info = relationship("TripHealth", back_populates="trip", uselist=False, cascade="all, delete-orphan")
     ai_context = relationship("TripAIContext", back_populates="trip", uselist=False, cascade="all, delete-orphan")
+    packing_lists = relationship("PackingList", back_populates="trip", cascade="all, delete-orphan")
+    checklist_items = relationship("ChecklistItem", back_populates="trip", cascade="all, delete-orphan")
 

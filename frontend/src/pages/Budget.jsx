@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, useParams } from 'react-router-dom';
 import ExpenseDashboard from './ExpenseDashboard';
 import { IconReceipt, IconWallet, IconMapPin } from '@tabler/icons-react';
+import { getStoredUserId } from '../utils/formatters';
 
 const API = 'http://localhost:8000/api';
 
@@ -15,15 +16,10 @@ export default function Budget() {
   const [loading, setLoading] = useState(true);
 
   const token = localStorage.getItem('token');
-
-  let userId = null;
-  try {
-    const p = JSON.parse(atob(token.split('.')[1]));
-    userId = p.sub || p.user_id || p.id;
-  } catch (_) {}
+  const userId = getStoredUserId();
 
   useEffect(() => {
-    if (!userId) { setLoading(false); return; }
+    if (!userId || userId === 'undefined' || String(userId) === 'undefined') { setLoading(false); return; }
     fetch(`${API}/trips/user/${userId}`, { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json())
       .then(data => {

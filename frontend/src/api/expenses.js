@@ -44,5 +44,14 @@ export const deleteExpense = async (id) => {
   return res.data;
 };
 
-export const getExportCsvUrl = (tripId) => `http://localhost:8000/api/expenses/export/csv?trip_id=${tripId}`;
-export const getExportPdfUrl = (tripId) => `http://localhost:8000/api/expenses/export/pdf?trip_id=${tripId}`;
+export const downloadExpenseExport = async (tripId, type) => {
+  const endpoint = type === 'csv' ? `/api/expenses/${tripId}/export/csv` : `/api/expenses/${tripId}/export/pdf`;
+  const res = await api.get(endpoint, { responseType: 'blob' });
+  const url = window.URL.createObjectURL(new Blob([res.data]));
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', `expenses_trip_${tripId}.${type}`);
+  document.body.appendChild(link);
+  link.click();
+  link.parentNode.removeChild(link);
+};

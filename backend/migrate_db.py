@@ -167,6 +167,25 @@ def migrate():
         for col_name, col_def in wishlist_columns:
             add_column_if_missing("wishlist_items", col_name, col_def)
 
+        # 6. Documents Table Columns
+        document_columns = [
+            ("name", "VARCHAR DEFAULT 'Travel Document' NOT NULL"),
+            ("category", "VARCHAR DEFAULT 'Other' NOT NULL"),
+            ("document_type", "VARCHAR"),
+            ("file_name", "VARCHAR"),
+            ("storage_key", "VARCHAR"),
+            ("encrypted_url", "VARCHAR"),
+            ("mime_type", "VARCHAR DEFAULT 'application/pdf'"),
+            ("file_size", "INTEGER DEFAULT 0"),
+            ("expiry_date", "TIMESTAMP WITH TIME ZONE"),
+            ("notes", "TEXT"),
+            ("is_deleted", "BOOLEAN DEFAULT FALSE"),
+            ("created_at", "TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP"),
+            ("updated_at", "TIMESTAMP WITH TIME ZONE"),
+        ]
+        for col_name, col_def in document_columns:
+            add_column_if_missing("documents", col_name, col_def)
+
         print("\nDatabase Schema Migration Completed Successfully! All tables synchronized.")
 
 if __name__ == "__main__":

@@ -1,0 +1,378 @@
+{
+  "destination": "phuket",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Phuket Wake Park",
+      "category": "Viewpoint",
+      "address": "Phuket",
+      "latitude": 7.9366015,
+      "longitude": 98.3529292,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Phuket Wake Park, one of Phuket's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Phuket\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Phuket Wake Park.",
+      "signature_dish": null,
+      "nearby": [
+        "Phuket"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Upside down house",
+      "category": "Sightseeing",
+      "address": "Phuket",
+      "latitude": 7.9366015,
+      "longitude": 98.3529292,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Upside down house, one of Phuket's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Phuket\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Upside down house.",
+      "signature_dish": null,
+      "nearby": [
+        "Phuket"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Elephant Jungle Sanctuary Phuket",
+      "category": "Sightseeing",
+      "address": "Phuket",
+      "latitude": 7.9366015,
+      "longitude": 98.3529292,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Elephant Jungle Sanctuary Phuket, one of Phuket's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Phuket\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Elephant Jungle Sanctuary Phuket.",
+      "signature_dish": null,
+      "nearby": [
+        "Phuket"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Nok's house",
+      "category": "Sightseeing",
+      "address": "Phuket",
+      "latitude": 7.9366015,
+      "longitude": 98.3529292,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Nok's house, one of Phuket's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Phuket\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Nok's house.",
+      "signature_dish": null,
+      "nearby": [
+        "Phuket"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Flying Hanuman",
+      "category": "Sightseeing",
+      "address": "Phuket",
+      "latitude": 7.9366015,
+      "longitude": 98.3529292,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Flying Hanuman, one of Phuket's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Phuket\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Flying Hanuman.",
+      "signature_dish": null,
+      "nearby": [
+        "Phuket"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Andamanda Phuket Waterpark",
+      "category": "Viewpoint",
+      "address": "Phuket",
+      "latitude": 7.9366015,
+      "longitude": 98.3529292,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Andamanda Phuket Waterpark, one of Phuket's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Phuket\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Andamanda Phuket Waterpark.",
+      "signature_dish": null,
+      "nearby": [
+        "Phuket"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "stash",
+      "category": "Sightseeing",
+      "address": "Phuket",
+      "latitude": 7.9366015,
+      "longitude": 98.3529292,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore stash, one of Phuket's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Phuket\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of stash.",
+      "signature_dish": null,
+      "nearby": [
+        "Phuket"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "\u0e20\u0e39\u0e40\u0e01\u0e47\u0e15\u0e40\u0e23\u0e14\u0e14\u0e35\u0e49\u0e21\u0e34\u0e01",
+      "category": "Sightseeing",
+      "address": "Phuket",
+      "latitude": 7.9366015,
+      "longitude": 98.3529292,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore \u0e20\u0e39\u0e40\u0e01\u0e47\u0e15\u0e40\u0e23\u0e14\u0e14\u0e35\u0e49\u0e21\u0e34\u0e01, one of Phuket's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Phuket\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of \u0e20\u0e39\u0e40\u0e01\u0e47\u0e15\u0e40\u0e23\u0e14\u0e14\u0e35\u0e49\u0e21\u0e34\u0e01.",
+      "signature_dish": null,
+      "nearby": [
+        "Phuket"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Phuket Nature Elephant Reserve",
+      "category": "Sightseeing",
+      "address": "Phuket",
+      "latitude": 7.9366015,
+      "longitude": 98.3529292,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Phuket Nature Elephant Reserve, one of Phuket's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Phuket\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Phuket Nature Elephant Reserve.",
+      "signature_dish": null,
+      "nearby": [
+        "Phuket"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Monkey feeding",
+      "category": "Sightseeing",
+      "address": "Phuket",
+      "latitude": 7.9366015,
+      "longitude": 98.3529292,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Monkey feeding, one of Phuket's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Phuket\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Monkey feeding.",
+      "signature_dish": null,
+      "nearby": [
+        "Phuket"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "massage by ked 150B",
+      "category": "Sightseeing",
+      "address": "Phuket",
+      "latitude": 7.9366015,
+      "longitude": 98.3529292,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore massage by ked 150B, one of Phuket's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Phuket\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of massage by ked 150B.",
+      "signature_dish": null,
+      "nearby": [
+        "Phuket"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Hongsyok house",
+      "category": "Sightseeing",
+      "address": "Phuket",
+      "latitude": 7.9366015,
+      "longitude": 98.3529292,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Hongsyok house, one of Phuket's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Phuket\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Hongsyok house.",
+      "signature_dish": null,
+      "nearby": [
+        "Phuket"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    }
+  ]
+}

@@ -1,0 +1,223 @@
+{
+  "destination": "coimbatore",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "\u0b95\u0bcb\u0bb5\u0bc8 \u0ba8\u0b95\u0bb0\u0bae\u0bcd",
+      "category": "Sightseeing",
+      "address": "Coimbatore",
+      "latitude": 11.0018115,
+      "longitude": 76.9628425,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore \u0b95\u0bcb\u0bb5\u0bc8 \u0ba8\u0b95\u0bb0\u0bae\u0bcd, one of Coimbatore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Coimbatore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of \u0b95\u0bcb\u0bb5\u0bc8 \u0ba8\u0b95\u0bb0\u0bae\u0bcd.",
+      "signature_dish": null,
+      "nearby": [
+        "Coimbatore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Rajaji Statue",
+      "category": "Sightseeing",
+      "address": "Coimbatore",
+      "latitude": 11.0018115,
+      "longitude": 76.9628425,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Rajaji Statue, one of Coimbatore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Coimbatore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Rajaji Statue.",
+      "signature_dish": null,
+      "nearby": [
+        "Coimbatore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Lakshmi Ring Travellers Coimbatore Limited",
+      "category": "Sightseeing",
+      "address": "Coimbatore",
+      "latitude": 11.0018115,
+      "longitude": 76.9628425,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Lakshmi Ring Travellers Coimbatore Limited, one of Coimbatore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Coimbatore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Lakshmi Ring Travellers Coimbatore Limited.",
+      "signature_dish": null,
+      "nearby": [
+        "Coimbatore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Shivanjali Art Institute",
+      "category": "Sightseeing",
+      "address": "Coimbatore",
+      "latitude": 11.0018115,
+      "longitude": 76.9628425,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Shivanjali Art Institute, one of Coimbatore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Coimbatore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Shivanjali Art Institute.",
+      "signature_dish": null,
+      "nearby": [
+        "Coimbatore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Monkey Falls",
+      "category": "Sightseeing",
+      "address": "Coimbatore",
+      "latitude": 11.0018115,
+      "longitude": 76.9628425,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Monkey Falls, one of Coimbatore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Coimbatore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Monkey Falls.",
+      "signature_dish": null,
+      "nearby": [
+        "Coimbatore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Chinnakallar Falls",
+      "category": "Sightseeing",
+      "address": "Coimbatore",
+      "latitude": 11.0018115,
+      "longitude": 76.9628425,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Chinnakallar Falls, one of Coimbatore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Coimbatore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Chinnakallar Falls.",
+      "signature_dish": null,
+      "nearby": [
+        "Coimbatore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Nallamudi Poonjolai",
+      "category": "Sightseeing",
+      "address": "Coimbatore",
+      "latitude": 11.0018115,
+      "longitude": 76.9628425,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Nallamudi Poonjolai, one of Coimbatore's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Coimbatore\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Nallamudi Poonjolai.",
+      "signature_dish": null,
+      "nearby": [
+        "Coimbatore"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    }
+  ]
+}

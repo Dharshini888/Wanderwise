@@ -24,10 +24,13 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import GroupConsensus from "./pages/GroupConsensus";
 import HealthAndDocs from "./pages/HealthAndDocs";
+import DocumentsVault from "./pages/DocumentsVault";
 import SmartBudget from "./pages/SmartBudget";
 import TripList from "./pages/TripList";
 import TripDetails from "./pages/TripDetails";
 import ExpenseDashboard from "./pages/ExpenseDashboard";
+import SmartChecklist from "./pages/SmartChecklist";
+import LocalTravelGuide from "./pages/LocalTravelGuide";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import Layout from "./components/Layout";
@@ -70,6 +73,8 @@ function App() {
             <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
             <Route path="/trips" element={<Layout><TripList /></Layout>} />
             <Route path="/trips/:tripId" element={<Layout><TripDetails /></Layout>} />
+            <Route path="/checklist" element={<Layout><SmartChecklist /></Layout>} />
+            <Route path="/guide" element={<Layout><LocalTravelGuide /></Layout>} />
             <Route path="/companion" element={<Layout><TripList /></Layout>} />
             <Route path="/chat" element={<Layout><Chat /></Layout>} />
             <Route path="/weather" element={<Layout><Weather /></Layout>} />
@@ -92,6 +97,8 @@ function App() {
             <Route path="/settings" element={<Layout><Settings /></Layout>} />
             <Route path="/group-consensus" element={<Layout><GroupConsensus /></Layout>} />
             <Route path="/health-docs" element={<Layout><HealthAndDocs /></Layout>} />
+            <Route path="/documents" element={<Layout><DocumentsVault /></Layout>} />
+            <Route path="/documents/:docId" element={<Layout><DocumentsVault /></Layout>} />
           </Route>
         </Routes>
       </Router>

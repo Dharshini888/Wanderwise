@@ -24,21 +24,21 @@ export default function TripCard({ trip, token, getDays, onDelete }) {
   }, [trip]);
 
   return (
-    <div className="glass-card flex flex-col overflow-hidden group">
-      <div className="h-40 w-full relative overflow-hidden bg-slate-200">
+    <div className="travel-card travel-card-hover flex flex-col overflow-hidden group rounded-3xl border border-[var(--border-color)]">
+      <div className="h-44 w-full relative overflow-hidden bg-slate-200">
         <img 
           src={photo} 
           alt={trip.destination} 
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-        <div className="absolute top-3 right-3 bg-white/90 dark:bg-slate-900/90 text-[var(--color-primary-600)] dark:text-blue-400 text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider shadow-sm">
-          {trip.travel_type}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
+        <div className="absolute top-3.5 right-3.5 bg-white/90 dark:bg-slate-900/90 text-blue-600 dark:text-blue-400 text-[10px] px-3 py-1 rounded-full font-extrabold uppercase tracking-wider shadow-sm">
+          {trip.travel_type || 'Adventure'}
         </div>
-        <div className="absolute bottom-3 left-3 text-white">
-          <div className="text-base font-extrabold tracking-wide font-heading drop-shadow-sm">{trip.destination}</div>
-          <div className="text-[10px] font-medium opacity-90 drop-shadow-sm">
-            {trip.start_date} — {trip.end_date} ({getDays(trip)} days)
+        <div className="absolute bottom-3.5 left-4 text-white">
+          <div className="text-lg font-black tracking-tight font-heading drop-shadow-md">{trip.destination}</div>
+          <div className="text-xs font-semibold opacity-90 drop-shadow-sm mt-0.5">
+            {trip.start_date?.split('T')[0]} — {trip.end_date?.split('T')[0]} ({getDays ? getDays(trip) : 1} days)
           </div>
         </div>
       </div>

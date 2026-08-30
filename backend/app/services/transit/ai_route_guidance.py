@@ -73,91 +73,62 @@ class AIRouteGuidanceService:
         journey_scale: str,
         origin_country: str = "",
         dest_country: str = "",
-        provider_failures: Optional[List[Dict[str, Any]]] = None
+        provider_failures: Optional[List[Dict[str, Any]]] = None,
+        distance_km: float = 0.0
     ) -> Dict[str, Any]:
         """
-        Generates structured, high-level unverified travel steps for route_guidance.
+        Generates structured AI mode guidance for route fallbacks.
         Used as Level 3 fallback when verified transit and alternatives are unavailable.
         """
         scale = (journey_scale or "DOMESTIC").upper()
 
-        if scale == "INTERCONTINENTAL":
-            steps = [
-                {
-                    "sequence": 1,
-                    "mode": "LOCAL_TRANSFER",
-                    "description": f"Travel from {origin_name} area to a major international airport using local taxi or ground transfer."
-                },
-                {
-                    "sequence": 2,
-                    "mode": "FLIGHT",
-                    "description": f"Take a commercial international flight from {origin_country or 'origin region'} to {dest_country or 'destination region'}."
-                },
-                {
-                    "sequence": 3,
-                    "mode": "LOCAL_TRANSIT",
-                    "description": f"From the arrival airport, use verified local rail, airport express, metro, or taxi services to reach central {dest_name}."
-                }
-            ]
-            recommended_mode = "Air Travel"
-        elif scale == "INTERNATIONAL":
-            steps = [
-                {
-                    "sequence": 1,
-                    "mode": "LOCAL_TRANSFER",
-                    "description": f"Travel from {origin_name} to the nearest international transit hub or airport."
-                },
-                {
-                    "sequence": 2,
-                    "mode": "INTERNATIONAL_TRAVEL",
-                    "description": f"Use cross-border high-speed rail, intercity bus, or commercial flight toward {dest_name}."
-                },
-                {
-                    "sequence": 3,
-                    "mode": "LOCAL_TRANSIT",
-                    "description": f"Use local urban transit (metro/bus) to reach your final destination in {dest_name}."
-                }
-            ]
-            recommended_mode = "International Rail / Air Travel"
-        else: # DOMESTIC or SAME_CITY
-            steps = [
-                {
-                    "sequence": 1,
-                    "mode": "LOCAL_ACCESS",
-                    "description": f"Travel from {origin_name} to the main intercity railway station or bus terminal."
-                },
-                {
-                    "sequence": 2,
-                    "mode": "INTERCITY_TRAVEL",
-                    "description": f"Use regional/intercity passenger rail or highway coach toward {dest_name}."
-                },
-                {
-                    "sequence": 3,
-                    "mode": "LOCAL_ARRIVALS",
-                    "description": f"From the arrival hub, use local city bus, auto, metro, or taxi to reach {dest_name}."
-                }
-            ]
-            recommended_mode = "Intercity Rail / Coach"
+        if scale in ["INTERCONTINENTAL", "INTERNATIONAL"] or distance_km > 1000:
+            rec_mode = "Flight"
+            title = "Flight Recommended"
+            reason = f"The journey is {scale.lower()} and approximately {distance_km} km by straight-line distance, making flight the practical primary mode. However, no live flight itinerary was verified."
+        elif distance_km > 500:
+            rec_mode = "Rail / Flight"
+            title = "Rail or Flight Recommended"
+            reason = f"The journey is {distance_km} km by straight-line distance. Rail or domestic flight is the practical primary mode, but no verified itinerary was returned."
+        else:
+            rec_mode = "Driving / Coach"
+            title = "Driving or Coach Recommended"
+            reason = f"The journey is a shorter domestic route ({distance_km} km). Driving, intercity coach, or regional rail are the practical modes, but no verified itinerary was returned."
+
+        prov_status = {
+            "railradar": "no_verified_itinerary",
+            "flight_provider": "no_verified_itinerary"
+        }
+        limitations = [
+            "No verified FlightProvider itinerary was available",
+            "No verified RailRadar itinerary was available"
+        ]
+
+        if provider_failures:
+            # Overwrite defaults if specific provider failures exist in the trace
+            # (Though usually if we're here, they both failed or are unconfigured)
+            pass
 
         guidance_payload = {
-            "verified": False,
-            "type": "AI_GUIDANCE",
-            "warning": "This is a suggested travel structure, not a verified itinerary. Schedules, platforms, and fares could not be verified from live providers.",
-            "journey_scale": scale,
-            "recommended_mode": recommended_mode,
-            "steps": steps,
-            "explanation": f"Public transit schedule could not be verified from live GTFS providers for {origin_name} → {dest_name}. WanderWise did not generate exact timetables or service numbers.",
+            "type": "AI_MODE_GUIDANCE",
+            "recommended_mode": rec_mode,
+            "verification": "estimated",
+            "title": title,
+            "reason": reason,
+            "provider_status": prov_status,
+            "limitations": limitations
         }
 
         # Zero-fabrication contract validation
         if not validate_no_ai_transit_facts(guidance_payload):
             logger.error("[AI GUIDANCE] Zero-fabrication contract check failed! Discarding AI guidance payload.")
             return {
-                "verified": False,
                 "type": "AI_GUIDANCE_REJECTED",
-                "warning": "Route guidance was rejected due to zero-fabrication safety rules.",
-                "steps": [],
+                "verification": "estimated",
+                "title": "Guidance Unavailable",
+                "reason": "Route guidance was rejected due to zero-fabrication safety rules.",
+                "limitations": ["AI Safety Violation Prevented Data Generation"]
             }
 
-        logger.info(f"[AI GUIDANCE] High-level route guidance generated for {origin_name} -> {dest_name} ({scale})")
+        logger.info(f"[AI GUIDANCE] Mode guidance generated for {origin_name} -> {dest_name} ({scale})")
         return guidance_payload

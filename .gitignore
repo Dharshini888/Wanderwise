@@ -1,20 +1,134 @@
-# Environment variables
+# ==============================================================================
+# WanderWise — Master Production .gitignore
+# Prevents accidental commits of secret API keys, databases, binaries, & temp files
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Environment & API Key Files (CRITICAL SECURITY)
+# ------------------------------------------------------------------------------
 .env
 .env.*
+*.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 !.env.example
 
-# Python
+# ------------------------------------------------------------------------------
+# 2. Local Databases & Storage
+# ------------------------------------------------------------------------------
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-shm
+*.db-wal
+wanderwise.db
+
+# ------------------------------------------------------------------------------
+# 3. Python Cache, Bytecode & Virtual Environments
+# ------------------------------------------------------------------------------
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
 venv/
 .venv/
+env/
+ENV/
+env.bak/
+venv.bak/
 
-# Node
+# Testing & Coverage
+.coverage
+.coverage.*
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+nosetests.xml
+coverage.xml
+
+# ------------------------------------------------------------------------------
+# 4. Node.js, Frontend Build Artifacts & Packages
+# ------------------------------------------------------------------------------
 node_modules/
+frontend/node_modules/
 dist/
+frontend/dist/
+dist-ssr/
 .vite/
+frontend/.vite/
+.next/
+out/
+.nuxt/
+.output/
+.pnpm-store/
 
-# System / IDE
-.DS_Store
+# ------------------------------------------------------------------------------
+# 5. Logs & Debugging
+# ------------------------------------------------------------------------------
 *.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.pid
+*.seed
+*.pid.lock
+
+# ------------------------------------------------------------------------------
+# 6. Operating System & IDE Specific Files
+# ------------------------------------------------------------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Editors & IDEs
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.tmp
+*.bak
+*.swp

@@ -18,6 +18,39 @@ STATIC_COORDS = {
     "manchester": {"lat": 53.4808, "lon": -2.2426, "display_name": "Manchester, England, United Kingdom", "country_code": "GB"}
 }
 
+def reverse_geocode(lat: float, lon: float) -> Optional[Dict[str, Any]]:
+    """
+    Reverse geocodes coordinates to a place name using Nominatim.
+    """
+    cache_key = f"rev_geocode_{lat}_{lon}"
+    
+    cached = TransitCache.get(cache_key)
+    if cached:
+        return cached
+
+    try:
+        url = f"https://nominatim.openstreetmap.org/reverse?lat={lat}&lon={lon}&format=json&addressdetails=1"
+        headers = {"User-Agent": "WanderWise-SmartTransit/4.1 (dhars@wanderwise.ai)"}
+        resp = requests.get(url, headers=headers, timeout=2.5)
+        if resp.status_code == 200:
+            data = resp.json()
+            if "display_name" in data:
+                address = data.get("address", {})
+                cc = address.get("country_code", "").upper()
+                result = {
+                    "lat": float(lat),
+                    "lon": float(lon),
+                    "display_name": data["display_name"],
+                    "country_code": cc or "UNKNOWN",
+                    "source": "Live (Nominatim Reverse)"
+                }
+                TransitCache.set(cache_key, result)
+                return result
+    except Exception:
+        pass
+
+    return None
+
 def geocode_place(place_name: str) -> Dict[str, Any]:
     """
     Geocodes a place name using Nominatim -> Photon -> Cache -> Static Fallback.

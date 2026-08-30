@@ -1,0 +1,688 @@
+{
+  "destination": "pune",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Aga Khan Palace",
+      "category": "Museum",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Aga Khan Palace, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Aga Khan Palace.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Link Composites",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Link Composites, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Link Composites.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Dr Ashok Sharaf Open Hardware",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Dr Ashok Sharaf Open Hardware, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Dr Ashok Sharaf Open Hardware.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Classic frp works",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Classic frp works, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Classic frp works.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Lal Mahal",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Lal Mahal, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Lal Mahal.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Shinde Chhatri",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Shinde Chhatri, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Shinde Chhatri.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Parvati",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Parvati, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Parvati.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Taljai Watch Tower",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Taljai Watch Tower, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Taljai Watch Tower.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Yeolewadi \u092f\u0947\u0935\u0932\u0947 \u0935\u093e\u0921\u0940",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Yeolewadi \u092f\u0947\u0935\u0932\u0947 \u0935\u093e\u0921\u0940, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Yeolewadi \u092f\u0947\u0935\u0932\u0947 \u0935\u093e\u0921\u0940.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Statue",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Statue, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Statue.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Sunset Point",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Sunset Point, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Sunset Point.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Peacock bay",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Peacock bay, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Peacock bay.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Wildernest Country Homes",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Wildernest Country Homes, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Wildernest Country Homes.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Mawal Shrushti",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Mawal Shrushti, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Mawal Shrushti.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Sant Darshan",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Sant Darshan, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Sant Darshan.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Bhaje Caves",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Bhaje Caves, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Bhaje Caves.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Chatrapati Shivaji Maharaj's Rajwada",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Chatrapati Shivaji Maharaj's Rajwada, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Chatrapati Shivaji Maharaj's Rajwada.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Zunzar Machi",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Zunzar Machi, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Zunzar Machi.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Lagoon",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Lagoon, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Lagoon.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Giant Swings",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Giant Swings, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Giant Swings.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "mumbai point",
+      "category": "Sightseeing",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore mumbai point, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of mumbai point.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Valley Point",
+      "category": "Viewpoint",
+      "address": "Pune",
+      "latitude": 18.5213738,
+      "longitude": 73.8545071,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Valley Point, one of Pune's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Pune\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Valley Point.",
+      "signature_dish": null,
+      "nearby": [
+        "Pune"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    }
+  ]
+}

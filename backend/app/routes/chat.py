@@ -122,3 +122,19 @@ def send_chat_message(
         }
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    except Exception as e:
+        import logging
+        logger = logging.getLogger(__name__)
+        err_str = str(e).lower()
+        provider = "groq" if "groq" in err_str else "gemini" if "gemini" in err_str else "unknown"
+        logger.error(f"[CHAT][AI] provider={provider} status=503 error={str(e)[:100]}")
+        
+        from fastapi.responses import JSONResponse
+        return JSONResponse(
+            status_code=503,
+            content={
+                "success": False,
+                "error": "AI service temporarily unavailable",
+                "retryable": True
+            }
+        )

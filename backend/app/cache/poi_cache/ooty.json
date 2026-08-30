@@ -1,0 +1,316 @@
+{
+  "destination": "ooty",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Government Botanical Garden Entrance",
+      "category": "Viewpoint",
+      "address": "Ooty",
+      "latitude": 11.4126769,
+      "longitude": 76.7030504,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Government Botanical Garden Entrance, one of Ooty's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Ooty\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Government Botanical Garden Entrance.",
+      "signature_dish": null,
+      "nearby": [
+        "Ooty"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Thunder World",
+      "category": "Sightseeing",
+      "address": "Ooty",
+      "latitude": 11.4126769,
+      "longitude": 76.7030504,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Thunder World, one of Ooty's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Ooty\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Thunder World.",
+      "signature_dish": null,
+      "nearby": [
+        "Ooty"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Thread Garden",
+      "category": "Viewpoint",
+      "address": "Ooty",
+      "latitude": 11.4126769,
+      "longitude": 76.7030504,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Thread Garden, one of Ooty's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Ooty\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Thread Garden.",
+      "signature_dish": null,
+      "nearby": [
+        "Ooty"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Deer Park",
+      "category": "Viewpoint",
+      "address": "Ooty",
+      "latitude": 11.4126769,
+      "longitude": 76.7030504,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Deer Park, one of Ooty's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Ooty\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Deer Park.",
+      "signature_dish": null,
+      "nearby": [
+        "Ooty"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Tea Museum",
+      "category": "Museum",
+      "address": "Ooty",
+      "latitude": 11.4126769,
+      "longitude": 76.7030504,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Tea Museum, one of Ooty's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Ooty\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Tea Museum.",
+      "signature_dish": null,
+      "nearby": [
+        "Ooty"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Benchmark tea factory",
+      "category": "Sightseeing",
+      "address": "Ooty",
+      "latitude": 11.4126769,
+      "longitude": 76.7030504,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Benchmark tea factory, one of Ooty's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Ooty\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Benchmark tea factory.",
+      "signature_dish": null,
+      "nearby": [
+        "Ooty"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Karnataka Siri Horticulture Garden",
+      "category": "Viewpoint",
+      "address": "Ooty",
+      "latitude": 11.4126769,
+      "longitude": 76.7030504,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Karnataka Siri Horticulture Garden, one of Ooty's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Ooty\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Karnataka Siri Horticulture Garden.",
+      "signature_dish": null,
+      "nearby": [
+        "Ooty"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Honeymoon Boat House",
+      "category": "Sightseeing",
+      "address": "Ooty",
+      "latitude": 11.4126769,
+      "longitude": 76.7030504,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Honeymoon Boat House, one of Ooty's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Ooty\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Honeymoon Boat House.",
+      "signature_dish": null,
+      "nearby": [
+        "Ooty"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Telescope House",
+      "category": "Sightseeing",
+      "address": "Ooty",
+      "latitude": 11.4126769,
+      "longitude": 76.7030504,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Telescope House, one of Ooty's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Ooty\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Telescope House.",
+      "signature_dish": null,
+      "nearby": [
+        "Ooty"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Pine forest",
+      "category": "Sightseeing",
+      "address": "Ooty",
+      "latitude": 11.4126769,
+      "longitude": 76.7030504,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Pine forest, one of Ooty's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Ooty\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Pine forest.",
+      "signature_dish": null,
+      "nearby": [
+        "Ooty"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    }
+  ]
+}

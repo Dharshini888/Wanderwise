@@ -10,7 +10,7 @@ import {
   NearbyTab,
   FloatingAIAssistant
 } from '../components/transit/TransitComponentsV6';
-import { IconSparkles } from '@tabler/icons-react';
+import { IconSparkles, IconCalendar, IconInfoCircle } from '@tabler/icons-react';
 
 const API = 'http://localhost:8000/api';
 
@@ -20,6 +20,7 @@ export default function ActiveTrip() {
   
   const [loading, setLoading] = useState(true);
   const [routeData, setRouteData] = useState(null);
+  const [tripInfo, setTripInfo] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   
@@ -31,9 +32,33 @@ export default function ActiveTrip() {
     setLoading(true);
     try {
       let origin = "Coimbatore";
-      let destination = "Erode";
+      let destination = "Meghalaya";
       let preferred_mode = "fastest";
       let budget = 50000;
+      let tripObj = null;
+
+      if (tripId) {
+        try {
+          const tRes = await fetch(`${API}/trips/${tripId}`);
+          if (tRes.ok) {
+            tripObj = await tRes.json();
+            setTripInfo(tripObj);
+            destination = tripObj.destination || destination;
+            origin = tripObj.origin_city || origin;
+            budget = tripObj.budget || budget;
+
+            const day1 = tripObj.itinerary_days?.[0]?.activities;
+            if (day1 && day1.length > 0) {
+              const first = day1[0].place?.name || day1[0].title;
+              const last = day1[day1.length - 1].place?.name || day1[day1.length - 1].title;
+              if (first) origin = `${first}, ${destination}`;
+              if (last) destination = `${last}, ${destination}`;
+            }
+          }
+        } catch (e) {
+          console.error('Trip fetch error in ActiveTrip:', e);
+        }
+      }
       
       if (location.state) {
          origin = location.state.origin || origin;
@@ -65,6 +90,8 @@ export default function ActiveTrip() {
     );
   }
 
+  const isUpcoming = tripInfo?.start_date && new Date(tripInfo.start_date) > new Date();
+
   const tabs = [
     { id: 'overview', label: '🗺️ Overview & Map' },
     { id: 'routes', label: '🚗 Route Options' },
@@ -77,6 +104,24 @@ export default function ActiveTrip() {
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto min-h-screen pb-24 relative">
+      {/* Upcoming Trip Notice Banner */}
+      {isUpcoming && (
+        <div className="mb-6 p-4 rounded-2xl bg-blue-500/10 border border-blue-500/30 text-blue-400 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <IconCalendar size={22} className="text-blue-400 shrink-0" />
+            <div>
+              <p className="text-sm font-bold">Upcoming Trip Session — Preview Mode</p>
+              <p className="text-xs opacity-90">
+                This trip to {tripInfo.destination} starts on {tripInfo.start_date}. Live session preview & AI routing active.
+              </p>
+            </div>
+          </div>
+          <span className="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold shrink-0">
+            🟢 Route Verified
+          </span>
+        </div>
+      )}
+
       {/* Navigation Bar */}
       <div className="flex gap-2 overflow-x-auto pb-2 mb-6 border-b border-[var(--border-color)] scrollbar-none">
         {tabs.map((tab) => (

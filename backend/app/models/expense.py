@@ -20,14 +20,14 @@ class Expense(Base):
     base_currency = Column(String, nullable=False, default="USD")
     exchange_rate = Column(Numeric(12, 6), default=1.0)
 
-    category = Column(SQLEnum(ExpenseCategory), nullable=False, default=ExpenseCategory.MISC)
-    payment_method = Column(SQLEnum(PaymentMethod), nullable=False, default=PaymentMethod.CASH)
+    category = Column(SQLEnum(ExpenseCategory, values_callable=lambda obj: [e.value for e in obj]), nullable=False, default=ExpenseCategory.MISC)
+    payment_method = Column(SQLEnum(PaymentMethod, values_callable=lambda obj: [e.value for e in obj]), nullable=False, default=PaymentMethod.CASH)
     expense_date = Column(Date, nullable=False)
     location_name = Column(String, nullable=True)
     
     receipt_metadata = Column(JSON, nullable=True)  # {filename, url, ocr_status, ocr_confidence}
     notes = Column(String, nullable=True)
-    expense_source = Column(SQLEnum(ExpenseSource), nullable=False, default=ExpenseSource.MANUAL)
+    expense_source = Column(SQLEnum(ExpenseSource, values_callable=lambda obj: [e.value for e in obj]), nullable=False, default=ExpenseSource.MANUAL)
     paid_by_user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())

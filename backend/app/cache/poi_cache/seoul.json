@@ -1,0 +1,781 @@
+{
+  "destination": "seoul",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Hwangudan",
+      "category": "Sightseeing",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Hwangudan, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Hwangudan.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Stone drums",
+      "category": "Sightseeing",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Stone drums, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Stone drums.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Jeongdong Observatory",
+      "category": "Sightseeing",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Jeongdong Observatory, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Jeongdong Observatory.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "HiKR GROUND",
+      "category": "Sightseeing",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore HiKR GROUND, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of HiKR GROUND.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "sogong underground mall",
+      "category": "Shopping",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore sogong underground mall, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of sogong underground mall.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Cheonggyecheon Stream Park",
+      "category": "Viewpoint",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Cheonggyecheon Stream Park, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Cheonggyecheon Stream Park.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Namdaemun Underground Shopping Center",
+      "category": "Sightseeing",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Namdaemun Underground Shopping Center, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Namdaemun Underground Shopping Center.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Gwanghwamun Square",
+      "category": "Shopping",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Gwanghwamun Square, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Gwanghwamun Square.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Cheonggyecheon Stream",
+      "category": "Sightseeing",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Cheonggyecheon Stream, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Cheonggyecheon Stream.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Old Russian Legation",
+      "category": "Sightseeing",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Old Russian Legation, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Old Russian Legation.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Myeongga",
+      "category": "Sightseeing",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Myeongga, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Myeongga.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Myeongdong Shopping Street",
+      "category": "Shopping",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Myeongdong Shopping Street, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Myeongdong Shopping Street.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "1988 Seoul Olympics VIP Bus",
+      "category": "Sightseeing",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore 1988 Seoul Olympics VIP Bus, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of 1988 Seoul Olympics VIP Bus.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Woldae",
+      "category": "Sightseeing",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Woldae, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Woldae.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Seoul Sign",
+      "category": "Sightseeing",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Seoul Sign, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Seoul Sign.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Isandong tourist traditional street",
+      "category": "Shopping",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Isandong tourist traditional street, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Isandong tourist traditional street.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Alive Museum",
+      "category": "Museum",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Alive Museum, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Alive Museum.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "insa dong rue",
+      "category": "Sightseeing",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore insa dong rue, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of insa dong rue.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Jongno-gu beautiful tree",
+      "category": "Sightseeing",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Jongno-gu beautiful tree, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Jongno-gu beautiful tree.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Seosomun Shrine History Museum",
+      "category": "Museum",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Seosomun Shrine History Museum, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Seosomun Shrine History Museum.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Gyeonghuigung (Palace)",
+      "category": "Museum",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Gyeonghuigung (Palace), one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Gyeonghuigung (Palace).",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Palgakjeong Pavilion",
+      "category": "Sightseeing",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Palgakjeong Pavilion, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Palgakjeong Pavilion.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Legend of the Blue Sea House",
+      "category": "Sightseeing",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Legend of the Blue Sea House, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Legend of the Blue Sea House.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Peeping Pot: Imagine",
+      "category": "Sightseeing",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Peeping Pot: Imagine, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Peeping Pot: Imagine.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Craft Beer & Ikeson/Insadong Tour via \u201cDetour app\u201d",
+      "category": "Sightseeing",
+      "address": "seoul",
+      "latitude": 37.5666791,
+      "longitude": 126.9782914,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Explore Craft Beer & Ikeson/Insadong Tour via \u201cDetour app\u201d, one of seoul's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in seoul\n\u2713 High traveler rating",
+      "tip": "Visit early for beautiful photo views of Craft Beer & Ikeson/Insadong Tour via \u201cDetour app\u201d.",
+      "signature_dish": null,
+      "nearby": [
+        "seoul"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    }
+  ]
+}

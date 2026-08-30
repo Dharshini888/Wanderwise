@@ -17,7 +17,7 @@ import AddExpenseModal from '../components/expenses/AddExpenseModal';
 
 import {
   getTripExpenses, getTripBudget, getExpenseAnalytics, getAIExpenseInsights,
-  createExpense, updateExpense, deleteExpense, getExportCsvUrl, getExportPdfUrl
+  createExpense, updateExpense, deleteExpense, downloadExpenseExport
 } from '../api/expenses';
 import { getTripDetails } from '../api/trips';
 
@@ -137,24 +137,19 @@ export default function ExpenseDashboard({ overrideTripId }) {
 
         {/* Action Controls */}
         <div className="flex items-center gap-2 flex-wrap">
-          <a
-            href={getExportCsvUrl(tripId)}
-            target="_blank"
-            rel="noreferrer"
+          <button
+            onClick={() => downloadExpenseExport(tripId, 'csv')}
             className="px-3.5 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs flex items-center gap-1.5 transition-all"
           >
             <IconFileSpreadsheet size={16} /> Export CSV
-          </a>
+          </button>
 
-          <a
-            href={getExportPdfUrl(tripId)}
-            target="_blank"
-            rel="noreferrer"
+          <button
+            onClick={() => downloadExpenseExport(tripId, 'pdf')}
             className="px-3.5 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs flex items-center gap-1.5 transition-all"
           >
             <IconFileTypePdf size={16} /> Export PDF
-
-          </a>
+          </button>
 
           <button
             onClick={() => { setEditingExpense(null); setShowModal(true); }}
@@ -215,6 +210,8 @@ export default function ExpenseDashboard({ overrideTripId }) {
         onSubmit={handleSaveExpense}
         initialData={editingExpense}
         defaultCurrency={currency}
+        tripStartDate={trip?.start_date}
+        tripEndDate={trip?.end_date}
       />
     </div>
   );

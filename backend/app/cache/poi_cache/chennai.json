@@ -1,0 +1,781 @@
+{
+  "destination": "chennai",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "jithu",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore jithu, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of jithu.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Typewritting class",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Typewritting class, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of Typewritting class.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "sriram.s",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore sriram.s, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of sriram.s.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Muthu arravind",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Muthu arravind, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of Muthu arravind.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Auto stand(manapakkam)",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Auto stand(manapakkam), one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of Auto stand(manapakkam).",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "sathyanagar arch",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore sathyanagar arch, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of sathyanagar arch.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "MLA OFFICE",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore MLA OFFICE, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of MLA OFFICE.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "CHENNAI CORPORATION PARK",
+      "category": "Viewpoint",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore CHENNAI CORPORATION PARK, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of CHENNAI CORPORATION PARK.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "boot bangla",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore boot bangla, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of boot bangla.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Dr.MGR HOUSE ENTERENCE",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Dr.MGR HOUSE ENTERENCE, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of Dr.MGR HOUSE ENTERENCE.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "hridhayesh",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore hridhayesh, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of hridhayesh.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "SRI GROUP",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore SRI GROUP, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of SRI GROUP.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Kamaraj Memorial",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Kamaraj Memorial, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of Kamaraj Memorial.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "BHARAT SCANS",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore BHARAT SCANS, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of BHARAT SCANS.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Bakthavachalam Memorial",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Bakthavachalam Memorial, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of Bakthavachalam Memorial.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "CHICKEN 65 SHOP",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore CHICKEN 65 SHOP, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of CHICKEN 65 SHOP.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Snake Park",
+      "category": "Viewpoint",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Snake Park, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of Snake Park.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Rajaji Memorial",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Rajaji Memorial, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of Rajaji Memorial.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Periyar Science and Technology Centre",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Periyar Science and Technology Centre, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of Periyar Science and Technology Centre.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "MGR Film City",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore MGR Film City, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of MGR Film City.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Kamaraj Memorial House",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Kamaraj Memorial House, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of Kamaraj Memorial House.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Brodie Castle",
+      "category": "Museum",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Brodie Castle, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of Brodie Castle.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "KUSHI TURST",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore KUSHI TURST, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of KUSHI TURST.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Valluvar Kottam",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Valluvar Kottam, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of Valluvar Kottam.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Ambedkar Memorial",
+      "category": "Sightseeing",
+      "address": "Chennai",
+      "latitude": 13.0836939,
+      "longitude": 80.270186,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Ambedkar Memorial, one of Chennai's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Chennai",
+      "tip": "Visit early for beautiful photo views of Ambedkar Memorial.",
+      "signature_dish": null,
+      "nearby": [
+        "Chennai"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    }
+  ]
+}

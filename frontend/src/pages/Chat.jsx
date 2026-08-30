@@ -10,11 +10,13 @@ import ChatMessage from '../components/chat/ChatMessage';
 import TripWizard from '../components/trips/TripWizard';
 
 const QUICK_PROMPTS = [
-  { label: '✨ Plan my next trip', query: 'Plan my next 5 day adventure to Japan' },
-  { label: '💰 Analyze my budget', query: 'Can I afford my current expenses and budget?' },
-  { label: '🌦 Check today\'s plan', query: 'What should I do today based on current weather?' },
-  { label: '📍 Suggest destinations', query: 'Suggest top beach destinations for my travel style' },
-  { label: '🗺 Improve itinerary', query: 'Move outdoor beach activity to evening slot' },
+  { label: '✈️ Plan a trip', query: 'Plan a 5-day travel itinerary to Japan' },
+  { label: '🚆 Find transport options', query: 'What are the best transit routes and train options?' },
+  { label: '💰 Analyze budget & expenses', query: 'Analyze my trip budget and suggest savings' },
+  { label: '🌦 Check weather forecast', query: 'What is the weather forecast and clothing suggestions?' },
+  { label: '🧳 What should I pack?', query: 'Prepare a packing checklist for my upcoming trip' },
+  { label: '📄 Check my documents', query: 'Check if any of my travel documents are expiring soon' },
+  { label: '📍 Explain my itinerary', query: 'Explain the daily highlights of my itinerary' },
 ];
 
 export default function Chat() {
@@ -151,9 +153,15 @@ export default function Chat() {
         }
       ]);
     } catch (error) {
+      let errorMessage = 'AI service temporarily unavailable. Please try again.';
+      if (error.response?.data?.error) {
+        errorMessage = error.response.data.error + '. Please try again.';
+      } else if (error.response?.data?.detail) {
+        errorMessage = error.response.data.detail;
+      }
       setMessages(prev => [
         ...prev,
-        { role: 'assistant', content: 'Sorry, I encountered an error retrieving context. Please try again.' }
+        { role: 'assistant', content: errorMessage }
       ]);
     }
     setLoading(false);

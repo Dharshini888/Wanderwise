@@ -53,12 +53,18 @@ export default function Packing() {
   });
 
   const [checklist, setChecklist] = useState(null);
+  const [categoriesData, setCategoriesData] = useState([]);
   const [whyRationale, setWhyRationale] = useState([]);
   const [dailyTimeline, setDailyTimeline] = useState([]);
   const [checkedItems, setCheckedItems] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [shareCopied, setShareCopied] = useState(false);
+  
+  // AI Context and Intelligence State
+  const [aiContext, setAiContext] = useState({});
+  const [aiWarnings, setAiWarnings] = useState([]);
+  const [missingEssentials, setMissingEssentials] = useState([]);
 
   // 1. Fetch Real Database Trips on Mount
   useEffect(() => {
@@ -112,178 +118,86 @@ export default function Packing() {
     saveChecks(updated);
   };
 
-  // Parse Database Trip Object & Generate Packing Checklist strictly from DB data
-  const generateListFromDbTrip = (trip) => {
-    if (!trip) return;
+  const isGeneratingRef = React.useRef(false);
 
+  // Fetch or generate Packing Checklist strictly from Backend AI Engine
+  const generateListFromDbTrip = async (trip) => {
+    if (!trip) return;
+    if (isGeneratingRef.current) return;
+    if (checklist && Object.keys(checklist).length > 0 && selectedTripId === trip.id) return;
+    
+    isGeneratingRef.current = true;
     setLoading(true);
     setError('');
 
-    const dest = trip.destination || trip.title || 'Your Trip';
-    
-    // Calculate days count from dates or days property
-    let daysCount = 3;
-    if (trip.start_date && trip.end_date) {
-      const st = new Date(trip.start_date);
-      const en = new Date(trip.end_date);
-      const diff = Math.max(1, Math.ceil((en - st) / (1000 * 60 * 60 * 24)) + 1);
-      daysCount = isNaN(diff) ? 3 : diff;
-    } else if (trip.days || trip.days_count) {
-      daysCount = trip.days || trip.days_count;
+    try {
+      // 1. Try to fetch existing
+      let res = await fetch(`${API}/packing/trip/${trip.id}`);
+      let data = await res.json();
+      
+      // 2. If not found, generate new
+      if (data.status === 'not_found' || !data.checklist) {
+        res = await fetch(`${API}/packing/generate-from-trip/${trip.id}`, { method: 'POST' });
+        data = await res.json();
+      }
+
+      if (data.checklist) {
+        const parsed = data.checklist;
+        setAiContext(parsed.context || {});
+        
+        // Transform backend categories to match frontend checklist state
+        const compiledChecklist = {};
+        const rationales = [];
+        
+        (parsed.categories || []).forEach(cat => {
+          compiledChecklist[cat.name] = cat.items.map(i => i.name);
+          cat.items.forEach(i => {
+            if (i.rationale) {
+              rationales.push({ item: i.name, reason: i.rationale });
+            }
+          });
+        });
+        
+        setChecklist(compiledChecklist);
+        setCategoriesData(parsed.categories || []);
+        setWhyRationale(rationales);
+        setAiWarnings(parsed.warnings || []);
+        setMissingEssentials(parsed.missing_essentials || []);
+        
+        // Extract daily_gear for timeline
+        const timelineData = [];
+        const dailyGear = parsed.daily_gear || [];
+        
+        if (dailyGear.length > 0) {
+          dailyGear.forEach(day => {
+            const dayNum = day.day || day.day_number || '?';
+            const dayTitle = `Day ${dayNum}`;
+            const activities = day.activities || [];
+            
+            // Format activities with their gear for display
+            const dayItems = activities.map(act => {
+              const name = act.name || '';
+              const gear = act.recommended_gear || [];
+              return gear.length > 0 ? `${name} (Gear: ${gear.join(', ')})` : name;
+            }).filter(Boolean);
+            
+            timelineData.push({
+              day: dayNum,
+              title: dayTitle,
+              items: dayItems.length > 0 ? dayItems : ["No saved activity for this day."]
+            });
+          });
+        }
+        
+        setDailyTimeline(timelineData);
+      }
+    } catch (err) {
+      console.error('Error generating packing list from DB trip:', err);
+      setError('Failed to generate intelligent packing list.');
+    } finally {
+      setLoading(false);
+      isGeneratingRef.current = false;
     }
-
-    const travelStyle = (trip.travel_style || trip.group_type || 'Leisure').toLowerCase();
-
-    // Extract all itinerary days & activities from DB
-    const itDays = trip.itinerary_days || trip.days || [];
-    const dbActivities = [];
-    const timelineData = [];
-
-    itDays.forEach((day, dIdx) => {
-      const dayNum = day.day_number || dIdx + 1;
-      const dayTitle = day.title || `Day ${dayNum}: Explore ${dest}`;
-      const dayItems = [];
-
-      const acts = day.activities || [];
-      acts.forEach((act) => {
-        const title = act.title || act.place_name || (act.place && act.place.name) || '';
-        const desc = act.description || '';
-        const cat = (act.place && act.place.category) || '';
-        const combined = `${title} ${desc} ${cat}`.toLowerCase();
-
-        dbActivities.push(combined);
-        if (title) dayItems.push(title);
-      });
-
-      timelineData.push({
-        day: dayNum,
-        title: dayTitle,
-        items: dayItems.length > 0 ? dayItems : [`Explore ${dest}`]
-      });
-    });
-
-    const allDbText = dbActivities.join(' ');
-    const rationales = [];
-
-    // Base Clothing
-    const clothes = [
-      `${daysCount} T-shirts / Tops`,
-      `${Math.max(2, Math.floor(daysCount / 2))} Pairs of Pants / Shorts`,
-      `${daysCount} Pairs of Underwear`,
-      `${daysCount} Pairs of Socks`,
-      'Comfortable Walking Shoes',
-      'Sleepwear'
-    ];
-
-    // Base Toiletries
-    const toiletries = [
-      'Toothbrush & Toothpaste',
-      'Shampoo & Body Wash',
-      'Face Wash & Moisturizer',
-      'Sunscreen (SPF 50+)',
-      'Comb & Deodorant'
-    ];
-
-    // Base Electronics
-    const electronics = [
-      'Smartphone & Charger',
-      'Power Bank (10,000mAh+)',
-      'Universal Travel Adapter',
-      'Earphones / Headphones'
-    ];
-
-    // Base Medical
-    const medical = [
-      'Personal Prescription Medicines',
-      'Pain Relief Tablets',
-      'Bandages & First Aid Kit',
-      'Hand Sanitizer'
-    ];
-
-    // Base Documents
-    const docs = [
-      'Govt Photo ID / Passport',
-      'Hotel Booking Confirmations',
-      'Travel Insurance Copy'
-    ];
-
-    // Base Money
-    const money = [
-      'Local Cash',
-      'Credit / Debit Card',
-      'Digital Wallet Setup'
-    ];
-
-    // Base Accessories
-    const accessories = [
-      'Reusable Water Bottle',
-      'Compact Travel Umbrella',
-      'Luggage Locks',
-      'Daypack / Tote Bag'
-    ];
-
-    // DB Activity-Specific Intelligence Rules
-
-    // Temple / Sacred Places
-    if (allDbText.includes('temple') || allDbText.includes('worship') || allDbText.includes('church') || allDbText.includes('monastery') || allDbText.includes('mosque')) {
-      clothes.push('Modest Shoulder/Knee Attire', 'Light Shawl / Sarong');
-      rationales.push({ item: 'Modest Attire & Shawl', reason: `Because DB itinerary contains temple/sacred site visits in ${dest}.` });
-    }
-
-    // Beach / Swimming
-    if (allDbText.includes('beach') || allDbText.includes('swim') || allDbText.includes('ocean') || allDbText.includes('sea') || allDbText.includes('surf') || travelStyle.includes('beach')) {
-      clothes.push('Swimwear', 'Beach Sandals / Flip Flops');
-      accessories.push('Beach Towel', 'Waterproof Phone Pouch');
-      rationales.push({ item: 'Swimwear & Waterproof Pouch', reason: `Because DB itinerary features beach and water activities.` });
-    }
-
-    // Hiking / Mountains
-    if (allDbText.includes('hike') || allDbText.includes('trek') || allDbText.includes('mountain') || allDbText.includes('hill') || allDbText.includes('peak') || allDbText.includes('trail')) {
-      accessories.push('Sturdy Hiking Shoes', 'Trekking Backpack', 'Flashlight', 'Energy Bars');
-      rationales.push({ item: 'Trekking Shoes & Backpack', reason: `Because DB itinerary includes mountain trails and hiking activities.` });
-    }
-
-    // Snow / Cold
-    if (allDbText.includes('ski') || allDbText.includes('snow') || allDbText.includes('ice') || travelStyle.includes('winter')) {
-      clothes.push('Heavy Thermal Jacket', 'Thermal Base Layers', 'Snow Boots', 'Gloves & Beanie');
-      rationales.push({ item: 'Heavy Jacket & Snow Boots', reason: `Because DB itinerary includes alpine/winter snow activities.` });
-    }
-
-    // Business
-    if (allDbText.includes('business') || allDbText.includes('meeting') || allDbText.includes('conference') || travelStyle.includes('business')) {
-      clothes.push('Formal Blazer / Suit', 'Dress Shoes');
-      electronics.push('Laptop & Charger', 'Business Cards & Notebook');
-      rationales.push({ item: 'Formal Suit & Laptop Charger', reason: `Because DB itinerary includes professional business engagements.` });
-    }
-
-    // Flight / Airport
-    if (allDbText.includes('flight') || allDbText.includes('airport') || allDbText.includes('fly')) {
-      docs.push('Flight Boarding Pass', 'Passport');
-      accessories.push('Travel Neck Pillow');
-      rationales.push({ item: 'Flight Neck Pillow & Passport', reason: `Because DB itinerary specifies flight transport.` });
-    }
-
-    // Train
-    if (allDbText.includes('train') || allDbText.includes('rail') || allDbText.includes('metro') || allDbText.includes('station')) {
-      docs.push('Offline Transit Pass');
-      accessories.push('Transit Snacks');
-      rationales.push({ item: 'Transit Pass & Snacks', reason: `Because DB itinerary specifies rail/train transit.` });
-    }
-
-    const compiledChecklist = {
-      'Clothing': Array.from(new Set(clothes)),
-      'Toiletries': Array.from(new Set(toiletries)),
-      'Electronics': Array.from(new Set(electronics)),
-      'Medical Essentials': Array.from(new Set(medical)),
-      'Travel Documents': Array.from(new Set(docs)),
-      'Money & Payments': Array.from(new Set(money)),
-      'Accessories & Gear': Array.from(new Set(accessories))
-    };
-
-    setChecklist(compiledChecklist);
-    setWhyRationale(rationales);
-    setDailyTimeline(timelineData);
-    setLoading(false);
   };
 
   // Generate Custom List using actual backend API
@@ -292,7 +206,9 @@ export default function Packing() {
       setError('Please enter a destination.');
       return;
     }
+    if (isGeneratingRef.current) return;
 
+    isGeneratingRef.current = true;
     setLoading(true);
     setError('');
 
@@ -310,6 +226,7 @@ export default function Packing() {
       if (res.ok) {
         const data = await res.json();
         setChecklist(data.checklist || {});
+        setCategoriesData(data.checklist.categories || []);
         setWhyRationale([{ item: 'Custom Checklist', reason: `Generated specifically for ${customForm.destination} (${customForm.duration} days, ${customForm.travel_type}).` }]);
         setDailyTimeline([]);
       } else {
@@ -320,49 +237,65 @@ export default function Packing() {
       setError("Failed to generate packing list");
     } finally {
       setLoading(false);
+      isGeneratingRef.current = false;
     }
   };
 
   const handleSelectDbTrip = (trip) => {
+    if (selectedTripId === trip.id && checklist) return; // Prevent duplicate generation for same trip if already loaded
     setSelectedTripId(trip.id);
     generateListFromDbTrip(trip);
   };
 
-  // Calculate Packing Readiness Metrics
+  // Calculate Smart Packing Readiness Metrics
   const calculateMetrics = () => {
-    if (!checklist) return { percentage: 0, missing: [], overpacked: [], suggestions: [] };
+    if (!checklist) return { percentage: 0, missing: [], overpacked: [], suggestions: [], packed: 0, total: 0 };
     let total = 0;
     let packed = 0;
-    const missing = [];
 
     Object.entries(checklist).forEach(([cat, items]) => {
       items.forEach((item) => {
         total++;
-        const isChecked = !!checkedItems[`${cat}:${item}`];
-        if (isChecked) {
-          packed++;
-        } else if (item.includes('ID') || item.includes('Passport') || item.includes('Power Bank') || item.includes('Insurance') || item.includes('Medicines')) {
-          missing.push(item);
-        }
+        if (checkedItems[`${cat}:${item}`]) packed++;
       });
     });
 
-    const percentage = total > 0 ? Math.round((packed / total) * 100) : 0;
-    const overpacked = ['Duplicate Heavy Jackets', 'Excess Shoes'];
-    const suggestions = [
-      'Pack medicines and power bank in cabin bag.',
-      'Use packing cubes to compress clothing.',
-      'Keep digital copies of photo IDs offline.'
-    ];
+    // Smart Score Calculation
+    let basePct = total > 0 ? (packed / total) * 100 : 0;
+    
+    // Penalize score dynamically based on AI warnings and missing items
+    const missingPenalty = Math.min(missingEssentials.length * 5, 20); // up to 20% penalty
+    const warningPenalty = Math.min(aiWarnings.length * 5, 15); // up to 15% penalty
+    
+    // Adjust based on AI context if packed is almost complete, but we have missing essentials
+    let finalPercentage = Math.max(0, Math.min(100, Math.round(basePct - missingPenalty - warningPenalty)));
 
-    return { percentage, packed, total, missing, overpacked, suggestions };
+    return { percentage: finalPercentage, packed, total };
   };
 
   const metrics = calculateMetrics();
   const currentDbTrip = dbTrips.find((t) => t.id === selectedTripId);
-  const daysVal = activeOption === 'db' && currentDbTrip ? (currentDbTrip.days || 3) : (parseInt(customForm.duration) || 3);
-  const estCarryOnWeight = (3.0 + daysVal * 0.3).toFixed(1);
-  const estCheckedWeight = (7.0 + daysVal * 1.0).toFixed(1);
+
+  // Helper to calculate exact trip duration using dates
+  const calculateTripDuration = (start, end) => {
+    if (!start || !end) return 1;
+    const st = new Date(start);
+    const en = new Date(end);
+    if (isNaN(st) || isNaN(en)) return 1;
+    const diffTime = Math.abs(en - st);
+    return Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1);
+  };
+
+  // Calculate actual weights dynamically from AI items
+  let calculatedTotalWeight = 0;
+  categoriesData.forEach(cat => {
+    (cat.items || []).forEach(item => {
+      calculatedTotalWeight += (parseFloat(item.weight_kg) || 0) * (parseInt(item.quantity) || 1);
+    });
+  });
+
+  const estCarryOnWeight = Math.min(calculatedTotalWeight, 7.0).toFixed(1);
+  const estCheckedWeight = (calculatedTotalWeight > 7.0 ? calculatedTotalWeight - 7.0 : 0).toFixed(1);
 
   const handleShare = () => {
     if (!checklist) return;
@@ -458,7 +391,7 @@ export default function Packing() {
                         <div className="flex justify-between items-start">
                           <h4 className="text-sm font-black text-white font-heading">{it.destination || it.title}</h4>
                           <span className="text-[10px] bg-teal-900/50 text-teal-300 px-2.5 py-1 rounded-md font-extrabold border border-teal-500/30">
-                            {it.days || it.days_count || 3} Days
+                            {calculateTripDuration(it.start_date, it.end_date)} Days
                           </span>
                         </div>
 
@@ -650,6 +583,19 @@ export default function Packing() {
       {/* Main Analysis Output Workspace */}
       {!loading && checklist && (
         <div className="space-y-8 animate-fadeIn">
+        
+          {/* AI Context Panel */}
+          {aiContext.destination && (
+            <div className="glass-card p-4 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-glass)] shadow-md">
+              <div className="text-xs uppercase font-bold tracking-wider text-[var(--text-muted)] mb-3">Packing recommendations based on:</div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-medium">
+                <div className="flex flex-col"><span className="text-[10px] text-gray-500">📍 Destination</span><span className="text-white font-bold">{aiContext.destination}</span></div>
+                <div className="flex flex-col"><span className="text-[10px] text-gray-500">📅 Travel Dates</span><span className="text-white font-bold">{aiContext.start_date} – {aiContext.end_date}</span></div>
+                <div className="flex flex-col"><span className="text-[10px] text-gray-500">🌡️ Climate & Weather</span><span className="text-white font-bold">{aiContext.climate} ({aiContext.season})</span></div>
+                <div className="flex flex-col"><span className="text-[10px] text-gray-500">🧳 Duration</span><span className="text-white font-bold">{aiContext.duration_days} days</span></div>
+              </div>
+            </div>
+          )}
           
           {/* Smart Packing Score & Readiness Header Card */}
           <div className="glass-card p-6 rounded-3xl border border-teal-500/30 bg-gradient-to-r from-teal-950/40 via-blue-950/30 to-purple-950/40 shadow-2xl space-y-6">
@@ -699,11 +645,11 @@ export default function Packing() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-teal-500/20 text-xs">
               <div className="bg-rose-950/20 border border-rose-500/30 p-3 rounded-2xl">
                 <div className="font-bold text-rose-300 uppercase text-[10px] tracking-wider mb-1.5 flex items-center gap-1">
-                  <IconAlertCircle size={14} /> Missing Essential Items ({metrics.missing.length})
+                  <IconAlertCircle size={14} /> Missing Essential Items ({missingEssentials.length})
                 </div>
                 <div className="flex flex-wrap gap-1.5">
-                  {metrics.missing.length > 0 ? (
-                    metrics.missing.map((m, idx) => (
+                  {missingEssentials.length > 0 ? (
+                    missingEssentials.map((m, idx) => (
                       <span key={idx} className="bg-rose-900/40 text-rose-200 px-2.5 py-0.5 rounded-md font-bold text-[11px] border border-rose-500/30">
                         ❌ {m}
                       </span>
@@ -718,12 +664,14 @@ export default function Packing() {
                 <div className="font-bold text-amber-300 uppercase text-[10px] tracking-wider mb-1.5 flex items-center gap-1">
                   <IconLuggage size={14} /> Potential Overpacking Warnings
                 </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {metrics.overpacked.map((o, idx) => (
-                    <span key={idx} className="bg-amber-900/40 text-amber-200 px-2.5 py-0.5 rounded-md font-bold text-[11px] border border-amber-500/30">
-                      ⚠️ {o}
+                <div className="flex flex-col gap-1.5">
+                  {aiWarnings.length > 0 ? aiWarnings.map((w, idx) => (
+                    <span key={idx} className="bg-amber-900/40 text-amber-200 px-2.5 py-1.5 rounded-md font-bold text-[11px] border border-amber-500/30">
+                      ⚠️ {w.message || w}
                     </span>
-                  ))}
+                  )) : (
+                    <span className="text-emerald-400 font-semibold text-[11px]">✓ Packing looks perfectly balanced!</span>
+                  )}
                 </div>
               </div>
             </div>

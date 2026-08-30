@@ -9,7 +9,7 @@ const CATEGORIES = [
 
 const PAYMENT_METHODS = ['Cash', 'Credit Card', 'Debit Card', 'UPI', 'Net Banking'];
 
-export default function AddExpenseModal({ isOpen, onClose, onSubmit, initialData = null, defaultCurrency = 'USD' }) {
+export default function AddExpenseModal({ isOpen, onClose, onSubmit, initialData = null, defaultCurrency = 'USD', tripStartDate, tripEndDate }) {
   const [scanning, setScanning] = useState(false);
   const [ocrData, setOcrData] = useState(null);
 
@@ -26,7 +26,7 @@ export default function AddExpenseModal({ isOpen, onClose, onSubmit, initialData
     currency: defaultCurrency,
     category: 'Food',
     payment_method: 'Cash',
-    expense_date: getLocalDateStr(),
+    expense_date: tripStartDate || getLocalDateStr(),
     location_name: '',
     notes: '',
     expense_source: 'MANUAL',
@@ -55,14 +55,14 @@ export default function AddExpenseModal({ isOpen, onClose, onSubmit, initialData
         currency: defaultCurrency,
         category: 'Food',
         payment_method: 'Cash',
-        expense_date: getLocalDateStr(),
+        expense_date: tripStartDate || getLocalDateStr(),
         location_name: '',
         notes: '',
         expense_source: 'MANUAL',
         receipt_metadata: null
       });
     }
-  }, [initialData, isOpen, defaultCurrency]);
+  }, [initialData, isOpen, defaultCurrency, tripStartDate]);
 
   if (!isOpen) return null;
 
@@ -227,8 +227,11 @@ export default function AddExpenseModal({ isOpen, onClose, onSubmit, initialData
                 type="date"
                 name="expense_date"
                 value={form.expense_date}
+                min={tripStartDate}
+                max={tripEndDate}
                 onChange={handleChange}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-xs font-semibold"
+                required
+                className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 font-semibold"
               />
             </div>
 

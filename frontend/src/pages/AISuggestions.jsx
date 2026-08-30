@@ -13,7 +13,7 @@ import {
 import api from '../api/axios';
 import TripWizard from '../components/trips/TripWizard';
 import { getBudgetDisplay, formatMoney } from '../utils/currencyFormatter';
-
+import { useAuth } from '../context/AuthContext';
 // ─── Interest Filter Pills ──────────────────────────────────────────────────
 const INTEREST_PILLS = [
   { label: 'Nature', value: 'nature', icon: IconLeaf, color: '#22c55e' },
@@ -78,14 +78,20 @@ function DestCard({
   onWhyScore,
   onFeedback,
   userCurrency = 'USD',
-  isCompared = false
+  isCompared = false,
+  isCreatingTrip = false
 }) {
   const [feedback, setFeedback] = useState(null); // 'like', 'dislike', 'save', 'dismiss'
 
   const handleAction = (action, e) => {
     e && e.stopPropagation();
-    setFeedback(action);
-    if (onFeedback) onFeedback(dest.destination, action, dest.categories);
+    if (feedback === action) {
+      setFeedback(null);
+      if (onFeedback) onFeedback(dest.destination, action, dest.categories, true);
+    } else {
+      setFeedback(action);
+      if (onFeedback) onFeedback(dest.destination, action, dest.categories, false);
+    }
   };
 
   const scoreColor =
@@ -217,13 +223,13 @@ function DestCard({
           </button>
 
           {/* Plan Trip Primary Button */}
-          <button onClick={() => { onAction('click'); onPlan && onPlan(dest.destination); }} style={{
-            background: 'linear-gradient(135deg, #7c3aed, #6366f1)',
+          <button onClick={() => { onPlan && onPlan(dest); }} disabled={isCreatingTrip} style={{
+            background: isCreatingTrip ? 'gray' : 'linear-gradient(135deg, #7c3aed, #6366f1)',
             border: 'none', borderRadius: 14, padding: '6px 12px',
-            fontSize: 11, fontWeight: 700, color: '#fff', cursor: 'pointer',
+            fontSize: 11, fontWeight: 700, color: '#fff', cursor: isCreatingTrip ? 'not-allowed' : 'pointer',
             display: 'flex', alignItems: 'center', gap: 4
           }}>
-            Plan <IconArrowRight size={11} />
+            {isCreatingTrip ? 'Planning...' : 'Plan'} {!isCreatingTrip && <IconArrowRight size={11} />}
           </button>
         </div>
       </div>
@@ -776,6 +782,7 @@ function CompareDrawer({ items, onRemove, userCurrency = 'USD', onClose }) {
 // ─── Main Component ──────────────────────────────────────────────────────────
 export default function AISuggestions() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -802,6 +809,7 @@ export default function AISuggestions() {
   // Trip Wizard Trigger
   const [showWizard, setShowWizard] = useState(false);
   const [wizardDest, setWizardDest] = useState('');
+  const [isCreatingTrip, setIsCreatingTrip] = useState(false);
 
   // ─── Load Recommendations ────────────────────────────────────────────────
   const loadRecs = useCallback(async (interests = [], query = null, budget = null) => {
@@ -847,9 +855,13 @@ export default function AISuggestions() {
     loadRecs(activeInterests, chipQuery);
   };
 
-  const handleFeedback = async (destination, action, categories) => {
+  const handleFeedback = async (destination, action, categories, isUndo = false) => {
     try {
-      await api.post('/api/ai/recommendations/feedback', { destination, action, categories });
+      if (isUndo) {
+        await api.delete(`/api/ai/recommendations/feedback?destination=${encodeURIComponent(destination)}&action=${encodeURIComponent(action)}`);
+      } else {
+        await api.post('/api/ai/recommendations/feedback', { destination, action, categories });
+      }
     } catch (_) {}
   };
 
@@ -867,9 +879,62 @@ export default function AISuggestions() {
     }
   };
 
-  const handlePlan = (destination) => {
-    setWizardDest(destination);
-    setShowWizard(true);
+  const handlePlan = async (destObj) => {
+    if (isCreatingTrip) return;
+    
+    let duration = 5;
+    if (destObj.recommended_duration) {
+       const match = destObj.recommended_duration.match(/(\d+)/);
+       if (match) duration = parseInt(match[1], 10);
+    }
+    
+    const today = new Date();
+    const startDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
+    const endDate = new Date(startDate.getTime() + (duration - 1) * 24 * 60 * 60 * 1000);
+    
+    const startStr = startDate.toISOString().split('T')[0];
+    const endStr = endDate.toISOString().split('T')[0];
+
+    const payload = {
+      user_id: user?.id ? Number(user.id) : 1, // Fallback to 1 if user is somehow not in context
+      destination: destObj.destination,
+      start_date: startStr,
+      end_date: endStr,
+      budget: parseFloat(destObj.budget || destObj.average_budget) || 5000,
+      currency: userCurrency || "USD",
+      travel_type: "leisure",
+      travel_style: destObj.travel_style || "balanced",
+      transportation: "flight",
+      accommodation_preference: "hotel",
+      interests: "sightseeing",
+      group_size: 1,
+      force_create: true, // We are explicitly creating it from AI Suggestions
+      is_budget_friendly: false
+    };
+
+    setIsCreatingTrip(true);
+    try {
+      const res = await api.post('/api/trips/create', payload);
+      const newTrip = res.data;
+      if (newTrip && newTrip.id) {
+        navigate(`/trips/${newTrip.id}`);
+      }
+    } catch (e) {
+      console.error("[TRIP CREATE] Status:", e.response?.status);
+      let errorMsg = "Failed to create trip";
+      if (e.response?.data?.detail) {
+        const detail = e.response.data.detail;
+        if (Array.isArray(detail)) {
+          console.error("[TRIP CREATE] Validation errors:", JSON.stringify(detail, null, 2));
+          errorMsg = detail.map(d => `${d.loc.join('.')}: ${d.msg}`).join(' | ');
+        } else {
+          errorMsg = String(detail);
+        }
+      }
+      alert("Error creating trip: " + errorMsg);
+    } finally {
+      setIsCreatingTrip(false);
+    }
   };
 
   // ─── Data Extraction ──────────────────────────────────────────────────────
@@ -1013,7 +1078,7 @@ export default function AISuggestions() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))', gap: 18 }}>
             {nlResults.map(dest => (
-              <DestCard key={dest.destination} dest={dest} onPlan={handlePlan} onSimulate={setSimModalDest} onCompare={toggleCompare} onWhyScore={setScoreModalDest} onFeedback={handleFeedback} userCurrency={userCurrency} isCompared={comparedDests.some(d => d.destination === dest.destination)} />
+              <DestCard key={dest.destination} dest={dest} onPlan={handlePlan} onSimulate={setSimModalDest} onCompare={toggleCompare} onWhyScore={setScoreModalDest} onFeedback={handleFeedback} userCurrency={userCurrency} isCompared={comparedDests.some(d => d.destination === dest.destination)} isCreatingTrip={isCreatingTrip} />
             ))}
           </div>
         </div>
@@ -1064,7 +1129,7 @@ export default function AISuggestions() {
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
                   {discoverByInterest.map(dest => (
-                    <DestCard key={dest.destination} dest={dest} onPlan={handlePlan} onSimulate={setSimModalDest} onCompare={toggleCompare} onWhyScore={setScoreModalDest} onFeedback={handleFeedback} userCurrency={userCurrency} isCompared={comparedDests.some(d => d.destination === dest.destination)} />
+                    <DestCard key={dest.destination} dest={dest} onPlan={handlePlan} onSimulate={setSimModalDest} onCompare={toggleCompare} onWhyScore={setScoreModalDest} onFeedback={handleFeedback} userCurrency={userCurrency} isCompared={comparedDests.some(d => d.destination === dest.destination)} isCreatingTrip={isCreatingTrip} />
                   ))}
                 </div>
               </div>
@@ -1077,7 +1142,7 @@ export default function AISuggestions() {
               <SectionHeader icon={IconSparkles} iconColor="#a78bfa" title="Recommended For You" subtitle="6-factor AI personality match — Interest · Past Trips · Budget · Season · Style · Popularity" badge="Top Picks" />
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))', gap: 20 }}>
                 {recommendedForYou.map(dest => (
-                  <DestCard key={dest.destination} dest={dest} onPlan={handlePlan} onSimulate={setSimModalDest} onCompare={toggleCompare} onWhyScore={setScoreModalDest} onFeedback={handleFeedback} userCurrency={userCurrency} isCompared={comparedDests.some(d => d.destination === dest.destination)} />
+                  <DestCard key={dest.destination} dest={dest} onPlan={handlePlan} onSimulate={setSimModalDest} onCompare={toggleCompare} onWhyScore={setScoreModalDest} onFeedback={handleFeedback} userCurrency={userCurrency} isCompared={comparedDests.some(d => d.destination === dest.destination)} isCreatingTrip={isCreatingTrip} />
                 ))}
               </div>
             </div>
@@ -1194,7 +1259,7 @@ export default function AISuggestions() {
 
       {/* ─── Trip Wizard Integration ────────────────────────────────────────── */}
       {showWizard && (
-        <TripWizard destination={wizardDest} onClose={() => setShowWizard(false)} />
+        <TripWizard destination={wizardDest} onClose={() => setShowWizard(false)} onSuccess={handleCreateTrip} />
       )}
 
     </div>

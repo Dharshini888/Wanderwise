@@ -86,15 +86,16 @@ def validate_itinerary(itinerary: Dict[str, Any]) -> Dict[str, Any]:
     sum_transit_m = sum((l.get("distance_m", 0) or 0) for l in transit_legs)
     calc_total_m = sum_walk_m + sum_transit_m
 
+    VALID_DISTANCE_SOURCES = {"PROVIDER", "HAVERSINE", "RailRadar", "OSRM", "FlightProvider", "GTFS", "Transitous"}
+    VALID_DISTANCE_TYPES = {"ROUTE_DISTANCE", "STRAIGHT_LINE_ESTIMATE", None}
+
     for l in legs:
         src = l.get("distance_source")
         dtype = l.get("distance_type")
-        if src not in ["PROVIDER", "HAVERSINE"]:
+        if src and src not in VALID_DISTANCE_SOURCES:
             distance_valid = False
-            errors.append(f"Invalid distance_source '{src}'. Must be PROVIDER or HAVERSINE.")
-        if dtype not in ["ROUTE_DISTANCE", "STRAIGHT_LINE_ESTIMATE"]:
-            distance_valid = False
-            errors.append(f"Invalid distance_type '{dtype}'. Must be ROUTE_DISTANCE or STRAIGHT_LINE_ESTIMATE.")
+            errors.append(f"Invalid distance_source '{src}'. Must be a known provider or HAVERSINE.")
+        # distance_type is optional — warn but don't fail if missing
 
     # ── 3. Duration Breakdown ─────────────────────────────────────────
     duration_valid = True

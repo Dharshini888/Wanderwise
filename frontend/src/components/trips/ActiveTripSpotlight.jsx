@@ -27,7 +27,11 @@ export default function ActiveTripSpotlight({ activeTrip }) {
         <div className="space-y-1 max-w-xl">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-            <span>Active Journey • Day {currentDay} of {totalDays}</span>
+            {activeTrip.status === 'Upcoming' ? (
+              <span>Upcoming • Trip starts: {activeTrip.start_date}</span>
+            ) : (
+              <span>Active Journey • Day {currentDay} of {totalDays}</span>
+            )}
           </div>
 
           <h2 className="text-xl sm:text-2xl font-extrabold font-heading text-[var(--text-primary)] tracking-tight">

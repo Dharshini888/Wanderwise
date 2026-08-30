@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
 import {
   IconMapPin, IconRoute, IconSparkles, IconClock, IconSearch,
   IconShieldCheck, IconAlertTriangle, IconRefresh, IconCar,
-  IconWalk, IconChevronDown, IconCheck, IconX, IconArrowRight, IconInfoCircle, IconPlane
+  IconWalk, IconChevronDown, IconCheck, IconX, IconArrowRight, IconInfoCircle, IconPlane, IconTrain
 } from '@tabler/icons-react';
 
+import TransitMap from '../components/transit/TransitMap';
+import JourneyCard from '../components/transit/JourneyCard';
 import {
   OverviewTab,
-  RouteOptionsTab,
-  AIAnalysisTab,
+  RoutesTab,
+  StrategyTab,
   TimelineTab,
   WeatherSafetyTab,
   BudgetAnalyticsTab,
@@ -17,12 +20,16 @@ import {
 } from '../components/transit/TransitComponentsV6';
 
 const API = 'http://localhost:8000/api';
-const STRATEGIES = ['fastest', 'cheapest', 'safest', 'greenest', 'least walking', 'most comfortable', 'best overall'];
+const STRATEGIES = ['fastest', 'cheapest', 'safest', 'greenest', 'least walking', 'fewest transfers', 'best overall'];
 
 export default function Transit() {
+  const { tripId } = useParams();
+  const location = useLocation();
+
   const [form, setForm] = useState({
     origin: '',
     destination: '',
+    origin_source: null,
     origin_lat: null,
     origin_lon: null,
     gps_accuracy: null,
@@ -32,13 +39,77 @@ export default function Transit() {
   const [locationStatus, setLocationStatus] = useState('');
   const [activeTab, setActiveTab] = useState('overview');
   const [result, setResult] = useState(null);
+  const [selectedRouteId, setSelectedRouteId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const activeRequestId = useRef(null);
 
   useEffect(() => {
     handleGetLocation();
-  }, []);
+    if (tripId) {
+      loadTripContext(tripId);
+    }
+  }, [tripId]);
+
+  const loadTripContext = async (id) => {
+    try {
+      const res = await fetch(`${API}/trips/${id}`);
+      if (res.ok) {
+        const tripData = await res.json();
+        const dest = tripData.destination || 'Meghalaya';
+        const day1Acts = tripData.itinerary_days?.[0]?.activities || [];
+        const firstSpot = day1Acts[0]?.place?.name || day1Acts[0]?.title || tripData.origin_city || 'Coimbatore';
+        const lastSpot = day1Acts[day1Acts.length - 1]?.place?.name || day1Acts[day1Acts.length - 1]?.title || dest;
+
+        const startQuery = `${firstSpot}, ${dest}`;
+        const endQuery = `${lastSpot}, ${dest}`;
+
+        setForm(prev => ({
+          ...prev,
+          origin: startQuery,
+          destination: endQuery
+        }));
+
+        triggerSearch(startQuery, endQuery);
+      }
+    } catch (e) {
+      console.error('Error fetching trip context for transit:', e);
+    }
+  };
+
+  const triggerSearch = async (orig, dest) => {
+    if (!orig || !dest) return;
+    const requestId = `req_${Date.now()}`;
+    activeRequestId.current = requestId;
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch(`${API}/transit/route`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          origin: orig,
+          destination: dest,
+          preferred_mode: 'fastest',
+          date: 'Tomorrow',
+          request_id: requestId,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setResult(data);
+        if (data.recommended_route) {
+          setSelectedRouteId(data.recommended_route.route_id);
+        }
+      }
+    } catch (err) {
+      setError('Unable to reach the WanderWise backend server.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleGetLocation = () => {
     if (!navigator.geolocation) {
@@ -49,18 +120,38 @@ export default function Transit() {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const acc = Math.round(pos.coords.accuracy);
-        setForm(prev => ({
-          ...prev,
-          origin: 'Current Location',
-          origin_lat: pos.coords.latitude,
-          origin_lon: pos.coords.longitude,
-          gps_accuracy: acc,
-        }));
+        console.log('[GPS TRACE 1]', {
+          latitude: pos.coords.latitude,
+          longitude: pos.coords.longitude,
+          accuracy: acc,
+          timestamp: pos.timestamp
+        });
+        setForm(prev => {
+          const updated = {
+            ...prev,
+            origin: 'Current GPS Location',
+            origin_source: 'BROWSER_GPS',
+            origin_lat: pos.coords.latitude,
+            origin_lon: pos.coords.longitude,
+            gps_accuracy: acc,
+            origin_accuracy_m: acc,
+          };
+          console.log('[GPS TRACE 2 FORM STATE AFTER GPS]', updated);
+          return updated;
+        });
         setLocationStatus(`📍 Using current location (Accuracy: ${acc} m)`);
       },
       (err) => {
         setLocationStatus('Location permission denied. Enter origin manually.');
-        setForm(prev => ({ ...prev, origin: '', origin_lat: null, origin_lon: null, gps_accuracy: null }));
+        setForm(prev => ({
+          ...prev,
+          origin: '',
+          origin_source: null,
+          origin_lat: null,
+          origin_lon: null,
+          gps_accuracy: null,
+          origin_accuracy_m: null,
+        }));
       },
       { enableHighAccuracy: true, timeout: 8000 }
     );
@@ -79,25 +170,45 @@ export default function Transit() {
     setError('');
     setResult(null); // Clear previous state immediately
 
+    const payload = {
+      origin: form.origin,
+      destination: form.destination,
+      origin_source: form.origin_source || (form.origin_lat != null && form.origin_lon != null ? 'BROWSER_GPS' : 'GEOCODED_LOCATION'),
+      origin_lat: form.origin_lat,
+      origin_lon: form.origin_lon,
+      gps_accuracy: form.gps_accuracy,
+      origin_accuracy_m: form.gps_accuracy,
+      preferred_mode: form.preferred_mode,
+      date: 'Tomorrow',
+      request_id: requestId,
+    };
+    console.log('[GPS TRACE 4 API REQUEST PAYLOAD]', payload);
+    console.log('[GPS TRACE 4B API REQUEST COORDINATE TYPES]', {
+      origin_lat_type: typeof payload.origin_lat,
+      origin_lon_type: typeof payload.origin_lon,
+      accuracy_type: typeof payload.origin_accuracy_m
+    });
+
     try {
       const res = await fetch(`${API}/transit/route`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          origin: form.origin,
-          destination: form.destination,
-          origin_lat: form.origin_lat,
-          origin_lon: form.origin_lon,
-          gps_accuracy: form.gps_accuracy,
-          preferred_mode: form.preferred_mode,
-          date: 'Tomorrow',
-          request_id: requestId,
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) throw new Error(`Server HTTP ${res.status}`);
 
       const data = await res.json();
+
+
+      console.log('[GPS TRACE 12 FRONTEND RESPONSE]', {
+        origin: data.origin,
+        origin_source: data.origin_source,
+        origin_coords: data.origin_coords,
+        nearby_count: data.nearby?.length,
+        nearby: data.nearby
+      });
+      console.log('[GPS TRACE 18 API RESPONSE RECEIVED]', data);
 
       // Discard response if request_id does not match activeRequestId
       if (data.request_id && data.request_id !== activeRequestId.current) {
@@ -106,6 +217,9 @@ export default function Transit() {
       }
 
       setResult(data);
+      if (data.recommended_route) {
+        setSelectedRouteId(data.recommended_route.route_id);
+      }
       setActiveTab('overview');
     } catch (err) {
       setError('Unable to reach the WanderWise backend server.');
@@ -241,7 +355,7 @@ export default function Transit() {
             Smart Transit Assistant
           </h1>
           <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
-            Truth-First Multimodal Router — Transitous · Navitia · RailRadar · OSRM · AI Route Guidance
+            Truth-First Multimodal Router — Transitous · RailRadar · OSRM · AI Route Guidance
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -280,7 +394,20 @@ export default function Transit() {
                 className="w-full bg-[var(--bg-glass)] border border-[var(--border-color)] rounded-xl pl-10 pr-4 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-purple-500 transition-colors"
                 value={form.origin}
                 onChange={(e) => {
-                  setForm({ ...form, origin: e.target.value, origin_lat: null, origin_lon: null, gps_accuracy: null });
+                  const val = e.target.value;
+                  setForm(prev => {
+                    const updated = {
+                      ...prev,
+                      origin: val,
+                      origin_source: val ? 'GEOCODED_LOCATION' : null,
+                      origin_lat: null,
+                      origin_lon: null,
+                      gps_accuracy: null,
+                      origin_accuracy_m: null,
+                    };
+                    console.log('[GPS TRACE 3 ORIGIN INPUT CHANGE]', updated);
+                    return updated;
+                  });
                   setLocationStatus('');
                 }}
                 required
@@ -364,42 +491,209 @@ export default function Transit() {
             /* Level 2: VERIFIED_ALTERNATIVE_AVAILABLE */
             <VerifiedAlternativeView result={result} />
           ) : (
-            /* Level 1: PUBLIC_TRANSIT_AVAILABLE */
-            <>
-              <div className="flex border-b border-[var(--border-color)] overflow-x-auto gap-2 scrollbar-none pb-2">
-                {[
-                  { id: 'overview',  label: '🗺️ Overview & Quality' },
-                  { id: 'timeline',  label: '📍 Journey Timeline' },
-                  { id: 'options',   label: '🔀 Route Options' },
-                  { id: 'ai',        label: '🤖 Strategy Analysis' },
-                  { id: 'weather',   label: '🌤️ Weather' },
-                  { id: 'budget',    label: '💰 Budget' },
-                  { id: 'nearby',    label: '🏥 Nearby' },
-                ].map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`px-4 py-2.5 font-bold text-xs rounded-xl whitespace-nowrap transition-all cursor-pointer ${
-                      activeTab === tab.id
-                        ? 'bg-purple-600 text-white shadow-lg border border-purple-400/40'
-                        : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-glass)]'
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
+            /* Main Route Overview (Google Maps Style) */
+            (() => {
+              const activeRoute = result.route_options?.find(r => r.route_id === selectedRouteId) || result.recommended_route;
+              return (
+                <div className="space-y-6">
+                  {/* Interactive Map */}
+                  <TransitMap 
+                    routeOptions={result.route_options}
+                    selectedRouteId={selectedRouteId}
+                    onRouteSelect={setSelectedRouteId}
+                    originCoords={result.origin_coords}
+                    destCoords={result.dest_coords}
+                  />
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Route Options (Left Panel) */}
+                    <div className="lg:col-span-1 space-y-4">
+                      <h3 className="text-sm font-bold text-[var(--text-muted)] uppercase tracking-wider">Journey Options</h3>
+                      
+                      {/* Journeys list (new) with fallback to route cards (legacy) */}
+                      {result.journeys && result.journeys.length > 0 ? (
+                        <div className="space-y-3">
+                          {result.journeys.map((journey, idx) => (
+                            <JourneyCard
+                              key={journey.journey_id || idx}
+                              journey={journey}
+                              isSelected={(journey.route_id || journey.journey_id) === selectedRouteId}
+                              isBestOverall={(journey.route_id || journey.journey_id) === result.best_overall_route?.route_id}
+                              isFastest={(journey.route_id || journey.journey_id) === result.fastest_route?.route_id}
+                              isCheapest={(journey.route_id || journey.journey_id) === result.cheapest_route?.route_id}
+                              isSafest={(journey.route_id || journey.journey_id) === result.safest_route?.route_id}
+                              isGreenest={(journey.route_id || journey.journey_id) === result.greenest_route?.route_id}
+                              isFewestTransfers={(journey.route_id || journey.journey_id) === result.fewest_transfers_route?.route_id}
+                              onSelect={setSelectedRouteId}
+                            />
+                          ))}
+                        </div>
+                      ) : result.route_options && result.route_options.length > 0 ? (
+                        result.route_options.map((opt, idx) => {
+                          const isRecommended = opt.route_id === result.recommended_route?.route_id;
+                          const hasGeo = opt.geometry && opt.geometry.length > 0;
+                          
+                          // Determine mode string and icon
+                          let modeStr = '🚆 Transit';
+                          let modeIcon = <IconTrain size={16} />;
+                          if (opt.provider === 'FlightProvider') { modeStr = '✈️ Flight'; modeIcon = <IconPlane size={16} />; }
+                          else if (opt.provider === 'OSRM') { modeStr = '🚗 Driving'; modeIcon = <IconCar size={16} />; }
 
-              <div className="animate-fadeIn">
-                {activeTab === 'overview'  && <OverviewTab      routeData={result} />}
-                {activeTab === 'timeline'  && <TimelineTab      routeData={result} />}
-                {activeTab === 'options'   && <RouteOptionsTab  routeData={result} />}
-                {activeTab === 'ai'        && <AIAnalysisTab    routeData={result} />}
-                {activeTab === 'weather'   && <WeatherSafetyTab routeData={result} />}
-                {activeTab === 'budget'    && <BudgetAnalyticsTab routeData={result} />}
-                {activeTab === 'nearby'    && <NearbyTab        routeData={result} />}
-              </div>
-            </>
+                          // Calculate hours/mins
+                          const hrs = Math.floor(opt.duration_min / 60);
+                          const mins = Math.floor(opt.duration_min % 60);
+                          const durStr = hrs > 0 ? `${hrs}h ${mins}m` : `${mins}m`;
+
+                          return (
+                            <div 
+                              key={idx}
+                              onClick={() => setSelectedRouteId(opt.route_id)}
+                              className={`p-4 rounded-2xl border cursor-pointer transition-all ${
+                                opt.route_id === activeRoute?.route_id 
+                                  ? 'bg-purple-500/10 border-purple-500/50 ring-1 ring-purple-500/20 shadow-md' 
+                                  : 'bg-[var(--bg-glass)] border-[var(--border-color)] hover:border-purple-500/30 hover:bg-[var(--bg-glass-hover)] shadow-sm'
+                              }`}
+                            >
+                              {isRecommended && (
+                                <div className="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-2 flex items-center gap-1">
+                                  <IconSparkles size={12} /> ⭐ BEST OVERALL
+                                </div>
+                              )}
+                              
+                              <div className="flex justify-between items-start mb-3">
+                                <div>
+                                  <div className="font-bold text-[var(--text-primary)] text-sm flex items-center gap-1">
+                                    {modeIcon} {opt.train_number ? `${opt.train_number} - ${opt.train_name}` : opt.provider}
+                                  </div>
+                                  <div className="text-[10px] text-[var(--text-muted)] uppercase">
+                                    {opt.train_number ? opt.provider : modeStr}
+                                  </div>
+                                  {opt.departure_station && opt.arrival_station && (
+                                    <div className="text-[10px] text-[var(--text-secondary)] mt-1 font-medium truncate max-w-[200px]">
+                                      {opt.departure_station} → {opt.arrival_station}
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="text-right">
+                                  <div className="font-black text-lg text-purple-600 dark:text-purple-400 leading-none">{durStr}</div>
+                                  <div className="text-xs text-[var(--text-secondary)] font-medium mt-1">{opt.distance_km} km</div>
+                                </div>
+                              </div>
+                              
+                              <div className="grid grid-cols-2 gap-2 text-xs mb-3 bg-[var(--bg-card)] p-2 rounded-xl border border-[var(--border-color)]">
+                                <div>
+                                  <span className="text-[10px] text-[var(--text-muted)] block">Departure</span>
+                                  <span className="font-bold">{opt.departure_time_display || 'Unavailable'}</span>
+                                </div>
+                                <div>
+                                  <span className="text-[10px] text-[var(--text-muted)] block">Arrival</span>
+                                  <span className="font-bold">{opt.arrival_time_display || 'Unavailable'}</span>
+                                </div>
+                                <div>
+                                  <span className="text-[10px] text-[var(--text-muted)] block">Transfers</span>
+                                  <span className="font-bold">{opt.transfers !== null ? opt.transfers : '—'}</span>
+                                </div>
+                                <div>
+                                  <span className="text-[10px] text-[var(--text-muted)] block">Fare</span>
+                                  <span className="font-bold text-emerald-600 dark:text-emerald-400">{opt.fare ? `₹${opt.fare}` : 'Unavailable'}</span>
+                                </div>
+                                <div className="col-span-2">
+                                  <span className="text-[10px] text-[var(--text-muted)] block">Walking Distance</span>
+                                  <span className="font-bold">{opt.walking_distance_m ? `${(opt.walking_distance_m/1000).toFixed(1)} km` : '—'}</span>
+                                </div>
+                              </div>
+
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-1 text-[10px]">
+                                  {['Provider Verified', 'Schedule Verified', 'Transit Data Verified', 'VERIFIED'].includes(opt.verification_status) 
+                                    ? <span className="text-emerald-500 font-bold">🟢 {opt.verification_status === 'VERIFIED' ? 'Verified itinerary' : opt.verification_status}</span> 
+                                    : <span className="text-amber-500 font-bold">⚠️ {opt.verification_status || 'Estimated'}</span>}
+                                </div>
+                                <div className="flex items-center gap-1 text-[10px] text-[var(--text-muted)]">
+                                  <span>🗺️ {hasGeo ? 'Exact geometry available' : 'Schematic geometry only'}</span>
+                                </div>
+                                <div className="flex items-center gap-1 text-[10px] text-[var(--text-muted)]">
+                                  <span>⏱️ Source: {opt.duration_source || 'Unavailable'}</span>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <div className="text-xs text-[var(--text-muted)] p-4 text-center bg-[var(--bg-glass)] rounded-2xl border border-[var(--border-color)]">
+                          No alternate routes available.
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="lg:col-span-2 space-y-6">
+                      <div className="glass-card p-6 rounded-3xl border border-[var(--border-color)] space-y-6">
+                        {/* Journey Summary */}
+                        {activeRoute && (
+                          <div className="space-y-4">
+                            <div className="flex justify-between items-start border-b border-[var(--border-color)] pb-4">
+                              <div>
+                                <h2 className="text-xl font-black text-[var(--text-primary)]">
+                                  {result.origin} <span className="text-purple-500">→</span> {result.destination}
+                                </h2>
+                                <p className="text-sm font-bold text-[var(--text-muted)] mt-1 flex items-center gap-1">
+                                  {activeRoute.provider === 'FlightProvider' ? '✈️' : activeRoute.provider === 'OSRM' ? '🚗' : '🚆'} {activeRoute.mode} · {activeRoute.provider}
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-2xl font-black text-purple-600 dark:text-purple-400">
+                                  {Math.floor(activeRoute.duration_min / 60) > 0 ? `${Math.floor(activeRoute.duration_min / 60)}h ` : ''}
+                                  {Math.floor(activeRoute.duration_min % 60)}m
+                                </div>
+                                <div className="text-sm text-[var(--text-muted)] font-bold">{activeRoute.distance_km} km</div>
+                              </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs bg-[var(--bg-glass)] p-3 rounded-xl border border-[var(--border-color)]">
+                              <div><span className="text-[10px] text-[var(--text-muted)] block uppercase font-bold">Departure</span> <span className="font-bold">{activeRoute.departure_time_display || 'Unavailable'}</span></div>
+                              <div><span className="text-[10px] text-[var(--text-muted)] block uppercase font-bold">Arrival</span> <span className="font-bold">{activeRoute.arrival_time_display || 'Unavailable'}</span></div>
+                              <div><span className="text-[10px] text-[var(--text-muted)] block uppercase font-bold">Transfers</span> <span className="font-bold">{activeRoute.transfers !== null ? activeRoute.transfers : '—'}</span></div>
+                              <div><span className="text-[10px] text-[var(--text-muted)] block uppercase font-bold">Fare</span> <span className="font-bold text-emerald-600">{activeRoute.fare ? `₹${activeRoute.fare}` : 'Unavailable'}</span></div>
+                              <div><span className="text-[10px] text-[var(--text-muted)] block uppercase font-bold">Distance Source</span> <span className="font-bold">{activeRoute.distance_source || 'Unavailable'}</span></div>
+                              <div><span className="text-[10px] text-[var(--text-muted)] block uppercase font-bold">Duration Source</span> <span className="font-bold">{activeRoute.duration_source || 'Unavailable'}</span></div>
+                              <div className="col-span-2"><span className="text-[10px] text-[var(--text-muted)] block uppercase font-bold">Verification</span> <span className={`font-bold ${ ['Provider Verified','Schedule Verified','VERIFIED'].includes(activeRoute.verification_status) ? 'text-emerald-500' : 'text-amber-500' }`}>{['Provider Verified','Schedule Verified','VERIFIED'].includes(activeRoute.verification_status) ? '🟢' : '⚠️'} {activeRoute.verification_status || 'Estimated'}</span></div>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* Tab Navigation */}
+                        <div className="flex overflow-x-auto hide-scrollbar gap-2 border-b border-[var(--border-color)] pb-4">
+                          {['overview', 'timeline', 'routes', 'strategy', 'weather', 'budget', 'nearby'].map((tab) => (
+                            <button
+                              key={tab}
+                              onClick={() => setActiveTab(tab)}
+                              className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all ${
+                                activeTab === tab
+                                  ? 'bg-purple-600 text-white shadow-md'
+                                  : 'bg-[var(--bg-glass)] text-[var(--text-secondary)] hover:bg-[var(--bg-glass-hover)] border border-[var(--border-color)]'
+                              }`}
+                            >
+                              {tab}
+                            </button>
+                          ))}
+                        </div>
+                        
+                        {/* Tab Content */}
+                        <div className="pt-2">
+                          {activeTab === 'overview' && <OverviewTab routeData={result} activeRoute={activeRoute} />}
+                          {activeTab === 'timeline' && <TimelineTab activeRoute={activeRoute} />}
+                          {activeTab === 'routes' && <RoutesTab routeOptions={result.route_options} selectedRouteId={selectedRouteId} onSelect={setSelectedRouteId} />}
+                          {activeTab === 'strategy' && <StrategyTab routeData={result} />}
+                          {activeTab === 'weather' && <WeatherSafetyTab weatherObj={result.weather_obj} origin={result.origin} dest={result.destination} />}
+                          {activeTab === 'budget' && <BudgetAnalyticsTab activeRoute={activeRoute} />}
+                          {activeTab === 'nearby' && <NearbyTab nearby={result.nearby} provenance={result.nearby_provenance} />}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()
           )}
         </div>
       )}

@@ -137,7 +137,7 @@ class ActivityResponse(BaseModel):
     confidence_score: Optional[float] = 0.95
     is_locked: bool = False
     place: Optional[PlaceSchema] = None
-    metadata: Optional[Dict[str, Any]] = None
+    activity_metadata: Optional[Dict[str, Any]] = None
 
 class ItineraryDayResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)

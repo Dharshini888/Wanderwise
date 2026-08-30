@@ -85,9 +85,13 @@ api.interceptors.response.use(
         processQueue(refreshErr, null);
         isRefreshing = false;
 
-        localStorage.removeItem('token');
-        localStorage.removeItem('refresh_token');
-        localStorage.removeItem('user');
+        // Only clear session and redirect if the refresh endpoint explicitly returned 401 Unauthorized
+        if (refreshErr.response && refreshErr.response.status === 401) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('refresh_token');
+          localStorage.removeItem('user');
+          window.location.href = '/login';
+        }
 
         return Promise.reject(refreshErr);
       }
