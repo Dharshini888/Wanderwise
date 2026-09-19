@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import {
   IconArrowLeft, IconCalendar, IconMapPin, IconShare, IconSparkles,
   IconCopy, IconArchive, IconTrash, IconHeart, IconHeartFilled, IconWallet,
@@ -20,7 +20,7 @@ import TripDocumentsWidget from '../components/trips/TripDocumentsWidget';
 import TripItineraryMap from '../components/trips/TripItineraryMap';
 
 import {
-  getTripDetails, toggleFavoriteTrip, archiveTrip, restoreTrip,
+  getTripDetails, getTodayTripDetails, toggleFavoriteTrip, archiveTrip, restoreTrip,
   deleteTrip, duplicateTrip, shareTrip, generateItinerary,
   regenerateDay, toggleActivityLock, deleteActivity, addCustomActivity
 } from '../api/trips';
@@ -68,31 +68,33 @@ function TripChecklistSummary({ tripId }) {
 export default function TripDetails() {
   const { tripId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [trip, setTrip] = useState(null);
+  const initialTrip = location.state?.initialTrip || null;
+  const [trip, setTrip] = useState(initialTrip);
   const [todayData, setTodayData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialTrip);
   const [generating, setGenerating] = useState(false);
   const [showOfflineModal, setShowOfflineModal] = useState(false);
   const timelineRef = useRef(null);
 
-  const token = localStorage.getItem('token');
-
   const loadTripData = async () => {
+    const startTime = performance.now();
     try {
       const data = await getTripDetails(tripId);
       setTrip(data);
+      setLoading(false); // Priority 1 rendering unblocked
+      console.log(`[TripDetails] Core trip details loaded for Trip ${tripId} in ${Math.round(performance.now() - startTime)}ms`);
 
-      // Fetch today's execution itinerary from /api/trips/{trip_id}/today
-      const res = await fetch(`${API_BASE}/trips/${tripId}/today`, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {}
-      });
-      if (res.ok) {
-        const todayJson = await res.json();
-        setTodayData(todayJson);
-      }
-    } catch (_) {}
-    setLoading(false);
+      // Asynchronously load today's execution itinerary without blocking core page
+      getTodayTripDetails(tripId)
+        .then((todayJson) => {
+          if (todayJson) setTodayData(todayJson);
+        })
+        .catch(() => {});
+    } catch (_) {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -312,7 +314,19 @@ export default function TripDetails() {
             totalDistanceKm={todayData?.route_summary?.total_distance_km || trip?.itinerary_days?.[0]?.route_summary?.total_distance_km || 0}
             totalDurationMins={todayData?.route_summary?.total_duration_minutes || trip?.itinerary_days?.[0]?.route_summary?.total_duration_minutes || 0}
             verificationStatus={todayData?.route_summary?.verification_status || trip?.itinerary_days?.[0]?.route_summary?.verification_status || 'Route Calculated'}
-            onOpenTransit={() => navigate(`/trips/${tripId}/transit`)}
+            onOpenTransit={() => {
+              const stops = (todayData?.activities || trip?.itinerary_days?.[0]?.activities || [])
+                .filter(a => a.place?.latitude && a.place?.longitude);
+              const first = stops[0];
+              const last = stops[stops.length - 1];
+              if (first && last && first !== last) {
+                const fromName = first.place?.name || first.title;
+                const toName = last.place?.name || last.title;
+                navigate(`/transit?from=${encodeURIComponent(fromName)}&to=${encodeURIComponent(toName)}&from_lat=${first.place.latitude}&from_lon=${first.place.longitude}&to_lat=${last.place.latitude}&to_lon=${last.place.longitude}&dest_lat=${last.place.latitude}&dest_lon=${last.place.longitude}&auto_route=true&trip_id=${tripId}`);
+              } else {
+                navigate(`/trips/${tripId}/transit`);
+              }
+            }}
           />
         </>
       )}

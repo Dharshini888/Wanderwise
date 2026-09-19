@@ -22,6 +22,7 @@ NEARBY_RADIUS_KM = 5.0
 OVERPASS_SERVERS = [
     "https://overpass-api.de/api/interpreter",
     "https://overpass.kumi.systems/api/interpreter",
+    "https://overpass.nchc.org.tw/api/interpreter",
 ]
 
 HEADERS = {
@@ -143,7 +144,7 @@ def get_nearby_boarding_infrastructure(
 
     for server in OVERPASS_SERVERS:
         try:
-            resp = requests.post(server, data={"data": query}, headers=HEADERS, timeout=1.5)
+            resp = requests.post(server, data={"data": query}, headers=HEADERS, timeout=6.0)
             if resp.status_code == 200:
                 data = resp.json()
                 elements = data.get("elements", [])
@@ -281,7 +282,7 @@ def get_overpass_nearby(lat: float, lon: float, radius_m: int = 4000) -> List[Di
 
     for server in OVERPASS_SERVERS:
         try:
-            resp = requests.post(server, data={"data": query}, headers=HEADERS, timeout=1.5)
+            resp = requests.post(server, data={"data": query}, headers=HEADERS, timeout=6.0)
             if resp.status_code == 200:
                 data = resp.json()
                 elements = data.get("elements", [])

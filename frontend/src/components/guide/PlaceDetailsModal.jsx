@@ -66,10 +66,12 @@ export default function PlaceDetailsModal({
     setTravelMode(mode);
     setLoadingRoute(true);
     try {
-      const oLat = originLat || 13.0827;
-      const oLon = originLon || 80.2707;
-      const pLat = place.latitude || 13.0827;
-      const pLon = place.longitude || 80.2707;
+      const oLat = originLat || place?.latitude;
+      const oLon = originLon || place?.longitude;
+      const pLat = place?.latitude || originLat;
+      const pLon = place?.longitude || originLon;
+
+      if (!oLat || !oLon || !pLat || !pLon) return;
 
       const res = await getPlaceRoute({
         originLat: oLat,

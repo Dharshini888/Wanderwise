@@ -9,6 +9,10 @@ from ..services.transit.providers.railradar_provider import RailRadarProvider
 router = APIRouter(prefix="/api/transit", tags=["Transit"])
 
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 class TransitRequest(BaseModel):
     origin: str
     destination: str
@@ -17,6 +21,8 @@ class TransitRequest(BaseModel):
     origin_lon: Optional[float] = None
     dest_lat: Optional[float] = None
     dest_lon: Optional[float] = None
+    destination_lat: Optional[float] = None
+    destination_lon: Optional[float] = None
     gps_accuracy: Optional[float] = None
     origin_accuracy_m: Optional[float] = None
     preferred_mode: str = "fastest"
@@ -41,14 +47,19 @@ class StrategyRequest(BaseModel):
 def get_route(data: TransitRequest):
     req_id = data.request_id or f"req_{uuid.uuid4().hex[:12]}"
     acc = data.origin_accuracy_m if data.origin_accuracy_m is not None else data.gps_accuracy
+    d_lat = data.dest_lat if data.dest_lat is not None else data.destination_lat
+    d_lon = data.dest_lon if data.dest_lon is not None else data.destination_lon
+
+    logger.info(f"[TRANSIT] Route request received: {data.origin} -> {data.destination} (Coords: {data.origin_lat},{data.origin_lon} -> {d_lat},{d_lon})")
+
     return TransitOrchestrator.get_transit_plan(
         origin=data.origin,
         destination=data.destination,
         origin_source=data.origin_source,
         origin_lat=data.origin_lat,
         origin_lon=data.origin_lon,
-        dest_lat=data.dest_lat,
-        dest_lon=data.dest_lon,
+        dest_lat=d_lat,
+        dest_lon=d_lon,
         gps_accuracy=acc,
         origin_accuracy_m=acc,
         preferred_mode=data.preferred_mode,
@@ -63,14 +74,17 @@ def get_route(data: TransitRequest):
 def get_intelligence(data: TransitRequest):
     req_id = data.request_id or f"req_{uuid.uuid4().hex[:12]}"
     acc = data.origin_accuracy_m if data.origin_accuracy_m is not None else data.gps_accuracy
+    d_lat = data.dest_lat if data.dest_lat is not None else data.destination_lat
+    d_lon = data.dest_lon if data.dest_lon is not None else data.destination_lon
+
     return TransitOrchestrator.get_transit_plan(
         origin=data.origin,
         destination=data.destination,
         origin_source=data.origin_source,
         origin_lat=data.origin_lat,
         origin_lon=data.origin_lon,
-        dest_lat=data.dest_lat,
-        dest_lon=data.dest_lon,
+        dest_lat=d_lat,
+        dest_lon=d_lon,
         gps_accuracy=acc,
         origin_accuracy_m=acc,
         preferred_mode=data.preferred_mode,

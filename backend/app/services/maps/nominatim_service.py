@@ -4,6 +4,7 @@ from typing import Dict, Any, Optional
 from ..cache.transit_cache import TransitCache
 
 STATIC_COORDS = {
+    "kovaipudhur": {"lat": 10.9575, "lon": 76.9298, "display_name": "Kovaipudhur, Coimbatore, Tamil Nadu, India", "country_code": "IN"},
     "coimbatore": {"lat": 11.0168, "lon": 76.9558, "display_name": "Coimbatore, Tamil Nadu, India", "country_code": "IN"},
     "erode": {"lat": 11.3410, "lon": 77.7172, "display_name": "Erode, Tamil Nadu, India", "country_code": "IN"},
     "chennai": {"lat": 13.0827, "lon": 80.2707, "display_name": "Chennai, Tamil Nadu, India", "country_code": "IN"},
@@ -15,7 +16,13 @@ STATIC_COORDS = {
     "seoul": {"lat": 37.5665, "lon": 126.9780, "display_name": "Seoul, South Korea", "country_code": "KR"},
     "paris": {"lat": 48.8566, "lon": 2.3522, "display_name": "Paris, Île-de-France, France", "country_code": "FR"},
     "london": {"lat": 51.5074, "lon": -0.1278, "display_name": "London, England, United Kingdom", "country_code": "GB"},
-    "manchester": {"lat": 53.4808, "lon": -2.2426, "display_name": "Manchester, England, United Kingdom", "country_code": "GB"}
+    "manchester": {"lat": 53.4808, "lon": -2.2426, "display_name": "Manchester, England, United Kingdom", "country_code": "GB"},
+    "varkala": {"lat": 8.7379, "lon": 76.7163, "display_name": "Varkala, Kerala, India", "country_code": "IN"},
+    "dubai": {"lat": 25.2048, "lon": 55.2708, "display_name": "Dubai, United Arab Emirates", "country_code": "AE"},
+    "bali": {"lat": -8.4095, "lon": 115.1889, "display_name": "Bali, Indonesia", "country_code": "ID"},
+    "rome": {"lat": 41.9028, "lon": 12.4964, "display_name": "Rome, Italy", "country_code": "IT"},
+    "singapore": {"lat": 1.3521, "lon": 103.8198, "display_name": "Singapore", "country_code": "SG"},
+    "hawaii": {"lat": 21.3069, "lon": -157.8583, "display_name": "Hawaii, USA", "country_code": "US"}
 }
 
 def reverse_geocode(lat: float, lon: float) -> Optional[Dict[str, Any]]:
@@ -122,11 +129,12 @@ def geocode_place(place_name: str) -> Dict[str, Any]:
             return result
 
     return {
-        "lat": 12.9716,
-        "lon": 77.5946,
-        "display_name": f"{place_name} (Estimated Location)",
-        "country_code": "IN",
-        "source": "Default Search Fallback"
+        "lat": None,
+        "lon": None,
+        "display_name": place_name,
+        "country_code": "UNKNOWN",
+        "source": "Failed Resolution",
+        "is_valid": False
     }
 
 

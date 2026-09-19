@@ -73,8 +73,8 @@ def get_wishlist(user_id: int, db: Session = Depends(get_db)):
             "is_planned": item.is_planned or False,
             "visa_required": item.visa_required or False,
             "is_international": item.is_international or False,
-            "latitude": item.latitude or 13.0827,
-            "longitude": item.longitude or 80.2707,
+            "latitude": item.latitude,
+            "longitude": item.longitude,
             "created_at": item.created_at.isoformat() if item.created_at else None
         })
 
@@ -198,8 +198,8 @@ def get_wishlist_details(item_id: int, db: Session = Depends(get_db)):
         "is_planned": item.is_planned or False,
         "visa_required": item.visa_required or False,
         "is_international": item.is_international or False,
-        "latitude": item.latitude or 13.0827,
-        "longitude": item.longitude or 80.2707,
+        "latitude": item.latitude,
+        "longitude": item.longitude,
         "cost_variants": cost_variants,
         "weather": weather_info,
         "nearby_attractions": nearby_pois[:6],

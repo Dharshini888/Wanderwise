@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { IconShieldHalf } from '@tabler/icons-react';
+import api from '../../api/axios';
 
-const API = 'http://localhost:8000/api';
-
-export default function RiskAnalyzerWidget({ trip, token }) {
+export default function RiskAnalyzerWidget({ trip }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -12,27 +11,22 @@ export default function RiskAnalyzerWidget({ trip, token }) {
     const fetchRisk = async () => {
       try {
         const dest = trip.destination.split(',')[0];
-        const res = await fetch(`${API}/safety/dashboard?destination=${encodeURIComponent(dest)}`, {
-          method: 'GET',
-          headers: { Authorization: `Bearer ${token}` }
+        const res = await api.get(`/api/safety/dashboard?destination=${encodeURIComponent(dest)}`);
+        const json = res.data;
+        // Transform dashboard response into expected format
+        setData({
+          overall_score: json.dashboard?.overall_score || 0,
+          overall_label: json.dashboard?.risk_label || 'Moderate',
+          weather_risk: json.dashboard?.weather_risk || 0,
+          crowd_risk: 15, // Default placeholder since dashboard doesn't provide crowd_risk directly
+          safety_risk: json.dashboard?.overall_score ? 100 - json.dashboard.overall_score : 0,
+          emergency_numbers: json.emergency_contacts || {}
         });
-        if (res.ok) {
-          const json = await res.json();
-          // Transform dashboard response into expected format
-          setData({
-            overall_score: json.dashboard?.overall_score || 0,
-            overall_label: json.dashboard?.risk_label || 'Moderate',
-            weather_risk: json.dashboard?.weather_risk || 0,
-            crowd_risk: 15, // Default placeholder since dashboard doesn't provide crowd_risk directly
-            safety_risk: json.dashboard?.overall_score ? 100 - json.dashboard.overall_score : 0,
-            emergency_numbers: json.emergency_contacts || {}
-          });
-        }
       } catch (e) {}
       setLoading(false);
     };
     fetchRisk();
-  }, [trip, token]);
+  }, [trip]);
 
   if (!trip) return null;
   if (loading) return (

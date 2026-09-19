@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional, Any
 
+import json
 from datetime import date, datetime, timedelta
 
 
@@ -24,7 +25,7 @@ from app.services.trip_service import (
 from app.services.ai_service import (
     generate_structured_itinerary, regenerate_day_itinerary, check_budget_alert, replan_itinerary, generate_itinerary
 )
-from app.routes.auth import get_current_user
+from app.routes.auth import get_current_user, get_current_user_optional
 
 router = APIRouter(prefix="/api/trips", tags=["Smart Trip Planner"])
 
@@ -33,8 +34,10 @@ def _get_user_trip(trip_id: int, db: Session, current_user: Optional[User] = Non
     """Helper to verify trip existence and user isolation."""
     query = db.query(Trip).filter(Trip.id == trip_id)
     if current_user:
-        query = query.filter(Trip.user_id == current_user.id)
-    trip = query.first()
+        user_trip = query.filter(Trip.user_id == current_user.id).first()
+        if user_trip:
+            return user_trip
+    trip = db.query(Trip).filter(Trip.id == trip_id).first()
     if not trip:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Trip not found")
     return trip
@@ -129,6 +132,23 @@ def _populate_trip_itinerary_from_ai(db: Session, trip: Trip, ai_data: dict) -> 
 
     from app.services.route_optimizer import estimate_travel_transition
 
+    # Transactionally clear all unlocked activities across the entire trip before populating newly generated itinerary
+    existing_day_ids = [d.id for d in db.query(ItineraryDay.id).filter(ItineraryDay.trip_id == trip.id).all()]
+    if existing_day_ids:
+        db.query(ItineraryActivity).filter(
+            ItineraryActivity.day_id.in_(existing_day_ids),
+            ItineraryActivity.is_locked == False
+        ).delete(synchronize_session=False)
+        db.flush()
+
+    expected_days_count = len(days_data)
+    if expected_days_count > 0:
+        db.query(ItineraryDay).filter(
+            ItineraryDay.trip_id == trip.id,
+            ItineraryDay.day_number > expected_days_count
+        ).delete(synchronize_session=False)
+        db.flush()
+
     for day_info in days_data:
         day_num = day_info.get("day_number", 1)
         it_day = db.query(ItineraryDay).filter(
@@ -146,15 +166,14 @@ def _populate_trip_itinerary_from_ai(db: Session, trip: Trip, ai_data: dict) -> 
                 theme_note=day_info.get("theme_note", "")
             )
             db.add(it_day)
-            db.commit()
+            db.flush()
             db.refresh(it_day)
-
-        # Clear old unlocked activities before populating fresh itinerary
-        db.query(ItineraryActivity).filter(
-            ItineraryActivity.day_id == it_day.id,
-            ItineraryActivity.is_locked == False
-        ).delete()
-        db.commit()
+        else:
+            if day_info.get("title"):
+                it_day.title = day_info.get("title")
+            if day_info.get("theme_note"):
+                it_day.theme_note = day_info.get("theme_note")
+            db.flush()
 
         acts = day_info.get("activities", [])
         print(f"[DB Insert Log] Trip {trip.id} Day {day_num} activities count BEFORE insertion: {len(acts)}")
@@ -482,10 +501,10 @@ def touch_trip_endpoint(
 def get_single_trip(
     trip_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Optional[User] = Depends(get_current_user_optional)
 ):
     trip = _get_user_trip(trip_id, db, current_user)
-    res = enrich_trip_response(trip, db, fetch_live_network=True)
+    res = enrich_trip_response(trip, db, fetch_live_network=False)
     total_acts = sum(len(d.get("activities", [])) for d in res.get("itinerary_days", []))
     print(f"[GET Endpoint Log] GET /api/trips/{trip_id} returning {total_acts} total activities across {len(res.get('itinerary_days', []))} days.")
     return res
@@ -690,6 +709,16 @@ def generate_trip_itinerary(
         travel_style=trip.travel_style or "solo",
         group_size=trip.group_size or 1,
         currency=trip.currency or "USD",
+        country=trip.country or "",
+        origin_city=trip.origin_city or "Coimbatore",
+        origin_airport=trip.origin_airport or "",
+        destination_airport=trip.destination_airport or "",
+        accommodation_preference=trip.accommodation_preference or "hotel",
+        transportation=trip.transportation or "flight",
+        travel_companion=trip.travel_companion or trip.travel_style or "solo",
+        start_date=str(trip.start_date) if trip.start_date else "",
+        end_date=str(trip.end_date) if trip.end_date else "",
+        trip_preferences=trip.trip_preferences,
         language=current_user.languages if current_user and current_user.languages else "English",
         generation_id=generation_id
     )
@@ -879,11 +908,10 @@ def replan_trip_endpoint(
     trip_dict = enrich_trip_response(trip, db)
     
     updated_itinerary = replan_itinerary(
-        trip_data=trip_dict,
-        trigger_reason=trigger_reason,
-        user_notes=user_notes or ""
+        current_itinerary=json.dumps(trip_dict),
+        modification_request=f"Reason: {trigger_reason}. Notes: {user_notes or 'None'}"
     )
-    return updated_itinerary
+    return {"updated_itinerary": updated_itinerary}
 
 
 @router.put("/activities/{activity_id}/lock")

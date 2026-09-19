@@ -128,6 +128,7 @@ export default function SafetyHub() {
   const [shareActive, setShareActive] = useState(false);
   const [shareToken, setShareToken] = useState('');
   const [mapLayer, setMapLayer] = useState('all');
+  const reqIdRef = useRef(0);
 
   const userId = parseInt(localStorage.getItem('user_id') || '0');
   const token = localStorage.getItem('token');
@@ -135,6 +136,7 @@ export default function SafetyHub() {
   const fetchDashboard = async (e) => {
     if (e) e.preventDefault();
     if (!destination.trim()) return;
+    const currentReqId = ++reqIdRef.current;
     setLoading(true); setError(''); setData(null); setActiveTab('dashboard');
     try {
       const res = await fetch(
@@ -142,10 +144,20 @@ export default function SafetyHub() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const json = await res.json();
-      if (res.ok) setData(json);
-      else setError(json.detail || 'Could not load safety data');
-    } catch (_) { setError('Network error — please check your connection.'); }
-    setLoading(false);
+      if (currentReqId !== reqIdRef.current) return;
+      if (res.ok) {
+        setData(json);
+      } else {
+        setError(json.detail || 'Unable to resolve destination');
+      }
+    } catch (_) {
+      if (currentReqId === reqIdRef.current) {
+        setError('Network error — please check your connection.');
+      }
+    }
+    if (currentReqId === reqIdRef.current) {
+      setLoading(false);
+    }
   };
 
   const askAI = async (q = aiQuestion) => {
@@ -234,14 +246,15 @@ export default function SafetyHub() {
   const submitIncident = () => { setIncidentSubmitted(true); setTimeout(() => { setShowIncident(false); setIncidentSubmitted(false); setIncidentType(''); setIncidentDesc(''); }, 2000); };
 
   const done = checklist.filter(i => i.done).length;
-  const pct = Math.round((done / checklist.length) * 100);
+  const pct = checklist.length > 0 ? Math.round((done / checklist.length) * 100) : 0;
+  const readinessLabel = loading ? 'Calculating...' : `${pct}%`;
 
   const TABS = [
     { id: 'dashboard', label: '🛡 Dashboard' },
     { id: 'weather', label: '🌤 Weather' },
     { id: 'nearby', label: '📍 Nearby' },
     { id: 'health', label: '💊 Health' },
-    { id: 'checklist', label: `✅ Readiness (${pct}%)` },
+    { id: 'checklist', label: `✅ Readiness (${readinessLabel})` },
     { id: 'women', label: '👩 Women' },
     { id: 'solo', label: '🧳 Solo' },
     { id: 'incidents', label: '📋 Incidents' },
@@ -613,7 +626,12 @@ export default function SafetyHub() {
 
       {/* ═══════════════════ TAB: NEARBY ═══════════════════ */}
       {data && activeTab === 'nearby' && (
-        <NearbyServicesTab lat={data.coordinates?.lat} lon={data.coordinates?.lon} destination={destination} token={token} />
+        <NearbyServicesTab
+          lat={data.location?.latitude ?? data.coordinates?.lat}
+          lon={data.location?.longitude ?? data.coordinates?.lon}
+          destination={data.location?.display_name || data.location?.name || data.destination || destination}
+          token={token}
+        />
       )}
 
       {/* ═══════════════════ TAB: HEALTH ═══════════════════ */}
@@ -847,16 +865,43 @@ function NearbyServicesTab({ lat, lon, destination, token }) {
   const [services, setServices] = useState(null);
   const [loading, setLoading] = useState(false);
   const [activeService, setActiveService] = useState('hospitals');
+  const reqIdRef = useRef(0);
+  const fetchedCoordsRef = useRef('');
 
-  const load = useCallback(async () => {
-    if (!lat || !lon) return;
+  const load = useCallback(async (force = false) => {
+    const numLat = Number(lat);
+    const numLon = Number(lon);
+    if (!Number.isFinite(numLat) || !Number.isFinite(numLon) || (numLat === 0 && numLon === 0)) {
+      console.warn('[SAFETY] Nearby request blocked — invalid or missing coordinates:', { lat, lon });
+      return;
+    }
+
+    const coordKey = `${numLat.toFixed(4)}_${numLon.toFixed(4)}`;
+    if (!force && fetchedCoordsRef.current === coordKey) {
+      return;
+    }
+    fetchedCoordsRef.current = coordKey;
+
+    console.log('[SAFETY] Nearby request', {
+      destination,
+      latitude: numLat,
+      longitude: numLon,
+    });
+    console.trace('[SAFETY] Nearby request source');
+
+    const currentReqId = ++reqIdRef.current;
     setLoading(true);
+    setServices(null);
     try {
-      const res = await fetch(`${API}/safety/nearby?lat=${lat}&lon=${lon}`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API}/safety/nearby?lat=${numLat}&lon=${numLon}`, { headers: { Authorization: `Bearer ${token}` } });
+      if (currentReqId !== reqIdRef.current) return;
       if (res.ok) setServices(await res.json());
-    } catch (_) { }
-    setLoading(false);
-  }, [lat, lon, token]);
+      else setServices({});
+    } catch (_) {
+      if (currentReqId === reqIdRef.current) setServices({});
+    }
+    if (currentReqId === reqIdRef.current) setLoading(false);
+  }, [lat, lon, token, destination]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -884,7 +929,7 @@ function NearbyServicesTab({ lat, lon, destination, token }) {
         </h3>
         <div className="h-72 rounded-2xl overflow-hidden border border-[var(--border-color)]" style={{ zIndex: 0 }}>
           {lat && lon ? (
-            <MapContainer center={[lat, lon]} zoom={15} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
+            <MapContainer key={`${lat}_${lon}`} center={[lat, lon]} zoom={15} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
               <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               <Circle center={[lat, lon]} radius={300} pathOptions={{ color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.12 }} />
               <Marker position={[lat, lon]}><Popup><strong>📍 Your Location</strong><br />{destination}</Popup></Marker>
@@ -915,7 +960,7 @@ function NearbyServicesTab({ lat, lon, destination, token }) {
             )}
           </button>
         ))}
-        <button onClick={load} className="px-3.5 py-2 rounded-xl text-xs font-extrabold border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:border-blue-400 flex items-center gap-1.5 shrink-0">
+        <button onClick={() => load(true)} className="px-3.5 py-2 rounded-xl text-xs font-extrabold border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:border-blue-400 flex items-center gap-1.5 shrink-0">
           <IconRefresh size={13} /> Refresh
         </button>
       </div>

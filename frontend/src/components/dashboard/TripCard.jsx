@@ -4,7 +4,7 @@ import { IconTrash, IconChevronRight, IconWallet } from '@tabler/icons-react';
 
 import { formatCurrency } from '../../utils/formatters';
 
-export default function TripCard({ trip, token, getDays, onDelete }) {
+export default function TripCard({ trip, getDays, onDelete }) {
   const [photo, setPhoto] = useState('https://placehold.co/400x200/2563EB/FFFFFF?text=WanderWise');
 
   useEffect(() => {
@@ -70,6 +70,7 @@ export default function TripCard({ trip, token, getDays, onDelete }) {
             </Link>
             <Link 
               to={`/trips/${trip.id}`} 
+              state={{ initialTrip: trip }}
               className="text-xs font-semibold text-[var(--color-primary-600)] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-3.5 py-2 rounded-lg flex items-center gap-1 group/btn hover:bg-[var(--color-primary-600)] hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all shadow-sm"
             >
               Details

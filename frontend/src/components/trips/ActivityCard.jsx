@@ -1,7 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   IconLock, IconLockOpen, IconTrash, IconMapPin, IconClock,
-  IconSparkles, IconWalk, IconCamera, IconInfoCircle, IconExternalLink, IconSoup, IconArrowRight
+  IconSparkles, IconWalk, IconCamera, IconInfoCircle, IconExternalLink, IconSoup, IconArrowRight, IconRoute
 } from '@tabler/icons-react';
 import { formatCurrency } from '../../utils/currencyFormatter';
 import VerificationBadge from '../ui/VerificationBadge';
@@ -163,7 +164,7 @@ export default function ActivityCard({ activity, tripCurrency = 'USD', onLockTog
       </div>
 
       {/* 5. Rich Travel Transition */}
-      {(activity.transport_mode || travelDist) && (
+      {(activity.transport_mode || travelDist || activity.next_place_name) && (
         <div className="p-2.5 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/40 text-indigo-900 dark:text-indigo-200 text-xs font-bold flex items-center justify-between gap-2 border border-indigo-100 dark:border-indigo-900/40 flex-wrap">
           <div className="flex items-center gap-2 flex-wrap">
             <IconWalk size={15} className="text-indigo-600 dark:text-indigo-400 shrink-0" />
@@ -175,17 +176,29 @@ export default function ActivityCard({ activity, tripCurrency = 'USD', onLockTog
                   {travelDist && travelDist !== 'Not available' ? ` (${travelDist})` : ''}
                 </>
               ) : (
-                <>Travel: Unavailable</>
+                <>Travel: Transition</>
               )}
             </span>
             <VerificationBadge status={travelVerification} size="xs" />
           </div>
-          {activity.next_place_name && (
-            <div className="flex items-center gap-1 text-[11px] text-indigo-700 dark:text-indigo-300 font-semibold">
-              <span>Next: {activity.next_place_name}</span>
-              <IconArrowRight size={13} />
-            </div>
-          )}
+
+          <div className="flex items-center gap-2 flex-wrap">
+            {activity.next_place_name && (
+              <div className="flex items-center gap-1 text-[11px] text-indigo-700 dark:text-indigo-300 font-semibold">
+                <span>Next: {activity.next_place_name}</span>
+                <IconArrowRight size={13} />
+              </div>
+            )}
+
+            <Link
+              to={`/transit?from=${encodeURIComponent(place.name || activity.title)}&to=${encodeURIComponent(activity.next_place_name || place.address || 'Destination')}${place.latitude ? `&from_lat=${place.latitude}&from_lon=${place.longitude}` : ''}${activity.next_place_lat ? `&to_lat=${activity.next_place_lat}&to_lon=${activity.next_place_lon}` : ''}&auto_route=true`}
+              className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-extrabold shadow-sm transition-all flex items-center gap-1 shrink-0"
+              title="Get Smart Transit route for this transition"
+            >
+              <IconRoute size={13} />
+              <span>Get Route</span>
+            </Link>
+          </div>
         </div>
       )}
 

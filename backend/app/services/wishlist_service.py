@@ -15,27 +15,26 @@ class WishlistService:
 
     @staticmethod
     def geocode_destination(destination: str) -> Dict[str, Any]:
-        """Fetch coordinates, country, and image using Nominatim and Wikipedia."""
-        dest_clean = destination.split(',')[0].strip()
-        coords = {"lat": 13.0827, "lon": 80.2707, "country": "India", "is_international": False}
-        try:
-            url = f"https://nominatim.openstreetmap.org/search?q={urllib.parse.quote(dest_clean)}&format=json&limit=1"
-            req = urllib.request.Request(url, headers={"User-Agent": "WanderWise/6.0"})
-            with urllib.request.urlopen(req, timeout=4) as resp:
-                data = json.loads(resp.read().decode())
-                if data and len(data) > 0:
-                    item = data[0]
-                    coords["lat"] = float(item.get("lat", 13.0827))
-                    coords["lon"] = float(item.get("lon", 80.2707))
-                    display_name = item.get("display_name", "")
-                    parts = display_name.split(',')
-                    if len(parts) > 1:
-                        coords["country"] = parts[-1].strip()
-                        if "india" not in coords["country"].lower():
-                            coords["is_international"] = True
-        except Exception:
-            pass
-        return coords
+        """Fetch coordinates and country using nominatim_service provider chain."""
+        from app.services.maps.nominatim_service import geocode_place
+        geo = geocode_place(destination)
+        if not geo or not geo.get("is_valid", True) or geo.get("lat") is None:
+            return {"lat": None, "lon": None, "country": "Unknown", "is_international": False}
+
+        country = "India"
+        display_name = geo.get("display_name", "")
+        parts = display_name.split(',')
+        if len(parts) > 1:
+            country = parts[-1].strip()
+
+        is_international = "india" not in country.lower() and geo.get("country_code", "").lower() != "in"
+
+        return {
+            "lat": geo["lat"],
+            "lon": geo["lon"],
+            "country": country,
+            "is_international": is_international
+        }
 
     @staticmethod
     def get_destination_photo(destination: str) -> str:

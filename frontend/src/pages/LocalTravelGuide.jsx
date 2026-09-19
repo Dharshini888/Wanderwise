@@ -26,7 +26,7 @@ import {
 
 export default function LocalTravelGuide() {
   const { user } = useAuth();
-  const [destination, setDestination] = useState('Coimbatore');
+  const [destination, setDestination] = useState('Tokyo');
   const [guideData, setGuideData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -39,19 +39,22 @@ export default function LocalTravelGuide() {
   // Wishlist state map
   const [savedMap, setSavedMap] = useState({});
 
-  // Fetch initial guide data for destination
+  // Fetch initial guide data for destination (Mode A: Search Destination)
   const fetchDestinationGuide = useCallback(async (targetDest) => {
+    if (!targetDest || !targetDest.trim()) return;
+    const cleanTarget = targetDest.trim();
     setLoading(true);
     setError(null);
+    setSelectedPlace(null);
     setGuideData(null);
     setActiveCategory('ALL');
     try {
-      const data = await searchGuideDestination(targetDest);
+      const data = await searchGuideDestination(cleanTarget);
       setGuideData(data);
-      setDestination(data.destination || targetDest);
+      setDestination(data.destination || cleanTarget);
     } catch (err) {
       console.error('[LocalTravelGuide] Search error:', err);
-      setError(`Unable to load destination guide for "${targetDest}". Please check network connection.`);
+      setError(`Unable to load destination guide for "${cleanTarget}". Please check network connection.`);
     } finally {
       setLoading(false);
     }
@@ -68,12 +71,16 @@ export default function LocalTravelGuide() {
 
     setLoading(true);
     try {
+      const currentDest = guideData.destination && guideData.destination !== 'Current Location'
+        ? guideData.destination
+        : destination;
+
       const res = await getNearbyGuidePlaces({
         lat: guideData.latitude,
         lon: guideData.longitude,
         radius: 3000,
         category: catId,
-        destination: guideData.destination || destination,
+        destination: currentDest,
       });
       setGuideData((prev) => ({
         ...prev,
@@ -88,13 +95,16 @@ export default function LocalTravelGuide() {
     }
   };
 
-  // Handle current location trigger
+  // Handle current location trigger (Mode B: Browser GPS)
   const handleUseLocation = () => {
     if (!navigator.geolocation) {
       alert('Geolocation is not supported by your browser.');
       return;
     }
     setLoading(true);
+    setError(null);
+    setSelectedPlace(null);
+    setGuideData(null);
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const { latitude, longitude } = pos.coords;
@@ -104,7 +114,9 @@ export default function LocalTravelGuide() {
             lon: longitude,
             radius: 3000,
             category: 'ALL',
+            destination: '',
           });
+          setDestination('Current Location');
           setGuideData({
             destination: 'Current Location',
             display_name: `${latitude.toFixed(4)}° N, ${longitude.toFixed(4)}° E`,
@@ -114,7 +126,7 @@ export default function LocalTravelGuide() {
             places: res.places || [],
             weather: { status: 'Unavailable' },
             cultural_guide: null,
-            provider: 'GPS Geolocation & OpenStreetMap',
+            provider: res.provider || 'GPS Geolocation & OpenStreetMap',
           });
         } catch (err) {
           setError('Failed to fetch nearby places for current location.');

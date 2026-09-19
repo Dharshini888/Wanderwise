@@ -88,14 +88,21 @@ export default function SmartChecklist() {
     const fetchTrips = async () => {
       try {
         const data = await getPaginatedTrips({ limit: 50 });
-        const tripList = data.items || data || [];
+        const rawList = Array.isArray(data)
+          ? data
+          : Array.isArray(data?.trips)
+          ? data.trips
+          : Array.isArray(data?.items)
+          ? data.items
+          : [];
+        const tripList = Array.isArray(rawList) ? rawList : [];
         setTrips(tripList);
 
         // Preselect trip from query param or first trip
         const paramTripId = searchParams.get('tripId');
-        if (paramTripId && tripList.some((t) => String(t.id) === String(paramTripId))) {
+        if (paramTripId && tripList.some((t) => t && String(t.id) === String(paramTripId))) {
           setSelectedTripId(Number(paramTripId));
-        } else if (tripList.length > 0) {
+        } else if (tripList.length > 0 && tripList[0]) {
           setSelectedTripId(tripList[0].id);
         } else {
           setLoading(false);
@@ -266,7 +273,7 @@ export default function SmartChecklist() {
   };
 
   const selectedTrip = useMemo(
-    () => trips.find((t) => t.id === selectedTripId),
+    () => (Array.isArray(trips) ? trips : []).find((t) => t && t.id === selectedTripId),
     [trips, selectedTripId]
   );
 

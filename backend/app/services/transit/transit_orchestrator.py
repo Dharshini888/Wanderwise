@@ -59,36 +59,40 @@ class TransitOrchestrator:
         req_id = request_id or f"req_{uuid.uuid4().hex[:12]}"
         acc = origin_accuracy_m if origin_accuracy_m is not None else gps_accuracy
 
-        # ── 1. Geocode Origin and Destination with Strict Origin Resolution ──
+        # ── 1. Geocode Origin and Destination with Strict Coordinate Precedence ──
+        valid_origin_coords = (
+            origin_lat is not None and origin_lon is not None
+            and isinstance(origin_lat, (int, float)) and isinstance(origin_lon, (int, float))
+            and -90.0 <= origin_lat <= 90.0 and -180.0 <= origin_lon <= 180.0
+            and not (origin_lat == 0.0 and origin_lon == 0.0)
+        )
+
         is_gps_origin_text = bool(origin and any(k in origin.lower() for k in ["current", "location", "gps", "home city"]))
-        
-        if origin_source == "BROWSER_GPS" or (origin_source is None and is_gps_origin_text) or (origin and "home city" in origin.lower()):
+
+        if valid_origin_coords:
+            resolved_origin_source = origin_source or "ACTIVITY_COORDINATES"
+            geo_orig = {
+                "lat": float(origin_lat),
+                "lon": float(origin_lon),
+                "display_name": origin,
+                "source": "Itinerary Coordinates",
+                "accuracy": acc,
+            }
+        elif origin_source == "BROWSER_GPS" or (origin_source is None and is_gps_origin_text) or (origin and "home city" in origin.lower()):
             resolved_origin_source = "BROWSER_GPS"
-            valid_coords = (
-                origin_lat is not None and origin_lon is not None
-                and isinstance(origin_lat, (int, float)) and isinstance(origin_lon, (int, float))
-                and -90.0 <= origin_lat <= 90.0 and -180.0 <= origin_lon <= 180.0
-            )
-            if valid_coords:
-                from ..maps.nominatim_service import reverse_geocode
-                rev_geo = reverse_geocode(float(origin_lat), float(origin_lon))
-                display_name = rev_geo.get("display_name", "Current GPS Location") if rev_geo else "Current GPS Location"
-                geo_orig = {
-                    "lat": float(origin_lat),
-                    "lon": float(origin_lon),
-                    "display_name": display_name,
-                    "source": "Browser Geolocation",
-                    "accuracy": acc,
-                }
-            else:
-                # If Home City but no GPS coords, we can't geocode 'Home City'. Fail gracefully or use a default.
-                geo_orig = None
+            geo_orig = None
         else:
             resolved_origin_source = "GEOCODED_LOCATION"
-            city_geo = geocode_place(origin)
-            geo_orig = city_geo
+            geo_orig = geocode_place(origin)
 
-        if dest_lat is not None and dest_lon is not None and isinstance(dest_lat, (int, float)) and isinstance(dest_lon, (int, float)):
+        valid_dest_coords = (
+            dest_lat is not None and dest_lon is not None
+            and isinstance(dest_lat, (int, float)) and isinstance(dest_lon, (int, float))
+            and -90.0 <= dest_lat <= 90.0 and -180.0 <= dest_lon <= 180.0
+            and not (dest_lat == 0.0 and dest_lon == 0.0)
+        )
+
+        if valid_dest_coords:
             geo_dest = {
                 "lat": float(dest_lat),
                 "lon": float(dest_lon),
@@ -98,21 +102,30 @@ class TransitOrchestrator:
         else:
             geo_dest = geocode_place(destination)
 
+        if not geo_orig or not geo_dest:
+            logger.warning(f"[TRANSIT] Route failed: Unable to resolve coordinates for origin='{origin}' or dest='{destination}'")
+            return {
+                "status": "LOCATION_UNRESOLVED",
+                "result_level": 5,
+                "journey_scale": "UNRESOLVED",
+                "origin": origin,
+                "destination": destination,
+                "routes": [],
+                "route_guidance": None,
+                "message": f"Unable to determine location coordinates for '{origin if not geo_orig else destination}'.",
+                "recommended_route": None,
+            }
+
         orig_short = geo_orig["display_name"].split(",")[0] if geo_orig else (origin or "Current GPS Location")
         dest_short = geo_dest["display_name"].split(",")[0]
 
         # ── 2. Weather & Contextual Infrastructure ────────────────────
-        if geo_orig:
-            weather_orig = get_openmeteo_weather(geo_orig["lat"], geo_orig["lon"], orig_short)
-        else:
-            weather_orig = {"temp_c": 25.0, "icon": "🌤️"}
-
+        weather_orig = get_openmeteo_weather(geo_orig["lat"], geo_orig["lon"], orig_short)
         weather_dest = get_openmeteo_weather(geo_dest["lat"], geo_dest["lon"], dest_short)
         nearby_places = get_overpass_nearby(geo_dest["lat"], geo_dest["lon"])
 
-        # Fallback coordinates for router if geo_orig is None
-        router_orig_lat = geo_orig["lat"] if geo_orig else 11.0168
-        router_orig_lon = geo_orig["lon"] if geo_orig else 76.9558
+        router_orig_lat = geo_orig["lat"]
+        router_orig_lon = geo_orig["lon"]
 
         # ── 3. Resolve Planning Date ──────────────────────────────────
         from datetime import date as date_cls, datetime, timedelta

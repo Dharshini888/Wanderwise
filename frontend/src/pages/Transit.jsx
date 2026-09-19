@@ -45,11 +45,43 @@ export default function Transit() {
   const activeRequestId = useRef(null);
 
   useEffect(() => {
-    handleGetLocation();
-    if (tripId) {
+    const params = new URLSearchParams(location.search);
+    const fromParam = params.get('from') || params.get('origin') || location.state?.from || location.state?.origin;
+    const toParam = params.get('to') || params.get('destination') || location.state?.to || location.state?.destination;
+    const fromLat = params.get('from_lat') || params.get('origin_lat') || location.state?.fromLat || location.state?.origin_lat;
+    const fromLon = params.get('from_lon') || params.get('origin_lon') || location.state?.fromLon || location.state?.origin_lon;
+    const toLat = params.get('to_lat') || params.get('dest_lat') || location.state?.toLat || location.state?.dest_lat;
+    const toLon = params.get('to_lon') || params.get('dest_lon') || location.state?.toLon || location.state?.dest_lon;
+    const autoRoute = params.get('auto_route') === 'true' || location.state?.autoRoute || (fromParam && toParam);
+
+    if (fromParam && toParam) {
+      const fLat = fromLat ? parseFloat(fromLat) : null;
+      const fLon = fromLon ? parseFloat(fromLon) : null;
+      const tLat = toLat ? parseFloat(toLat) : null;
+      const tLon = toLon ? parseFloat(toLon) : null;
+
+      const newForm = {
+        origin: fromParam,
+        destination: toParam,
+        origin_source: fLat != null ? 'ACTIVITY_COORDINATES' : 'GEOCODED_LOCATION',
+        origin_lat: fLat,
+        origin_lon: fLon,
+        destination_lat: tLat,
+        destination_lon: tLon,
+        gps_accuracy: null,
+        preferred_mode: 'fastest',
+      };
+      setForm(newForm);
+
+      if (autoRoute) {
+        triggerSearch(fromParam, toParam, fLat, fLon, tLat, tLon);
+      }
+    } else if (tripId) {
       loadTripContext(tripId);
+    } else {
+      handleGetLocation();
     }
-  }, [tripId]);
+  }, [location.search, location.state, tripId]);
 
   const loadTripContext = async (id) => {
     try {
@@ -77,7 +109,7 @@ export default function Transit() {
     }
   };
 
-  const triggerSearch = async (orig, dest) => {
+  const triggerSearch = async (orig, dest, origLat = null, origLon = null, destLat = null, destLon = null) => {
     if (!orig || !dest) return;
     const requestId = `req_${Date.now()}`;
     activeRequestId.current = requestId;
@@ -85,16 +117,23 @@ export default function Transit() {
     setError('');
 
     try {
+      const payload = {
+        origin: orig,
+        destination: dest,
+        origin_source: origLat != null ? 'ACTIVITY_COORDINATES' : 'GEOCODED_LOCATION',
+        origin_lat: origLat,
+        origin_lon: origLon,
+        destination_lat: destLat,
+        destination_lon: destLon,
+        preferred_mode: 'fastest',
+        date: 'Tomorrow',
+        request_id: requestId,
+      };
+
       const res = await fetch(`${API}/transit/route`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          origin: orig,
-          destination: dest,
-          preferred_mode: 'fastest',
-          date: 'Tomorrow',
-          request_id: requestId,
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (res.ok) {

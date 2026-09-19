@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { IconX, IconSparkles, IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import { fetchCurrencyRegistry, checkDuplicateTrip } from '../../../api/trips';
 
@@ -69,6 +70,15 @@ export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const handleChange = (e) => {
@@ -126,12 +136,27 @@ export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
   };
 
   const handleSubmit = async () => {
+    if (submitting) return;
     setSubmitting(true);
     try {
       const tripPreferencesObj = {
+        destination: form.destination,
+        country: form.country,
+        origin_city: form.origin_city,
+        origin_airport: form.origin_airport,
+        destination_airport: form.destination_airport,
         visa_status: form.visa_status,
+        start_date: form.start_date,
+        end_date: form.end_date,
         flexible_dates: form.flexible_dates,
+        travel_type: form.travel_type,
+        travel_style: form.travel_style,
+        budget: form.budget,
+        currency: form.currency,
         budget_type: form.budget_type,
+        interests: form.interests,
+        accommodation_preference: form.accommodation_preference,
+        transportation: form.transportation,
         activity_pace: form.activity_pace,
         travelers: {
           adults: form.adults,
@@ -200,34 +225,35 @@ export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
     return titles[step - 1];
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-md p-4 overflow-y-auto">
-      <div className="bg-white dark:bg-gray-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-5 border border-gray-200 dark:border-gray-700 my-8">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-700/80 pb-3.5">
-          <div>
-            <span className="text-[11px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-              Step {step} of 14
-            </span>
-            <h2 className="text-lg font-extrabold font-heading text-gray-900 dark:text-white">
-              {renderStepTitle()}
-            </h2>
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/65 backdrop-blur-md p-4 sm:p-6 overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-3xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        {/* Header & Progress Bar */}
+        <div className="p-6 pb-4 shrink-0 border-b border-gray-100 dark:border-gray-700/80 space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                Step {step} of 14
+              </span>
+              <h2 className="text-lg font-extrabold font-heading text-gray-900 dark:text-white">
+                {renderStepTitle()}
+              </h2>
+            </div>
+            <button onClick={onClose} className="p-2 rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+              <IconX size={20} />
+            </button>
           </div>
-          <button onClick={onClose} className="p-2 rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
-            <IconX size={20} />
-          </button>
+
+          <div className="w-full bg-gray-100 dark:bg-gray-700 h-1.5 rounded-full overflow-hidden">
+            <div
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 h-full transition-all duration-300"
+              style={{ width: `${(step / 14) * 100}%` }}
+            />
+          </div>
         </div>
 
-        {/* Progress Bar */}
-        <div className="w-full bg-gray-100 dark:bg-gray-700 h-1.5 rounded-full overflow-hidden">
-          <div
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 h-full transition-all duration-300"
-            style={{ width: `${(step / 14) * 100}%` }}
-          />
-        </div>
-
-        {/* Step Body */}
-        <div className="py-1">
+        {/* Step Body - Scrollable Container */}
+        <div className="p-6 py-4 overflow-y-auto flex-1 min-h-0 custom-scrollbar">
           {step === 1 && <DestinationStep form={form} onChange={handleChange} />}
           {step === 2 && <DateStep form={form} onChange={handleChange} />}
           {step === 3 && <TravelersStep form={form} onChange={handleChange} />}
@@ -245,7 +271,7 @@ export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
         </div>
 
         {/* Footer Navigation */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700/80">
+        <div className="p-6 pt-4 shrink-0 border-t border-gray-100 dark:border-gray-700/80 bg-white dark:bg-gray-800 flex items-center justify-between">
           {step > 1 ? (
             <button
               type="button"
@@ -277,6 +303,7 @@ export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

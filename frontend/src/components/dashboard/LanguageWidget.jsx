@@ -1,9 +1,8 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { IconMicrophone, IconVolume } from '@tabler/icons-react';
+import api from '../../api/axios';
 
-const API = 'http://localhost:8000/api';
-
-export default function LanguageWidget({ trip, token }) {
+export default function LanguageWidget({ trip }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isListening, setIsListening] = useState(false);
@@ -22,23 +21,17 @@ export default function LanguageWidget({ trip, token }) {
 
     const fetchLang = async () => {
       try {
-        const res = await fetch(`${API}/recommendations/language-guide`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ destination: dest })
-        });
-        if (res.ok) {
-          const json = await res.json();
-          if (json && json.hello) {
-            setData(json);
-            localStorage.setItem(cacheKey, JSON.stringify(json));
-          }
+        const res = await api.post('/api/recommendations/language-guide', { destination: dest });
+        const json = res.data;
+        if (json && json.hello) {
+          setData(json);
+          localStorage.setItem(cacheKey, JSON.stringify(json));
         }
       } catch (e) {}
       setLoading(false);
     };
     fetchLang();
-  }, [trip, token]);
+  }, [trip]);
 
   const speak = (text) => {
     if ('speechSynthesis' in window) {

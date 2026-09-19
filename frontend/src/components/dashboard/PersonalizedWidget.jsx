@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { IconSparkles } from '@tabler/icons-react';
+import api from '../../api/axios';
 
-const API = 'http://localhost:8000/api';
-
-export default function PersonalizedWidget({ trips, token }) {
+export default function PersonalizedWidget({ trips }) {
   const [recs, setRecs] = useState([]);
   const [photos, setPhotos] = useState({});
   const [loading, setLoading] = useState(true);
@@ -20,24 +19,18 @@ export default function PersonalizedWidget({ trips, token }) {
 
     const fetchRecs = async () => {
       try {
-        const res = await fetch(`${API}/recommendations/personalized`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ past_destinations: dests })
-        });
-        if (res.ok) {
-          const data = await res.json();
-          const list = data.recommendations || [];
-          if (list.length > 0) {
-            setRecs(list);
-            localStorage.setItem(cacheKey, JSON.stringify(list));
-          }
+        const res = await api.post('/api/recommendations/personalized', { past_destinations: dests });
+        const data = res.data;
+        const list = data.recommendations || [];
+        if (list.length > 0) {
+          setRecs(list);
+          localStorage.setItem(cacheKey, JSON.stringify(list));
         }
       } catch (e) {}
       setLoading(false);
     };
     fetchRecs();
-  }, [trips, token]);
+  }, [trips]);
 
   useEffect(() => {
     if (!recs.length) return;

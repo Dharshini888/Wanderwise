@@ -98,8 +98,27 @@ def _parse_ai(raw: str) -> dict:
 @router.get("/dashboard")
 def safety_dashboard(destination: str, user_id: int = 0):
     """Full safety dashboard — live weather, nearby services, AI tips, timeline."""
+    import logging
+    logger = logging.getLogger("wanderwise.safety")
+    logger.info(f"[SAFETY] /dashboard request for destination: {destination}")
+
     geo = svc.geocode(destination)
+    if not geo.get("is_valid", True) or geo.get("lat") is None or geo.get("lon") is None:
+        logger.error(f"[SAFETY] Unable to resolve destination: {destination}")
+        raise HTTPException(status_code=404, detail=f"Unable to resolve destination '{destination}'")
+
     lat, lon, country = geo["lat"], geo["lon"], geo["country"]
+
+    location_obj = {
+        "name": geo.get("city") or geo.get("display") or destination,
+        "city": geo.get("city") or destination,
+        "country": country,
+        "display_name": geo.get("display_name") or geo.get("display") or destination,
+        "latitude": lat,
+        "longitude": lon,
+        "country_code": geo.get("country_code", "in"),
+        "is_valid": True,
+    }
 
     weather = svc.get_live_weather(lat, lon)
     dashboard = svc.build_safety_dashboard(destination, weather, country)
@@ -108,10 +127,8 @@ def safety_dashboard(destination: str, user_id: int = 0):
     ai_tips = svc.generate_ai_safety_tips(destination, weather, country)
     health = svc.get_health_advisory(lat, lon, country)
 
-    # AI risk analysis (Phase 2 removed)
     ai_risk = {}
 
-    # Scam alerts
     scams = []
     try:
         raw = get_scam_alerts(destination)
@@ -123,6 +140,7 @@ def safety_dashboard(destination: str, user_id: int = 0):
 
     return {
         "destination": destination,
+        "location": location_obj,
         "coordinates": {"lat": lat, "lon": lon},
         "country": country,
         "dashboard": dashboard,
@@ -145,6 +163,11 @@ def live_weather(lat: float, lon: float):
 @router.get("/nearby")
 def nearby_services(lat: float, lon: float):
     """Real nearby emergency services via Overpass API — expanded categories."""
+    import logging
+    logger = logging.getLogger("wanderwise.safety")
+    logger.info(f"[SAFETY] /nearby request lat={lat} lon={lon}")
+    if lat is None or lon is None:
+        raise HTTPException(status_code=400, detail="Latitude and Longitude are required")
     return svc.get_nearby_services(lat, lon)
 
 

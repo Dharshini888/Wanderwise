@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { IconArrowsRightLeft } from '@tabler/icons-react';
+import api from '../../api/axios';
 
-const API = 'http://localhost:8000/api';
 const CURRENCIES = ['USD', 'INR', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD'];
 
-export default function QuickCurrencyWidget({ token }) {
+export default function QuickCurrencyWidget() {
   const [from, setFrom] = useState('USD');
   const [to, setTo] = useState('EUR');
   const [amount, setAmount] = useState('100');
@@ -13,10 +13,8 @@ export default function QuickCurrencyWidget({ token }) {
   const convert = async () => {
     if (!amount) return;
     try {
-      const res = await fetch(`${API}/currency/convert?from_currency=${from}&to_currency=${to}&amount=${amount}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if(res.ok) setResult(await res.json());
+      const res = await api.get(`/api/currency/convert?from_currency=${from}&to_currency=${to}&amount=${amount}`);
+      setResult(res.data);
     } catch(e) {}
   };
 

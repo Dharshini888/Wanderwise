@@ -48,9 +48,9 @@ export default function SmartChecklistWidget({ tripId, tripTitle }) {
   if (!tripId) return null;
 
   const summary = data?.summary || { total: 0, completed: 0, pending: 0, urgent: 0, readiness_percentage: 0 };
-  const items = data?.items || [];
-  const urgentTasks = items.filter((i) => i.priority === 'URGENT' && i.status === 'PENDING');
-  const pendingTasks = items.filter((i) => i.status === 'PENDING');
+  const items = Array.isArray(data?.items) ? data.items : [];
+  const urgentTasks = items.filter((i) => i && i.priority === 'URGENT' && i.status === 'PENDING');
+  const pendingTasks = items.filter((i) => i && i.status === 'PENDING');
 
   return (
     <div className="bg-[var(--bg-card)] p-5 rounded-2xl border border-[var(--border-color)] shadow-xs space-y-4 hover:border-blue-500/30 transition-all">

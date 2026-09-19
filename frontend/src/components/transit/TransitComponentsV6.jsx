@@ -110,25 +110,37 @@ export function OverviewTab({ routeData, activeRoute }) {
           <div>
             <div className="text-[10px] uppercase text-[var(--text-muted)] font-bold mb-1">Fastest</div>
             <div className="text-xs font-bold text-[var(--text-primary)]">
-              {activeRoute?.duration_min ? `Based on ${activeRoute.duration_source}` : 'Unavailable'}
+              {(() => {
+                const dur = activeRoute?.duration_min ?? activeRoute?.duration_minutes ?? activeRoute?.total_duration_min;
+                if (dur != null) {
+                  const h = Math.floor(dur / 60);
+                  const m = Math.floor(dur % 60);
+                  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+                }
+                return activeRoute?.duration_display || 'Calculating...';
+              })()}
             </div>
           </div>
           <div>
             <div className="text-[10px] uppercase text-[var(--text-muted)] font-bold mb-1">Distance</div>
             <div className="text-xs font-bold text-[var(--text-primary)]">
-              {activeRoute?.distance_km ? `${activeRoute.distance_km} km` : 'Unavailable'}
+              {(() => {
+                const dist = activeRoute?.distance_km ?? activeRoute?.total_distance_km;
+                if (dist != null) return `${dist} km`;
+                return 'Calculating...';
+              })()}
             </div>
           </div>
           <div>
             <div className="text-[10px] uppercase text-[var(--text-muted)] font-bold mb-1">Route Source</div>
             <div className="text-xs font-bold text-[var(--text-primary)]">
-              {activeRoute?.provider}
+              {activeRoute?.provider || activeRoute?.duration_source || 'OSRM (OpenStreetMap)'}
             </div>
           </div>
           <div>
             <div className="text-[10px] uppercase text-[var(--text-muted)] font-bold mb-1">Verification</div>
             <div className="text-xs font-bold text-emerald-500">
-              {activeRoute?.verification_status || 'Estimated'}
+              {activeRoute?.verification_status || 'Route Calculated'}
             </div>
           </div>
         </div>

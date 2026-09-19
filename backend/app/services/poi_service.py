@@ -241,19 +241,24 @@ def fetch_real_pois_from_api(destination: str, country: Optional[str] = None) ->
 
 def fetch_real_pois_for_destination(destination: str, country: Optional[str] = None) -> List[Dict[str, Any]]:
     """Fetch verified real POIs for any city worldwide with destination alias resolution."""
-    dest_raw = (destination or "Tokyo").strip().lower()
+    if not destination or not destination.strip():
+        return []
+
+    dest_raw = destination.strip().lower()
 
     # Resolve aliases (e.g. Hawaii -> hawaii, NYC -> new_york)
-    dest_clean = DESTINATION_ALIASES.get(dest_raw, dest_raw)
-    for k, alias_target in DESTINATION_ALIASES.items():
-        if k in dest_raw or dest_raw in k:
-            dest_clean = alias_target
-            break
+    dest_clean = DESTINATION_ALIASES.get(dest_raw)
+    if not dest_clean:
+        for k, alias_target in DESTINATION_ALIASES.items():
+            if k == dest_raw or (len(k) >= 3 and k in dest_raw):
+                dest_clean = alias_target
+                break
+    if not dest_clean:
+        dest_clean = dest_raw.replace(' ', '_')
 
     # Check World POI Database first
-    for key in WORLD_POI_DATABASE:
-        if key in dest_clean or dest_clean in key:
-            pois = WORLD_POI_DATABASE[key]
+    for key, pois in WORLD_POI_DATABASE.items():
+        if key == dest_clean or (len(key) >= 3 and key in dest_clean):
             save_poi_cache(dest_clean, pois)
             return pois
 

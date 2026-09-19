@@ -81,3 +81,47 @@ def test_trip_map_transit_enrichment(db_session):
     # Truth-First verification
     assert route_sum["stops_count"] >= 1
     assert "verification_status" in route_sum
+
+
+def test_transit_orchestrator_coordinate_precedence():
+    from app.services.transit.transit_orchestrator import TransitOrchestrator
+
+    # Test with valid itinerary coordinates (Elephant Falls -> Police Bazar in Shillong)
+    plan = TransitOrchestrator.get_transit_plan(
+        origin="Elephant Falls",
+        destination="Police Bazar",
+        origin_lat=25.5378,
+        origin_lon=91.8220,
+        dest_lat=25.5767,
+        dest_lon=91.8814,
+        date="Tomorrow"
+    )
+
+    assert plan is not None
+    assert plan.get("status") != "LOCATION_UNRESOLVED"
+    assert plan.get("origin") == "Elephant Falls"
+    assert plan.get("destination") == "Police Bazar"
+
+    # Verify road alternative / OSRM route metrics are calculated
+    road_alt = plan.get("road_alternative") or plan.get("recommended_route")
+    assert road_alt is not None
+    assert road_alt.get("distance_km") is not None
+    assert road_alt.get("distance_km") > 0
+
+
+def test_transit_request_schema_compatibility():
+    from app.routes.transit import TransitRequest
+
+    # Test that destination_lat / destination_lon are accepted
+    req = TransitRequest(
+        origin="Location A",
+        destination="Location B",
+        origin_lat=12.9716,
+        origin_lon=77.5946,
+        destination_lat=13.0827,
+        destination_lon=80.2707
+    )
+
+    assert req.destination_lat == 13.0827
+    assert req.destination_lon == 80.2707
+

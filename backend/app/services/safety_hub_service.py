@@ -2,7 +2,10 @@ import json
 import math
 import urllib.parse
 import urllib.request
+import logging
 from typing import Dict, Any, List
+
+logger = logging.getLogger("wanderwise.safety")
 
 # ─── Country Emergency Numbers Dataset ───────────────────────────────────────
 COUNTRY_EMERGENCY = {
@@ -288,41 +291,59 @@ class SafetyHubService:
 
     @staticmethod
     def geocode(location: str) -> Dict[str, Any]:
-        """Resolve coordinates via Nominatim OSM."""
-        coords = {"lat": 13.0827, "lon": 80.2707, "country": "India",
-                  "country_code": "in", "display": location, "city": location}
-        try:
-            q = urllib.parse.quote(location.strip())
-            url = f"https://nominatim.openstreetmap.org/search?q={q}&format=json&limit=1&addressdetails=1"
-            req = urllib.request.Request(url, headers={"User-Agent": "WanderWise/7.0"})
-            with urllib.request.urlopen(req, timeout=5) as resp:
-                data = json.loads(resp.read())
-                if data:
-                    item = data[0]
-                    coords["lat"] = float(item.get("lat", 13.0827))
-                    coords["lon"] = float(item.get("lon", 80.2707))
-                    addr = item.get("address", {})
-                    # country name may be in native script — use display_name last part as fallback
-                    raw_country = addr.get("country", "")
-                    cc = addr.get("country_code", "").lower()
-                    coords["country_code"] = cc
+        """Resolve coordinates via nominatim_service provider chain."""
+        logger.info(f"[SAFETY] Requested location: {location}")
+        from app.services.maps.nominatim_service import geocode_place
 
-                    # Map country_code to English country name for dataset lookup
-                    CC_MAP = {
-                        "jp": "Japan", "in": "India", "fr": "France", "de": "Germany",
-                        "us": "USA", "gb": "UK", "au": "Australia", "ca": "Canada",
-                        "sg": "Singapore", "th": "Thailand", "my": "Malaysia",
-                        "id": "Indonesia", "vn": "Vietnam", "ae": "UAE",
-                        "lk": "Sri Lanka", "np": "Nepal", "cn": "China",
-                        "it": "Italy", "es": "Spain",
-                    }
-                    coords["country"] = CC_MAP.get(cc, raw_country or location)
-                    coords["city"] = (addr.get("city") or addr.get("town")
-                                       or addr.get("village") or location)
-                    coords["display"] = item.get("display_name", location)
-        except Exception:
-            pass
-        return coords
+        geo_res = geocode_place(location)
+        if not geo_res or not geo_res.get("is_valid", True) or geo_res.get("lat") is None or geo_res.get("lon") is None:
+            logger.error(f"[SAFETY] Geocoding failed for location: {location}")
+            return {
+                "is_valid": False,
+                "lat": None,
+                "lon": None,
+                "latitude": None,
+                "longitude": None,
+                "city": location,
+                "country": "Unknown",
+                "country_code": "unknown",
+                "display": location,
+                "display_name": location,
+                "error": f"Unable to resolve destination '{location}'"
+            }
+
+        lat = float(geo_res["lat"])
+        lon = float(geo_res["lon"])
+        display = geo_res.get("display_name", location)
+        cc = (geo_res.get("country_code") or "in").lower()
+
+        logger.info(f"[SAFETY] Resolved location: {display}")
+        logger.info(f"[SAFETY] Resolved coordinates: {lat}, {lon}")
+
+        CC_MAP = {
+            "jp": "Japan", "in": "India", "fr": "France", "de": "Germany",
+            "us": "USA", "gb": "UK", "au": "Australia", "ca": "Canada",
+            "sg": "Singapore", "th": "Thailand", "my": "Malaysia",
+            "id": "Indonesia", "vn": "Vietnam", "ae": "UAE",
+            "lk": "Sri Lanka", "np": "Nepal", "cn": "China",
+            "it": "Italy", "es": "Spain", "kr": "South Korea",
+        }
+
+        parts = [p.strip() for p in display.split(",")]
+        city = parts[0] if parts else location
+
+        return {
+            "is_valid": True,
+            "lat": lat,
+            "lon": lon,
+            "latitude": lat,
+            "longitude": lon,
+            "city": city,
+            "country": CC_MAP.get(cc, parts[-1] if len(parts) > 1 else "India"),
+            "country_code": cc,
+            "display": display,
+            "display_name": display,
+        }
 
     @staticmethod
     def get_live_weather(lat: float, lon: float) -> Dict[str, Any]:
@@ -407,12 +428,30 @@ class SafetyHubService:
 
     @staticmethod
     def get_nearby_services(lat: float, lon: float) -> Dict[str, List]:
-        """Fetch real emergency POIs using Overpass API — expanded categories."""
+        """Fetch real emergency POIs using Overpass API centered around lat, lon."""
         services = {
             "hospitals": [], "police": [], "pharmacies": [],
             "fire_stations": [], "atms": [], "metro_stations": [],
             "bus_stops": [], "fuel_stations": [],
         }
+
+        if lat is None or lon is None:
+            logger.error("[SAFETY] get_nearby_services called with null coordinates")
+            return services
+
+        # Cache key unique to coordinates
+        cache_key = f"nearby_services:{lat:.4f}:{lon:.4f}"
+        try:
+            from app.services.cache.transit_cache import TransitCache
+            cached = TransitCache.get(cache_key)
+            if cached:
+                logger.info(f"[SAFETY] Returning cached nearby services for {lat:.4f}, {lon:.4f}")
+                return cached
+        except Exception:
+            pass
+
+        logger.info(f"[SAFETY] Nearby services center: {lat}, {lon}")
+
         overpass_queries = {
             "hospitals":      f"[out:json][timeout:10];(node[amenity=hospital](around:3000,{lat},{lon});way[amenity=hospital](around:3000,{lat},{lon}););out center 5;",
             "police":         f"[out:json][timeout:8];node[amenity=police](around:3000,{lat},{lon});out 5;",
@@ -424,6 +463,9 @@ class SafetyHubService:
             "fuel_stations":  f"[out:json][timeout:8];node[amenity=fuel](around:3000,{lat},{lon});out 4;",
         }
 
+        total_received = 0
+        total_rejected = 0
+
         for key, query in overpass_queries.items():
             try:
                 url = "https://overpass-api.de/api/interpreter"
@@ -432,6 +474,7 @@ class SafetyHubService:
                 with urllib.request.urlopen(req, timeout=8) as resp:
                     result = json.loads(resp.read())
                     elements = result.get("elements", [])
+                    total_received += len(elements)
                     for el in elements[:6]:
                         tags = el.get("tags", {})
                         name = (tags.get("name:en") or tags.get("name") or
@@ -444,6 +487,13 @@ class SafetyHubService:
                             elat, elon = el.get("lat", lat), el.get("lon", lon)
 
                         dist_km = _haversine_km(lat, lon, elat, elon)
+
+                        # Location consistency validation: reject POIs > 50km away from center
+                        if dist_km > 50.0:
+                            total_rejected += 1
+                            logger.warning(f"[SAFETY] POI rejected by distance validation (>50km): '{name}' ({dist_km} km away from {lat},{lon})")
+                            continue
+
                         walk_min = max(1, round(dist_km / 0.08))  # ~80m/min walking speed
 
                         services[key].append({
@@ -459,8 +509,19 @@ class SafetyHubService:
                         })
                     # Sort by distance
                     services[key].sort(key=lambda x: x["distance_km"])
-            except Exception:
-                pass
+            except Exception as e:
+                logger.error(f"[SAFETY] Error fetching {key} for {lat},{lon}: {e}")
+
+        total_returned = sum(len(v) for v in services.values())
+        logger.info(f"[SAFETY] Overpass results received: {total_received}")
+        logger.info(f"[SAFETY] POIs rejected by distance validation: {total_rejected}")
+        logger.info(f"[SAFETY] Nearby services returned: {total_returned}")
+
+        try:
+            from app.services.cache.transit_cache import TransitCache
+            TransitCache.set(cache_key, services)
+        except Exception:
+            pass
 
         return services
 

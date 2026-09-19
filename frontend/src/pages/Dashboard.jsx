@@ -23,8 +23,7 @@ import DocumentsVaultWidget from '../components/dashboard/DocumentsVaultWidget';
 import SmartChecklistWidget from '../components/checklist/SmartChecklistWidget';
 import TripWizard from '../components/trips/TripWizard';
 import { createTrip } from '../api/trips';
-
-const API = 'http://localhost:8000/api';
+import api from '../api/axios';
 
 const CURRENCIES = ['USD', 'INR', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD'];
 const TRAVEL_TYPES = ['leisure', 'adventure', 'business', 'family'];
@@ -45,7 +44,6 @@ export default function Dashboard() {
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [recentActivities, setRecentActivities] = useState([]);
 
-  const token = localStorage.getItem('token');
   const userStr = localStorage.getItem('user');
   const user = userStr ? JSON.parse(userStr) : { name: 'Traveler', email: '' };
 
@@ -62,31 +60,27 @@ export default function Dashboard() {
   const fetchTrips = async () => {
     if (!userId || userId === 'undefined' || String(userId) === 'undefined') { setLoading(false); return; }
     try {
-      const [tripsRes, widgetRes, notifRes, actRes] = await Promise.all([
-        fetch(`${API}/trips/user/${userId}`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`${API}/trips/dashboard-widgets/${userId}`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`${API}/notifications/unread-count`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`${API}/activity/user/${userId}`, { headers: { Authorization: `Bearer ${token}` } })
+      const [tripsRes, widgetRes, notifRes, actRes] = await Promise.allSettled([
+        api.get(`/api/trips/user/${userId}`),
+        api.get(`/api/trips/dashboard-widgets/${userId}`),
+        api.get('/api/notifications/unread-count'),
+        api.get(`/api/activity/user/${userId}`)
       ]);
       
-      if (tripsRes.ok) {
-        const data = await tripsRes.json();
-        if (Array.isArray(data)) setTrips(data);
+      if (tripsRes.status === 'fulfilled' && Array.isArray(tripsRes.value.data)) {
+        setTrips(tripsRes.value.data);
       }
       
-      if (widgetRes.ok) {
-        const wData = await widgetRes.json();
-        setWidgetData(wData);
+      if (widgetRes.status === 'fulfilled' && widgetRes.value.data) {
+        setWidgetData(widgetRes.value.data);
       }
       
-      if (notifRes.ok) {
-        const notifData = await notifRes.json();
-        setUnreadNotifications(notifData.unread_count);
+      if (notifRes.status === 'fulfilled' && notifRes.value.data) {
+        setUnreadNotifications(notifRes.value.data.unread_count || 0);
       }
       
-      if (actRes.ok) {
-        const actData = await actRes.json();
-        setRecentActivities(actData);
+      if (actRes.status === 'fulfilled' && Array.isArray(actRes.value.data)) {
+        setRecentActivities(actRes.value.data);
       }
     } catch (_) {
     } finally {
@@ -96,10 +90,7 @@ export default function Dashboard() {
 
   const deleteTrip = async (id) => {
     try {
-      await fetch(`${API}/trips/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.delete(`/api/trips/${id}`);
       setTrips(trips.filter(t => t.id !== id));
     } catch (_) {}
   };
@@ -115,24 +106,17 @@ export default function Dashboard() {
     setSearchError(null);
     const delayDebounceFn = setTimeout(async () => {
       try {
-        const res = await fetch(`${API}/trips/search?query=${encodeURIComponent(searchQuery.trim())}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setSearchResults(data);
-        } else {
-          setSearchError('Search failed');
-        }
+        const res = await api.get(`/api/trips/search?query=${encodeURIComponent(searchQuery.trim())}`);
+        setSearchResults(res.data);
       } catch (err) {
-        setSearchError('Network error');
+        setSearchError('Search failed');
       } finally {
         setIsSearching(false);
       }
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery, token]);
+  }, [searchQuery]);
 
   useEffect(() => { fetchTrips(); }, []);
 
@@ -159,16 +143,12 @@ export default function Dashboard() {
         group_size: parseInt(form.group_size),
         ...overrides
       };
-      const res = await fetch(`${API}/trips/create`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
+      const res = await api.post('/api/trips/create', payload);
+      const data = res.data;
 
-      if (res.ok && data.requires_confirmation && data.budget_alert) {
+      if (data.requires_confirmation && data.budget_alert) {
         setBudgetAlert(data.budget_alert);
-      } else if (res.ok) {
+      } else {
         setShowForm(false);
         fetchTrips();
       }
@@ -494,7 +474,7 @@ export default function Dashboard() {
                         <IconClock size={12}/> Starts in {daysLeft} Days
                       </div>
                     )}
-                    <TripCard trip={trip} token={token} getDays={getDays} onDelete={deleteTrip} />
+                    <TripCard trip={trip} getDays={getDays} onDelete={deleteTrip} />
                   </div>
                 );
               })}
@@ -516,15 +496,15 @@ export default function Dashboard() {
           {nextTrip && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-2">
               <WeatherWidget trip={nextTrip} />
-              <RiskAnalyzerWidget trip={nextTrip} token={token} />
+              <RiskAnalyzerWidget trip={nextTrip} />
             </div>
           )}
 
           {/* Lower Widgets row */}
           {nextTrip && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <LanguageWidget trip={nextTrip} token={token} />
-              <QuickCurrencyWidget token={token} />
+              <LanguageWidget trip={nextTrip} />
+              <QuickCurrencyWidget />
             </div>
           )}
         </div>
@@ -532,7 +512,7 @@ export default function Dashboard() {
         {/* Right Column - Side Panel */}
         <div className="flex flex-col gap-6">
           {/* Personalized Recommendations */}
-          <PersonalizedWidget trips={trips} token={token} />
+          <PersonalizedWidget trips={trips} />
           
           {/* Travel Documents Vault Widget */}
           <DocumentsVaultWidget />

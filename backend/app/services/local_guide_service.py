@@ -201,7 +201,7 @@ def query_overpass_places(
         return cached
 
     overpass_query = f"""
-    [out:json][timeout:5];
+    [out:json][timeout:10];
     (
       {sub_query_formatted}
     );
@@ -210,7 +210,7 @@ def query_overpass_places(
 
     for server in OVERPASS_SERVERS:
         try:
-            resp = requests.post(server, data={"data": overpass_query}, headers=HEADERS, timeout=2.0)
+            resp = requests.post(server, data={"data": overpass_query}, headers=HEADERS, timeout=6.0)
             if resp.status_code == 200:
                 data = resp.json()
                 elements = data.get("elements", [])
@@ -244,12 +244,12 @@ def query_overpass_places(
             logger.warning(f"[LOCAL GUIDE] Overpass server {server} failed: {e}")
 
     # Destination-aware fallback to real POIs for searched destination only
-    if destination:
-        dest_pois = fetch_real_pois_for_destination(destination)
+    if destination and destination.strip():
+        dest_pois = fetch_real_pois_for_destination(destination.strip())
         fallback_places = []
         for idx, poi in enumerate(dest_pois[:15]):
-            p_lat = poi.get("latitude", lat)
-            p_lon = poi.get("longitude", lon)
+            p_lat = poi.get("latitude") or lat
+            p_lon = poi.get("longitude") or lon
             dist_km = haversine_distance(lat, lon, p_lat, p_lon)
             
             # Format opening hours safely without hardcoding
@@ -283,7 +283,7 @@ def query_overpass_places(
                 "distance_m": int(dist_km * 1000),
                 "distance_km": round(dist_km, 2),
                 "geometry": [],
-                "provider": poi.get("source", "OpenStreetMap & Wikipedia API"),
+                "provider": "Destination Highlights (Wikipedia & OSM)",
                 "verification_status": "Provider Verified",
             })
 
@@ -487,8 +487,8 @@ class LocalGuideService:
                         data = resp.json()
                         elements = data.get("elements", [])
                         if elements:
-                            o_lat = lat or 13.0827
-                            o_lon = lon or 80.2707
+                            o_lat = lat or 0.0
+                            o_lon = lon or 0.0
                             return normalize_place_data(elements[0], o_lat, o_lon)
                 except Exception:
                     pass
@@ -498,8 +498,8 @@ class LocalGuideService:
             "id": place_id,
             "name": f"Place #{place_id}",
             "category": "ATTRACTIONS",
-            "latitude": lat or 13.0827,
-            "longitude": lon or 80.2707,
+            "latitude": lat or 0.0,
+            "longitude": lon or 0.0,
             "address": None,
             "phone": None,
             "website": None,

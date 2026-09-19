@@ -99,7 +99,7 @@ export function AuthProvider({ children }) {
         user,
         token,
         refreshToken,
-        isAuthenticated: !!token && !!user,
+        isAuthenticated: !loading && !!token && !!user,
         loading,
         login,
         register,

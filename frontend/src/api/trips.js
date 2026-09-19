@@ -21,6 +21,11 @@ export const getTripDetails = async (tripId) => {
   return res.data;
 };
 
+export const getTodayTripDetails = async (tripId) => {
+  const res = await api.get(`/api/trips/${tripId}/today`);
+  return res.data;
+};
+
 export const updateTrip = async (tripId, data) => {
   const res = await api.put(`/api/trips/${tripId}`, data);
   return res.data;

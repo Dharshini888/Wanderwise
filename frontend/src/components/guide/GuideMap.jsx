@@ -60,7 +60,13 @@ export default function GuideMap({
   onSelectPlace,
   height = '450px',
 }) {
-  const center = useMemo(() => [centerLat || 13.0827, centerLon || 80.2707], [centerLat, centerLon]);
+  const center = useMemo(() => {
+    if (centerLat && centerLon) return [centerLat, centerLon];
+    if (places && places.length > 0 && places[0].latitude && places[0].longitude) {
+      return [places[0].latitude, places[0].longitude];
+    }
+    return [20.5937, 78.9629]; // Default neutral India center
+  }, [centerLat, centerLon, places]);
 
   const routePositions = useMemo(() => {
     if (routeData?.geometry && routeData.geometry.length > 0) {
@@ -76,8 +82,8 @@ export default function GuideMap({
     >
       <MapContainer center={center} zoom={13} style={{ height: '100%', width: '100%' }} scrollWheelZoom={false}>
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
         <MapBoundsUpdater center={center} places={places} routeGeometry={routePositions} />

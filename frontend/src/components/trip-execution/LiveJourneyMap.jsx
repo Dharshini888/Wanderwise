@@ -61,7 +61,7 @@ export default function LiveJourneyMap({ markers = [], routeLine = null, nearbyP
     <div className="h-[320px] w-full rounded-2xl overflow-hidden border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.15)] mb-6">
       <MapContainer center={firstPos} zoom={10} style={{ height: '100%', width: '100%' }}>
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         

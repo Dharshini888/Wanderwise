@@ -231,7 +231,7 @@ const TripCard = React.memo(({ trip, onFavorite, onArchive, onDuplicate, onDelet
 
           {/* Primary Action Button */}
           <button
-            onClick={() => navigate(`/trips/${trip.id}`)}
+            onClick={() => navigate(`/trips/${trip.id}`, { state: { initialTrip: trip } })}
             className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all shadow-sm shrink-0 ${
               isActive
                 ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-500/20'
