@@ -29,7 +29,7 @@ class GroqProvider(BaseAIProvider):
                 "temperature": 0.3
             }
             req = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"), headers=headers)
-            with urllib.request.urlopen(req, timeout=30) as resp:
+            with urllib.request.urlopen(req, timeout=12) as resp:
                 data = json.loads(resp.read())
                 return data["choices"][0]["message"]["content"]
         except Exception as e:

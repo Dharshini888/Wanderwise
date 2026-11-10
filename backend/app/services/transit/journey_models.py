@@ -179,7 +179,11 @@ class Journey:
                  operating_days=None, intermediate_stops=None,
                  platform=None, live_status=None, delay_min=None,
                  current_station=None, next_station=None,
-                 route_id=None, is_long_distance_fallback=False):
+                 route_id=None, is_long_distance_fallback=False,
+                 catchable=True, why_catchable=None, catchability_reason=None,
+                 door_to_door_departure=None, door_to_door_arrival=None,
+                 door_to_door_departure_display=None, door_to_door_arrival_display=None,
+                 duration_breakdown=None):
         self.journey_id = journey_id
         self.route_id = route_id or journey_id
 
@@ -217,6 +221,16 @@ class Journey:
         self.why_this_route = why_this_route or []
         self.is_overnight = is_overnight
 
+        # Door-to-door & catchability extension
+        self.catchable = catchable
+        self.why_catchable = why_catchable or (why_this_route[0] if why_this_route else None)
+        self.catchability_reason = catchability_reason or self.why_catchable
+        self.door_to_door_departure = door_to_door_departure or departure_time
+        self.door_to_door_arrival = door_to_door_arrival or arrival_time
+        self.door_to_door_departure_display = door_to_door_departure_display or departure_time_display
+        self.door_to_door_arrival_display = door_to_door_arrival_display or arrival_time_display
+        self.duration_breakdown = duration_breakdown or {}
+
         # legacy compat
         self.provider = provider
         self.mode = mode
@@ -248,6 +262,14 @@ class Journey:
             "arrival_time": self.arrival_time,
             "departure_time_display": self.departure_time_display,
             "arrival_time_display": self.arrival_time_display,
+            "door_to_door_departure": self.door_to_door_departure,
+            "door_to_door_arrival": self.door_to_door_arrival,
+            "door_to_door_departure_display": self.door_to_door_departure_display,
+            "door_to_door_arrival_display": self.door_to_door_arrival_display,
+            "catchable": self.catchable,
+            "why_catchable": self.why_catchable,
+            "catchability_reason": self.catchability_reason,
+            "duration_breakdown": self.duration_breakdown,
             "total_duration_min": self.total_duration_min,
             "duration_min": self.total_duration_min,
             "total_distance_km": self.total_distance_km,

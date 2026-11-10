@@ -1,0 +1,1644 @@
+{
+  "destination": "kathmandu,_nepal",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Solution Wizard Services",
+      "category": "Sightseeing",
+      "address": "Solution Wizard Services, Kathmandu, Nepal",
+      "latitude": 27.7060516,
+      "longitude": 85.3230087,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Solution Wizard Services in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Putali Sadak Chock \u092a\u0941\u0924\u0932\u0940 \u0938\u0921\u0915 \u091a\u094b\u0915 \u096c\u096c\u096d",
+      "category": "Sightseeing",
+      "address": "Putali Sadak Chock \u092a\u0941\u0924\u0932\u0940 \u0938\u0921\u0915 \u091a\u094b\u0915 \u096c\u096c\u096d, Kathmandu, Nepal",
+      "latitude": 27.7056025,
+      "longitude": 85.3228409,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Putali Sadak Chock \u092a\u0941\u0924\u0932\u0940 \u0938\u0921\u0915 \u091a\u094b\u0915 \u096c\u096c\u096d in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Kohinoor Hill Housing Bafal",
+      "category": "Viewpoint",
+      "address": "Kohinoor Hill Housing Bafal, Kathmandu, Nepal",
+      "latitude": 27.6973407,
+      "longitude": 85.2855631,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Kohinoor Hill Housing Bafal in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Sunil Dawadi's House",
+      "category": "Sightseeing",
+      "address": "Sunil Dawadi's House, Kathmandu, Nepal",
+      "latitude": 27.6926344,
+      "longitude": 85.2832512,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Sunil Dawadi's House in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Rani Pokhari",
+      "category": "Sightseeing",
+      "address": "Rani Pokhari, Kathmandu, Nepal",
+      "latitude": 27.7078115,
+      "longitude": 85.3153148,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Rani Pokhari in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "S-Style Dance Institute",
+      "category": "Sightseeing",
+      "address": "S-Style Dance Institute, Kathmandu, Nepal",
+      "latitude": 27.6932073,
+      "longitude": 85.282051,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: S-Style Dance Institute in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Nag Pokhari",
+      "category": "Sightseeing",
+      "address": "Nag Pokhari, Kathmandu, Nepal",
+      "latitude": 27.713488,
+      "longitude": 85.324369,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Nag Pokhari in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Anantaashram",
+      "category": "Sightseeing",
+      "address": "Anantaashram, Kathmandu, Nepal",
+      "latitude": 27.7464017,
+      "longitude": 85.3409352,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Anantaashram in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Er. Abhiyan Poudel Flat",
+      "category": "Sightseeing",
+      "address": "Er. Abhiyan Poudel Flat, Kathmandu, Nepal",
+      "latitude": 27.7492953,
+      "longitude": 85.3397631,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Er. Abhiyan Poudel Flat in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Shangrila Silk and Pashmina",
+      "category": "Sightseeing",
+      "address": "Shangrila Silk and Pashmina, Kathmandu, Nepal",
+      "latitude": 27.7465803,
+      "longitude": 85.3540069,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Shangrila Silk and Pashmina in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Golchha Organisation",
+      "category": "Sightseeing",
+      "address": "Golchha Organisation, Kathmandu, Nepal",
+      "latitude": 27.7154193,
+      "longitude": 85.3249789,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Golchha Organisation in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Scarf of life",
+      "category": "Sightseeing",
+      "address": "Scarf of life, Kathmandu, Nepal",
+      "latitude": 27.7112735,
+      "longitude": 85.3122221,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Scarf of life in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Milan Chok",
+      "category": "Sightseeing",
+      "address": "Milan Chok, Kathmandu, Nepal",
+      "latitude": 27.687507,
+      "longitude": 85.2820427,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Milan Chok in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Socialtours Hub",
+      "category": "Sightseeing",
+      "address": "Socialtours Hub, Kathmandu, Nepal",
+      "latitude": 27.713693,
+      "longitude": 85.3124162,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Socialtours Hub in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Gangalal Path",
+      "category": "Sightseeing",
+      "address": "Gangalal Path, Kathmandu, Nepal",
+      "latitude": 27.6998559,
+      "longitude": 85.2791966,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Gangalal Path in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Club Galaxy",
+      "category": "Sightseeing",
+      "address": "Club Galaxy, Kathmandu, Nepal",
+      "latitude": 27.6912275,
+      "longitude": 85.2778476,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Club Galaxy in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Thamel Chowk",
+      "category": "Sightseeing",
+      "address": "Thamel Chowk, Kathmandu, Nepal",
+      "latitude": 27.7143416,
+      "longitude": 85.3113761,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Thamel Chowk in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Dharma Bhakta Path",
+      "category": "Sightseeing",
+      "address": "Dharma Bhakta Path, Kathmandu, Nepal",
+      "latitude": 27.7005042,
+      "longitude": 85.279123,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Dharma Bhakta Path in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "City motorbike",
+      "category": "Sightseeing",
+      "address": "City motorbike, Kathmandu, Nepal",
+      "latitude": 27.7118564,
+      "longitude": 85.3098672,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: City motorbike in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Asan Bazar",
+      "category": "Sightseeing",
+      "address": "Asan Bazar, Kathmandu, Nepal",
+      "latitude": 27.7060285,
+      "longitude": 85.3094911,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Asan Bazar in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Dasrath Chand Path",
+      "category": "Sightseeing",
+      "address": "Dasrath Chand Path, Kathmandu, Nepal",
+      "latitude": 27.7004162,
+      "longitude": 85.2783182,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Dasrath Chand Path in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Sagarmatha Bazaar",
+      "category": "Shopping",
+      "address": "Sagarmatha Bazaar, Kathmandu, Nepal",
+      "latitude": 27.7151008,
+      "longitude": 85.3108832,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Sagarmatha Bazaar in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Anchita ko shit room",
+      "category": "Sightseeing",
+      "address": "Anchita ko shit room, Kathmandu, Nepal",
+      "latitude": 27.7004289,
+      "longitude": 85.3296136,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: Anchita ko shit room in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "girija koirala home",
+      "category": "Sightseeing",
+      "address": "girija koirala home, Kathmandu, Nepal",
+      "latitude": 27.7398659,
+      "longitude": 85.3399414,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": false,
+      "description": "Real destination venue: girija koirala home in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Pizza Zone",
+      "category": "Restaurant",
+      "address": "Pizza Zone, Kathmandu, Nepal",
+      "latitude": 27.749319,
+      "longitude": 85.3467669,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": true,
+      "description": "Real destination venue: Pizza Zone in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Kamaladi Bhancha Ghar Restaurant and Bar",
+      "category": "Restaurant",
+      "address": "Kamaladi Bhancha Ghar Restaurant and Bar, Kathmandu, Nepal",
+      "latitude": 27.707939,
+      "longitude": 85.3197444,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": true,
+      "description": "Real destination venue: Kamaladi Bhancha Ghar Restaurant and Bar in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Prabhu Thakali",
+      "category": "Restaurant",
+      "address": "Prabhu Thakali, Kathmandu, Nepal",
+      "latitude": 27.7500642,
+      "longitude": 85.3455965,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": true,
+      "description": "Real destination venue: Prabhu Thakali in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Samins Before Lunch And Restaurant And Bar",
+      "category": "Restaurant",
+      "address": "Samins Before Lunch And Restaurant And Bar, Kathmandu, Nepal",
+      "latitude": 27.7079261,
+      "longitude": 85.3217554,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": true,
+      "description": "Real destination venue: Samins Before Lunch And Restaurant And Bar in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Mega Banquet",
+      "category": "Restaurant",
+      "address": "Mega Banquet, Kathmandu, Nepal",
+      "latitude": 27.6947907,
+      "longitude": 85.2872399,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": true,
+      "description": "Real destination venue: Mega Banquet in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Garden Tandoori Resturant",
+      "category": "Restaurant",
+      "address": "Garden Tandoori Resturant, Kathmandu, Nepal",
+      "latitude": 27.695389,
+      "longitude": 85.2887658,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": true,
+      "description": "Real destination venue: Garden Tandoori Resturant in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Lion Heart Tandoori Kitchen",
+      "category": "Restaurant",
+      "address": "Lion Heart Tandoori Kitchen, Kathmandu, Nepal",
+      "latitude": 27.7084723,
+      "longitude": 85.3220184,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": true,
+      "description": "Real destination venue: Lion Heart Tandoori Kitchen in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Waar-Mou Kitchen Resturent and Bar",
+      "category": "Restaurant",
+      "address": "Waar-Mou Kitchen Resturent and Bar, Kathmandu, Nepal",
+      "latitude": 27.749375,
+      "longitude": 85.3453499,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": true,
+      "description": "Real destination venue: Waar-Mou Kitchen Resturent and Bar in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Dalo Restaurant",
+      "category": "Restaurant",
+      "address": "Dalo Restaurant, Kathmandu, Nepal",
+      "latitude": 27.7086322,
+      "longitude": 85.3221245,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": true,
+      "description": "Real destination venue: Dalo Restaurant in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Open Kitchen",
+      "category": "Restaurant",
+      "address": "Open Kitchen, Kathmandu, Nepal",
+      "latitude": 27.7512922,
+      "longitude": 85.3458038,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": true,
+      "description": "Real destination venue: Open Kitchen in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Nanglo Cafe And Pub",
+      "category": "Restaurant",
+      "address": "Nanglo Cafe And Pub, Kathmandu, Nepal",
+      "latitude": 27.7079529,
+      "longitude": 85.3188317,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": true,
+      "description": "Real destination venue: Nanglo Cafe And Pub in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Shandar Mo:Mo",
+      "category": "Restaurant",
+      "address": "Shandar Mo:Mo, Kathmandu, Nepal",
+      "latitude": 27.7516555,
+      "longitude": 85.3462233,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": true,
+      "description": "Real destination venue: Shandar Mo:Mo in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "King Cafe & Banquet",
+      "category": "Restaurant",
+      "address": "King Cafe & Banquet, Kathmandu, Nepal",
+      "latitude": 27.7489969,
+      "longitude": 85.3451488,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": true,
+      "description": "Real destination venue: King Cafe & Banquet in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Dalle",
+      "category": "Restaurant",
+      "address": "Dalle, Kathmandu, Nepal",
+      "latitude": 27.710135,
+      "longitude": 85.320002,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": true,
+      "description": "Real destination venue: Dalle in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Kripa Venue",
+      "category": "Restaurant",
+      "address": "Kripa Venue, Kathmandu, Nepal",
+      "latitude": 27.6945473,
+      "longitude": 85.2863068,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": true,
+      "description": "Real destination venue: Kripa Venue in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "C.G Restaurant",
+      "category": "Restaurant",
+      "address": "C.G Restaurant, Kathmandu, Nepal",
+      "latitude": 27.747969,
+      "longitude": 85.3477001,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": true,
+      "description": "Real destination venue: C.G Restaurant in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Jamkabhet Resturant and Cafe",
+      "category": "Restaurant",
+      "address": "Jamkabhet Resturant and Cafe, Kathmandu, Nepal",
+      "latitude": 27.7071812,
+      "longitude": 85.3227889,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": true,
+      "description": "Real destination venue: Jamkabhet Resturant and Cafe in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    },
+    {
+      "name": "Tridevi Thakali Bhansa and Khaja Ghar",
+      "category": "Restaurant",
+      "address": "Tridevi Thakali Bhansa and Khaja Ghar, Kathmandu, Nepal",
+      "latitude": 27.7058773,
+      "longitude": 85.319953,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "NPR",
+      "rating": null,
+      "crowd": null,
+      "is_dining": true,
+      "description": "Real destination venue: Tridevi Thakali Bhansa and Khaja Ghar in Kathmandu, Nepal.",
+      "ai_reason": "\u2713 Verified landmark venue in Kathmandu, Nepal",
+      "tip": "Recommended exploration stop in Kathmandu, Nepal.",
+      "signature_dish": null,
+      "nearby": [
+        "Kathmandu, Nepal"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "OpenStreetMap / Wikipedia Geo Registry (Kathmandu, Nepal)",
+        "price_source": "Unverified (Local Entry / Pricing)",
+        "rating_source": "Unrated (Awaiting Community Rating)",
+        "opening_hours_source": "Opening hours unavailable",
+        "overall_status": "Estimated"
+      }
+    }
+  ]
+}

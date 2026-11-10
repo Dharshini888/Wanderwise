@@ -9,6 +9,7 @@
  */
 
 import React, { useState } from 'react';
+import RealtimeStatus, { DataProvenanceCard } from './RealtimeStatus';
 
 const MODE_ICONS = {
   train: '🚆', rail: '🚆', railway: '🚆',
@@ -191,13 +192,34 @@ export default function JourneyCard({
 
         {/* Top summary row */}
         <div className="flex items-center justify-between mb-3">
-          <div className="text-base font-bold text-[var(--text-primary)]">
-            {durH ? durH : 'Duration unavailable'}
+          <div>
+            <div className="text-base font-bold text-[var(--text-primary)]">
+              {durH ? durH : 'Duration unavailable'}
+            </div>
+            {(journey.door_to_door_departure_display || journey.departure_time_display) && (
+              <div className="text-xs font-semibold text-purple-600 dark:text-purple-400">
+                {journey.door_to_door_departure_display || journey.departure_time_display} → {journey.door_to_door_arrival_display || journey.arrival_time_display || '—'}
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-2 text-xs">
-            <span className={isVerified ? 'text-emerald-500 font-bold' : 'text-amber-500'}>
-              {isVerified ? '🟢' : '⚠️'} {verificationStatus}
-            </span>
+            {journey.catchable === false ? (
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30">
+                ⚠️ Cannot Catch
+              </span>
+            ) : journey.catchable === true && journey.provider !== 'OSRM' ? (
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                ✅ Catchable
+              </span>
+            ) : null}
+
+            <RealtimeStatus 
+              verification={journey.verification || journey.verification_status} 
+              realtime={journey.realtime}
+              provider={journey.provider}
+              lastUpdated={journey.realtime?.last_updated}
+              ageSeconds={journey.realtime?.age_seconds}
+            />
             <button
               className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors ml-1"
               onClick={e => { e.stopPropagation(); setExpanded(x => !x); }}
@@ -206,6 +228,17 @@ export default function JourneyCard({
             </button>
           </div>
         </div>
+
+        {/* Catchability explanation notice */}
+        {journey.why_catchable && (
+          <div className={`text-[11px] p-2 rounded-xl mb-3 border font-medium ${
+            journey.catchable === false
+              ? 'bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-300'
+              : 'bg-purple-500/10 border-purple-500/20 text-purple-700 dark:text-purple-300'
+          }`}>
+            💡 {journey.why_catchable}
+          </div>
+        )}
 
         {/* Collapsed: mode pills + key metrics */}
         <div className="flex flex-wrap items-center gap-3 text-xs text-[var(--text-secondary)]">
@@ -216,8 +249,10 @@ export default function JourneyCard({
           {journey.fare != null && (
             <span className="font-bold text-emerald-500">₹{journey.fare}</span>
           )}
-          {journey.departure_time_display && (
-            <span>{journey.departure_time_display} → {journey.arrival_time_display || '—'}</span>
+          {journey.duration_breakdown?.access_min > 0 && (
+            <span className="text-[10px] font-mono opacity-80">
+              Access: {Math.round(journey.duration_breakdown.access_min)}m • Wait: {Math.round(journey.duration_breakdown.waiting_min || 0)}m • Egress: {Math.round(journey.duration_breakdown.egress_min || 0)}m
+            </span>
           )}
           {journey.is_overnight && (
             <span className="text-orange-500 font-bold text-[10px]">🌙 Overnight</span>
@@ -227,7 +262,7 @@ export default function JourneyCard({
 
       {/* Expanded: full leg-by-leg timeline */}
       {expanded && legs.length > 0 && (
-        <div className="border-t border-[var(--border-color)] px-4 py-4 space-y-1">
+        <div className="border-t border-[var(--border-color)] px-4 py-4 space-y-3">
           {legs.map((leg, i) => (
             <LegRow
               key={i}
@@ -253,6 +288,9 @@ export default function JourneyCard({
               <div><span className="font-bold text-[var(--text-secondary)]">Distance:</span> {journey.distance_km} km</div>
             )}
           </div>
+
+          {/* Data Provenance breakdown */}
+          <DataProvenanceCard route={journey} />
 
           {/* Why this route */}
           {journey.why_this_route?.length > 0 && (

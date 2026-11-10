@@ -3,18 +3,32 @@ import api from '../api/axios';
 
 const AuthContext = createContext();
 
+const isValidTokenString = (t) => Boolean(t && t !== 'null' && t !== 'undefined' && typeof t === 'string' && t.trim() !== '');
+
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('user');
-    return saved ? JSON.parse(saved) : null;
+  const [token, setToken] = useState(() => {
+    const t = localStorage.getItem('token');
+    return isValidTokenString(t) ? t : null;
   });
-  const [token, setToken] = useState(() => localStorage.getItem('token') || null);
-  const [refreshToken, setRefreshToken] = useState(() => localStorage.getItem('refresh_token') || null);
+  const [refreshToken, setRefreshToken] = useState(() => {
+    const rt = localStorage.getItem('refresh_token');
+    return isValidTokenString(rt) ? rt : null;
+  });
+  const [user, setUser] = useState(() => {
+    const t = localStorage.getItem('token');
+    if (!isValidTokenString(t)) return null;
+    const saved = localStorage.getItem('user');
+    try {
+      return saved ? JSON.parse(saved) : null;
+    } catch (_) {
+      return null;
+    }
+  });
   const [loading, setLoading] = useState(true);
 
   // Sync token and headers
   const setSession = (accessToken, newRefreshToken, userData) => {
-    if (accessToken) {
+    if (isValidTokenString(accessToken)) {
       localStorage.setItem('token', accessToken);
       setToken(accessToken);
     } else {
@@ -22,7 +36,7 @@ export function AuthProvider({ children }) {
       setToken(null);
     }
 
-    if (newRefreshToken) {
+    if (isValidTokenString(newRefreshToken)) {
       localStorage.setItem('refresh_token', newRefreshToken);
       setRefreshToken(newRefreshToken);
     } else {
@@ -30,7 +44,7 @@ export function AuthProvider({ children }) {
       setRefreshToken(null);
     }
 
-    if (userData) {
+    if (userData && (isValidTokenString(accessToken) || token)) {
       localStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);
     } else {
@@ -41,26 +55,35 @@ export function AuthProvider({ children }) {
 
   // Check auth session validity on mount
   useEffect(() => {
+    let isMounted = true;
     const verifySession = async () => {
       const storedToken = localStorage.getItem('token');
-      if (!storedToken) {
-        setLoading(false);
+      if (!isValidTokenString(storedToken)) {
+        setSession(null, null, null);
+        if (isMounted) setLoading(false);
         return;
       }
       try {
         const res = await api.get('/api/auth/me');
-        if (res.data) {
+        if (isMounted && res.data) {
           setUser(res.data);
           localStorage.setItem('user', JSON.stringify(res.data));
         }
       } catch (err) {
         // Stale or invalid token - clear session cleanly
-        setSession(null, null, null);
+        if (isMounted) {
+          setSession(null, null, null);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
     verifySession();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const login = async (email, password, rememberMe = false) => {

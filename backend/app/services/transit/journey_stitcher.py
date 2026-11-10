@@ -82,17 +82,25 @@ def stitch_door_to_door_journey(
 ) -> Optional[Dict[str, Any]]:
     """
     Takes a candidate normalized route dict (e.g. from RailRadar, GTFS, Flight, or OSRM)
-    and stitches a complete door-to-door Journey dict containing:
+    and stitches a complete door-to-door Journey dict containing departure-time aware legs:
       - origin: {"name": origin_name, "lat": origin_lat, "lon": origin_lon}
       - destination: {"name": dest_name, "lat": dest_lat, "lon": dest_lon}
       - legs: [FIRST_MILE, MAIN_TRANSIT, LAST_MILE]
       - connections: [FIRST_MILE -> MAIN_TRANSIT, MAIN_TRANSIT -> LAST_MILE]
-    Returns Journey dict or None if invalid/impossible.
+      - catchable: bool & why_catchable: str
+      - door_to_door_departure & door_to_door_arrival
     """
+    import os
     if not route:
         return None
 
+    boarding_buffer_min = float(os.getenv("TRANSIT_BOARDING_BUFFER_MINUTES", "5"))
+    transfer_buffer_min = float(os.getenv("TRANSIT_TRANSFER_BUFFER_MINUTES", "5"))
+
     now = request_time or datetime.now()
+    if hasattr(now, "tzinfo") and now.tzinfo is not None:
+        now = now.replace(tzinfo=None)
+
     provider = route.get("provider", "Unknown")
     route_id = route.get("route_id") or f"j_{uuid.uuid4().hex[:8]}"
 
@@ -102,16 +110,11 @@ def stitch_door_to_door_journey(
     main_dep_dt = _parse_iso(main_dep_str)
     main_arr_dt = _parse_iso(main_arr_str)
 
-    # Filter out truly past departures — but never reject future-date trains
-    if provider in ("RailRadar", "GTFS") and main_dep_dt:
-        if _is_past_departure(main_dep_dt, now):
-            logger.info(
-                f"[J_STITCHER] Rejecting past departure for {provider} "
-                f"train {route.get('train_number')}: {main_dep_dt} < current time {now}"
-            )
-            return None
-
     if provider == "OSRM" or route.get("mode") == "Driving":
+        road_dur_min = float(route.get("duration_min") or route.get("duration_minutes") or 60.0)
+        dep_start_dt = main_dep_dt or now
+        road_arr_dt = dep_start_dt + timedelta(minutes=int(road_dur_min))
+
         leg_id = f"leg_{uuid.uuid4().hex[:8]}"
         leg = JourneyLeg(
             sequence=1,
@@ -122,18 +125,20 @@ def stitch_door_to_door_journey(
             to_stop=dest_name,
             origin_coords={"lat": origin_lat, "lon": origin_lon},
             dest_coords={"lat": dest_lat, "lon": dest_lon},
-            departure_time=route.get("departure_time"),
-            arrival_time=route.get("arrival_time"),
-            departure_time_display=route.get("departure_time_display"),
-            arrival_time_display=route.get("arrival_time_display"),
-            duration_min=route.get("duration_min"),
+            departure_time=dep_start_dt.isoformat(),
+            arrival_time=road_arr_dt.isoformat(),
+            departure_time_display=_format_time_display(dep_start_dt),
+            arrival_time_display=_format_time_display(road_arr_dt),
+            duration_min=road_dur_min,
             distance_km=route.get("distance_km"),
-            verification_status="Route Calculated",
+            verification_status="Provider Calculated",
             source="OSRM",
             geometry=route.get("geometry") or [],
         )
         leg.leg_id = leg_id
         leg.connection_status = None
+
+        why_txt = f"Direct road route leaving at {_format_time_display(dep_start_dt)}, arriving at {_format_time_display(road_arr_dt)}."
 
         journey = Journey(
             journey_id=route_id,
@@ -145,12 +150,26 @@ def stitch_door_to_door_journey(
             arrival_time=leg.arrival_time,
             departure_time_display=leg.departure_time_display,
             arrival_time_display=leg.arrival_time_display,
-            total_duration_min=route.get("duration_min"),
+            door_to_door_departure=leg.departure_time,
+            door_to_door_arrival=leg.arrival_time,
+            door_to_door_departure_display=leg.departure_time_display,
+            door_to_door_arrival_display=leg.arrival_time_display,
+            catchable=True,
+            why_catchable=why_txt,
+            catchability_reason=why_txt,
+            duration_breakdown={
+                "access_min": 0,
+                "waiting_min": 0,
+                "main_transit_min": round(road_dur_min, 1),
+                "egress_min": 0,
+                "total_door_to_door_min": round(road_dur_min, 1),
+            },
+            total_duration_min=round(road_dur_min, 1),
             total_distance_km=route.get("distance_km"),
             verification_status="Route Calculated",
             geometry=route.get("geometry") or [],
             optimization_tags=["Road Alternative"],
-            why_this_route=route.get("why_this_route") or ["Road route calculated via OSRM."],
+            why_this_route=route.get("why_this_route") or [why_txt],
             provider="OSRM",
             mode="Driving",
             distance_source="OSRM",
@@ -188,12 +207,12 @@ def stitch_door_to_door_journey(
     legs: List[JourneyLeg] = []
     connections: List[JourneyConnection] = []
 
-    # 1. FIRST MILE LEG
+    # 1. FIRST MILE LEG (ACCESS)
     first_mile_dur_min = 0.0
-    fm_dep_dt, fm_arr_dt = None, None
+    fm_dep_dt = now
+    fm_arr_dt = now
 
     if needs_first_mile:
-        # Route via OSRM
         if b_lat and b_lon and origin_lat and origin_lon:
             fm_osrm = OSRMRoadProvider.get_walking_leg(
                 from_name=origin_name, from_lat=origin_lat, from_lon=origin_lon,
@@ -212,10 +231,7 @@ def stitch_door_to_door_journey(
             fm_mode = "WALK" if first_mile_dist_km <= 1.5 else "ROAD"
             fm_geom = []
 
-        # Time alignment: arrive at station 15 mins before train departure
-        if main_dep_dt:
-            fm_arr_dt = main_dep_dt - timedelta(minutes=15)
-            fm_dep_dt = fm_arr_dt - timedelta(minutes=int(fm_dur_min))
+        fm_arr_dt = now + timedelta(minutes=int(fm_dur_min))
 
         fm_leg_id = f"leg_{uuid.uuid4().hex[:8]}"
         fm_leg = JourneyLeg(
@@ -227,8 +243,8 @@ def stitch_door_to_door_journey(
             to_stop=boarding_station_name,
             origin_coords={"lat": origin_lat, "lon": origin_lon},
             dest_coords={"lat": b_lat, "lon": b_lon},
-            departure_time=fm_dep_dt.isoformat() if fm_dep_dt else None,
-            arrival_time=fm_arr_dt.isoformat() if fm_arr_dt else None,
+            departure_time=fm_dep_dt.isoformat(),
+            arrival_time=fm_arr_dt.isoformat(),
             departure_time_display=_format_time_display(fm_dep_dt),
             arrival_time_display=_format_time_display(fm_arr_dt),
             duration_min=fm_dur_min,
@@ -240,6 +256,36 @@ def stitch_door_to_door_journey(
         fm_leg.leg_id = fm_leg_id
         fm_leg.connection_status = None
         legs.append(fm_leg)
+
+    # CATCHABILITY & WAITING TIME CALCULATION
+    earliest_station_arrival = fm_arr_dt
+    minimum_boarding_time = earliest_station_arrival + timedelta(minutes=int(boarding_buffer_min))
+
+    is_catchable = True
+    waiting_min = 0.0
+    why_catchable_msg = ""
+
+    if main_dep_dt:
+        if main_dep_dt >= minimum_boarding_time:
+            is_catchable = True
+            waiting_min = max(0.0, (main_dep_dt - earliest_station_arrival).total_seconds() / 60.0)
+            why_catchable_msg = (
+                f"You can reach {boarding_station_name} by {_format_time_display(earliest_station_arrival)}. "
+                f"Service departs at {_format_time_display(main_dep_dt)}. "
+                f"{int(waiting_min)} minutes buffer/waiting time available."
+            )
+        else:
+            is_catchable = False
+            waiting_min = 0.0
+            why_catchable_msg = (
+                f"Not catchable — service departs at {_format_time_display(main_dep_dt)}, "
+                f"but you are estimated to reach {boarding_station_name} at {_format_time_display(earliest_station_arrival)} "
+                f"+ {int(boarding_buffer_min)} min buffer ({_format_time_display(minimum_boarding_time)})."
+            )
+    else:
+        is_catchable = True
+        waiting_min = 10.0
+        why_catchable_msg = f"Schedule unverified for {boarding_station_name} departure."
 
     # 2. MAIN TRANSIT LEG
     main_seq = len(legs) + 1
@@ -289,14 +335,15 @@ def stitch_door_to_door_journey(
         connections.append(JourneyConnection(
             from_leg_sequence=1,
             to_leg_sequence=main_seq,
-            transfer_time_min=15.0,
-            status=ConnectionStatus.GREEN,
-            reason="Safe 15 min station boarding window",
+            transfer_time_min=round(waiting_min, 1),
+            status=ConnectionStatus.GREEN if is_catchable else ConnectionStatus.RED,
+            reason=why_catchable_msg,
         ))
 
-    # 3. LAST MILE LEG
+    # 3. LAST MILE LEG (EGRESS)
     last_mile_dur_min = 0.0
-    lm_dep_dt, lm_arr_dt = None, None
+    lm_dep_dt = None
+    lm_arr_dt = None
 
     if needs_last_mile:
         if a_lat and a_lon and dest_lat and dest_lon:
@@ -318,7 +365,7 @@ def stitch_door_to_door_journey(
             lm_geom = []
 
         if main_arr_dt:
-            lm_dep_dt = main_arr_dt + timedelta(minutes=10)
+            lm_dep_dt = main_arr_dt + timedelta(minutes=int(transfer_buffer_min))
             lm_arr_dt = lm_dep_dt + timedelta(minutes=int(lm_dur_min))
 
         lm_seq = len(legs) + 1
@@ -350,19 +397,23 @@ def stitch_door_to_door_journey(
         connections.append(JourneyConnection(
             from_leg_sequence=main_seq,
             to_leg_sequence=lm_seq,
-            transfer_time_min=10.0,
+            transfer_time_min=round(transfer_buffer_min, 1),
             status=ConnectionStatus.GREEN,
-            reason="10 min alighting transfer window",
+            reason=f"{int(transfer_buffer_min)} min station alighting buffer",
         ))
 
     # Calculate overall door-to-door duration and distance
-    tot_dur = sum(l.duration_min or 0 for l in legs) + sum(c.transfer_time_min or 0 for c in connections)
-    tot_dist = sum(l.distance_km or 0 for l in legs)
+    door_dep_dt = now
+    door_arr_dt = lm_arr_dt if lm_arr_dt else main_arr_dt
 
-    overall_dep_time = legs[0].departure_time
-    overall_arr_time = legs[-1].arrival_time
-    overall_dep_display = legs[0].departure_time_display
-    overall_arr_display = legs[-1].arrival_time_display
+    overall_dep_time = door_dep_dt.isoformat()
+    overall_arr_time = door_arr_dt.isoformat() if door_arr_dt else legs[-1].arrival_time
+    overall_dep_display = _format_time_display(door_dep_dt)
+    overall_arr_display = _format_time_display(door_arr_dt) if door_arr_dt else legs[-1].arrival_time_display
+
+    main_dur = float(main_leg.duration_min or 0.0)
+    tot_dur = (door_arr_dt - door_dep_dt).total_seconds() / 60.0 if door_arr_dt else (first_mile_dur_min + waiting_min + main_dur + transfer_buffer_min + last_mile_dur_min)
+    tot_dist = sum(l.distance_km or 0 for l in legs)
 
     # Verification status calculation
     if all(l.verification_status in ("Provider Verified", "Schedule Verified", "VERIFIED") for l in legs):
@@ -378,6 +429,14 @@ def stitch_door_to_door_journey(
         if l.geometry:
             combined_geometry.extend(l.geometry)
 
+    duration_breakdown = {
+        "access_min": round(first_mile_dur_min, 1),
+        "waiting_min": round(waiting_min, 1),
+        "main_transit_min": round(main_dur, 1),
+        "egress_min": round(last_mile_dur_min, 1),
+        "total_door_to_door_min": round(tot_dur, 1),
+    }
+
     journey = Journey(
         journey_id=route_id,
         origin={"name": origin_name, "lat": origin_lat, "lon": origin_lon},
@@ -388,6 +447,14 @@ def stitch_door_to_door_journey(
         arrival_time=overall_arr_time,
         departure_time_display=overall_dep_display,
         arrival_time_display=overall_arr_display,
+        door_to_door_departure=overall_dep_time,
+        door_to_door_arrival=overall_arr_time,
+        door_to_door_departure_display=overall_dep_display,
+        door_to_door_arrival_display=overall_arr_display,
+        catchable=is_catchable,
+        why_catchable=why_catchable_msg,
+        catchability_reason=why_catchable_msg,
+        duration_breakdown=duration_breakdown,
         total_duration_min=round(tot_dur, 1),
         total_distance_km=round(tot_dist, 1),
         verification_status=overall_vs,

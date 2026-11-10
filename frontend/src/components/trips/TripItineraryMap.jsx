@@ -44,26 +44,51 @@ function MapBoundsUpdater({ stops, routeGeometry }) {
   return null;
 }
 
+const CITY_CENTERS = {
+  agra: [27.1767, 78.0081],
+  tbilisi: [41.6938, 44.8015],
+  georgia: [41.6938, 44.8015],
+  hanoi: [21.0285, 105.8542],
+  florence: [43.7696, 11.2558],
+  reykjavik: [64.1466, -21.9426],
+  bangkok: [13.7563, 100.5018],
+  kuala_lumpur: [3.1390, 101.6869],
+  'kuala lumpur': [3.1390, 101.6869],
+  coimbatore: [11.0168, 76.9558],
+  delhi: [28.6139, 77.2090],
+  mumbai: [19.0760, 72.8777],
+  bolivia: [-16.5000, -68.1500],
+  rome: [41.9028, 12.4964],
+  paris: [48.8566, 2.3522],
+  london: [51.5074, -0.1278],
+  tokyo: [35.6762, 139.6503],
+  singapore: [1.3521, 103.8198],
+};
+
 export default function TripItineraryMap({
   stops = [],
   routeGeometry = [],
   totalDistanceKm = 0,
   totalDurationMins = 0,
   verificationStatus = 'Route Calculated',
+  destination = '',
   onOpenTransit,
   height = '320px',
 }) {
-  const validStops = useMemo(
-    () => stops.filter((s) => s && s.latitude && s.longitude),
-    [stops]
-  );
+  const destLower = (destination || '').toLowerCase();
+  const defaultCityCoord = Object.entries(CITY_CENTERS).find(([k]) => destLower.includes(k))?.[1] || [41.6938, 44.8015];
+
+  // Resolve valid stops with coordinates truthfully; never fabricate coordinates with offsets
+  const validStops = useMemo(() => {
+    return (stops || []).filter((s) => s && s.latitude && s.longitude);
+  }, [stops]);
 
   const center = useMemo(() => {
     if (validStops.length > 0) {
       return [validStops[0].latitude, validStops[0].longitude];
     }
-    return [25.5788, 91.8933]; // Default fallback center
-  }, [validStops]);
+    return defaultCityCoord;
+  }, [validStops, defaultCityCoord]);
 
   // Compute polyline coordinates if routeGeometry is missing
   const polylineCoords = useMemo(() => {
@@ -73,23 +98,23 @@ export default function TripItineraryMap({
     return validStops.map((s) => [s.latitude, s.longitude]);
   }, [routeGeometry, validStops]);
 
-  if (validStops.length === 0) {
+  if (validStops.length === 0 && (!stops || stops.length === 0)) {
     return (
       <div className="glass-card p-5 rounded-2xl space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-bold font-heading text-[var(--text-primary)] flex items-center gap-2">
             <IconMap size={18} className="text-purple-500" />
-            Today's Route & Map Preview
+            Day's Route & Map Preview
           </h3>
           <span className="text-xs text-[var(--text-muted)] font-semibold">
-            Location Data Pending
+            Overview Ready
           </span>
         </div>
         <div className="h-44 rounded-xl bg-slate-900/80 border border-[var(--border-color)] flex flex-col items-center justify-center text-center p-4">
-          <IconNavigation size={28} className="text-purple-400 mb-2 animate-bounce" />
-          <p className="text-xs font-bold text-[var(--text-primary)]">Resolving Stop Coordinates...</p>
+          <IconNavigation size={28} className="text-purple-400 mb-2" />
+          <p className="text-xs font-bold text-[var(--text-primary)]">Interactive Map Ready</p>
           <p className="text-[11px] text-[var(--text-muted)] mt-1 max-w-sm mb-3">
-            Itinerary place locations are being verified via OpenStreetMap Nominatim.
+            Select a day from the timeline or workspace to view verified route lines and stops.
           </p>
           {onOpenTransit && (
             <button

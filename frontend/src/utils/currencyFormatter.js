@@ -16,9 +16,19 @@
  * @param {string} currency - ISO 4217 currency code (e.g. 'INR', 'USD', 'AED')
  * @returns {string} Formatted currency string
  */
-export function formatMoney(amount, currency = 'USD') {
+export function formatMoney(amount, currency = null) {
   if (amount === null || amount === undefined || isNaN(amount)) return '--';
-  const code = (currency || 'USD').toUpperCase();
+  let cur = currency;
+  if (!cur) {
+    try {
+      const uStr = localStorage.getItem('user');
+      if (uStr) {
+        const u = JSON.parse(uStr);
+        if (u && u.currency) cur = u.currency;
+      }
+    } catch (_) {}
+  }
+  const code = (cur || 'USD').toUpperCase();
 
   try {
     return new Intl.NumberFormat(undefined, {
@@ -109,4 +119,33 @@ export function parseCurrencyCode(raw) {
   const parts = raw.trim().split(' ');
   const code = parts[0].toUpperCase();
   return /^[A-Z]{3}$/.test(code) ? code : 'USD';
+}
+
+
+export function formatTripDate(dateInput, formatType = 'medium') {
+  if (!dateInput) return '';
+  try {
+    const str = String(dateInput).split('T')[0];
+    const parts = str.split('-');
+    if (parts.length === 3) {
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      const day = parseInt(parts[2], 10);
+      const d = new Date(year, month, day);
+      if (formatType === 'short') {
+        return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+      }
+      if (formatType === 'weekday') {
+        return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+      }
+      if (formatType === 'full') {
+        return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+      }
+      return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+    const d = new Date(dateInput);
+    return isNaN(d.getTime()) ? String(dateInput) : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  } catch (_) {
+    return String(dateInput);
+  }
 }

@@ -1,0 +1,750 @@
+{
+  "destination": "hawaii",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Mauna Loa Lookout",
+      "category": "Viewpoint",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Mauna Loa Lookout, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of Mauna Loa Lookout.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Bird watching",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Bird watching, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of Bird watching.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Footprints Area",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Footprints Area, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of Footprints Area.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Tree Molds",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Tree Molds, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of Tree Molds.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Steam Vents",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Steam Vents, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of Steam Vents.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Steaming Bluffs",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Steaming Bluffs, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of Steaming Bluffs.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Sacred Grounds Coffee Farm",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Sacred Grounds Coffee Farm, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of Sacred Grounds Coffee Farm.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Greenwell Farms",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Greenwell Farms, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of Greenwell Farms.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Kona Cacoa Orchard Tour",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Kona Cacoa Orchard Tour, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of Kona Cacoa Orchard Tour.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Captain Cooks Monument Trail",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Captain Cooks Monument Trail, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of Captain Cooks Monument Trail.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "July 1974 Lava Flow",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore July 1974 Lava Flow, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of July 1974 Lava Flow.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Mountain Thunder Coffee",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Mountain Thunder Coffee, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of Mountain Thunder Coffee.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Thurston Lava Tube (N\u0101huku)",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Thurston Lava Tube (N\u0101huku), one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of Thurston Lava Tube (N\u0101huku).",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "K\u0113\u014dkea H\u014dlua",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore K\u0113\u014dkea H\u014dlua, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of K\u0113\u014dkea H\u014dlua.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Temple Model",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Temple Model, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of Temple Model.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Mo'ikeha Cave",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Mo'ikeha Cave, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of Mo'ikeha Cave.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Alahaka Ramp",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Alahaka Ramp, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of Alahaka Ramp.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "The End of the World",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore The End of the World, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of The End of the World.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Fair Winds Tours",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Fair Winds Tours, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of Fair Winds Tours.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Royal Grounds",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Royal Grounds, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of Royal Grounds.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "K\u0101noa",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore K\u0101noa, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of K\u0101noa.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Tree Mold",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Tree Mold, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of Tree Mold.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "K\u014dnane",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore K\u014dnane, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of K\u014dnane.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Keone\u02bbele",
+      "category": "Sightseeing",
+      "address": "Hawaii",
+      "latitude": 19.5938015,
+      "longitude": -155.4283701,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Keone\u02bbele, one of Hawaii's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Hawaii",
+      "tip": "Visit early for beautiful photo views of Keone\u02bbele.",
+      "signature_dish": null,
+      "nearby": [
+        "Hawaii"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    }
+  ]
+}

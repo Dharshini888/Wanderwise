@@ -26,9 +26,19 @@ class DistanceValidator:
                 if c_lat and c_lon and n_lat and n_lon:
                     try:
                         dist_km = haversine_distance_km(float(c_lat), float(c_lon), float(n_lat), float(n_lon))
-                        # If distance > 40 km in a single city day transition, reject
-                        if dist_km > 45.0:
-                            return False, f"DISTANCE_VIOLATION: Unrealistic travel distance {dist_km} km between '{curr_act.get('title')}' and '{next_act.get('title')}' on Day {d_idx+1}"
+                        is_transit = (
+                            curr_act.get("activity_type") in ["transit", "transportation"]
+                            or next_act.get("activity_type") in ["transit", "transportation"]
+                            or "transfer" in str(curr_act.get("title", "")).lower()
+                            or "transfer" in str(next_act.get("title", "")).lower()
+                            or "intercity" in str(curr_act.get("transport_mode", "")).lower()
+                            or "intercity" in str(next_act.get("transport_mode", "")).lower()
+                        )
+                        # If distance > 45 km without an explicit scheduled intercity transfer block, reject
+                        if dist_km > 45.0 and not is_transit:
+                            return False, f"DISTANCE_VIOLATION: Unrealistic travel distance {dist_km} km between '{curr_act.get('title')}' and '{next_act.get('title')}' on Day {d_idx+1} without an explicit intercity transit leg"
+                        elif dist_km > 650.0:
+                            return False, f"DISTANCE_VIOLATION: Intercity transfer distance {dist_km} km exceeds single-day limit between '{curr_act.get('title')}' and '{next_act.get('title')}' on Day {d_idx+1}"
                     except Exception:
                         pass
 

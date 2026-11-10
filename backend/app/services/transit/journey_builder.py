@@ -1,4 +1,4 @@
-﻿"""
+"""
 journey_builder.py -- WanderWise Journey Builder
 
 Converts a normalized flat route dict (output of RouteOptimizer.normalize_route)
@@ -49,6 +49,8 @@ def _overall_verification(legs: List[JourneyLeg]) -> str:
         return "Provider Verified"
     if any(s in VERIFIED_STATUSES for s in statuses):
         return "Partially Verified"
+    if any(s == "Provider Calculated" for s in statuses):
+        return "Provider Calculated"
     return "Route Calculated"
 
 

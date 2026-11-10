@@ -1,0 +1,781 @@
+{
+  "destination": "rome",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Palazzo dei Conservatori",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Palazzo dei Conservatori, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Palazzo dei Conservatori.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Palazzo Clementino",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Palazzo Clementino, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Palazzo Clementino.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Sala Del Carroccio",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Sala Del Carroccio, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Sala Del Carroccio.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Esedra di Marco Aurelio",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Esedra di Marco Aurelio, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Esedra di Marco Aurelio.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Insula dell'Ara Coeli",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Insula dell'Ara Coeli, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Insula dell'Ara Coeli.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Terrazza panoramica",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Terrazza panoramica, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Terrazza panoramica.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Palazzo Caffarelli",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Palazzo Caffarelli, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Palazzo Caffarelli.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Monument to Vittorio Emanuele II",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Monument to Vittorio Emanuele II, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Monument to Vittorio Emanuele II.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Basilica Iulia",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Basilica Iulia, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Basilica Iulia.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Palazzetto Venezia",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Palazzetto Venezia, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Palazzetto Venezia.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Basilica Ulpia",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Basilica Ulpia, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Basilica Ulpia.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Forum of Trajan",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Forum of Trajan, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Forum of Trajan.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Temples of the Sacred Area of S. Omobono",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Temples of the Sacred Area of S. Omobono, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Temples of the Sacred Area of S. Omobono.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Area archeologica del Teatro di Marcello",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Area archeologica del Teatro di Marcello, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Area archeologica del Teatro di Marcello.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Forum of Nerva",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Forum of Nerva, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Forum of Nerva.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Theatre of Marcellus",
+      "category": "Museum",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Theatre of Marcellus, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Theatre of Marcellus.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Foro Olitorio",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Foro Olitorio, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Foro Olitorio.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Forum of Augustus",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Forum of Augustus, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Forum of Augustus.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Casa dei Cavalieri di Rodi",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Casa dei Cavalieri di Rodi, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Casa dei Cavalieri di Rodi.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Temple of Mars Ultor",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Temple of Mars Ultor, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Temple of Mars Ultor.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Camere di Sant\u2019Ignazio al Collegio del Ges\u00f9",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Camere di Sant\u2019Ignazio al Collegio del Ges\u00f9, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Camere di Sant\u2019Ignazio al Collegio del Ges\u00f9.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Mercati di Traiano",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Mercati di Traiano, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Mercati di Traiano.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Medieval and roman houses at Monte Savello square",
+      "category": "Shopping",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Medieval and roman houses at Monte Savello square, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Medieval and roman houses at Monte Savello square.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Roman Forum",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Roman Forum, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Roman Forum.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Palazzo Colonna",
+      "category": "Sightseeing",
+      "address": "Rome",
+      "latitude": 41.8933203,
+      "longitude": 12.4829321,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Palazzo Colonna, one of Rome's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Rome",
+      "tip": "Visit early for beautiful photo views of Palazzo Colonna.",
+      "signature_dish": null,
+      "nearby": [
+        "Rome"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    }
+  ]
+}

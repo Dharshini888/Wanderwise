@@ -9,7 +9,7 @@ Strictly enforces NEARBY_RADIUS_KM = 5.0 km boundary for ALL candidate POIs.
 
 import logging
 import requests
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from ..cache.transit_cache import TransitCache
 from ..maps.osrm_service import haversine_distance
 
@@ -259,12 +259,14 @@ def get_nearby_transit_infrastructure(lat: float, lon: float, radius_m: int = 50
     return res.get("items", [])
 
 
-def get_overpass_nearby(lat: float, lon: float, radius_m: int = 4000) -> List[Dict[str, Any]]:
+def get_overpass_nearby(lat: Optional[float], lon: Optional[float], radius_m: int = 4000) -> List[Dict[str, Any]]:
     """
     Queries real nearby POIs (hospitals, ATMs, police stations, fuel, pharmacies, restaurants)
     from OpenStreetMap via Overpass API within radius_m.
     Returns empty list if no verified POIs are found. Zero hardcoded mock fallbacks.
     """
+    if lat is None or lon is None:
+        return []
     max_radius_km = radius_m / 1000.0
     cache_key = f"overpass_poi_v4_{round(lat, 3)}_{round(lon, 3)}_{radius_m}"
     cached = TransitCache.get(cache_key)

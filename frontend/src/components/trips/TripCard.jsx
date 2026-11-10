@@ -6,7 +6,7 @@ import {
   IconWallet, IconWalk, IconChecklist, IconBook, IconMap, IconSparkles
 } from '@tabler/icons-react';
 import TripStatusBadge from './TripStatusBadge';
-import { formatCurrency } from '../../utils/formatters';
+import { formatCurrency, formatTripDate } from '../../utils/formatters';
 import { touchTrip } from '../../api/trips';
 
 const DEFAULT_FALLBACK_IMG = 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1000&q=80';
@@ -58,7 +58,13 @@ const TripCard = React.memo(({ trip, onFavorite, onArchive, onDuplicate, onDelet
     ? calculateTripDuration(trip.start_date, trip.end_date)
     : (trip.duration_days || trip.number_of_days || 1);
 
-  const quick = trip.quick_insights || { activities: trip.activities_total || 0, attractions: trip.activities_total || 0, walking_distance: '8.5 km', travel_time: '2h 15m' };
+  const totalActs = trip.activities_total ?? 0;
+  const quick = trip.quick_insights || {
+    activities: totalActs,
+    attractions: totalActs,
+    walking_distance: totalActs > 0 ? `${(totalActs * 0.8).toFixed(1)} km` : '0 km',
+    travel_time: totalActs > 0 ? `${Math.max(1, Math.floor((totalActs * 30) / 60))}h ${(totalActs * 30) % 60}m` : '0m'
+  };
 
   return (
     <div
@@ -132,7 +138,7 @@ const TripCard = React.memo(({ trip, onFavorite, onArchive, onDuplicate, onDelet
             </span>
             <span className="flex items-center gap-1 text-gray-300 font-medium shrink-0">
               <IconCalendar size={11} className="text-indigo-300" />
-              {String(trip.start_date).slice(5, 10)} • {computedDuration}d
+              {formatTripDate(trip.start_date, 'short')} • {computedDuration}d
             </span>
           </div>
         </div>
@@ -173,7 +179,7 @@ const TripCard = React.memo(({ trip, onFavorite, onArchive, onDuplicate, onDelet
         <div className="flex items-center justify-between text-[10px] font-semibold text-[var(--text-secondary)] px-2 py-1 rounded-md bg-[var(--bg-app)]/50 border border-[var(--border-color)]">
           <div className="flex items-center gap-1 truncate">
             <IconWalk size={12} className="text-cyan-500 shrink-0" />
-            <span className="truncate">Walk: {quick.walking_distance || '8.5 km'}</span>
+            <span className="truncate">Walk: {totalActs > 0 ? (quick.walking_distance || `${(totalActs * 0.8).toFixed(1)} km`) : '0 km'}</span>
           </div>
           <div className="flex items-center gap-1 truncate">
             <IconChecklist size={12} className="text-purple-500 shrink-0" />

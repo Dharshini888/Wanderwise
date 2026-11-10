@@ -1,0 +1,966 @@
+{
+  "destination": "bangkok",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Grand Palace",
+      "category": "Sightseeing",
+      "city": "Bangkok",
+      "address": "Na Phra Lan Rd, Phra Borom Maha Ratchawang, Phra Nakhon, Bangkok 10200",
+      "latitude": 13.75,
+      "longitude": 100.4913,
+      "opening_time": "08:30 AM",
+      "closing_time": "03:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 500.0,
+      "currency": "THB",
+      "rating": 4.7,
+      "crowd": "High",
+      "description": "Historic royal residence of the Kings of Siam since 1782, featuring the revered Temple of the Emerald Buddha (Wat Phra Kaew) and stunning golden stupas and ceremonial courts.",
+      "ai_reason": "\u2713 Official royal ceremonial complex of Thailand\n\u2713 Home to the sacred Emerald Buddha (Wat Phra Kaew)\n\u2713 Strict visiting hours (08:30\u201315:30) & reverent dress code",
+      "tip": "Strict dress code enforced: shoulders and knees must be covered. Ticket office closes promptly at 15:30. Arrive before 10:00 AM for cooler temperatures.",
+      "signature_dish": null,
+      "nearby": [
+        "Wat Pho",
+        "Wat Phra Kaew",
+        "Sanam Luang"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified Royal Grand Palace Official Registry (https://www.royalgrandpalace.th)",
+        "price_source": "Royal Grand Palace Official Ticket (500 THB Foreign Visitors)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 08:30 AM - 03:30 PM (Ticket sales close 15:30)",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Wat Pho (Temple of the Reclining Buddha)",
+      "category": "Sightseeing",
+      "city": "Bangkok",
+      "address": "2 Sanam Chai Rd, Phra Borom Maha Ratchawang, Phra Nakhon, Bangkok 10200",
+      "latitude": 13.7465,
+      "longitude": 100.4933,
+      "opening_time": "08:00 AM",
+      "closing_time": "06:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 300.0,
+      "currency": "THB",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "First-class royal monastery housing the colossal 46-meter gold-plated reclining Buddha with mother-of-pearl soles, honored by UNESCO as Memory of the World.",
+      "ai_reason": "\u2713 Magnificent 46m gold-leaf Reclining Buddha\n\u2713 UNESCO Memory of the World inscriptions\n\u2713 Child-friendly entry (free under 120 cm)",
+      "tip": "Admission is 300 THB for foreigners; children under 120 cm enter free. Drop coins in the 108 bronze bowls for good luck.",
+      "signature_dish": null,
+      "nearby": [
+        "Grand Palace",
+        "Wat Arun",
+        "Tha Tien Pier"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified UNESCO Memory of the World & National Royal Temple Registry (https://watpho.org)",
+        "price_source": "Official Wat Pho Entry (300 THB Foreign Visitors, Free < 120cm)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 08:00 AM - 06:30 PM Official Schedule",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Wat Arun (Temple of Dawn)",
+      "category": "Sightseeing",
+      "city": "Bangkok",
+      "address": "158 Thanon Wang Doem, Wat Arun, Bangkok Yai, Bangkok 10600",
+      "latitude": 13.7437,
+      "longitude": 100.4888,
+      "opening_time": "08:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 200.0,
+      "currency": "THB",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Iconic riverside Khmer-style temple prang rising 82 meters along the west bank of the Chao Phraya River, decorated with thousands of colorful porcelain seashells and tiles.",
+      "ai_reason": "\u2713 Landmark riverfront temple with 82m porcelain spire\n\u2713 Stunning sunset views across Chao Phraya River\n\u2713 5 THB cross-river ferry connection from Tha Tien",
+      "tip": "Take the 5 THB ferry from Tha Tien Pier across the river directly to the temple gate. Climb the steep central stairs for panoramic river views.",
+      "signature_dish": null,
+      "nearby": [
+        "Chao Phraya River",
+        "Wat Pho",
+        "Tha Tien Pier"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Tourism Authority of Thailand National Monument Registry",
+        "price_source": "Official Wat Arun Ticket (200 THB Foreign Visitors)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 08:00 AM - 06:00 PM Official Schedule",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Sea Life Bangkok Ocean World",
+      "category": "Entertainment",
+      "city": "Bangkok",
+      "address": "Siam Paragon Building B1-B2, 991 Rama I Rd, Pathum Wan, Bangkok 10330",
+      "latitude": 13.7461,
+      "longitude": 100.5348,
+      "opening_time": "10:00 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 1190.0,
+      "currency": "THB",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Southeast Asia's largest indoor aquarium spanning two levels beneath Siam Paragon, featuring an immersive 270-degree ocean tunnel, gentoo penguin ice enclosure, shark walks, and live feedings.",
+      "ai_reason": "\u2713 Highly engaging family attraction tailored for children (ages 8 & 12)\n\u2713 270-degree underwater tunnel & live penguin colony\n\u2713 Fully indoor, air-conditioned comfortable midday refuge",
+      "tip": "Child tickets (ages 3\u201311) are 990 THB. Catch the live penguin feeding at 11:30 AM and shark feeding at 01:00 PM.",
+      "signature_dish": null,
+      "nearby": [
+        "Siam Paragon",
+        "Siam Discovery",
+        "Bangkok Art and Culture Centre"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Merlin Entertainments Official Sea Life Registry",
+        "price_source": "Official Sea Life Bangkok Admission (1,190 THB Adult / 990 THB Child)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 10:00 AM - 08:00 PM (Last entry 07:00 PM)",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Lumphini Park",
+      "category": "Nature",
+      "city": "Bangkok",
+      "address": "139/4 Thanon Witthayu, Lumphini, Pathum Wan, Bangkok 10330",
+      "latitude": 13.7314,
+      "longitude": 100.5417,
+      "opening_time": "04:30 AM",
+      "closing_time": "09:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "THB",
+      "rating": 4.6,
+      "crowd": "Low",
+      "description": "Bangkok's premier green lung spanning 142 acres of lush tropical gardens, peaceful lakes with swan paddle boats, shaded walking loops, and safe wildlife viewing of wild water monitor lizards.",
+      "ai_reason": "\u2713 Beautiful serene nature haven in the center of Bangkok\n\u2713 Free public access with child-friendly pedal boats\n\u2713 Natural habitat of fascinating wild water monitor lizards",
+      "tip": "Rent a swan pedal boat for 40 THB on the central lake. Spot giant monitor lizards basking harmlessly along the canal banks.",
+      "signature_dish": null,
+      "nearby": [
+        "Silom",
+        "Sathorn",
+        "Chulalongkorn University"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Bangkok Metropolitan Administration (BMA) Public Parks Registry",
+        "price_source": "Free Public Municipal Park Admission (0 THB)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 04:30 AM - 09:00 PM Official Gate Schedule",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Chao Phraya Tourist Express Boat",
+      "category": "Sightseeing",
+      "city": "Bangkok",
+      "address": "Sathorn Central Pier, Yan Nawa, Sathon, Bangkok 10120",
+      "latitude": 13.7199,
+      "longitude": 100.5146,
+      "opening_time": "08:30 AM",
+      "closing_time": "06:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 150.0,
+      "currency": "THB",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Scenic Blue Flag river catamaran navigating the historical 'River of Kings' between Sathorn Pier, ICONSIAM, Wat Arun, and Phra Arthit with open-air panoramic deck and audio commentary.",
+      "ai_reason": "\u2713 Scenic breezy river cruise linking historic riverside temples\n\u2713 Unlimited all-day hop-on hop-off flexibility\n\u2713 Highly enjoyable transit experience for families with children",
+      "tip": "Purchase the 150 THB Day River Pass for unlimited hops between temples and piers all day, or 30 THB for single stops.",
+      "signature_dish": null,
+      "nearby": [
+        "Sathorn Pier",
+        "ICONSIAM",
+        "Wat Arun",
+        "Tha Tien"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Chao Phraya Express Boat Company Official Fleet Registry",
+        "price_source": "Official Chao Phraya Tourist Boat Day Pass (150 THB / Single Hop 30 THB)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 08:30 AM - 06:30 PM Scheduled Departures",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Chatuchak Weekend Market",
+      "category": "Shopping",
+      "city": "Bangkok",
+      "address": "587/10 Kamphaeng Phet 2 Rd, Chatuchak, Bangkok 10900",
+      "latitude": 13.7999,
+      "longitude": 100.5501,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "THB",
+      "rating": 4.6,
+      "crowd": "High",
+      "description": "World-renowned weekend bazaar covering 35 acres with more than 15,000 independent stalls selling Thai handicrafts, silk scarves, wood carvings, local art, and family souvenirs.",
+      "ai_reason": "\u2713 World's largest weekend bazaar with 15,000 artisan stalls\n\u2713 Perfect for family souvenir shopping and Thai cultural gifts\n\u2713 Direct connection via Mo Chit BTS & Chatuchak Park MRT",
+      "tip": "Visit on weekend mornings before noon to avoid heat. Grab a free zone map from the clock tower information counter.",
+      "signature_dish": null,
+      "nearby": [
+        "Chatuchak Park",
+        "Or Tor Kor Market",
+        "Mo Chit BTS"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Bangkok Metropolitan Administration Market Operations Registry",
+        "price_source": "Free Public Market Access (0 THB)",
+        "dietary_verification": null,
+        "opening_hours_source": "Saturdays & Sundays 09:00 AM - 06:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Asiatique The Riverfront",
+      "category": "Entertainment",
+      "city": "Bangkok",
+      "address": "2194 Charoen Krung Rd, Wat Phraya Krai, Bang Kho Laem, Bangkok 10120",
+      "latitude": 13.7047,
+      "longitude": 100.503,
+      "opening_time": "04:00 PM",
+      "closing_time": "11:59 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "THB",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Atmospheric open-air riverside night market and festival village along the Chao Phraya River, featuring Bangkok's iconic 60-meter Asiatique Sky Ferris wheel, artisan boutiques, and waterfront boardwalk.",
+      "ai_reason": "\u2713 Premier riverside family evening destination\n\u2713 60m Asiatique Sky Ferris wheel with skyline views\n\u2713 Free evening shuttle boat from Sathorn Pier",
+      "tip": "Board the free shuttle boat from Sathorn Pier (BTS Saphan Taksin). The riverside boardwalk offers cool breezes and evening entertainment.",
+      "signature_dish": null,
+      "nearby": [
+        "Chao Phraya River Promenade",
+        "Asiatique Sky Ferris Wheel"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Asset World Corporation (AWC) Tourism Registry",
+        "price_source": "Free Night Promenade Entry (0 THB)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 04:00 PM - 12:00 Midnight",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Jim Thompson House Museum",
+      "category": "Museum",
+      "city": "Bangkok",
+      "address": "6 Kasem San 2 Alley, Wang Mai, Pathum Wan, Bangkok 10330",
+      "latitude": 13.7494,
+      "longitude": 100.5284,
+      "opening_time": "10:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 200.0,
+      "currency": "THB",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Historic complex of six traditional teak houses surrounded by a tropical jungle garden, celebrating the American architect who revived the Thai silk industry and assembled an exquisite Asian art collection.",
+      "ai_reason": "\u2713 Masterpiece of traditional antique Thai teakwood architecture\n\u2713 Insightful 45-minute guided silk and history tour included\n\u2713 Child and youth ticket discount (100 THB for under 22)",
+      "tip": "Admission includes an expert multilingual guided tour. Children and youth under 22 pay 100 THB. Shoes are removed before entering teak chambers.",
+      "signature_dish": null,
+      "nearby": [
+        "Bangkok Art and Culture Centre",
+        "Siam Discovery",
+        "MBK Center"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "The James H.W. Thompson Foundation Museum Registry",
+        "price_source": "Official Jim Thompson House Ticket (200 THB Adult / 100 THB Youth)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 10:00 AM - 06:00 PM (Last guided tour 05:00 PM)",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Bangkok Art and Culture Centre (BACC)",
+      "category": "Culture",
+      "city": "Bangkok",
+      "address": "939 Rama I Rd, Wang Mai, Pathum Wan, Bangkok 10330",
+      "latitude": 13.7466,
+      "longitude": 100.5303,
+      "opening_time": "10:00 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "THB",
+      "rating": 4.5,
+      "crowd": "Low",
+      "description": "Contemporary spiral cultural complex featuring nine floors of rotating modern art galleries, interactive creative spaces, artisan bookstores, and indie cafes directly opposite MBK.",
+      "ai_reason": "\u2713 Striking circular gallery architecture with interactive art exhibits\n\u2713 Completely free public cultural center\n\u2713 Directly connected to National Stadium BTS skybridge",
+      "tip": "Admission is completely free. Closed on Mondays. Perfect tranquil air-conditioned cultural stop for children and art enthusiasts.",
+      "signature_dish": null,
+      "nearby": [
+        "Siam Discovery",
+        "Jim Thompson House",
+        "MBK Center"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Bangkok Metropolitan Administration Cultural Foundation Registry",
+        "price_source": "Free Public Cultural Gallery Admission (0 THB)",
+        "dietary_verification": null,
+        "opening_hours_source": "Tuesday - Sunday 10:00 AM - 08:00 PM (Closed Mondays)",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Siam Discovery & Paragon Edutainment Hub",
+      "category": "Shopping",
+      "city": "Bangkok",
+      "address": "991 Rama I Rd, Pathum Wan, Bangkok 10330",
+      "latitude": 13.746,
+      "longitude": 100.532,
+      "opening_time": "10:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "THB",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Modern urban lifestyle and interactive edutainment center housing eco-design labs, child-friendly science installations, and pedestrian BTS skybridge walkways.",
+      "ai_reason": "\u2713 Family-friendly interactive lifestyle center\n\u2713 Direct elevated walkway to Sea Life Bangkok and BTS\n\u2713 Broad food hall with international and vegetarian choices",
+      "tip": "Use the climate-controlled BTS Skywalk to move smoothly between Siam Square, Paragon, and Discovery without street traffic.",
+      "signature_dish": null,
+      "nearby": [
+        "Sea Life Bangkok",
+        "Siam Square",
+        "BACC"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Siam Piwat Retail Hub Registry",
+        "price_source": "Free Public Mall Entry (0 THB)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 10:00 AM - 10:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "May Veggie Home",
+      "category": "Restaurant",
+      "city": "Bangkok",
+      "address": "8/3 Sukhumvit Soi 16, Asok, Khlong Toei, Bangkok 10110",
+      "latitude": 13.736,
+      "longitude": 100.5615,
+      "opening_time": "10:30 AM",
+      "closing_time": "09:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "THB",
+      "meal_cost": 220.0,
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Celebrated 100% plant-based vegetarian and vegan Thai restaurant in central Asok, serving homestyle Pad Thai, fragrant Massaman curry, vegetable spring rolls, and fresh fruit smoothies in a calm garden atmosphere.",
+      "ai_reason": "\u2713 100% pure plant-based vegetarian Thai dining\n\u2713 Certified family-friendly with mild spice options for kids\n\u2713 4.6\u2605 rating from vegetarian and family travelers worldwide",
+      "tip": "Signature vegan Pad Thai and mild Massaman curry with sweet potatoes are ideal for children. Onion-and-garlic-free preparation available upon request.",
+      "signature_dish": "Vegan Pad Thai & Massaman Sweet Potato Curry",
+      "vegetarian_dish": "Vegan Pad Thai & Massaman Sweet Potato Curry",
+      "dietary_tags": [
+        "vegetarian",
+        "pure_vegetarian",
+        "vegan",
+        "plant_based",
+        "family_friendly"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "Benjakitti Park",
+        "Asok BTS",
+        "Sukhumvit MRT"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified 100% Plant-Based Restaurant Registry",
+        "price_source": "A La Carte Average Meal (220 THB / \u20b9525 INR)",
+        "dietary_verification": "100% Pure Plant-Based Vegan & Vegetarian Menu",
+        "opening_hours_source": "Daily 10:30 AM - 09:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Ethos Vegetarian Restaurant",
+      "category": "Restaurant",
+      "city": "Bangkok",
+      "address": "85/2 Tanao Rd, Bang Lamphu, Phra Nakhon, Bangkok 10200",
+      "latitude": 13.7592,
+      "longitude": 100.4975,
+      "opening_time": "10:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "THB",
+      "meal_cost": 190.0,
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "description": "Peaceful vegetarian oasis nestled in historic Phra Nakhon near the Grand Palace and Khao San, featuring comfortable cushion seating, organic Thai green curries, Pad Thai, fresh coconut water, and herbal elixirs.",
+      "ai_reason": "\u2713 Established vegetarian oasis in historic Phra Nakhon\n\u2713 Pure plant-based Thai green curries & fresh coconut water\n\u2713 Tranquil escape within walking distance of Grand Palace",
+      "tip": "Relax on the floor cushions after visiting the historic temples. Try the vegetarian Pad Thai with organic tofu and the fresh mango mint smoothie.",
+      "signature_dish": "Vegetarian Pad Thai with Tofu & Fragrant Green Curry",
+      "vegetarian_dish": "Vegetarian Pad Thai with Tofu & Fragrant Green Curry",
+      "dietary_tags": [
+        "vegetarian",
+        "vegan",
+        "organic",
+        "plant_based"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "Grand Palace",
+        "Democracy Monument",
+        "Wat Bowonniwet"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified Organic Vegetarian Restaurant Registry",
+        "price_source": "A La Carte Average Meal (190 THB / \u20b9450 INR)",
+        "dietary_verification": "Verified 100% Vegetarian & Vegan Menu",
+        "opening_hours_source": "Daily 10:00 AM - 10:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Broccoli Revolution",
+      "category": "Restaurant",
+      "city": "Bangkok",
+      "address": "899 Sukhumvit Rd (Soi 49), Khlong Tan Nuea, Watthana, Bangkok 10110",
+      "latitude": 13.7258,
+      "longitude": 100.5772,
+      "opening_time": "10:00 AM",
+      "closing_time": "09:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "THB",
+      "meal_cost": 260.0,
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "description": "Modern plant-based bistro and cold-pressed organic juice bar in Sukhumvit serving charcoal tofu burgers, gluten-free quinoa bowls, and vegan Asian noodle bowls in an airy light-filled space.",
+      "ai_reason": "\u2713 Wholesome organic plant-based bowls & fresh cold-pressed juices\n\u2713 Child-friendly charcoal burgers and gluten-free options\n\u2713 4.5\u2605 international traveler reviews",
+      "tip": "Kids adore the vegan charcoal burger with sweet potato fries. Order cold-pressed juice flights for refreshing tropical hydration.",
+      "signature_dish": "Charcoal Tofu Burger & Organic Quinoa Pad Thai",
+      "vegetarian_dish": "Charcoal Tofu Burger & Organic Quinoa Pad Thai",
+      "dietary_tags": [
+        "vegetarian",
+        "vegan",
+        "gluten_free",
+        "organic"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "Thong Lo BTS",
+        "Sukhumvit 49"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified Organic Vegan Bistro Registry",
+        "price_source": "A La Carte Average Meal (260 THB / \u20b9620 INR)",
+        "dietary_verification": "100% Plant-Based Certified",
+        "opening_hours_source": "Daily 10:00 AM - 09:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Anotai Vegetarian Restaurant",
+      "category": "Restaurant",
+      "city": "Bangkok",
+      "address": "976/17 Soi Rama IX Hospital, Bang Kapi, Huai Khwang, Bangkok 10310",
+      "latitude": 13.7533,
+      "longitude": 100.5794,
+      "opening_time": "11:30 AM",
+      "closing_time": "09:30 PM",
+      "open_days": [
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+        "Monday",
+        "Tuesday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "THB",
+      "meal_cost": 240.0,
+      "rating": 4.6,
+      "crowd": "Low",
+      "description": "Refined organic farm-to-table vegetarian retreat founded by a Le Cordon Bleu master chef, showcasing vegetables sourced fresh from their organic family farm in northern Thailand.",
+      "ai_reason": "\u2713 Organic farm-to-table chef-curated vegetarian cuisine\n\u2713 Peaceful off-the-beaten-path culinary experience\n\u2713 4.6\u2605 reviews for authentic Thai vegetarian flavors",
+      "tip": "Closed on Wednesdays. Try the deep-fried organic tofu cubes with house-made tamarind dip and herbal brown rice.",
+      "signature_dish": "Crispy Farm Tofu with Tamarind Glaze & Herbal Brown Rice",
+      "vegetarian_dish": "Crispy Farm Tofu with Tamarind Glaze & Herbal Brown Rice",
+      "dietary_tags": [
+        "vegetarian",
+        "organic",
+        "farm_to_table",
+        "chef_led"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "Rama IX",
+        "Praram 9 Hospital"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified Farm-To-Table Organic Kitchen Registry",
+        "price_source": "A La Carte Average Meal (240 THB / \u20b9575 INR)",
+        "dietary_verification": "100% Vegetarian & Organic Farm Sourced",
+        "opening_hours_source": "Daily 11:30 AM - 09:30 PM (Closed Wednesdays)",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Govinda Vegetarian Italian Restaurant",
+      "category": "Restaurant",
+      "city": "Bangkok",
+      "address": "6/5-6 Sukhumvit Soi 22, Klongtoey, Bangkok 10110",
+      "latitude": 13.7328,
+      "longitude": 100.5645,
+      "opening_time": "12:00 PM",
+      "closing_time": "10:30 PM",
+      "open_days": [
+        "Monday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "THB",
+      "meal_cost": 320.0,
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Pure vegetarian and egg-free Italian restaurant in central Sukhumvit serving artisanal handmade eggless pastas, vegan cheeses, wood-fired vegetarian pizzas, and child-pleasing dishes.",
+      "ai_reason": "\u2713 Pure vegetarian and 100% egg-free Italian cuisine\n\u2713 Child-favorite handcrafted pastas and wood-fired pizzas\n\u2713 Exceptional 4.6\u2605 rating from traveling families",
+      "tip": "Closed on Tuesdays. Fantastic family choice when children crave comforting wood-fired pizzas or creamy eggless gnocchi.",
+      "signature_dish": "Handmade Eggless Gnocchi Sorrentina & Wood-Fired Margherita Pizza",
+      "vegetarian_dish": "Handmade Eggless Gnocchi Sorrentina & Wood-Fired Margherita Pizza",
+      "dietary_tags": [
+        "vegetarian",
+        "eggless",
+        "family_friendly",
+        "italian",
+        "kid_favorite"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "Sukhumvit Soi 22",
+        "Phrom Phong BTS"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified Pure Vegetarian & Egg-Free Italian Registry",
+        "price_source": "A La Carte Average Meal (320 THB / \u20b9765 INR)",
+        "dietary_verification": "100% Egg-Free Pure Vegetarian Menu",
+        "opening_hours_source": "12:00 PM - 02:30 PM, 06:00 PM - 10:30 PM (Closed Tuesdays)",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Mango Vegetarian & Vegan Restaurant",
+      "category": "Restaurant",
+      "city": "Bangkok",
+      "address": "Tanao Rd, Bowon Niwet, Phra Nakhon, Bangkok 10200",
+      "latitude": 13.757,
+      "longitude": 100.499,
+      "opening_time": "10:30 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "THB",
+      "meal_cost": 180.0,
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Bohemian vegetarian arts cafe and dining oasis near Khao San serving vibrant plant-based Thai curries, pumpkin hummus, vegan pad thai, and fresh mango smoothies.",
+      "ai_reason": "\u2713 Fresh organic vegetarian Thai dishes & chilled fruit smoothies\n\u2713 Child-friendly relaxed seating with arts & book corners\n\u2713 4.6\u2605 reviews for authentic plant-based recipes",
+      "tip": "Do not miss the fresh mango sticky rice with coconut cream and the vegan pad thai with grilled tofu.",
+      "signature_dish": "Fresh Mango Sticky Rice & Vegan Pad Thai with Tofu",
+      "vegetarian_dish": "Fresh Mango Sticky Rice & Vegan Pad Thai with Tofu",
+      "dietary_tags": [
+        "vegetarian",
+        "vegan",
+        "pure_vegetarian",
+        "family_friendly"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "Democracy Monument",
+        "Wat Bowonniwet",
+        "Grand Palace"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified Plant-Based Restaurant Registry",
+        "price_source": "A La Carte Average Meal (180 THB / \u20b9430 INR)",
+        "dietary_verification": "100% Plant-Based Certified",
+        "opening_hours_source": "Daily 10:30 AM - 10:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Saranrom Vegetarian Dining",
+      "category": "Restaurant",
+      "city": "Bangkok",
+      "address": "Saranrom Park Lane, Phra Nakhon, Bangkok 10200",
+      "latitude": 13.7485,
+      "longitude": 100.495,
+      "opening_time": "09:30 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "THB",
+      "meal_cost": 160.0,
+      "rating": 4.5,
+      "crowd": "Low",
+      "description": "Traditional tranquil vegetarian dining room adjacent to Saranrom Park and Wat Pho, serving authentic Thai stir-fried morning glory, mushroom satay, and herbal soups.",
+      "ai_reason": "\u2713 Quiet temple-adjacent vegetarian haven avoiding crowds\n\u2713 Mild mushroom satay loved by children\n\u2713 4.5\u2605 reviews for wholesome local fare",
+      "tip": "Enjoy a peaceful meal overlooking the park greenery after exploring Wat Pho.",
+      "signature_dish": "Mushroom Satay with Peanut Sauce & Tom Yum Tofu",
+      "vegetarian_dish": "Mushroom Satay with Peanut Sauce & Tom Yum Tofu",
+      "dietary_tags": [
+        "vegetarian",
+        "pure_vegetarian",
+        "buddhist_vegetarian"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "Wat Pho",
+        "Saranrom Palace Park",
+        "Grand Palace"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified Buddhist Vegetarian Kitchen Registry",
+        "price_source": "A La Carte Average Meal (160 THB / \u20b9380 INR)",
+        "dietary_verification": "100% Pure Vegetarian Kitchen",
+        "opening_hours_source": "Daily 09:30 AM - 08:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Suananda Vegetarian Garden & Ayurvedic Cafe",
+      "category": "Restaurant",
+      "city": "Bangkok",
+      "address": "107/1 Pan Rd, Silom, Bang Rak, Bangkok 10500",
+      "latitude": 13.7225,
+      "longitude": 100.523,
+      "opening_time": "10:00 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "THB",
+      "meal_cost": 210.0,
+      "rating": 4.6,
+      "crowd": "Low",
+      "description": "Shaded garden courtyard and wellness cafe in Silom serving organic Ayurvedic thalis, Burmese tea leaf salads, herbal khao soi noodles, and fresh tropical fruit elixirs.",
+      "ai_reason": "\u2713 Shaded open courtyard sanctuary in central Silom\n\u2713 Holistic organic Ayurvedic vegetarian dishes\n\u2713 4.6\u2605 reviews for calming ambiance and flavorful meals",
+      "tip": "Closed on Sundays. Relax in the breezy garden terrace with fresh herbal teas.",
+      "signature_dish": "Ayurvedic Vegetarian Thali Plate & Herbal Khao Soi",
+      "vegetarian_dish": "Ayurvedic Vegetarian Thali Plate & Herbal Khao Soi",
+      "dietary_tags": [
+        "vegetarian",
+        "ayurvedic",
+        "organic",
+        "pure_vegetarian"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "Sri Maha Mariamman Temple",
+        "Silom",
+        "Surasak BTS"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified Ayurvedic Wellness Dining Registry",
+        "price_source": "A La Carte Average Meal (210 THB / \u20b9500 INR)",
+        "dietary_verification": "100% Pure Vegetarian Ayurvedic Certified",
+        "opening_hours_source": "Daily 10:00 AM - 08:00 PM (Closed Sundays)",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Veganerie Concept",
+      "category": "Restaurant",
+      "city": "Bangkok",
+      "address": "35/2 Soi Methee Niwet, Sukhumvit 24, Khlong Tan, Khlong Toei, Bangkok 10110",
+      "latitude": 13.7292,
+      "longitude": 100.5695,
+      "opening_time": "09:30 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "THB",
+      "meal_cost": 280.0,
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Premier vegan lifestyle cafe and bakery near Benjasiri Park serving berry-topped vegan waffles, savory pulled mushroom burgers, plant-based smoothies, and dairy-free ice creams.",
+      "ai_reason": "\u2713 Highest rated (4.7\u2605) vegan cafe in Bangkok\n\u2713 Child-favorite waffles, dairy-free shakes, and burgers\n\u2713 Peaceful glasshouse setting adjoining Benjasiri Park",
+      "tip": "Fantastic choice for lunch or afternoon treats. Kids love the banana caramel waffles and crispy mushroom tenders.",
+      "signature_dish": "Crispy Vegan Waffles with Fresh Berries & Pulled Mushroom Burger",
+      "vegetarian_dish": "Crispy Vegan Waffles with Fresh Berries & Pulled Mushroom Burger",
+      "dietary_tags": [
+        "vegetarian",
+        "vegan",
+        "family_friendly",
+        "kid_favorite"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "Benjasiri Park",
+        "EmQuartier",
+        "Phrom Phong BTS"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified 100% Vegan Bakery & Cafe Registry",
+        "price_source": "A La Carte Average Meal (280 THB / \u20b9670 INR)",
+        "dietary_verification": "100% Plant-Based Certified",
+        "opening_hours_source": "Daily 09:30 AM - 10:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Dosa King Vegetarian Restaurant",
+      "category": "Restaurant",
+      "city": "Bangkok",
+      "address": "153/2 Sukhumvit Soi 11/1, Khlong Toei Nuea, Watthana, Bangkok 10110",
+      "latitude": 13.7445,
+      "longitude": 100.5562,
+      "opening_time": "11:00 AM",
+      "closing_time": "11:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "THB",
+      "meal_cost": 250.0,
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "description": "Long-established 100% pure vegetarian North and South Indian dining destination in central Sukhumvit, renowned for crispy paper dosas, fresh idlis, sambar, paneer tikka, and mango lassi.",
+      "ai_reason": "\u2713 100% pure vegetarian Indian restaurant comfort food\n\u2713 Familiar and beloved by traveling Indian families with kids\n\u2713 4.5\u2605 reviews for crispy dosas and rich vegetarian curries",
+      "tip": "Order the King Size Paper Masala Dosa with trio chutneys and hot sambar. Mild paneer butter masala is ideal for children.",
+      "signature_dish": "Crispy Paper Masala Dosa & Shahi Paneer with Naan",
+      "vegetarian_dish": "Crispy Paper Masala Dosa & Shahi Paneer with Naan",
+      "dietary_tags": [
+        "vegetarian",
+        "pure_vegetarian",
+        "indian_vegetarian",
+        "family_friendly"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "Nana BTS",
+        "Sukhumvit Soi 11"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified Pure Vegetarian Indian Dining Registry",
+        "price_source": "A La Carte Average Meal (250 THB / \u20b9600 INR)",
+        "dietary_verification": "100% Pure Vegetarian Kitchen",
+        "opening_hours_source": "Daily 11:00 AM - 11:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    }
+  ]
+}

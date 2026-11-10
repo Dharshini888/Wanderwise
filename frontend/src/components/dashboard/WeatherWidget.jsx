@@ -31,7 +31,8 @@ export default function WeatherWidget({ trip }) {
       } catch (_) {}
     }
 
-    fetch(`${API}/weather/${encodeURIComponent(dest)}`)
+    const dateParam = trip.start_date ? `?date_str=${encodeURIComponent(String(trip.start_date).split('T')[0])}` : '';
+    fetch(`${API}/weather/${encodeURIComponent(dest)}${dateParam}`)
       .then(r => r.ok ? r.json() : null)
       .then(data => {
         if (data && data.current) {
@@ -115,19 +116,27 @@ export default function WeatherWidget({ trip }) {
         ))}
       </div>
 
-      {weather.forecast && (
+            {weather.forecast && (
         <div className="flex gap-2 pt-2 border-t border-[var(--border-color)]">
           {weather.forecast.slice(0, 3).map((day, i) => (
             <div key={i} className="flex-1 text-center py-2 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl">
               <div className="text-[10px] text-[var(--text-muted)] font-semibold mb-1">
                 {i === 0 ? 'Today' : new Date(day.date + 'T12:00:00').toLocaleDateString('en', { weekday: 'short' })}
               </div>
-              <div className="text-lg">{WMO_ICONS[day.weather_code] || '🌡️'}</div>
+              <div className="text-lg">{WMO_ICONS[day.weather_code] || '🌤️'}</div>
               <div className="text-xs font-extrabold text-[var(--text-primary)] mt-1">{day.max_temp?.toFixed(0)}°</div>
             </div>
           ))}
         </div>
       )}
+
+      {/* Provider & Timestamp Telemetry Footer */}
+      <div className="pt-2 border-t border-[var(--border-color)] flex items-center justify-between text-[10px] text-[var(--text-muted)] font-medium">
+        <span className="flex items-center gap-1">
+          📡 <span>{weather.provider || 'Open-Meteo Weather Service'}</span>
+        </span>
+        <span>{weather.timestamp ? `Updated: ${weather.timestamp}` : 'Live Telemetry'}</span>
+      </div>
     </div>
-  );
+  );;
 }

@@ -4,6 +4,7 @@ import ActivityCard from './ActivityCard';
 import {
   IconPlus, IconRefresh, IconSparkles, IconSun, IconMoon, IconCalendar, IconCheck, IconWallet
 } from '@tabler/icons-react';
+import { formatTripDate } from '../../utils/formatters';
 
 
 export default function ItineraryEditor({ trip, onLockToggle, onDeleteActivity, onRegenerateDay, onAddActivity }) {
@@ -68,17 +69,29 @@ export default function ItineraryEditor({ trip, onLockToggle, onDeleteActivity, 
             }`}
           >
             <span>Day {day.day_number}</span>
-            <span className="opacity-75 font-normal">({String(day.date).slice(5, 10)})</span>
+            <span className="opacity-80 font-normal">({formatTripDate(day.date, 'short')})</span>
           </button>
         ))}
       </div>
 
       {/* Day Header Controls */}
       <div className="flex items-center justify-between flex-wrap gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
-        <div>
-          <h3 className="text-base font-extrabold text-gray-900 dark:text-white">
-            {currentDay?.title || `Day ${currentDay?.day_number} Activities`}
-          </h3>
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h3 className="text-base font-extrabold text-gray-900 dark:text-white font-heading">
+              {currentDay?.title || `Day ${currentDay?.day_number} Activities`}
+            </h3>
+            {currentDay?.base_city && (
+              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                🏙️ Base: {currentDay.base_city}
+              </span>
+            )}
+            {currentDay?.overnight_stay && (
+              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-50 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+                🏨 Overnight: {currentDay.overnight_stay}
+              </span>
+            )}
+          </div>
           <p className="text-xs text-gray-500 dark:text-gray-400">
             {currentDay?.theme_note || 'Flexible daily schedule'}
           </p>

@@ -121,13 +121,12 @@ export default function Dashboard() {
   useEffect(() => { fetchTrips(); }, []);
 
   const handleCreateTrip = async (payload) => {
-    try {
-      const newTrip = await createTrip(payload);
-      fetchTrips();
-      if (newTrip && newTrip.id) {
-        navigate(`/trips/${newTrip.id}`);
-      }
-    } catch (_) {}
+    const newTrip = await createTrip(payload);
+    fetchTrips();
+    if (newTrip && newTrip.id) {
+      navigate(`/trips/${newTrip.id}`);
+    }
+    return newTrip;
   };
 
   const handleChange = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));

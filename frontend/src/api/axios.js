@@ -4,10 +4,14 @@ const api = axios.create({
   baseURL: 'http://localhost:8000',
 });
 
+const isValidToken = (t) => Boolean(t && t !== 'null' && t !== 'undefined' && typeof t === 'string' && t.trim() !== '');
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
-  if (token) {
+  if (isValidToken(token)) {
     config.headers.Authorization = `Bearer ${token}`;
+  } else {
+    delete config.headers.Authorization;
   }
   return config;
 });
@@ -55,7 +59,7 @@ api.interceptors.response.use(
 
       const refreshToken = localStorage.getItem('refresh_token');
 
-      if (!refreshToken) {
+      if (!isValidToken(refreshToken)) {
         isRefreshing = false;
         localStorage.removeItem('token');
         localStorage.removeItem('refresh_token');
@@ -90,7 +94,9 @@ api.interceptors.response.use(
           localStorage.removeItem('token');
           localStorage.removeItem('refresh_token');
           localStorage.removeItem('user');
-          window.location.href = '/login';
+          if (typeof window !== 'undefined' && window.location.pathname !== '/login' && window.location.pathname !== '/register' && window.location.pathname !== '/') {
+            window.location.href = '/login';
+          }
         }
 
         return Promise.reject(refreshErr);

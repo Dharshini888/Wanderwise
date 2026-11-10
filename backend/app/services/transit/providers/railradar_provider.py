@@ -16,7 +16,7 @@ import os
 import math
 import requests
 import logging
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, timezone
 from typing import Optional, Dict, Any, List, Tuple
 from .base import TransitProvider, ProviderStatus, ProviderResult
 
@@ -345,6 +345,60 @@ class RailRadarProvider(TransitProvider):
             return {"provider": "RailRadar", "configured": True, "api_reachable": resp.status_code == 200, "status": "SUCCESS" if resp.status_code == 200 else "PROVIDER_UNAVAILABLE"}
         except Exception as e:
             return {"provider": "RailRadar", "configured": True, "api_reachable": False, "status": "PROVIDER_UNAVAILABLE", "error": str(e)}
+
+    @staticmethod
+    def get_live_train_status(train_number: str, departure_date: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Queries RailRadar Live Train Status API: GET /v1/trains/{train_number}/live
+        Truth-First Rule: If API fails or key is missing, returns status="unavailable". Never invents delays or locations.
+        """
+        if not train_number:
+            return {"status": "unavailable", "available": False, "note": "Train number missing."}
+
+        api_key = os.getenv("RAILRADAR_API_KEY")
+        if not api_key:
+            return {"status": "unavailable", "available": False, "note": "RailRadar API key unconfigured for live status."}
+
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "x-api-key": api_key,
+            "User-Agent": "WanderWise/13.5",
+        }
+
+        d_str = departure_date or date.today().strftime("%Y-%m-%d")
+        url = f"https://api.railradar.in/v1/trains/{train_number}/live?date={d_str}"
+
+        try:
+            resp = requests.get(url, headers=headers, timeout=5)
+            if resp.status_code == 200:
+                data = resp.json().get("data", {})
+                delay_min = data.get("delay_minutes") or data.get("delay") or 0
+                c_st = data.get("current_station") or data.get("last_station")
+                n_st = data.get("next_station")
+                lat = data.get("latitude") or data.get("lat")
+                lon = data.get("longitude") or data.get("lon")
+                import time
+                ts = data.get("timestamp") or data.get("last_updated") or time.time()
+
+                return {
+                    "status": "live",
+                    "available": True,
+                    "train_number": train_number,
+                    "train_name": data.get("train_name"),
+                    "delay_min": delay_min,
+                    "delay_seconds": int(delay_min * 60),
+                    "current_station": c_st,
+                    "next_station": n_st,
+                    "platform": data.get("platform"),
+                    "latitude": float(lat) if lat is not None else None,
+                    "longitude": float(lon) if lon is not None else None,
+                    "last_updated": datetime.fromtimestamp(int(ts), tz=timezone.utc).isoformat() if isinstance(ts, (int, float)) else str(ts),
+                    "source": "RailRadar Live API"
+                }
+        except Exception as e:
+            logger.warning(f"[RailRadar Live] Exception fetching status for train {train_number}: {e}")
+
+        return {"status": "unavailable", "available": False, "note": f"Live status unavailable for train {train_number}."}
 
     def plan_journey(
         self,

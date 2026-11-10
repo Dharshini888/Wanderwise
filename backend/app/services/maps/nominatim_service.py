@@ -128,6 +128,21 @@ def geocode_place(place_name: str) -> Dict[str, Any]:
             }
             return result
 
+    # 4. Fallback Global Destination Gazetteer lookup
+    try:
+        from app.services.location.location_normalizer import GLOBAL_DESTINATION_GAZETTEER
+        for g_key, g_val in GLOBAL_DESTINATION_GAZETTEER.items():
+            if g_key in clean_name or clean_name in g_key:
+                return {
+                    "lat": g_val["latitude"],
+                    "lon": g_val["longitude"],
+                    "display_name": f"{g_val['name']}, {g_val['country']}",
+                    "country_code": g_val.get("country_code", "UNKNOWN"),
+                    "source": "Global Gazetteer Fallback"
+                }
+    except Exception:
+        pass
+
     return {
         "lat": None,
         "lon": None,

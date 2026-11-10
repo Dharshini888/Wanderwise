@@ -17,6 +17,7 @@ from ..maps.osrm_service import haversine_distance
 from ..weather.openmeteo_service import get_openmeteo_weather
 from ..places.overpass_service import get_overpass_nearby, get_nearby_boarding_infrastructure
 from .transit_router import TransitRouter
+from .live_transit_service import LiveTransitService
 
 logger = logging.getLogger(__name__)
 
@@ -50,11 +51,13 @@ class TransitOrchestrator:
         preferred_mode: str = "fastest",
         budget: float = 5000.0,
         budget_currency: str = "INR",
-        date: str = "Tomorrow",
+        date: str = "Today",
+        departure_type: str = "now",
+        departure_time: Optional[str] = None,
         request_id: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
-        WanderWise v12.3 Multimodal Routing Orchestrator.
+        WanderWise v12.3 Multimodal Routing Orchestrator with Departure-Time Awareness.
         """
         req_id = request_id or f"req_{uuid.uuid4().hex[:12]}"
         acc = origin_accuracy_m if origin_accuracy_m is not None else gps_accuracy
@@ -127,23 +130,57 @@ class TransitOrchestrator:
         router_orig_lat = geo_orig["lat"]
         router_orig_lon = geo_orig["lon"]
 
-        # ── 3. Resolve Planning Date ──────────────────────────────────
-        from datetime import date as date_cls, datetime, timedelta
-        today_date = date_cls.today()
+        # ── 3. Resolve Planning Date & Departure Time ──────────────────
+        from datetime import date as date_cls, datetime, time as time_cls, timedelta
+        import os
+
+        tz_name = os.getenv("TRANSIT_TIMEZONE", "Asia/Kolkata")
+        try:
+            from zoneinfo import ZoneInfo
+            local_tz = ZoneInfo(tz_name)
+        except Exception:
+            local_tz = None
+
+        now_local = datetime.now(local_tz) if local_tz else datetime.now()
+        today_date = now_local.date()
+
         d_str = str(date or "").strip().lower()
-        if d_str == "tomorrow":
+        if d_str in ("tomorrow", "next day"):
             planning_date = today_date + timedelta(days=1)
-        elif d_str == "today":
+        elif d_str in ("today", "now"):
             planning_date = today_date
         elif d_str:
             try:
-                planning_date = datetime.strptime(d_str, "%Y-%m-%d").date()
+                planning_date = datetime.strptime(d_str.split()[0], "%Y-%m-%d").date()
             except Exception:
-                planning_date = today_date + timedelta(days=1)
+                planning_date = today_date
         else:
-            planning_date = today_date + timedelta(days=1)
+            planning_date = today_date
 
-        departure_time_iso = datetime.combine(planning_date, datetime.min.time()).isoformat() + "+05:30"
+        parsed_time = None
+        dep_type_clean = str(departure_type or "now").strip().lower()
+        t_str = str(departure_time or "").strip().lower()
+
+        if dep_type_clean == "now" or t_str in ("now", "", "none"):
+            if planning_date == today_date:
+                parsed_time = now_local.time()
+            else:
+                parsed_time = time_cls(8, 0)
+        else:
+            for fmt in ("%H:%M", "%I:%M %p", "%I:%M%p", "%H:%M:%S", "%Y-%m-%dT%H:%M:%S"):
+                try:
+                    parsed_time = datetime.strptime(t_str, fmt).time()
+                    break
+                except Exception:
+                    pass
+            if not parsed_time:
+                parsed_time = now_local.time() if planning_date == today_date else time_cls(8, 0)
+
+        req_dep_dt = datetime.combine(planning_date, parsed_time)
+        if local_tz:
+            req_dep_dt = req_dep_dt.replace(tzinfo=local_tz)
+
+        departure_time_iso = req_dep_dt.isoformat()
 
         # ── 4. Execute Router ─────────────────────────────────────────
         all_route_options = []
@@ -159,6 +196,9 @@ class TransitOrchestrator:
             departure_time=departure_time_iso,
             preferences={
                 "date": date,
+                "departure_type": departure_type,
+                "departure_time": departure_time,
+                "request_time": req_dep_dt,
                 "preferred_mode": preferred_mode,
                 "budget": budget,
                 "full_origin_name": geo_orig["display_name"] if geo_orig else origin,
@@ -178,7 +218,16 @@ class TransitOrchestrator:
         # Truth-First Verification Flag
         is_verified = status in ["PUBLIC_TRANSIT_AVAILABLE", "VERIFIED_FLIGHT", "VERIFIED_ROAD_ALTERNATIVE"]
         
-        opt = route_result.get("routes") or {}
+        raw_routes_early = route_result.get("routes")
+        if isinstance(raw_routes_early, dict):
+            opt = raw_routes_early
+        elif isinstance(raw_routes_early, list):
+            opt = {
+                "recommended_route": raw_routes_early[0] if raw_routes_early else None,
+                "route_options": raw_routes_early
+            }
+        else:
+            opt = {}
         journey = opt.get("recommended_route") or {}
         all_route_options = opt.get("route_options", [])  # All 7+ trains + OSRM
         journeys_list = route_result.get("journeys", [])
@@ -278,9 +327,16 @@ class TransitOrchestrator:
         else:
             nearby_provenance = nearby_prov
             formatted_nearby = []
-            infra_res = {"items": [], "provenance": nearby_prov}
-
-        opt = route_result.get("routes", {})
+        raw_routes = route_result.get("routes")
+        if isinstance(raw_routes, dict):
+            opt = raw_routes
+        elif isinstance(raw_routes, list):
+            opt = {
+                "recommended_route": raw_routes[0] if raw_routes else None,
+                "route_options": raw_routes
+            }
+        else:
+            opt = {}
 
         # Base response payload
         base_response = {
@@ -326,6 +382,22 @@ class TransitOrchestrator:
                 "nearby_stations": formatted_nearby[:6],
             },
             "nearby_places": nearby_places,
+            "live_tracking": LiveTransitService.get_live_tracking(
+                origin_lat=geo_orig["lat"] if geo_orig else None,
+                origin_lon=geo_orig["lon"] if geo_orig else None,
+                dest_lat=geo_dest["lat"] if geo_dest else None,
+                dest_lon=geo_dest["lon"] if geo_dest else None,
+                routes=all_route_options,
+            ),
+            "departure_plan": {
+                "requested_departure": req_dep_dt.isoformat(),
+                "requested_departure_display": req_dep_dt.strftime("%I:%M %p").lstrip("0"),
+                "departure_type": dep_type_clean,
+                "date": str(planning_date),
+                "timezone": tz_name,
+                "boarding_buffer_min": int(os.getenv("TRANSIT_BOARDING_BUFFER_MINUTES", "5")),
+                "transfer_buffer_min": int(os.getenv("TRANSIT_TRANSFER_BUFFER_MINUTES", "5")),
+            },
         }
 
         return base_response

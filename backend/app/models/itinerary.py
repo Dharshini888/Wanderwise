@@ -38,7 +38,7 @@ class ItineraryActivity(Base):
     transport_mode = Column(String, default="walking")  # walking, metro, taxi, bus, train
     transport_duration = Column(String, nullable=True)
     weather_suitability = Column(String, default="all-weather")  # indoor, outdoor, all-weather
-    crowd_level = Column(String, default="moderate")             # low, moderate, high
+    crowd_level = Column(String, nullable=True, default=None)
     
     ai_reason = Column(Text, nullable=True)
     confidence_score = Column(Float, default=0.95)

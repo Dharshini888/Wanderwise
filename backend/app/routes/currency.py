@@ -1,7 +1,9 @@
-from fastapi import APIRouter, HTTPException
-import urllib.request
-import json
+from fastapi import APIRouter, HTTPException, Query
+from typing import Optional
 from app.core.currencies import get_all_currencies, get_currency_info, load_currency_registry
+from app.services.currency_service import CurrencyService
+from app.core.budget_tiers import get_budget_tiers_for_currency, interpret_budget
+from app.services.budget_allocation_service import BudgetAllocationService
 
 router = APIRouter(prefix="/api/currency", tags=["Currency"])
 
@@ -10,45 +12,90 @@ def get_currency_registry():
     """Return dataset of 100+ world currencies for frontend dropdowns."""
     return get_all_currencies()
 
-STATIC_USD_RATES = {
-    "USD": 1.0, "EUR": 0.92, "GBP": 0.79, "INR": 83.5, "JPY": 155.0,
-    "AUD": 1.52, "CAD": 1.36, "SGD": 1.35, "AED": 3.67, "CHF": 0.90
-}
+
+@router.get("/budget-tiers")
+def get_budget_tiers(currency: str = Query("USD", description="Target currency code")):
+    """
+    Return currency-aware daily budget range tiers for registration, settings, and itinerary forms.
+    Thresholds are converted from base USD using real exchange rates.
+    """
+    tiers = get_budget_tiers_for_currency(currency)
+    return {
+        "currency": currency.upper(),
+        "tiers": tiers
+    }
+
+
+@router.get("/budget-allocation")
+def get_budget_allocation(
+    budget: float = Query(150000.0, description="Total user trip budget"),
+    currency: str = Query("INR", description="Currency code"),
+    tier: str = Query("Budget", description="Budget tier: Budget, Mid-range, Luxury, Ultra Luxury"),
+    destination: str = Query("Bolivia", description="Destination"),
+    origin_city: str = Query("Coimbatore", description="Origin city"),
+    days: int = Query(5, ge=1, description="Number of days"),
+    adults: int = Query(1, ge=1, description="Adult count"),
+    children: int = Query(0, ge=0, description="Child count"),
+    transport_mode: str = Query("Mixed Transport", description="Transport mode"),
+    accommodation_preference: str = Query("hotel", description="Accommodation preference")
+):
+    """
+    Centralized API providing explainable, testable door-to-door financial breakdown
+    for any comfort tier and destination.
+    """
+    return BudgetAllocationService.calculate_plan(
+        total_budget=budget,
+        currency=currency,
+        tier=tier,
+        destination=destination,
+        origin_city=origin_city,
+        days=days,
+        adults=adults,
+        children=children,
+        transport_mode=transport_mode,
+        accommodation_preference=accommodation_preference
+    )
+
+
+@router.get("/interpret-budget")
+def interpret_budget_endpoint(
+    tier: str = Query("mid_range", description="Budget tier key or legacy string"),
+    currency: str = Query("USD", description="Currency code"),
+    days: int = Query(1, ge=1, description="Number of days"),
+    total_budget: Optional[float] = Query(None, description="Optional total budget"),
+    destination: str = Query("", description="Optional destination"),
+    origin_city: str = Query("Coimbatore", description="Origin city")
+):
+    """
+    Return detailed monetary interpretation of a budget tier in the selected currency.
+    """
+    return interpret_budget(
+        tier,
+        currency=currency,
+        days=days,
+        total_budget=total_budget,
+        destination=destination,
+        origin_city=origin_city
+    )
+
 
 @router.get("/convert")
 def convert_currency(from_currency: str, to_currency: str, amount: float):
-    from_c = from_currency.upper()
-    to_c = to_currency.upper()
+    """
+    Convert amount from one currency to another using CurrencyService with 24h caching.
+    """
+    from_c = (from_currency or "USD").strip().upper()
+    to_c = (to_currency or "USD").strip().upper()
 
-    try:
-        url = f"https://api.exchangerate-api.com/v4/latest/{from_c}"
-        with urllib.request.urlopen(url, timeout=4) as response:
-            data = json.loads(response.read())
-        
-        rates = data.get("rates", {})
-        if to_c in rates:
-            rate = rates[to_c]
-            return {
-                "from_currency": from_c,
-                "to_currency": to_c,
-                "amount": amount,
-                "rate": rate,
-                "converted_amount": round(amount * rate, 2),
-                "source": "Live Exchange Rate API"
-            }
-    except Exception:
-        pass
-
-    # Static Fallback Matrix via USD cross rates
-    from_rate_usd = STATIC_USD_RATES.get(from_c, 1.0)
-    to_rate_usd = STATIC_USD_RATES.get(to_c, 1.0)
-    calc_rate = to_rate_usd / from_rate_usd
+    rate = CurrencyService.get_rate(from_c, to_c)
+    converted_amount = CurrencyService.convert(amount, from_c, to_c)
 
     return {
         "from_currency": from_c,
         "to_currency": to_c,
         "amount": amount,
-        "rate": round(calc_rate, 4),
-        "converted_amount": round(amount * calc_rate, 2),
-        "source": "Estimated Fallback Rate Matrix"
+        "rate": rate,
+        "converted_amount": converted_amount,
+        "formatted": CurrencyService.format(converted_amount, to_c),
+        "source": "WanderWise Central Currency Engine"
     }

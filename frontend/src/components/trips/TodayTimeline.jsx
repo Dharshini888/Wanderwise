@@ -1,14 +1,16 @@
 import React from 'react';
 import { IconClock, IconCheck, IconPoint, IconAlertCircle, IconCircleDotted } from '@tabler/icons-react';
 
-export default function TodayTimeline({ activities, onToggleComplete }) {
+export default function TodayTimeline({ activities, onToggleComplete, titleLabel, isUpcoming, startDateFormatted }) {
   if (!activities || activities.length === 0) {
     return (
       <div className="glass-card p-6 text-center text-xs text-[var(--text-muted)] font-medium">
-        No scheduled activities for today yet.
+        No scheduled activities for this day yet.
       </div>
     );
   }
+
+  const computedTitle = titleLabel || (isUpcoming ? `Day 1 Journey Timeline` : "Today's Journey Timeline");
 
   const getStatusBadge = (status) => {
     switch (status) {
@@ -62,7 +64,7 @@ export default function TodayTimeline({ activities, onToggleComplete }) {
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold font-heading text-[var(--text-primary)] flex items-center gap-2">
           <IconClock className="text-[var(--color-primary-600)] dark:text-blue-400" size={20} />
-          Today's Journey Timeline
+          {computedTitle}
         </h2>
         <span className="text-xs font-semibold text-[var(--text-muted)]">
           {activities.filter(a => a.is_completed).length} / {activities.length} Done

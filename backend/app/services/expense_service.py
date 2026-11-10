@@ -44,42 +44,62 @@ def get_or_create_budget(db: Session, trip: Trip) -> Budget:
     curr = trip.currency or "USD"
 
     if not budget:
-        budget = Budget(
-            trip_id=trip.id,
-            total_budget=total_b,
-            currency=curr,
-            base_currency=curr,
-            spent=Decimal("0.00"),
-            remaining=total_b,
-            daily_limit=Decimal("0.00"),
-            emergency_reserve=Decimal(str(round(float(total_b) * 0.10, 2)))
-        )
-        db.add(budget)
-        db.commit()
-        db.refresh(budget)
+        try:
+            budget = Budget(
+                trip_id=trip.id,
+                total_budget=total_b,
+                currency=curr,
+                base_currency=curr,
+                spent=Decimal("0.00"),
+                remaining=total_b,
+                daily_limit=Decimal("0.00"),
+                emergency_reserve=Decimal(str(round(float(total_b) * 0.10, 2)))
+            )
+            db.add(budget)
+            db.commit()
+            db.refresh(budget)
+        except Exception:
+            db.rollback()
+            # If concurrent creation or unique violation occurred, fetch the existing budget
+            budget = db.query(Budget).filter(Budget.trip_id == trip.id).first()
+            if not budget:
+                raise
 
     # Recalculate spending metrics
-    sync_budget_metrics(db, trip.id)
+    sync_budget_metrics(db, trip.id, existing_budget=budget)
     db.refresh(budget)
     return budget
 
-def sync_budget_metrics(db: Session, trip_id: int):
+def sync_budget_metrics(db: Session, trip_id: int, existing_budget: Optional[Budget] = None):
     """Synchronize spent, remaining, daily limit, and emergency reserve on Budget entity."""
     trip = db.query(Trip).filter(Trip.id == trip_id).first()
     if not trip:
         return
 
-    budget = db.query(Budget).filter(Budget.trip_id == trip_id).first()
+    budget = existing_budget or db.query(Budget).filter(Budget.trip_id == trip_id).first()
     if not budget:
-        budget = Budget(
-            trip_id=trip.id,
-            total_budget=Decimal(str(trip.budget or 1000.00)),
-            currency=trip.currency or "USD",
-            base_currency=trip.currency or "USD"
-        )
-        db.add(budget)
-        db.commit()
-        db.refresh(budget)
+        total_b = Decimal(str(trip.budget or 1000.00))
+        curr = trip.currency or "USD"
+        try:
+            budget = Budget(
+                trip_id=trip.id,
+                total_budget=total_b,
+                currency=curr,
+                base_currency=curr,
+                spent=Decimal("0.00"),
+                remaining=total_b,
+                daily_limit=Decimal("0.00"),
+                emergency_reserve=Decimal(str(round(float(total_b) * 0.10, 2)))
+            )
+            db.add(budget)
+            db.commit()
+            db.refresh(budget)
+        except Exception:
+            db.rollback()
+            budget = db.query(Budget).filter(Budget.trip_id == trip_id).first()
+
+    if not budget:
+        return
 
     expenses = db.query(Expense).filter(Expense.trip_id == trip_id).all()
     total_spent = sum(Decimal(str(e.amount)) for e in expenses) if expenses else Decimal("0.00")

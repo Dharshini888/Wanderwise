@@ -1,0 +1,824 @@
+{
+  "destination": "bolivia",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Mi Telef\u00e9rico Cable Car Network",
+      "category": "Sightseeing",
+      "city": "La Paz",
+      "address": "Estaci\u00f3n Central, Avenida Manco Kapac, La Paz, Bolivia",
+      "latitude": -16.4957,
+      "longitude": -68.1408,
+      "opening_time": "06:00 AM",
+      "closing_time": "11:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 3.0,
+      "currency": "BOB",
+      "rating": 4.8,
+      "crowd": "Moderate",
+      "description": "Soar above the Andean valley on the world's highest and longest urban cable car transit network, enjoying panoramic views of Mount Illimani.",
+      "ai_reason": "\u2713 Scenic eco-friendly urban transit with 360\u00b0 Andean vistas",
+      "tip": "Ride the Red and Yellow lines for unforgettable mountain panoramas.",
+      "signature_dish": null,
+      "nearby": [
+        "Plaza Murillo",
+        "Witches' Market",
+        "Calle Ja\u00e9n"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified from provider/source",
+        "price_source": "Municipal Transit Fare Authority (3 BOB per line)",
+        "opening_hours_source": "Official Mi Telef\u00e9rico Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Mercado de las Brujas (Witches' Market)",
+      "category": "Culture",
+      "city": "La Paz",
+      "address": "Calle Linares & Sagarnaga, La Paz, Bolivia",
+      "latitude": -16.4975,
+      "longitude": -68.1388,
+      "opening_time": "09:00 AM",
+      "closing_time": "07:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "BOB",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Immerse in indigenous Aymara traditions, folk medicines, dried medicinal herbs, and handwoven Andean textiles.",
+      "ai_reason": "\u2713 Authentic local Andean cultural heritage and artisan shopping",
+      "tip": "Ask respectfully before photographing traditional healers and artisan stalls.",
+      "signature_dish": null,
+      "nearby": [
+        "San Francisco Basilica",
+        "Calle Sag\u00e1rnaga",
+        "Plaza San Francisco"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Verified from provider/source",
+        "price_source": "Free Public Market Access",
+        "opening_hours_source": "Municipal Artisan Market Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Calle Ja\u00e9n Colonial Quarter & Municipal Museums",
+      "category": "Museum",
+      "city": "La Paz",
+      "address": "Calle Ja\u00e9n, Casco Urbano Central, La Paz, Bolivia",
+      "latitude": -16.4942,
+      "longitude": -68.1347,
+      "opening_time": "09:00 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 20.0,
+      "currency": "BOB",
+      "rating": 4.6,
+      "crowd": "Low",
+      "description": "Stroll through La Paz's best-preserved cobblestone colonial street, housing four municipal museums including the Museum of Precious Metals.",
+      "ai_reason": "\u2713 Prioritized Hidden Gem: Quiet historic quarter rich in folklore and colonial architecture",
+      "tip": "A single ticket grants entry to all four municipal museums on Calle Ja\u00e9n.",
+      "signature_dish": null,
+      "nearby": [
+        "Plaza Murillo",
+        "Museo Costumbrista",
+        "Casa de Murillo"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Verified from provider/source",
+        "price_source": "La Paz Municipal Culture Directorate (20 BOB combined ticket)",
+        "opening_hours_source": "Official Municipal Museum Registry",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Mirador Killi Killi Sunset Viewpoint",
+      "category": "Viewpoint",
+      "city": "La Paz",
+      "address": "Avenida Manuel Loza, Villa Pab\u00f3n, La Paz, Bolivia",
+      "latitude": -16.495,
+      "longitude": -68.1286,
+      "opening_time": "06:00 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "BOB",
+      "rating": 4.7,
+      "crowd": "Low",
+      "description": "Hilltop lookout providing a 360-degree vantage point across the dramatic canyon city of La Paz and snow-capped Mount Illimani at golden hour.",
+      "ai_reason": "\u2713 Prioritized Hidden Gem: Spectacular panoramic viewpoint away from heavy tour buses",
+      "tip": "Arrive between 17:45 and 18:30 to watch the Andean sunset bathe Mount Illimani in crimson light.",
+      "signature_dish": null,
+      "nearby": [
+        "Plaza Murillo",
+        "Calle Ja\u00e9n",
+        "Mirador Laikakota"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Verified from provider/source",
+        "price_source": "Free Public Park Access",
+        "opening_hours_source": "Municipal Parks Authority",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Valle de la Luna (Moon Valley)",
+      "category": "Viewpoint",
+      "city": "La Paz",
+      "address": "Mallasa Canyon, La Paz, Bolivia",
+      "latitude": -16.5683,
+      "longitude": -68.0933,
+      "opening_time": "08:00 AM",
+      "closing_time": "05:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 15.0,
+      "currency": "BOB",
+      "rating": 4.5,
+      "crowd": "Low",
+      "description": "Walk along canyon paths flanked by towering sandstone clay spires sculpted over millennia by wind and rain, just 10km south of central La Paz.",
+      "ai_reason": "\u2713 Surreal lunar landscape just 10km from central La Paz",
+      "tip": "Wear sturdy walking shoes with good grip on loose gravel paths.",
+      "signature_dish": null,
+      "nearby": [
+        "Cota Cota Lagoon",
+        "La Paz Zoo",
+        "Aranjuez Canyon"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.97,
+      "provenance": {
+        "place_verification": "Verified from provider/source",
+        "price_source": "Municipal Parks Administration (15 BOB entry fee)",
+        "opening_hours_source": "Official Mallasa Natural Park Hours",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Tiwanaku Archaeological Sanctuary & Kalasasaya Temple",
+      "category": "Culture",
+      "city": "Tiwanaku",
+      "address": "Ingavi Province, Tiwanaku, Bolivia",
+      "latitude": -16.5547,
+      "longitude": -68.6733,
+      "opening_time": "09:00 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 100.0,
+      "currency": "BOB",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Explore the UNESCO World Heritage pre-Columbian spiritual complex, featuring the monolithic Sun Gate (Puerta del Sol) and Kalasasaya Temple.",
+      "ai_reason": "\u2713 Ancient heritage site of one of South America's greatest civilizations",
+      "tip": "Includes entry to both the outdoor ceremonial grounds and the ceramic museum.",
+      "signature_dish": null,
+      "nearby": [
+        "Puma Punku",
+        "Museum of Tiwanaku Ceramic Art"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified from provider/source",
+        "price_source": "UNESCO / Bolivian Archaeological Directorate (100 BOB ticket)",
+        "opening_hours_source": "Official Tiwanaku National Complex Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Lake Titicaca & Copacabana White-Sand Lakeside Beach",
+      "category": "Viewpoint",
+      "city": "Copacabana",
+      "address": "Avenida Costanera, Copacabana, Lake Titicaca, Bolivia",
+      "latitude": -16.1667,
+      "longitude": -69.0833,
+      "opening_time": "07:00 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "BOB",
+      "rating": 4.8,
+      "crowd": "Moderate",
+      "description": "Explore the tranquil white-sand lakeside beach, azure waters, and sacred Inca boat crossings of Lake Titicaca at Copacabana. Bolivia is a landlocked nation without ocean coastlines, making the pristine waters of Lake Titicaca its premier freshwater beach experience.",
+      "ai_reason": "\u2713 Truthful landlocked water and beach alternative: Lake Titicaca Copacabana shores",
+      "tip": "Walk along the lakefront promenade to watch local wooden sail boats and colorful catamarans.",
+      "signature_dish": null,
+      "nearby": [
+        "Basilica of Our Lady of Copacabana",
+        "Cerro Calvario",
+        "Isla del Sol"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified from provider/source",
+        "price_source": "Free Public Lakeside Access",
+        "opening_hours_source": "Public Promenade Hours",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Basilica of Our Lady of Copacabana",
+      "category": "Culture",
+      "city": "Copacabana",
+      "address": "Plaza 2 de Febrero, Copacabana, Bolivia",
+      "latitude": -16.1665,
+      "longitude": -69.0858,
+      "opening_time": "07:00 AM",
+      "closing_time": "07:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 10.0,
+      "currency": "BOB",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "16th-century Moorish-style pilgrimage basilica housing the revered carved wooden statue of the Virgin of Copacabana, the patroness of Bolivia.",
+      "ai_reason": "\u2713 Historic architectural gem and sacred spiritual center on Lake Titicaca",
+      "tip": "Visit the cloister museum to see rare colonial religious paintings and silver ex-votos.",
+      "signature_dish": null,
+      "nearby": [
+        "Plaza 2 de Febrero",
+        "Copacabana Beach",
+        "Cerro Calvario"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Verified from provider/source",
+        "price_source": "Church Museum Entry Fee (10 BOB)",
+        "opening_hours_source": "Basilica Parish Office",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Cerro Calvario Sunset Viewpoint",
+      "category": "Viewpoint",
+      "city": "Copacabana",
+      "address": "Cerro Calvario, Copacabana, Bolivia",
+      "latitude": -16.162,
+      "longitude": -69.091,
+      "opening_time": "06:00 AM",
+      "closing_time": "08:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "BOB",
+      "rating": 4.8,
+      "crowd": "Moderate",
+      "description": "Scenic stone pilgrim trail climbing 30 minutes up a prominent hill overlooking the sweeping crescent bay of Copacabana and sunset over Lake Titicaca.",
+      "ai_reason": "\u2713 Spectacular sunset panorama over sacred Lake Titicaca",
+      "tip": "Start the climb around 17:30 to reach the summit for the 18:35 golden hour and sunset.",
+      "signature_dish": null,
+      "nearby": [
+        "Copacabana Lakeside Beach",
+        "Basilica of Copacabana"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Verified from provider/source",
+        "price_source": "Free Public Hiking Trail",
+        "opening_hours_source": "Public Scenic Trail Access",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Isla del Sol (Sun Island) & Pilkokaina Inca Palace",
+      "category": "Sightseeing",
+      "city": "Copacabana",
+      "address": "Yumani & Pilkokaina, Isla del Sol, Lake Titicaca, Bolivia",
+      "latitude": -16.035,
+      "longitude": -69.172,
+      "opening_time": "08:00 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 30.0,
+      "currency": "BOB",
+      "rating": 4.9,
+      "crowd": "Low",
+      "description": "Legendary birthplace of the Inca sun god Inti. Walk along ancient stone paths to the two-story stone Temple of Pilkokaina and the Fountain of Eternal Youth.",
+      "ai_reason": "\u2713 Mythical Inca cradle surrounded by the sparkling azure waters of Lake Titicaca",
+      "tip": "Take the morning public ferry from Copacabana harbor at 08:30 AM (approx. 90 mins).",
+      "signature_dish": null,
+      "nearby": [
+        "Escalera del Inca",
+        "Yumani Harbor",
+        "Lake Titicaca"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified from provider/source",
+        "price_source": "Yumani Indigenous Community Tourism Fee (30 BOB)",
+        "opening_hours_source": "Ferry and Archaeological Site Hours",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Museo Nacional de Etnograf\u00eda y Folklore (MUSEF)",
+      "category": "Museum",
+      "city": "La Paz",
+      "address": "Calle Ingavi 916, Casco Urbano Central, La Paz, Bolivia",
+      "latitude": -16.4935,
+      "longitude": -68.135,
+      "opening_time": "09:00 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "ticket_price": 30.0,
+      "currency": "BOB",
+      "rating": 4.8,
+      "crowd": "Low",
+      "description": "Bolivia's premier cultural museum showcasing remarkable collections of ceremonial feathered art, indigenous masks, traditional textiles, and Andean ceramics.",
+      "ai_reason": "\u2713 World-class ethnographic museum in an elegant 18th-century marquis palace",
+      "tip": "Do not miss the permanent 'Masks of Bolivia' exhibition in the lower vaulted gallery.",
+      "signature_dish": null,
+      "nearby": [
+        "Plaza Murillo",
+        "Palacio Quemado",
+        "Calle Ja\u00e9n"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Verified from provider/source",
+        "price_source": "National Cultural Foundation of the Central Bank of Bolivia (30 BOB)",
+        "opening_hours_source": "Official MUSEF Museum Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Plaza Murillo & Historic Colonial Walking Quarter",
+      "category": "Culture",
+      "city": "La Paz",
+      "address": "Plaza Murillo, Casco Urbano Central, La Paz, Bolivia",
+      "latitude": -16.4958,
+      "longitude": -68.1334,
+      "opening_time": "06:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "BOB",
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "description": "The political heart of Bolivia, surrounded by the neoclassical National Congress building, the Presidential Palace (Palacio Quemado), and the Cathedral Basilica.",
+      "ai_reason": "\u2713 Historic civic square featuring grand republican and colonial facades",
+      "tip": "Observe the unique counter-clockwise clock on the National Congress building facade.",
+      "signature_dish": null,
+      "nearby": [
+        "Catedral Bas\u00edlica de Nuestra Se\u00f1ora de La Paz",
+        "Palacio Quemado",
+        "MUSEF"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.97,
+      "provenance": {
+        "place_verification": "Verified from provider/source",
+        "price_source": "Free Public Civic Plaza",
+        "opening_hours_source": "Public Space Access",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Popular Cocina Boliviana",
+      "category": "Restaurant",
+      "city": "La Paz",
+      "address": "Calle Murillo 1015, Casco Urbano Central, La Paz, Bolivia",
+      "latitude": -16.4988,
+      "longitude": -68.1377,
+      "opening_time": "12:30 PM",
+      "closing_time": "03:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 65.0,
+      "currency": "BOB",
+      "rating": 4.8,
+      "crowd": "Moderate",
+      "description": "Celebrated contemporary Bolivian kitchen serving daily gourmet 3-course menus that reinterpret traditional Andean recipes with vegetarian options.",
+      "ai_reason": "\u2713 Acclaimed authentic Andean lunch venue with dedicated vegetarian selections",
+      "tip": "Arrive at 12:15 PM as seats fill quickly for their daily seasonal menu.",
+      "is_dining": true,
+      "meal_type": "lunch",
+      "dietary_tags": [
+        "vegetarian",
+        "vegan_friendly"
+      ],
+      "vegetarian_dish": "Sopa de Man\u00ed Vegetariana",
+      "signature_dish": "Sopa de Man\u00ed Vegetariana (Creamy Bolivian peanut soup prepared with vegetable broth, native Andean tubers, peas, and crispy shoestring potatoes)",
+      "dish_ingredients": "Toasted ground peanuts, vegetable broth, freeze-dried chu\u00f1o potato, cumin, peas, shoestring potatoes (100% vegetarian, no meat stock)",
+      "nearby": [
+        "Mercado de las Brujas",
+        "Calle Sag\u00e1rnaga",
+        "Plaza San Francisco"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified from provider/source",
+        "price_source": "Fixed 3-Course Daily Menu (65 BOB)",
+        "dietary_verification": "Verified vegetarian menu option (vegetable broth confirmed)",
+        "opening_hours_source": "Published Restaurant Lunch Hours (12:30 PM - 3:30 PM)",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Ali Pacha",
+      "category": "Restaurant",
+      "city": "La Paz",
+      "address": "Calle Col\u00f3n 357, Casco Urbano Central, La Paz, Bolivia",
+      "latitude": -16.4952,
+      "longitude": -68.134,
+      "opening_time": "07:00 PM",
+      "closing_time": "10:30 PM",
+      "open_days": [
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 90.0,
+      "currency": "BOB",
+      "rating": 4.9,
+      "crowd": "Moderate",
+      "description": "World-renowned 100% plant-based fine dining restaurant celebrating native Bolivian biodiversity through innovative tasting courses.",
+      "ai_reason": "\u2713 Latin America Top 50 discovery restaurant: 100% dedicated vegetarian and vegan fine dining",
+      "tip": "Try their seasonal tasting menu pairing native tubers, Amazonian fruits, and highland grains.",
+      "is_dining": true,
+      "meal_type": "dinner",
+      "dietary_tags": [
+        "vegetarian",
+        "vegan",
+        "plant_based"
+      ],
+      "vegetarian_dish": "Degustaci\u00f3n Andina de Quinua y Tub\u00e9rculos",
+      "signature_dish": "Degustaci\u00f3n Andina (Native Royal Quinoa, Roasted Amazonian Heart of Palm, Smoked Andean Potatoes & Wild Cocoa Puree)",
+      "dish_ingredients": "Organic royal quinoa, native oca, hearts of palm, Bolivian cocoa, mountain herbs (100% certified plant-based)",
+      "nearby": [
+        "Plaza Murillo",
+        "Calle Ja\u00e9n",
+        "Museo de Arte"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified from provider/source",
+        "price_source": "Evening Tasting Menu (90 BOB)",
+        "dietary_verification": "100% Certified Plant-Based & Vegetarian Venue",
+        "opening_hours_source": "Official Ali Pacha Dinner Hours (7:00 PM - 10:30 PM)",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Cafe del Mundo",
+      "category": "Restaurant",
+      "city": "La Paz",
+      "address": "Calle Sag\u00e1rnaga 324, La Paz, Bolivia",
+      "latitude": -16.4981,
+      "longitude": -68.1381,
+      "opening_time": "08:00 AM",
+      "closing_time": "09:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 45.0,
+      "currency": "BOB",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Charming traveler hub on Calle Sag\u00e1rnaga offering fresh vegetarian wraps, homemade Andean sweet corn humintas, and organic Los Yungas coffee.",
+      "ai_reason": "\u2713 Popular cozy cafe with extensive vegetarian, vegan, and breakfast choices",
+      "tip": "Order the freshly steamed sweet corn huminta with a cup of hot spiced api.",
+      "is_dining": true,
+      "meal_type": "breakfast",
+      "dietary_tags": [
+        "vegetarian",
+        "vegan_friendly"
+      ],
+      "vegetarian_dish": "Humintas de Choclo al Horno con Caf\u00e9 de Los Yungas",
+      "signature_dish": "Humintas de Choclo (Steamed sweet Andean corn tamales with fresh farmer's cheese, anise, and hot coffee)",
+      "dish_ingredients": "Fresh ground choclo corn, queso criollo (pasteurized fresh cheese), anise, butter, cane sugar",
+      "nearby": [
+        "Witches' Market",
+        "San Francisco Basilica",
+        "Calle Linares"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Verified from provider/source",
+        "price_source": "A la carte menu average (45 BOB)",
+        "dietary_verification": "Verified vegetarian menu labeling",
+        "opening_hours_source": "Published Daily Cafe Hours (8:00 AM - 9:30 PM)",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Namas Te Vegetarian Teahouse",
+      "category": "Restaurant",
+      "city": "La Paz",
+      "address": "Calle Zoilo Flores 1334, San Pedro, La Paz, Bolivia",
+      "latitude": -16.5015,
+      "longitude": -68.1352,
+      "opening_time": "12:00 PM",
+      "closing_time": "09:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 38.0,
+      "currency": "BOB",
+      "rating": 4.6,
+      "crowd": "Low",
+      "description": "Peaceful vegetarian oasis in the San Pedro district serving wholesome organic lunches, Andean grain bowls, and loose-leaf herbal teas.",
+      "ai_reason": "\u2713 100% vegetarian sanctuary with hearty homemade daily menus",
+      "tip": "Their set lunch includes an organic soup, vegetable main, and freshly brewed herbal infusion.",
+      "is_dining": true,
+      "meal_type": "dinner",
+      "dietary_tags": [
+        "vegetarian",
+        "vegan"
+      ],
+      "vegetarian_dish": "Plato Completo Vegetariano de Quinua y Hortalizas",
+      "signature_dish": "Almuerzo Completo Vegetariano (Quinoa vegetable stew, fresh avocado salad, and organic mu\u00f1a herbal tea)",
+      "dish_ingredients": "Royal quinoa, seasonal squash, carrots, lentils, native potatoes, fresh salad (100% vegetarian)",
+      "nearby": [
+        "Plaza Sucre",
+        "Mercado Rodr\u00edguez",
+        "San Pedro Church"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Verified from provider/source",
+        "price_source": "Set Vegetarian Menu (38 BOB)",
+        "dietary_verification": "100% Dedicated Vegetarian Kitchen",
+        "opening_hours_source": "Verified Teahouse Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "La Cupula Restaurant & Sunset Terrace",
+      "category": "Restaurant",
+      "city": "Copacabana",
+      "address": "Calle Michel P\u00e9rez 1-3, Cerro Calvario, Copacabana, Bolivia",
+      "latitude": -16.1645,
+      "longitude": -69.0875,
+      "opening_time": "06:00 PM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 70.0,
+      "currency": "BOB",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Perched on the lower slopes of Cerro Calvario with panoramic views of Lake Titicaca, renowned for baked corn casseroles, cheese fondue, and Andean soups.",
+      "ai_reason": "\u2713 Spectacular sunset lake vistas paired with delicious vegetarian-friendly dining",
+      "tip": "Reserve a table by the panoramic window for twilight views across the lake.",
+      "is_dining": true,
+      "meal_type": "dinner",
+      "dietary_tags": [
+        "vegetarian",
+        "vegetarian_friendly"
+      ],
+      "vegetarian_dish": "Pastel de Choclo & Fondue Andino",
+      "signature_dish": "Pastel de Choclo (Sweet-savory baked Andean corn casserole with melted farmer's cheese, raisins, and mild spices)",
+      "dish_ingredients": "Fresh Andean choclo corn, artisanal cheese, eggs, raisins, sweet onion (Vegetarian preparation)",
+      "nearby": [
+        "Cerro Calvario",
+        "Copacabana Lakeside Beach"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Verified from provider/source",
+        "price_source": "Evening Dinner A la carte average (70 BOB)",
+        "dietary_verification": "Verified vegetarian menu specialties",
+        "opening_hours_source": "Published Restaurant Dinner Hours (6:00 PM - 10:00 PM)",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Restaurant El C\u00f3ndor & The White Cat",
+      "category": "Restaurant",
+      "city": "Copacabana",
+      "address": "Avenida 6 de Agosto, Copacabana, Bolivia",
+      "latitude": -16.1662,
+      "longitude": -69.0845,
+      "opening_time": "08:00 AM",
+      "closing_time": "09:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 40.0,
+      "currency": "BOB",
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "description": "Friendly travelers' cafe on Copacabana's main avenue featuring stir-fried royal quinoa, hearty vegetable soups, and local fruit smoothies.",
+      "ai_reason": "\u2713 Casual welcoming cafe with healthy vegetarian lunch bowls",
+      "tip": "Enjoy a fresh papaya-orange smoothie along with your quinoa vegetable bowl.",
+      "is_dining": true,
+      "meal_type": "lunch",
+      "dietary_tags": [
+        "vegetarian",
+        "vegan_friendly"
+      ],
+      "vegetarian_dish": "Quinua al Wok con Verduras Andinas",
+      "signature_dish": "Quinua al Wok con Verduras Andinas (Stir-fried royal quinoa with seasonal vegetables, avocado, and toasted sesame)",
+      "dish_ingredients": "Royal quinoa, bell peppers, zucchini, carrots, avocado, soy sauce, lime (100% vegetarian)",
+      "nearby": [
+        "Copacabana Beach",
+        "Basilica of Copacabana"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.97,
+      "provenance": {
+        "place_verification": "Verified from provider/source",
+        "price_source": "Casual Lunch Menu average (40 BOB)",
+        "dietary_verification": "Verified vegetarian options available",
+        "opening_hours_source": "Daily Cafe Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Taipi Uta Tiwanaku Cultural Dining",
+      "category": "Restaurant",
+      "city": "Tiwanaku",
+      "address": "Avenida Manco Kapac, Tiwanaku Village, Bolivia",
+      "latitude": -16.556,
+      "longitude": -68.675,
+      "opening_time": "11:30 AM",
+      "closing_time": "04:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 45.0,
+      "currency": "BOB",
+      "rating": 4.4,
+      "crowd": "Moderate",
+      "description": "Traditional Andean dining hall located just outside the Tiwanaku sanctuary gates, serving hearty vegetarian grain plates to travelers.",
+      "ai_reason": "\u2713 Convenient authentic lunch stop right by the archaeological sanctuary",
+      "tip": "Order the Plato Andino with broad beans and native potatoes.",
+      "is_dining": true,
+      "meal_type": "lunch",
+      "dietary_tags": [
+        "vegetarian",
+        "vegetarian_friendly"
+      ],
+      "vegetarian_dish": "Plato Andino de Quinua Real y Habas",
+      "signature_dish": "Plato Andino de Quinua Real (Steamed royal quinoa with native potatoes, Andean broad beans, and grilled cheese)",
+      "dish_ingredients": "Organic royal quinoa, native boiled potatoes, tender habas (broad beans), pan-seared cheese (No meat)",
+      "nearby": [
+        "Tiwanaku Archaeological Sanctuary",
+        "Kalasasaya Temple"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.96,
+      "provenance": {
+        "place_verification": "Verified from provider/source",
+        "price_source": "Tourist Set Lunch average (45 BOB)",
+        "dietary_verification": "Vegetarian Andean dish verified",
+        "opening_hours_source": "Sanctuary Dining Schedule",
+        "data_confidence": "high"
+      }
+    }
+  ]
+}

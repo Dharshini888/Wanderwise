@@ -31,7 +31,16 @@ def migrate():
                 print(f"[ERROR] Error ensuring '{col_name}' on '{table}': {e}")
 
         # 1. Users Table Columns
+        try:
+            conn.execute(text("ALTER TABLE users ALTER COLUMN password DROP NOT NULL;"))
+            conn.commit()
+            print("[OK] Dropped NOT NULL constraint on users.password.")
+        except Exception:
+            conn.rollback()
+
         user_columns = [
+            ("google_id", "VARCHAR UNIQUE"),
+            ("auth_provider", "VARCHAR DEFAULT 'local' NOT NULL"),
             ("role", "VARCHAR DEFAULT 'USER' NOT NULL"),
             ("profile_completed", "BOOLEAN DEFAULT FALSE NOT NULL"),
             ("avatar_url", "VARCHAR"),

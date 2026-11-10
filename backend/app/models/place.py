@@ -13,7 +13,7 @@ class Place(Base):
     address = Column(String, nullable=True)
     city = Column(String, nullable=True, index=True)
     country = Column(String, nullable=True)
-    rating = Column(Float, default=4.5)
+    rating = Column(Float, nullable=True, default=None)
     opening_hours = Column(String, nullable=True)
     ticket_price = Column(Float, default=0.0)
     google_maps_url = Column(String, nullable=True)

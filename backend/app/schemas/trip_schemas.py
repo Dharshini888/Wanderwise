@@ -69,7 +69,7 @@ class PlaceSchema(BaseModel):
     address: Optional[str] = None
     city: Optional[str] = None
     country: Optional[str] = None
-    rating: Optional[float] = 4.5
+    rating: Optional[float] = None
     opening_hours: Optional[str] = None
     ticket_price: Optional[float] = 0.0
     google_maps_url: Optional[str] = None
@@ -166,7 +166,7 @@ class TripCreate(BaseModel):
     start_date: date
     end_date: date
     budget: float = Field(..., gt=0)
-    currency: str = "USD"
+    currency: Optional[str] = None
     travel_type: Optional[str] = "leisure"
     travel_style: Optional[str] = "solo"
     transportation: Optional[str] = "flight"

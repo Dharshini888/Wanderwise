@@ -24,6 +24,7 @@ const createCustomIcon = (color) => {
 const originIcon = createCustomIcon('#3b82f6'); // blue
 const destIcon = createCustomIcon('#ef4444'); // red
 const transferIcon = createCustomIcon('#f59e0b'); // amber
+const busIcon = createCustomIcon('#10b981'); // emerald green
 
 const MapBounds = ({ allPositions }) => {
   const map = useMap();
@@ -36,7 +37,7 @@ const MapBounds = ({ allPositions }) => {
   return null;
 };
 
-export default function TransitMap({ routeOptions = [], selectedRouteId, onRouteSelect, originCoords, destCoords }) {
+export default function TransitMap({ routeOptions = [], selectedRouteId, onRouteSelect, originCoords, destCoords, vehiclePositions = [] }) {
   
   // Flatten all geometries to bound the map
   const allPositions = useMemo(() => {
@@ -46,10 +47,15 @@ export default function TransitMap({ routeOptions = [], selectedRouteId, onRoute
         pos.push(...r.geometry);
       }
     });
+    if (vehiclePositions && vehiclePositions.length > 0) {
+      vehiclePositions.forEach(v => {
+        if (v.latitude && v.longitude) pos.push([v.latitude, v.longitude]);
+      });
+    }
     pos.push([originCoords.lat, originCoords.lon]);
     pos.push([destCoords.lat, destCoords.lon]);
     return pos;
-  }, [routeOptions, originCoords, destCoords]);
+  }, [routeOptions, originCoords, destCoords, vehiclePositions]);
 
   const activeRoute = routeOptions.find(r => r.route_id === selectedRouteId);
   const activeHasGeometry = activeRoute?.geometry && activeRoute.geometry.length > 0;
@@ -153,6 +159,27 @@ export default function TransitMap({ routeOptions = [], selectedRouteId, onRoute
           return null;
         })}
         
+        {/* Live Vehicle Markers */}
+        {vehiclePositions && vehiclePositions.map((veh, idx) => (
+          <Marker 
+            key={veh.vehicle_id || `bus-${idx}`} 
+            position={[veh.latitude, veh.longitude]} 
+            icon={busIcon}
+          >
+            <Popup>
+              <div className="text-xs font-semibold p-1">
+                <div className="text-emerald-600 font-bold flex items-center gap-1">
+                  🚌 Live Bus {veh.route_name || veh.route_id || ''}
+                </div>
+                <div>Vehicle: {veh.vehicle_id}</div>
+                {veh.next_stop && <div>Next Stop: {veh.next_stop}</div>}
+                {veh.eta_minutes !== null && veh.eta_minutes !== undefined && <div>ETA: {veh.eta_minutes} mins</div>}
+                <div className="text-[10px] text-gray-400 mt-1">Updated: {veh.timestamp ? new Date(veh.timestamp).toLocaleTimeString() : 'Just now'}</div>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
+
         <MapBounds allPositions={allPositions} />
       </MapContainer>
 

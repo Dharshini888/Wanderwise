@@ -18,7 +18,10 @@ class GeminiProvider(BaseAIProvider):
                 model_name="gemini-2.5-flash",
                 system_instruction=system_instruction if system_instruction else None
             )
-            response = model.generate_content(prompt)
+            try:
+                response = model.generate_content(prompt, request_options={"timeout": 12.0})
+            except TypeError:
+                response = model.generate_content(prompt)
             return response.text
         except Exception as e:
             # Fallback import check or error propagation

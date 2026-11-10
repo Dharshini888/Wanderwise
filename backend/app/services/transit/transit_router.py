@@ -96,7 +96,7 @@ class TransitRouter:
                 "journey_scale": "SAME_LOCATION",
                 "origin": origin_name,
                 "destination": dest_name,
-                "routes": [],
+                "routes": {},
                 "route_guidance": None,
                 "provider_trace": provider_trace,
                 "provider_audit": provider_audit,
@@ -144,7 +144,7 @@ class TransitRouter:
                     if v_report.get("valid"):
                         raw_legs = itin.get("legs", [])
                         mode = (raw_legs[0].get("mode") if raw_legs else "Public Transit").title()
-                        norm = RouteOptimizer.normalize_route(provider.provider_name, mode, itin, origin_name, dest_name, dist_km)
+                        norm = RouteOptimizer.normalize_route(provider.provider_name, mode, itin, origin_name, dest_name, dist_km, departure_time=departure_time)
                         if norm:
                             all_routes.append(norm)
 
@@ -166,7 +166,7 @@ class TransitRouter:
 
             if fl_validation["valid"]:
                 for itin in fl_validation["itineraries"]:
-                    norm = RouteOptimizer.normalize_route("FlightProvider", "Flight", itin, origin_name, dest_name, dist_km)
+                    norm = RouteOptimizer.normalize_route("FlightProvider", "Flight", itin, origin_name, dest_name, dist_km, departure_time=departure_time)
                     if norm:
                         all_routes.append(norm)
 
@@ -189,7 +189,7 @@ class TransitRouter:
                 is_long_dist = True
                 
             road_alt["is_long_distance_fallback"] = is_long_dist
-            norm = RouteOptimizer.normalize_route("OSRM", "Road", road_alt, origin_name, dest_name, osrm_dist)
+            norm = RouteOptimizer.normalize_route("OSRM", "Road", road_alt, origin_name, dest_name, osrm_dist, departure_time=departure_time)
             if norm:
                 all_routes.append(norm)
                 
@@ -223,7 +223,8 @@ class TransitRouter:
                 
             # Build door-to-door journeys from the normalized routes
             journeys = []
-            date_hint = (preferences or {}).get("date", "Tomorrow")
+            date_hint = (preferences or {}).get("date", "Today")
+            req_time = (preferences or {}).get("request_time")
             try:
                 journeys = stitch_all_journeys(
                     candidate_routes=optimized.get("route_options", []),
@@ -233,6 +234,7 @@ class TransitRouter:
                     dest_name=dest_name,
                     dest_lat=dest_lat,
                     dest_lon=dest_lon,
+                    request_time=req_time,
                     date_hint=date_hint,
                 )
             except Exception as jb_err:

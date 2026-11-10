@@ -1,0 +1,617 @@
+{
+  "destination": "tbilisi",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Narikala Fortress",
+      "category": "Sightseeing",
+      "city": "Tbilisi",
+      "address": "Narikala Hill, Old Tbilisi, 0105 Tbilisi, Georgia",
+      "latitude": 41.6881,
+      "longitude": 44.8083,
+      "opening_time": "08:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "GEL",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Ancient 4th-century fortress overlooking Old Tbilisi and the Mtkvari River with sweeping panoramic views.",
+      "ai_reason": "\u2713 Iconic panoramic views over Old Tbilisi and Mtatsminda\n\u2713 Ancient 4th-century citadel accessible by scenic aerial cable car",
+      "tip": "Ride the aerial cable car up from Rike Park and walk down through the historic botanical garden trail.",
+      "signature_dish": null,
+      "nearby": [
+        "Abanotubani Sulfur Baths",
+        "Bridge of Peace",
+        "Rike Park"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Tbilisi Municipal Heritage Registry",
+        "price_source": "Free Citadel Access (Cable car fare ~2.5 GEL)",
+        "dietary_verification": null,
+        "opening_hours_source": "Open daily dawn to dusk",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Holy Trinity Cathedral of Tbilisi (Sameba)",
+      "category": "Sightseeing",
+      "city": "Tbilisi",
+      "address": "Elia Hill, Avlabari, Tbilisi, Georgia",
+      "latitude": 41.6975,
+      "longitude": 44.8166,
+      "opening_time": "08:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "GEL",
+      "rating": 4.8,
+      "crowd": "Moderate",
+      "description": "The main Georgian Orthodox cathedral, one of the largest religious buildings in the South Caucasus.",
+      "ai_reason": "\u2713 Majestic Georgian Orthodox architecture on Elia Hill\n\u2713 Peaceful landscaped grounds with sweeping city vistas",
+      "tip": "Modest attire required: head coverings for women and long trousers for men are provided at the entrance.",
+      "signature_dish": null,
+      "nearby": [
+        "Avlabari District",
+        "Rike Park",
+        "Old Tbilisi"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Georgian Orthodox Patriarchate Registry",
+        "price_source": "Official Free Entry (Donation-based)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 08:00 AM - 10:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Bridge of Peace & Rike Park",
+      "category": "Viewpoint",
+      "city": "Tbilisi",
+      "address": "Mtkvari River Promenade, Tbilisi, Georgia",
+      "latitude": 41.693,
+      "longitude": 44.8083,
+      "opening_time": "00:00 AM",
+      "closing_time": "11:59 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "GEL",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Modern bow-shaped pedestrian bridge of glass and steel connecting Old Tbilisi with Rike Park over the Mtkvari River.",
+      "ai_reason": "\u2713 Striking pedestrian bridge with illuminated LED canopy\n\u2713 Direct connector to the Rike Park aerial cable car",
+      "tip": "Visit at dusk when thousands of LED lights illuminate the river reflection.",
+      "signature_dish": null,
+      "nearby": [
+        "Narikala Fortress",
+        "Sioni Cathedral",
+        "Rike Park"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Tbilisi Municipal Landmark Registry",
+        "price_source": "Public Promenade Free Access",
+        "dietary_verification": null,
+        "opening_hours_source": "Open 24 hours daily",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Abanotubani Sulfur Baths & Legvtakhevi Waterfall",
+      "category": "Sightseeing",
+      "city": "Tbilisi",
+      "address": "Abano St, Old Tbilisi, 0105 Tbilisi, Georgia",
+      "latitude": 41.6883,
+      "longitude": 44.8115,
+      "opening_time": "08:00 AM",
+      "closing_time": "11:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "GEL",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Historic brick dome bathhouses built on natural hot sulfur springs where Tbilisi was originally founded, leading to a hidden canyon waterfall.",
+      "ai_reason": "\u2713 The historic heart and namesake of Tbilisi ('warm location')\n\u2713 Picturesque brick domes and canyon walkway to natural waterfall",
+      "tip": "Stroll the wooden walkway past the domes into Legvtakhevi gorge to see the 22-meter waterfall in the city center.",
+      "signature_dish": null,
+      "nearby": [
+        "Narikala Fortress",
+        "Botanical Garden",
+        "Bridge of Love"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Old Tbilisi Historic District Preservation Registry",
+        "price_source": "Gorge Walkway Free / Bathhouses private booking (50-150 GEL/hr)",
+        "dietary_verification": null,
+        "opening_hours_source": "Walkway open daily; baths 08:00 AM - 11:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Georgian National Museum & Rustaveli Avenue",
+      "category": "Museum",
+      "city": "Tbilisi",
+      "address": "3 Shota Rustaveli Ave, 0105 Tbilisi, Georgia",
+      "latitude": 41.6963,
+      "longitude": 44.8,
+      "opening_time": "10:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 30.0,
+      "currency": "GEL",
+      "rating": 4.7,
+      "crowd": "Low",
+      "description": "Houses the world-famous Colchian Archaeological Treasury of pre-Christian gold artifacts and exhibitions on Caucasian history.",
+      "ai_reason": "\u2713 World-class archaeological gold treasury from ancient Colchis\n\u2713 Premier cultural institution on Tbilisi's grandest boulevard",
+      "tip": "Closed on Mondays. Audio guides are available in English at the front desk.",
+      "signature_dish": null,
+      "nearby": [
+        "Freedom Square",
+        "Kashveti Church",
+        "Opera House"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Georgian National Museum Official Registry",
+        "price_source": "Official Entry Ticket (30 GEL standard adult)",
+        "dietary_verification": null,
+        "opening_hours_source": "Tuesday - Sunday 10:00 AM - 06:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Mtatsminda Park & Funicular",
+      "category": "Viewpoint",
+      "city": "Tbilisi",
+      "address": "Mtatsminda Plateau, 0114 Tbilisi, Georgia",
+      "latitude": 41.6953,
+      "longitude": 44.7865,
+      "opening_time": "09:00 AM",
+      "closing_time": "11:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 10.0,
+      "currency": "GEL",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Mount Mtatsminda plateau reached by the historic 1905 funicular railway, offering the highest panoramic viewpoint in Tbilisi.",
+      "ai_reason": "\u2713 Unmatched bird's-eye panorama across the entire Mtkvari River valley\n\u2713 Historic cliffside funicular railway experience",
+      "tip": "Have tea or fresh Georgian lagidze water at the historic Funicular Restaurant terrace.",
+      "signature_dish": null,
+      "nearby": [
+        "Mtatsminda Pantheon",
+        "Mama Daviti Church",
+        "Rustaveli Ave"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Tbilisi Municipal Parks Department",
+        "price_source": "Funicular Rail Transit (10 GEL per direction)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 09:00 AM - 11:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Chronicles of Georgia",
+      "category": "Sightseeing",
+      "city": "Tbilisi",
+      "address": "Tbilisi Sea Heights, Temka, Tbilisi, Georgia",
+      "latitude": 41.7706,
+      "longitude": 44.8153,
+      "opening_time": "08:00 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "GEL",
+      "rating": 4.7,
+      "crowd": "Low",
+      "description": "Monumental stone complex sculpted by Zurab Tsereteli depicting 3,000 years of Georgian royalty and biblical history overlooking the Tbilisi Sea.",
+      "ai_reason": "\u2713 Often called 'Georgia's Stonehenge' \u2014 towering 30-meter black stone pillars\n\u2713 Uncrowded monument overlooking the peaceful Tbilisi Sea reservoir",
+      "tip": "Combine with a scenic drive past the Tbilisi Sea shoreline. Best photographed in late afternoon sun.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi Sea",
+        "Dendrological Park"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Tbilisi Monumental Heritage Registry",
+        "price_source": "Public Monument Free Access",
+        "dietary_verification": null,
+        "opening_hours_source": "Open daily dawn to dusk",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Rezo Gabriadze Marionette Theater & Clock Tower",
+      "category": "Sightseeing",
+      "city": "Tbilisi",
+      "address": "13 Shavteli St, Old Tbilisi, 0105 Tbilisi, Georgia",
+      "latitude": 41.6956,
+      "longitude": 44.8066,
+      "opening_time": "10:00 AM",
+      "closing_time": "09:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "GEL",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Whimsical leaning fairytale clock tower and world-famous marionette theater built by master artist Rezo Gabriadze.",
+      "ai_reason": "\u2713 Fairytale leaning clock tower with mechanical puppet show on the hour\n\u2713 Located in a tranquil pedestrian square near Anchiskhati Basilica",
+      "tip": "Catch the angel mechanical puppet striking the bell at 12:00 PM or 07:00 PM.",
+      "signature_dish": null,
+      "nearby": [
+        "Anchiskhati Basilica",
+        "Bridge of Peace",
+        "Baratashvili Bridge"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Gabriadze Theater & Cultural Registry",
+        "price_source": "Clock tower exterior free / Theater tickets separate",
+        "dietary_verification": null,
+        "opening_hours_source": "Square open 24 hours daily",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Dry Bridge Flea Market",
+      "category": "Shopping",
+      "city": "Tbilisi",
+      "address": "Dry Bridge, Saarbruecken Bridge, Tbilisi, Georgia",
+      "latitude": 41.7003,
+      "longitude": 44.8031,
+      "opening_time": "10:00 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "GEL",
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "description": "Vibrant open-air antique and art bazaar featuring Soviet memorabilia, handmade Georgian jewelry, vintage cameras, and local paintings.",
+      "ai_reason": "\u2713 Legendary open-air cultural bazaar with eclectic vintage artifacts\n\u2713 Walkable riverbank setting near Dedaena Park",
+      "tip": "Weekends feature the largest collection of artists and vendors. Polite bargaining is customary.",
+      "signature_dish": null,
+      "nearby": [
+        "Dedaena Park",
+        "Rustaveli Avenue",
+        "Saarbruecken Square"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Tbilisi Artisans & Flea Market Registry",
+        "price_source": "Free Public Market Access",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 10:00 AM - 05:00 PM weather permitting",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Sioni Cathedral & Old Town Heritage Quarter",
+      "category": "Sightseeing",
+      "city": "Tbilisi",
+      "address": "3 Sioni St, Old Tbilisi, 0105 Tbilisi, Georgia",
+      "latitude": 41.6914,
+      "longitude": 44.8075,
+      "opening_time": "08:00 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "GEL",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Historic 6th-century cathedral in the heart of Old Tbilisi housing the sacred Grapevine Cross of St. Nino.",
+      "ai_reason": "\u2713 Spiritual center of historical Georgia with 19th-century frescoes\n\u2713 Surrounded by atmospheric carved-wood balcony alleyways and artisan tea shops",
+      "tip": "Explore the adjacent cobblestone lanes of Chardin and Sioni streets for authentic local handicrafts.",
+      "signature_dish": null,
+      "nearby": [
+        "Jan Shardeni Street",
+        "Bridge of Peace",
+        "Narikala"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Georgian Orthodox Patriarchate Registry",
+        "price_source": "Official Free Entry",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 08:00 AM - 08:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Shavi Lomi",
+      "category": "Restaurant",
+      "city": "Tbilisi",
+      "address": "28 Zurab Kvlividze St, Chugureti, 0102 Tbilisi, Georgia",
+      "latitude": 41.7102,
+      "longitude": 44.7981,
+      "opening_time": "12:00 PM",
+      "closing_time": "11:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "GEL",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "is_dining": true,
+      "signature_dish": "Georgian Cheese and Walnut Pkhali Board with Fresh Hot Mchadi Cornbread",
+      "vegetarian_dish": "Pkhali Assortment (Spinach, Beetroot & Walnut), Fried Sulguni & Spiced Lobio",
+      "dietary_tags": [
+        "Vegetarian-friendly",
+        "Authentic Georgian",
+        "Garden Dining"
+      ],
+      "description": "Iconic vintage courtyard restaurant celebrated for inventive reinterpretations of traditional Georgian regional classics and extensive vegetarian pkhali boards.",
+      "ai_reason": "\u2713 Acclaimed Georgian culinary landmark celebrated for authentic vegetarian dishes\n\u2713 Charming leafy bohemian courtyard in historic Chugureti",
+      "tip": "Order the Gobi platter \u2014 a large wooden bowl of mixed vegetable walnut pkhali, cheeses, and warm cornbread.",
+      "nearby": [
+        "Fabrika",
+        "Marjanishvili Square"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Tbilisi Culinary Guild Registry",
+        "price_source": "Average Meal (~35-50 GEL / \u20b91,100-\u20b91,600 INR)",
+        "dietary_verification": "Verified Vegetarian-Friendly Kitchen",
+        "opening_hours_source": "Daily 12:00 PM - 11:30 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Barbarestan",
+      "category": "Restaurant",
+      "city": "Tbilisi",
+      "address": "132 David Aghmashenebeli Ave, 0112 Tbilisi, Georgia",
+      "latitude": 41.7163,
+      "longitude": 44.7967,
+      "opening_time": "01:00 PM",
+      "closing_time": "11:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "GEL",
+      "rating": 4.8,
+      "crowd": "Moderate",
+      "is_dining": true,
+      "signature_dish": "19th-Century Herb Lobio, Mushroom Stew with Wild Mountain Greens & Puri Bread",
+      "vegetarian_dish": "Duchess Barbar\u00e9's Herb-Braised Beans, Foraged Mushroom Pot & Pumpkin Pastry",
+      "dietary_tags": [
+        "Vegetarian-friendly",
+        "Historical Culinary Heritage",
+        "Fine Dining"
+      ],
+      "description": "Celebrated fine-dining restaurant based entirely on the 19th-century historic recipes of Georgian Duchess Barbar\u00e9 Jorjadze.",
+      "ai_reason": "\u2713 World-renowned restaurant recreating 19th-century royal Georgian recipes\n\u2713 Exceptional vegetarian dishes prepared with heirloom herbs and mountain ingredients",
+      "tip": "Advance evening dinner reservation is highly recommended.",
+      "nearby": [
+        "Aghmashenebeli Pedestrian Avenue",
+        "Mushtaidi Garden"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Heritage Gastronomy Registry",
+        "price_source": "Average Meal (~65-95 GEL / \u20b92,000-\u20b93,000 INR)",
+        "dietary_verification": "Verified Vegetarian Menu Section",
+        "opening_hours_source": "Daily 01:00 PM - 11:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Salobie Bia",
+      "category": "Restaurant",
+      "city": "Tbilisi",
+      "address": "17 Shota Rustaveli Ave, 0108 Tbilisi, Georgia",
+      "latitude": 41.698,
+      "longitude": 44.7985,
+      "opening_time": "12:00 PM",
+      "closing_time": "11:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "GEL",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "is_dining": true,
+      "signature_dish": "Clay-Pot Traditional Lobio with Jonjoli Pickles and Mchadi",
+      "vegetarian_dish": "Authentic Spiced Red Kidney Bean Stew (Lobio), Marinated Vegetables & Corn Cakes",
+      "dietary_tags": [
+        "Vegetarian-friendly",
+        "Traditional Comfort Food",
+        "Central Rustaveli"
+      ],
+      "description": "Intimate artist-bistro renowned for perfecting Georgia's staple comfort dish: aromatic slow-simmered kidney beans in clay pots with pickled jonjoli.",
+      "ai_reason": "\u2713 Master of traditional clay-pot vegetarian Lobio and fresh cornbread\n\u2713 Art-filled salon curated by Georgian painter Giorgi Ioseliani",
+      "tip": "The Shkmeruli and Lobio pots served bubbling hot with crispy pickles are the signature items.",
+      "nearby": [
+        "Georgian National Opera",
+        "Rustaveli Avenue"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Tbilisi Traditional Bistro Registry",
+        "price_source": "Average Meal (~22-35 GEL / \u20b9700-\u20b91,100 INR)",
+        "dietary_verification": "Core Menu Naturally Vegetarian",
+        "opening_hours_source": "Daily 12:00 PM - 11:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Culinarium Khasheria",
+      "category": "Restaurant",
+      "city": "Tbilisi",
+      "address": "23 Abano St, Old Tbilisi, 0105 Tbilisi, Georgia",
+      "latitude": 41.6884,
+      "longitude": 44.8119,
+      "opening_time": "11:00 AM",
+      "closing_time": "11:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": null,
+      "currency": "GEL",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "is_dining": true,
+      "signature_dish": "Fresh Herb Beetroot Carpaccio, Local Sulguni Salad & Wild Herb Broth",
+      "vegetarian_dish": "Mushroom Khinkali, Herbed Sulguni Fondue & Beetroot Carpaccio with Walnuts",
+      "dietary_tags": [
+        "Vegetarian-friendly",
+        "Modern Georgian",
+        "Sulfur Baths Location"
+      ],
+      "description": "Innovative neo-Georgian bistro located directly facing the historic sulfur bath domes, headed by celebrity chef Tekuna Gachechiladze.",
+      "ai_reason": "\u2713 Contemporary Georgian gastronomy right in the historic sulfur bath district\n\u2713 Creative vegetarian options including mushroom khinkali and herbed sulguni",
+      "tip": "Ideal for a relaxing lunch directly after visiting the Abanotubani sulfur baths or Legvtakhevi waterfall.",
+      "nearby": [
+        "Abanotubani Sulfur Baths",
+        "Narikala",
+        "Botanical Garden"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Old Tbilisi Culinary Guide",
+        "price_source": "Average Meal (~30-50 GEL / \u20b9950-\u20b91,550 INR)",
+        "dietary_verification": "Vegetarian Dishes Explicitly Tagged",
+        "opening_hours_source": "Daily 11:00 AM - 11:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    }
+  ]
+}

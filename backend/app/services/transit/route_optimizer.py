@@ -66,7 +66,16 @@ class RouteOptimizer:
         return datetime.combine(base_date, t_obj)
 
     @staticmethod
-    def normalize_route(provider: str, mode: str, raw_itinerary: Dict[str, Any], origin_name: str, dest_name: str, default_dist: float, journey_date: Optional[str] = None) -> Optional[Dict[str, Any]]:
+    def normalize_route(
+        provider: str,
+        mode: str,
+        raw_itinerary: Dict[str, Any],
+        origin_name: str,
+        dest_name: str,
+        default_dist: float,
+        journey_date: Optional[str] = None,
+        departure_time: Optional[Any] = None,
+    ) -> Optional[Dict[str, Any]]:
         """
         Converts a provider itinerary into the common normalized schema.
         Returns None if the route is hopelessly invalid.
@@ -97,7 +106,7 @@ class RouteOptimizer:
 
         provider_dur_min = raw_itinerary.get("duration_minutes") or raw_itinerary.get("duration_min")
         dur_min = provider_dur_min
-        dur_source = f"{provider} (Reported)"
+        dur_source = f"{provider}"
         is_overnight = False
 
         if dep_dt and arr_dt:
@@ -110,6 +119,23 @@ class RouteOptimizer:
             if calc_min > 0:
                 dur_min = calc_min
                 dur_source = f"{provider} (Calculated from timestamps)"
+        elif dep_dt is None and departure_time:
+            # If provider didn't specify a scheduled departure time (e.g. OSRM driving route),
+            # but user/system supplied a departure time, use that departure time
+            # and calculate arrival_time = departure_time + duration!
+            if isinstance(departure_time, datetime):
+                dep_dt = departure_time
+            elif isinstance(departure_time, str):
+                dep_dt = RouteOptimizer._normalize_provider_time(departure_time, journey_date)
+
+            if dep_dt and dur_min and dur_min > 0:
+                arr_dt = dep_dt + timedelta(minutes=float(dur_min))
+                dur_source = f"{provider}"
+                is_overnight = arr_dt.date() > dep_dt.date()
+        elif dep_dt and arr_dt is None and dur_min and dur_min > 0:
+            arr_dt = dep_dt + timedelta(minutes=float(dur_min))
+            dur_source = f"{provider}"
+            is_overnight = arr_dt.date() > dep_dt.date()
 
         # 3. Duration Validation
         if not dur_min or dur_min <= 0:
@@ -158,7 +184,7 @@ class RouteOptimizer:
         elif provider == "Transitland":
             verification_status = "Transit Data Verified"
         elif provider == "OSRM":
-            verification_status = "Route Calculated"
+            verification_status = "Provider Calculated"
         else:
             verification_status = "VERIFIED" if raw_itinerary.get("verified", True) else "ESTIMATED"
 
@@ -173,6 +199,9 @@ class RouteOptimizer:
                 c_leg["geometry"] = []
             clean_legs.append(c_leg)
 
+        dep_source = "user_selected" if (raw_dep_str is None and departure_time) else (provider if dep_dt else None)
+        arr_source = "calculated_from_provider_duration" if (raw_arr_str is None and arr_dt) else (provider if arr_dt else None)
+
         # 5. Build Normalized Object
         return {
             "route_id": route_id,
@@ -183,6 +212,7 @@ class RouteOptimizer:
             "distance_km": round(float(dist_km), 2) if dist_km else None,
             "distance_source": distance_source,
             "duration_min": round(float(dur_min), 1),
+            "duration_minutes": round(float(dur_min), 1),
             "duration_source": dur_source,
             "verification_status": verification_status,
             "fare": fare_val,
@@ -197,7 +227,23 @@ class RouteOptimizer:
             "arrival_time": arr_time_iso,
             "departure_time_display": dep_display,
             "arrival_time_display": arr_display,
+            "departure_source": dep_source,
+            "arrival_source": arr_source,
             "is_overnight": is_overnight,
+
+            "verification": {
+                "level": "provider_calculated" if provider == "OSRM" else ("scheduled" if provider in ("RailRadar", "GTFSLocal", "GTFS", "Transitous") else "realtime_verified"),
+                "provider": provider,
+                "live": False
+            },
+            "source": {
+                "duration": dur_source,
+                "distance": distance_source,
+                "fare": fare_source,
+                "departure": dep_source,
+                "arrival": arr_source,
+                "live_tracking": None
+            },
 
             "is_long_distance_fallback": raw_itinerary.get("is_long_distance_fallback", False),
             

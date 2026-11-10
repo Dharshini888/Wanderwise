@@ -90,8 +90,16 @@ export default function Transit() {
         const tripData = await res.json();
         const dest = tripData.destination || 'Meghalaya';
         const day1Acts = tripData.itinerary_days?.[0]?.activities || [];
-        const firstSpot = day1Acts[0]?.place?.name || day1Acts[0]?.title || tripData.origin_city || 'Coimbatore';
-        const lastSpot = day1Acts[day1Acts.length - 1]?.place?.name || day1Acts[day1Acts.length - 1]?.title || dest;
+        const firstAct = day1Acts[0];
+        const lastAct = day1Acts[day1Acts.length - 1];
+
+        const firstSpot = firstAct?.place?.name || firstAct?.title || tripData.origin_city || 'Coimbatore';
+        const lastSpot = lastAct?.place?.name || lastAct?.title || dest;
+
+        const origLat = firstAct?.place?.latitude ?? firstAct?.place?.lat ?? null;
+        const origLon = firstAct?.place?.longitude ?? firstAct?.place?.lon ?? null;
+        const destLat = lastAct?.place?.latitude ?? lastAct?.place?.lat ?? null;
+        const destLon = lastAct?.place?.longitude ?? lastAct?.place?.lon ?? null;
 
         const startQuery = `${firstSpot}, ${dest}`;
         const endQuery = `${lastSpot}, ${dest}`;
@@ -99,10 +107,15 @@ export default function Transit() {
         setForm(prev => ({
           ...prev,
           origin: startQuery,
-          destination: endQuery
+          destination: endQuery,
+          origin_source: origLat != null ? 'ACTIVITY_COORDINATES' : 'GEOCODED_LOCATION',
+          origin_lat: origLat,
+          origin_lon: origLon,
+          destination_lat: destLat,
+          destination_lon: destLon,
         }));
 
-        triggerSearch(startQuery, endQuery);
+        triggerSearch(startQuery, endQuery, origLat, origLon, destLat, destLon);
       }
     } catch (e) {
       console.error('Error fetching trip context for transit:', e);
@@ -125,8 +138,10 @@ export default function Transit() {
         origin_lon: origLon,
         destination_lat: destLat,
         destination_lon: destLon,
-        preferred_mode: 'fastest',
-        date: 'Tomorrow',
+        preferred_mode: form.preferred_mode || 'fastest',
+        date: form.date || 'Today',
+        departure_type: form.departure_type || 'now',
+        departure_time: form.departure_time || null,
         request_id: requestId,
       };
 
@@ -266,6 +281,55 @@ export default function Transit() {
       setLoading(false);
     }
   };
+
+  // ── 30-Second Real-Time Route Polling ────────────────────────────────
+  useEffect(() => {
+    if (!result || !selectedRouteId) return;
+
+    const activeRoute = result.route_options?.find(r => r.route_id === selectedRouteId) || result.recommended_route;
+    if (!activeRoute) return;
+
+    const pollRealtime = async () => {
+      try {
+        const trainNum = activeRoute.train_number || '';
+        const prov = activeRoute.provider || '';
+        const origLat = result.origin_coords?.lat || '';
+        const origLon = result.origin_coords?.lon || '';
+        const url = `${API}/transit/realtime/${selectedRouteId}?provider=${encodeURIComponent(prov)}&train_number=${encodeURIComponent(trainNum)}&origin_lat=${origLat}&origin_lon=${origLon}`;
+        
+        const res = await fetch(url);
+        if (res.ok) {
+          const liveData = await res.json();
+          if (liveData && liveData.realtime) {
+            setResult(prev => {
+              if (!prev) return prev;
+              const updatedOptions = (prev.route_options || []).map(r => {
+                if (r.route_id === selectedRouteId) {
+                  return {
+                    ...r,
+                    realtime: liveData.realtime,
+                    verification: liveData.verification || r.verification,
+                    verification_status: liveData.verification_status || r.verification_status,
+                    live_status: liveData.realtime?.status || r.live_status,
+                    delay_min: liveData.realtime?.delay_min ?? r.delay_min,
+                    current_station: liveData.current_station || r.current_station,
+                    next_station: liveData.next_station || r.next_station,
+                  };
+                }
+                return r;
+              });
+              return { ...prev, route_options: updatedOptions };
+            });
+          }
+        }
+      } catch (err) {
+        console.warn('[Transit Live Polling] Non-fatal polling error:', err);
+      }
+    };
+
+    const intervalId = setInterval(pollRealtime, 30000);
+    return () => clearInterval(intervalId);
+  }, [result?.request_id, selectedRouteId]);
 
   // ── Render SAME_LOCATION View ─────────────────────────────────────────
   const SameLocationView = ({ result }) => (
@@ -504,6 +568,51 @@ export default function Transit() {
             </button>
           </div>
 
+          {/* Departure Time Controls */}
+          <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 rounded-2xl bg-[var(--bg-glass)] border border-[var(--border-color)]">
+            <div>
+              <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider block mb-1">
+                Leave When?
+              </label>
+              <select
+                className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-purple-500 cursor-pointer"
+                value={form.departure_type || 'now'}
+                onChange={(e) => setForm({ ...form, departure_type: e.target.value })}
+              >
+                <option value="now">🕒 Leave Now</option>
+                <option value="custom">📅 Set Departure Time</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider block mb-1">
+                Date
+              </label>
+              <select
+                className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-purple-500 cursor-pointer"
+                value={form.date || 'Today'}
+                onChange={(e) => setForm({ ...form, date: e.target.value })}
+              >
+                <option value="Today">Today</option>
+                <option value="Tomorrow">Tomorrow</option>
+              </select>
+            </div>
+
+            {form.departure_type === 'custom' && (
+              <div>
+                <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider block mb-1">
+                  Departure Time
+                </label>
+                <input
+                  type="time"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-purple-500"
+                  value={form.departure_time || '15:00'}
+                  onChange={(e) => setForm({ ...form, departure_time: e.target.value })}
+                />
+              </div>
+            )}
+          </div>
+
         </form>
 
         {error && (
@@ -542,7 +651,59 @@ export default function Transit() {
                     onRouteSelect={setSelectedRouteId}
                     originCoords={result.origin_coords}
                     destCoords={result.dest_coords}
+                    vehiclePositions={result.live_tracking?.vehicle_positions || []}
                   />
+
+                  {/* Live Tracking Status Banner */}
+                  {result.live_tracking && (() => {
+                    const isDriving = activeRoute?.provider === 'OSRM' || ['driving', 'road'].includes((activeRoute?.mode || '').toLowerCase());
+                    const bannerIcon = isDriving ? '🚗' : '🚌';
+                    const unavailableTitle = isDriving ? 'Live Traffic/Tracking Data Unavailable' : 'Live Transit Tracking Unavailable';
+                    const unavailableNote = isDriving
+                      ? 'This route is calculated from road-network data.'
+                      : (result.live_tracking.note || 'Schedule information is available, but realtime vehicle tracking is unavailable.');
+
+                    return (
+                      <div className={`p-3.5 rounded-2xl border text-xs flex items-center justify-between transition-all ${
+                        result.live_tracking.status === 'live'
+                          ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
+                          : result.live_tracking.status === 'stale'
+                          ? 'bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-300'
+                          : 'bg-gray-500/5 border-[var(--border-color)] text-[var(--text-muted)]'
+                      }`}>
+                        <div className="flex items-center gap-2">
+                          <span className="text-base">{bannerIcon}</span>
+                          <div>
+                            <div className="font-bold flex items-center gap-1.5">
+                              {result.live_tracking.status === 'live' ? (
+                                <>
+                                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                  Live Vehicle Tracking Active
+                                </>
+                              ) : result.live_tracking.status === 'stale' ? (
+                                <>
+                                  <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                                  Live Data Stale
+                                </>
+                              ) : (
+                                unavailableTitle
+                              )}
+                            </div>
+                            <div className="text-[11px] opacity-80">
+                              {result.live_tracking.status === 'live'
+                                ? `Provider: ${result.live_tracking.provider} • ${result.live_tracking.vehicle_positions?.length || 0} active vehicles detected`
+                                : unavailableNote}
+                            </div>
+                          </div>
+                        </div>
+                        {result.live_tracking.last_updated && (
+                          <div className="text-[10px] font-mono opacity-75 text-right hidden sm:block">
+                            Updated: {new Date(result.live_tracking.last_updated).toLocaleTimeString()}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
                   
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Route Options (Left Panel) */}

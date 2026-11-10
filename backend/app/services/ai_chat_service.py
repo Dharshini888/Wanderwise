@@ -79,7 +79,12 @@ class AIChatService:
 
         context_lines = [
             f"User Name: {user_name}",
-            f"Travel Style / Preference: {pref}"
+            f"Preferred Currency: {user.currency or 'USD' if user else 'USD'}",
+            f"Primary Language: {user.languages or 'English' if user else 'English'}",
+            f"Travel Styles: {user.travel_styles or 'balanced / nature & culture' if user else 'balanced'}",
+            f"Dietary Preferences: {user.dietary_preferences or 'None' if user else 'None'}",
+            f"Preferred Climate: {user.preferred_climate or 'Temperate' if user else 'Temperate'}",
+            f"Preferred Budget Tier: {user.preferred_budget or 'mid_range' if user else 'mid_range'}",
         ]
 
         if trip:

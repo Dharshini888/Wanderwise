@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import {
   IconSettings, IconWorld, IconPalette, IconBell, IconLock, IconInfoCircle, 
   IconAlertTriangle, IconCheck, IconTrash, IconDeviceMobile, IconMail, IconDeviceDesktop,
   IconBrandGoogle, IconBrandGithub, IconShieldCheck
 } from '@tabler/icons-react';
 
-const CURRENCIES = ['USD', 'INR', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'SGD', 'AED', 'CHF'];
+const CURRENCIES = ['USD', 'INR', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'AED', 'SGD', 'SAR', 'CHF'];
 const LANGUAGES = ['English', 'Hindi', 'French', 'Spanish', 'German', 'Japanese', 'Arabic'];
 const THEMES = ['Light', 'Dark', 'Auto'];
 
@@ -221,20 +222,37 @@ function NotificationSettingsTab({ settings, update }) {
 
 export default function Settings() {
   const navigate = useNavigate();
+  const { user, updateUser } = useAuth();
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [saved, setSaved] = useState(false);
   const [confirmClear, setConfirmClear] = useState(false);
   const [activeTab, setActiveTab] = useState('account');
 
   useEffect(() => {
+    let base = { ...DEFAULT_SETTINGS };
     const stored = localStorage.getItem('ww_settings');
-    if (stored) { try { setSettings({ ...DEFAULT_SETTINGS, ...JSON.parse(stored) }); } catch (_) {} }
-  }, []);
+    if (stored) {
+      try { base = { ...base, ...JSON.parse(stored) }; } catch (_) {}
+    }
+    if (user) {
+      if (user.currency) base.currency = user.currency;
+      if (user.languages) base.language = user.languages;
+    }
+    setSettings(base);
+  }, [user]);
 
   const update = (key, val) => setSettings(prev => ({ ...prev, [key]: val }));
 
-  const handleSave = () => {
+  const handleSave = async () => {
     localStorage.setItem('ww_settings', JSON.stringify(settings));
+    if (updateUser) {
+      try {
+        await updateUser({
+          currency: settings.currency,
+          languages: settings.language,
+        });
+      } catch (_) {}
+    }
     if (settings.theme === 'Dark') {
       document.documentElement.classList.add('dark');
     } else if (settings.theme === 'Auto') {

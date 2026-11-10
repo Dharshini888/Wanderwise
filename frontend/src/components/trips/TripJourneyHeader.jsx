@@ -10,6 +10,7 @@ export default function TripJourneyHeader({ todayData, trip, onResumeClick }) {
 
   const isCompleted = todayData.trip_status === 'Completed';
   const isActive = todayData.trip_status === 'Active';
+  const isUpcoming = todayData.is_upcoming_trip || todayData.trip_status === 'Upcoming';
   const currCode = trip?.currency || 'USD';
   const budgetRemaining = trip?.budget_remaining ?? trip?.budget ?? 0;
 
@@ -29,12 +30,21 @@ export default function TripJourneyHeader({ todayData, trip, onResumeClick }) {
                 ? 'bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/20'
                 : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
             }`}>
-              {isActive ? `🟢 Currently Exploring ${todayData.destination}` : isCompleted ? '⚪ Journey Completed' : '🔵 Upcoming Adventure'}
+              {isActive
+                ? `🟢 Currently Exploring ${todayData.destination}`
+                : isCompleted
+                ? '⚪ Journey Completed'
+                : `🔵 Upcoming Adventure (Starts ${todayData.date_formatted})`}
             </span>
 
             {isActive && (
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
                 Day {todayData.current_day} of {todayData.total_days}
+              </span>
+            )}
+            {isUpcoming && (
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+                {todayData.total_days} Days Scheduled
               </span>
             )}
           </div>
@@ -44,7 +54,7 @@ export default function TripJourneyHeader({ todayData, trip, onResumeClick }) {
           </h1>
 
           <div className="flex flex-wrap items-center gap-3 text-xs text-[var(--text-secondary)] font-medium">
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1 font-semibold">
               <IconCalendar size={14} className="text-indigo-500" />
               {todayData.date_formatted} ({todayData.day_title})
             </span>

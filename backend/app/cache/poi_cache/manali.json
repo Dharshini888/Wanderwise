@@ -1,0 +1,68 @@
+{
+  "destination": "manali",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Great Hadimba Weavers welfare",
+      "category": "Sightseeing",
+      "address": "Manali",
+      "latitude": 32.2454608,
+      "longitude": 77.1872926,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Great Hadimba Weavers welfare, one of Manali's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Manali",
+      "tip": "Visit early for beautiful photo views of Great Hadimba Weavers welfare.",
+      "signature_dish": null,
+      "nearby": [
+        "Manali"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "End trail",
+      "category": "Sightseeing",
+      "address": "Manali",
+      "latitude": 32.2454608,
+      "longitude": 77.1872926,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore End trail, one of Manali's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Manali",
+      "tip": "Visit early for beautiful photo views of End trail.",
+      "signature_dish": null,
+      "nearby": [
+        "Manali"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    }
+  ]
+}

@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import api from '../api/axios';
+import { useAuth } from '../context/AuthContext';
 import {
   IconUser, IconMail, IconPhone, IconCheck, IconPlane, IconMapPin, IconCalendar,
   IconEdit, IconSettings, IconShieldLock, IconCamera, IconDeviceFloppy,
@@ -149,12 +151,18 @@ function EditProfileTab({ user, onSave }) {
 }
 
 function TravelPreferencesTab() {
-  const token = localStorage.getItem('token');
+  const { user, updateUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [budgetTiers, setBudgetTiers] = useState([
+    { key: "budget", label: "Budget (<$50/day)" },
+    { key: "mid_range", label: "Mid-range ($50–150/day)" },
+    { key: "comfort", label: "Comfort ($150–350/day)" },
+    { key: "luxury", label: "Luxury ($350+/day)" },
+  ]);
   const [prefs, setPrefs] = useState({
     style: 'Solo',
-    budget: 'Mid-range ($50–150/day)',
+    budget: 'mid_range',
     climate: 'Beach 🏖️',
     currency: 'USD',
     diet: 'No Preference',
@@ -163,17 +171,26 @@ function TravelPreferencesTab() {
   });
 
   useEffect(() => {
+    if (user) {
+      setPrefs({
+        style: user.travel_styles ? user.travel_styles.split(',')[0].trim() : 'Solo',
+        budget: user.preferred_budget || 'mid_range',
+        climate: user.preferred_climate || 'Beach 🏖️',
+        currency: user.currency || 'USD',
+        diet: user.dietary_preferences || 'No Preference',
+        language: user.languages || 'English',
+        activities: user.preferred_activities ? user.preferred_activities.split(',').map(a=>a.trim()) : ['Photography', 'Sightseeing'],
+      });
+      return;
+    }
     const fetchPrefs = async () => {
-      if (!token) return;
       try {
-        const res = await fetch('http://localhost:8000/api/auth/me', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (res.ok) {
-          const data = await res.json();
+        const res = await api.get('/api/auth/me');
+        if (res.data) {
+          const data = res.data;
           setPrefs({
             style: data.travel_styles ? data.travel_styles.split(',')[0].trim() : 'Solo',
-            budget: data.preferred_budget || 'Mid-range ($50–150/day)',
+            budget: data.preferred_budget || 'mid_range',
             climate: data.preferred_climate || 'Beach 🏖️',
             currency: data.currency || 'USD',
             diet: data.dietary_preferences || 'No Preference',
@@ -184,7 +201,19 @@ function TravelPreferencesTab() {
       } catch (_) {}
     };
     fetchPrefs();
-  }, [token]);
+  }, [user]);
+
+  // Fetch dynamic budget ranges whenever currency changes
+  useEffect(() => {
+    const cur = prefs.currency || 'USD';
+    api.get(`/api/currency/budget-tiers?currency=${cur}`)
+      .then(r => {
+        if (r.data && Array.isArray(r.data.tiers)) {
+          setBudgetTiers(r.data.tiers);
+        }
+      })
+      .catch(() => {});
+  }, [prefs.currency]);
 
   const toggleActivity = (act) => {
     setPrefs(p => ({
@@ -198,23 +227,19 @@ function TravelPreferencesTab() {
   const handleSave = async () => {
     setLoading(true); setSaved(false);
     try {
-      const res = await fetch('http://localhost:8000/api/auth/me/preferences', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          preferred_budget: prefs.budget,
-          currency: prefs.currency,
-          travel_styles: prefs.style,
-          preferred_climate: prefs.climate,
-          preferred_activities: prefs.activities.join(', '),
-          languages: prefs.language,
-          dietary_preferences: prefs.diet,
-        })
-      });
-      if (res.ok) {
+      const payload = {
+        preferred_budget: prefs.budget,
+        currency: prefs.currency,
+        travel_styles: prefs.style,
+        preferred_climate: prefs.climate,
+        preferred_activities: prefs.activities.join(', '),
+        languages: prefs.language,
+        dietary_preferences: prefs.diet,
+      };
+      const res = await api.put('/api/auth/me/preferences', payload);
+      if (res.data) {
         setSaved(true);
-        const data = await res.json();
-        localStorage.setItem('user', JSON.stringify(data));
+        if (updateUser) await updateUser(res.data);
       }
     } catch (_) {}
     setLoading(false);
@@ -225,7 +250,7 @@ function TravelPreferencesTab() {
       
       {saved && (
         <div className="bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 p-3.5 rounded-xl text-xs font-bold flex items-center gap-2">
-          <IconCheck size={16}/> Preferences saved successfully! Your AI recommendations will automatically adapt.
+          <IconCheck size={16}/> Preferences saved successfully! Your AI itineraries and recommendations will automatically adapt.
         </div>
       )}
 
@@ -264,10 +289,9 @@ function TravelPreferencesTab() {
               onChange={e => setPrefs({...prefs, budget: e.target.value})}
               className="w-full p-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-app)] text-sm focus:outline-none"
             >
-              <option value="Budget (<$50/day)">Budget (&lt;$50/day)</option>
-              <option value="Mid-range ($50–150/day)">Mid-range ($50–150/day)</option>
-              <option value="Comfort ($150–350/day)">Comfort ($150–350/day)</option>
-              <option value="Luxury ($350+/day)">Luxury ($350+/day)</option>
+              {budgetTiers.map(b => (
+                <option key={b.key} value={b.key}>{b.label}</option>
+              ))}
             </select>
           </div>
           <div>
@@ -277,7 +301,7 @@ function TravelPreferencesTab() {
               onChange={e => setPrefs({...prefs, currency: e.target.value})}
               className="w-full p-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-app)] text-sm focus:outline-none"
             >
-              {['USD', 'EUR', 'GBP', 'INR', 'JPY', 'AUD', 'CAD'].map(c => <option key={c} value={c}>{c}</option>)}
+              {['USD', 'INR', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'AED', 'SGD', 'SAR'].map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
         </div>
@@ -323,14 +347,19 @@ function TravelPreferencesTab() {
 // --- Main Component ---
 
 export default function Profile() {
-  const [user, setUser] = useState(null);
+  const { user: authUser, updateUser } = useAuth();
+  const [user, setUser] = useState(authUser || null);
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
-    const userStr = localStorage.getItem('user');
-    if (userStr) setUser(JSON.parse(userStr));
-    else setUser({ name: 'Guest User', email: 'guest@example.com', created_at: new Date().toISOString() });
-  }, []);
+    if (authUser) {
+      setUser(authUser);
+    } else {
+      const userStr = localStorage.getItem('user');
+      if (userStr) setUser(JSON.parse(userStr));
+      else setUser({ name: 'Guest User', email: 'guest@example.com', created_at: new Date().toISOString() });
+    }
+  }, [authUser]);
 
   if (!user) return null;
 
@@ -340,11 +369,20 @@ export default function Profile() {
     { label: 'Member Since',  value: user.created_at ? new Date(user.created_at).getFullYear() : '2023', icon: <IconCalendar size={24} className="text-amber-500" /> },
   ];
 
-  const handleSaveProfile = (updatedUser) => {
-    setUser(updatedUser);
-    localStorage.setItem('user', JSON.stringify(updatedUser));
-    alert('Profile saved successfully!');
-    setActiveTab('overview');
+  const handleSaveProfile = async (updatedUser) => {
+    try {
+      if (updateUser) {
+        const res = await updateUser(updatedUser);
+        setUser(res || updatedUser);
+      } else {
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+      }
+      alert('Profile saved successfully!');
+      setActiveTab('overview');
+    } catch (e) {
+      alert('Failed to save profile changes.');
+    }
   };
 
   const tabs = [

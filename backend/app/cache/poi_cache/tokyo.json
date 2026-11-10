@@ -161,6 +161,99 @@
       ],
       "source": "google_places",
       "confidence": 0.99
+    },
+    {
+      "name": "Meiji Jingu Shrine",
+      "category": "Sightseeing",
+      "address": "1-1 Yoyogikamizonocho, Shibuya City, Tokyo 151-8557",
+      "latitude": 35.6764,
+      "longitude": 139.6993,
+      "opening_time": "06:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "JPY",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Shinto shrine dedicated to the deified spirits of Emperor Meiji and Empress Shoken surrounded by serene cedar forest.",
+      "ai_reason": "\u2713 Iconic tranquil cedar forest in central Tokyo\n\u2713 Free historic cultural site",
+      "tip": "Walk through the giant cypress Torii gates early in the morning for peaceful contemplation.",
+      "signature_dish": null,
+      "nearby": [
+        "Harajuku",
+        "Yoyogi Park"
+      ],
+      "source": "google_places",
+      "confidence": 0.99
+    },
+    {
+      "name": "Shinjuku Gyoen National Garden",
+      "category": "Park",
+      "address": "11 Naitomachi, Shinjuku City, Tokyo 160-0014",
+      "latitude": 35.6852,
+      "longitude": 139.7101,
+      "opening_time": "09:00 AM",
+      "closing_time": "05:30 PM",
+      "open_days": [
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 500.0,
+      "currency": "JPY",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Sprawling landscaped park blending traditional Japanese, English Landscape, and French Formal gardens.",
+      "ai_reason": "\u2713 Picturesque walking paths and scenic greenhouse\n\u2713 Tranquil natural retreat",
+      "tip": "Visit the traditional Japanese Landscape Garden tea house for matcha.",
+      "signature_dish": null,
+      "nearby": [
+        "Shinjuku Station",
+        "Tokyo Metropolitan Government Building"
+      ],
+      "source": "google_places",
+      "confidence": 0.98
+    },
+    {
+      "name": "Tsukiji Outer Market",
+      "category": "Food Market",
+      "address": "4 Chome-16-2 Tsukiji, Chuo City, Tokyo 104-0045",
+      "latitude": 35.6655,
+      "longitude": 139.7708,
+      "opening_time": "08:00 AM",
+      "closing_time": "02:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "JPY",
+      "rating": 4.5,
+      "crowd": "High",
+      "description": "Bustling marketplace with wholesale food stalls, fresh seafood, tamagoyaki, and Japanese culinary street snacks.",
+      "ai_reason": "\u2713 Unmatched street food and culinary tasting promenade\n\u2713 Historic morning market culture",
+      "tip": "Arrive hungry between 8:30 AM and 11:00 AM for fresh seasonal specialties.",
+      "signature_dish": "Fresh Tamagoyaki & Grilled Seafood Skewers",
+      "nearby": [
+        "Ginza",
+        "Hamarikyu Gardens"
+      ],
+      "source": "google_places",
+      "confidence": 0.97
     }
   ]
 }

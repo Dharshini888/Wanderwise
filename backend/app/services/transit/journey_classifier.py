@@ -44,8 +44,10 @@ COUNTRY_TO_CONTINENT = {
 }
 
 
-def _haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+def _haversine_km(lat1: Optional[float], lon1: Optional[float], lat2: Optional[float], lon2: Optional[float]) -> float:
     """Calculates straight-line distance in km between two coordinate points."""
+    if any(coord is None for coord in (lat1, lon1, lat2, lon2)):
+        return 0.0
     R = 6371.0
     dlat = math.radians(lat2 - lat1)
     dlon = math.radians(lon2 - lon1)
@@ -54,7 +56,7 @@ def _haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     return R * c
 
 
-def _extract_country_code(lat: float, lon: float, display_name: str) -> str:
+def _extract_country_code(lat: Optional[float], lon: Optional[float], display_name: str) -> str:
     """Extracts 2-letter ISO country code from display name heuristics or reverse geocoding."""
     dn = display_name.lower()
     if any(k in dn for k in ["united kingdom", "england", "scotland", "wales", "london", "manchester"]):
@@ -63,20 +65,21 @@ def _extract_country_code(lat: float, lon: float, display_name: str) -> str:
         return "FR"
     if any(k in dn for k in ["india", "coimbatore", "chennai", "mumbai", "delhi", "erode", "bangalore"]):
         return "IN"
-    if any(k in dn for k in ["japan", "tokyo", "osaka", "東京都"]):
+    if any(k in dn for k in ["japan", "tokyo", "osaka", "kyoto", "東京都"]):
         return "JP"
     if any(k in dn for k in ["korea", "seoul", "서울특별시"]):
         return "KR"
     if any(k in dn for k in ["united states", "usa", "new york", "california"]):
         return "US"
 
-    try:
-        rev = reverse_geocode(lat, lon)
-        cc = rev.get("country_code") or rev.get("address", {}).get("country_code")
-        if cc:
-            return cc.upper()
-    except Exception:
-        pass
+    if lat is not None and lon is not None:
+        try:
+            rev = reverse_geocode(lat, lon)
+            cc = rev.get("country_code") or rev.get("address", {}).get("country_code")
+            if cc:
+                return cc.upper()
+        except Exception:
+            pass
     return "UNKNOWN"
 
 

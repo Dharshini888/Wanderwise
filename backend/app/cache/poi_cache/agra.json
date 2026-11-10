@@ -1,0 +1,791 @@
+{
+  "destination": "agra",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Taj Mahal",
+      "category": "Sightseeing",
+      "city": "Agra",
+      "address": "Dharmapuri, Forest Colony, Tajganj, Agra, Uttar Pradesh 282001",
+      "latitude": 27.1751,
+      "longitude": 78.0421,
+      "opening_time": "06:00 AM",
+      "closing_time": "06:30 PM",
+      "open_days": [
+        "Saturday",
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday"
+      ],
+      "ticket_price": 50.0,
+      "currency": "INR",
+      "rating": 4.9,
+      "crowd": "High",
+      "description": "Immense mausoleum of white marble built in Agra between 1631 and 1648 by the Mughal emperor Shah Jahan. UNESCO World Heritage monument.",
+      "ai_reason": "\u2713 Best visited at sunrise (6:00 AM) to experience morning golden mist and avoid tourist crowds\n\u2713 Iconic UNESCO World Wonder\n\u2713 4.9\u2605 reviews",
+      "tip": "Arrive at the East Gate by 5:45 AM for fastest entry and serene crowd-free photography. Note: Taj Mahal is closed on Fridays for prayers.",
+      "signature_dish": null,
+      "nearby": [
+        "Mehtab Bagh",
+        "Agra Fort",
+        "Taj Nature Walk"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified UNESCO World Heritage Registry",
+        "price_source": "Archaeological Survey of India Official Entry (\u20b950 INR domestic)",
+        "dietary_verification": null,
+        "opening_hours_source": "Sunrise to Sunset Official ASI Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Agra Fort",
+      "category": "Sightseeing",
+      "city": "Agra",
+      "address": "Agra Fort, Rakabganj, Agra, Uttar Pradesh 282003",
+      "latitude": 27.1795,
+      "longitude": 78.0211,
+      "opening_time": "06:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 50.0,
+      "currency": "INR",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Historical red sandstone fortress that served as the primary residence of the emperors of the Mughal Dynasty until 1638.",
+      "ai_reason": "\u2713 Massive walled imperial palace complex with marble balconies viewing Taj Mahal\n\u2713 UNESCO World Heritage\n\u2713 4.7\u2605 reviews",
+      "tip": "Visit the Musamman Burj where Shah Jahan spent his final years gazing across the river toward the Taj Mahal.",
+      "signature_dish": null,
+      "nearby": [
+        "Jama Masjid Agra",
+        "Kinari Bazaar",
+        "Taj Mahal"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified UNESCO World Heritage Registry",
+        "price_source": "Archaeological Survey of India Official Entry (\u20b950 INR domestic)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 6:00 AM - 6:00 PM ASI Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Mehtab Bagh",
+      "category": "Viewpoint",
+      "city": "Agra",
+      "address": "Nagla Devjit, Opposite Taj Mahal, Agra, Uttar Pradesh 282006",
+      "latitude": 27.1799,
+      "longitude": 78.0422,
+      "opening_time": "06:00 AM",
+      "closing_time": "06:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 25.0,
+      "currency": "INR",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Charbagh complex perfectly aligned with the Taj Mahal on the opposite bank of the Yamuna River, renowned as the premier sunset viewpoint.",
+      "ai_reason": "\u2713 Unobstructed reflection of Taj Mahal at sunset across the Yamuna\n\u2713 Peaceful crowd-free riverside gardens\n\u2713 4.6\u2605 reviews",
+      "tip": "Arrive around 5:00 PM for magical golden-hour lighting as the white marble facade turns deep rose and amber.",
+      "signature_dish": null,
+      "nearby": [
+        "Taj Mahal",
+        "Tomb of I'timad-ud-Daulah",
+        "Chini Ka Rauza"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Verified ASI Garden Register",
+        "price_source": "ASI Garden Ticket (\u20b925 INR domestic)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily Sunrise to Sunset",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Fatehpur Sikri Imperial Complex",
+      "category": "Sightseeing",
+      "city": "Fatehpur Sikri",
+      "address": "Fatehpur Sikri, Agra District, Uttar Pradesh 283110",
+      "latitude": 27.0945,
+      "longitude": 77.6679,
+      "opening_time": "06:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 50.0,
+      "currency": "INR",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Monumental fortified royal city founded in 1571 by Emperor Akbar, housing the 54-meter Buland Darwaza gate and the white marble Tomb of Salim Chishti.",
+      "ai_reason": "\u2713 Fascinating preserved Mughal ghost city\n\u2713 Grand architectural synthesis of Hindu and Islamic styles\n\u2713 UNESCO World Heritage",
+      "tip": "Located 36 km west of Agra; plan a comfortable half-day excursion with private transit or express taxi.",
+      "signature_dish": null,
+      "nearby": [
+        "Buland Darwaza",
+        "Panch Mahal",
+        "Tomb of Sheikh Salim Chishti"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified UNESCO World Heritage Registry",
+        "price_source": "Archaeological Survey of India Official Entry (\u20b950 INR domestic)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 6:00 AM - 6:00 PM ASI Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Tomb of I'timad-ud-Daulah (Baby Taj)",
+      "category": "Sightseeing",
+      "city": "Agra",
+      "address": "Moti Bagh, Agra, Uttar Pradesh 282006",
+      "latitude": 27.1929,
+      "longitude": 78.031,
+      "opening_time": "06:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 30.0,
+      "currency": "INR",
+      "rating": 4.6,
+      "crowd": "Low",
+      "description": "Exquisite white marble jewel box mausoleum built by Nur Jahan for her father between 1622 and 1628, featuring the first extensive pietra dura in India.",
+      "ai_reason": "\u2713 Hidden gem often bypassed by tour buses\n\u2713 Incredibly intricate semi-precious stone inlay art\n\u2713 Serene garden ambiance",
+      "tip": "Spend time examining the fine geometric lattice marble screens (jalis) and floral ceiling motifs.",
+      "signature_dish": null,
+      "nearby": [
+        "Chini Ka Rauza",
+        "Ram Bagh",
+        "Mehtab Bagh"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Verified ASI Heritage Register",
+        "price_source": "ASI Monument Ticket (\u20b930 INR domestic)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 6:00 AM - 6:00 PM",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Akbar's Tomb (Sikandra)",
+      "category": "Sightseeing",
+      "city": "Agra",
+      "address": "Tomb of Akbar The Great Area, Sikandra, Agra 282007",
+      "latitude": 27.2206,
+      "longitude": 77.9505,
+      "opening_time": "06:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 35.0,
+      "currency": "INR",
+      "rating": 4.5,
+      "crowd": "Low",
+      "description": "Vast five-tiered red sandstone and white marble mausoleum of Emperor Akbar set within a sprawling 119-acre park inhabited by deer and peacocks.",
+      "ai_reason": "\u2713 Quiet expansive historical complex away from city center bustle\n\u2713 Impressive calligraphic south gate with four minarets",
+      "tip": "Spot graceful blackbuck deer wandering peacefully across the lawns around the perimeter pathways.",
+      "signature_dish": null,
+      "nearby": [
+        "Mariam's Tomb",
+        "Dayalbagh",
+        "Keetham Lake"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.97,
+      "provenance": {
+        "place_verification": "Verified ASI Heritage Register",
+        "price_source": "ASI Monument Ticket (\u20b935 INR domestic)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 6:00 AM - 6:00 PM",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Kinari Bazaar Heritage Walk",
+      "category": "Market",
+      "city": "Agra",
+      "address": "Kinari Bazar Rd, Rawatpara, Agra, Uttar Pradesh 282003",
+      "latitude": 27.186,
+      "longitude": 78.016,
+      "opening_time": "10:30 AM",
+      "closing_time": "09:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "INR",
+      "rating": 4.5,
+      "crowd": "High",
+      "description": "Vibrant medieval marketplace behind the Jama Masjid, famed for traditional Zardozi gold-thread embroidery, leathercraft, and marble inlay artisans.",
+      "ai_reason": "\u2713 Authentic local street atmosphere and artisan workshops\n\u2713 Free cultural exploration\n\u2713 4.5\u2605 reviews",
+      "tip": "Note: Shops in Kinari Bazaar are largely closed on Sundays. Practice gentle bargaining when purchasing authentic handicrafts.",
+      "signature_dish": null,
+      "nearby": [
+        "Jama Masjid Agra",
+        "Rawatpara Spice Market",
+        "Agra Fort"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.96,
+      "provenance": {
+        "place_verification": "Verified Municipal Commercial Directory",
+        "price_source": "Free Public Market Access",
+        "dietary_verification": null,
+        "opening_hours_source": "Local Merchant Association Hours",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Sadar Bazaar & Chaat Gali",
+      "category": "Market",
+      "city": "Agra",
+      "address": "Sadar Bazaar, Agra Cantt, Agra, Uttar Pradesh 282001",
+      "latitude": 27.1592,
+      "longitude": 78.0076,
+      "opening_time": "11:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "INR",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Agra's premier pedestrian shopping and dining promenade, home to Chaat Gali, leather stores, and authentic petha confectioners.",
+      "ai_reason": "\u2713 Clean pedestrian promenade with renowned local street delicacies\n\u2713 Evening stroll atmosphere\n\u2713 4.6\u2605 reviews",
+      "tip": "Sadar Bazaar is closed on Tuesdays. Visit between 6:00 PM and 8:30 PM for fresh street-side chaat and kulfi.",
+      "signature_dish": null,
+      "nearby": [
+        "Panchhi Petha Sadar",
+        "Dasaprakash",
+        "Agra Cantt Railway Station"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.97,
+      "provenance": {
+        "place_verification": "Verified Cantonment Board Directory",
+        "price_source": "Free Public Market Access",
+        "dietary_verification": null,
+        "opening_hours_source": "Cantonment Commercial Hours",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Jama Masjid of Agra",
+      "category": "Culture",
+      "city": "Agra",
+      "address": "Subhash Bazar, Kinari Bazar, Agra, Uttar Pradesh 282003",
+      "latitude": 27.1862,
+      "longitude": 78.0143,
+      "opening_time": "06:00 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "INR",
+      "rating": 4.4,
+      "crowd": "Moderate",
+      "description": "Graceful 17th-century red sandstone mosque commissioned by Jahanara Begum, daughter of Shah Jahan, facing the Delhi Gate of Agra Fort.",
+      "ai_reason": "\u2713 Outstanding example of classical Mughal religious architecture\n\u2713 Free historical entry\n\u2713 4.4\u2605 reviews",
+      "tip": "Dress respectfully with shoulders and knees covered; footwear must be removed at the courtyard entrance.",
+      "signature_dish": null,
+      "nearby": [
+        "Kinari Bazaar",
+        "Agra Fort",
+        "Rawatpara"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.96,
+      "provenance": {
+        "place_verification": "Verified Heritage Register",
+        "price_source": "Free Public Entry",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily Prayer Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Ram Bagh (Aram Bagh)",
+      "category": "Sightseeing",
+      "city": "Agra",
+      "address": "Firozabad Road, Ram Bagh, Agra, Uttar Pradesh 282006",
+      "latitude": 27.2065,
+      "longitude": 78.0392,
+      "opening_time": "06:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 25.0,
+      "currency": "INR",
+      "rating": 4.3,
+      "crowd": "Low",
+      "description": "Oldest Mughal garden in India, originally laid out by Emperor Babur in 1528 as a stepped riverfront retreat with cascading water channels.",
+      "ai_reason": "\u2713 Peaceful shaded historic garden\n\u2713 First Mughal garden architecture in India\n\u2713 Low crowd density",
+      "tip": "Ideal mid-day tranquil retreat away from the crowds of the main monuments.",
+      "signature_dish": null,
+      "nearby": [
+        "Chini Ka Rauza",
+        "Tomb of I'timad-ud-Daulah"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.95,
+      "provenance": {
+        "place_verification": "Verified ASI Heritage Register",
+        "price_source": "ASI Garden Ticket (\u20b925 INR domestic)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 6:00 AM - 6:00 PM",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Chini Ka Rauza",
+      "category": "Sightseeing",
+      "city": "Agra",
+      "address": "Katra Wazir Khan, Agra, Uttar Pradesh 282006",
+      "latitude": 27.2008,
+      "longitude": 78.0361,
+      "opening_time": "06:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "INR",
+      "rating": 4.2,
+      "crowd": "Low",
+      "description": "Funerary monument of Afzal Khan Shirazi, scholar and prime minister of Shah Jahan, featuring rare glazed Persian ceramic tile-work (chini).",
+      "ai_reason": "\u2713 Unique surviving example of Persian glazed tile architecture in northern India\n\u2713 Free entry",
+      "tip": "Observe the brilliant turquoise, cobalt, and gold tiles preserved on the eastern river-facing facade.",
+      "signature_dish": null,
+      "nearby": [
+        "Ram Bagh",
+        "Tomb of I'timad-ud-Daulah"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.94,
+      "provenance": {
+        "place_verification": "Verified ASI Register",
+        "price_source": "Free Public Entry",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 6:00 AM - 6:00 PM",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Dayalbagh Memorial & Cultural Complex",
+      "category": "Culture",
+      "city": "Agra",
+      "address": "Dayalbagh, Agra, Uttar Pradesh 282005",
+      "latitude": 27.2291,
+      "longitude": 78.0132,
+      "opening_time": "07:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "INR",
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "description": "Magnificent continuous-construction pure white marble memorial combining temple, mosque, and church motifs with exquisite hand-carved floral bas-reliefs.",
+      "ai_reason": "\u2713 Astounding modern marble artisan craftsmanship\n\u2713 Quiet spiritual atmosphere\n\u2713 4.5\u2605 reviews",
+      "tip": "Photography is strictly prohibited inside the inner sanctuary; cameras and mobile phones must be placed in visitor lockers.",
+      "signature_dish": null,
+      "nearby": [
+        "Akbar's Tomb",
+        "Mariam's Tomb"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.96,
+      "provenance": {
+        "place_verification": "Verified Cultural Complex Trust Directory",
+        "price_source": "Free Public Entry",
+        "dietary_verification": null,
+        "opening_hours_source": "Trust Visitor Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Deviram Sweets & Confectioners",
+      "category": "Restaurant",
+      "city": "Agra",
+      "address": "Pratap Pura, Near MG Road, Agra Cantt, Agra 282001",
+      "latitude": 27.1625,
+      "longitude": 78.005,
+      "opening_time": "07:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 150.0,
+      "currency": "INR",
+      "rating": 4.6,
+      "crowd": "High",
+      "description": "Historic morning culinary institution of Agra, revered across generations for authentic crispy Bedai with spicy potato fenugreek curry and hot golden jalebis.",
+      "ai_reason": "\u2713 Quintessential Agra heritage breakfast experience\n\u2713 100% vegetarian street food institution\n\u2713 4.6\u2605 reviews",
+      "tip": "Visit between 7:30 AM and 10:00 AM when the Bedai and Jalebis are fried piping hot directly in front of you.",
+      "is_dining": true,
+      "meal_type": "breakfast",
+      "dietary_tags": [
+        "vegetarian",
+        "pure_vegetarian",
+        "street_food"
+      ],
+      "vegetarian_dish": "Bedai & Aloo Sabzi with Hot Kesariya Jalebi",
+      "signature_dish": "Agra Bedai & Aloo Sabzi (Crispy spiced urad dal lentil-stuffed puffed fried puris with tangy potato curry, garnished with ginger and green chilies)",
+      "dish_ingredients": "Whole wheat flour, spiced urad dal stuffing, potatoes, tomatoes, fenugreek, coriander, saffron sugar syrup (100% pure vegetarian)",
+      "nearby": [
+        "Sadar Bazaar",
+        "Agra Cantt"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Verified Heritage Eatery Register",
+        "price_source": "Breakfast Menu Average (\u20b9150 INR per person)",
+        "dietary_verification": "100% Pure Vegetarian Kitchen",
+        "opening_hours_source": "Published Daily Hours",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Peshawri at ITC Mughal",
+      "category": "Restaurant",
+      "city": "Agra",
+      "address": "ITC Mughal, Fatehabad Road, Tajganj, Agra 282001",
+      "latitude": 27.161,
+      "longitude": 78.0415,
+      "opening_time": "12:30 PM",
+      "closing_time": "11:45 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 2500.0,
+      "currency": "INR",
+      "rating": 4.8,
+      "crowd": "Moderate",
+      "description": "Legendary luxury fine dining venue recreating the authentic rugged clay-tandoor flavors of the North-West Frontier in an opulent Mughal setting.",
+      "ai_reason": "\u2713 Ultra luxury culinary pinnacle in Agra\n\u2713 Iconic Dal Bukhara/Peshawari simmered for 18 hours\n\u2713 4.8\u2605 reviews",
+      "tip": "Reserve in advance. Dining is traditionally enjoyed with hands using bibs to fully appreciate the tandoori textures.",
+      "is_dining": true,
+      "meal_type": "dinner",
+      "dietary_tags": [
+        "vegetarian",
+        "vegetarian_friendly",
+        "luxury_dining"
+      ],
+      "vegetarian_dish": "Dal Peshawari & Paneer Khurchan with Pudina Paratha",
+      "signature_dish": "Dal Peshawari (Black lentils, whole tomatoes, ginger and garlic simmered overnight on slow charcoal embers with cultured butter)",
+      "dish_ingredients": "Black lentils (urad), fresh cream, hand-churned butter, vine-ripened tomatoes, ginger, aromatic spices (Vegetarian preparation)",
+      "nearby": [
+        "The Oberoi Amarvilas",
+        "Tajganj",
+        "Fatehabad Road"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified 5-Star Hotel Dining Guide",
+        "price_source": "A la carte Set Dinner Average (\u20b92,500 INR per person)",
+        "dietary_verification": "Verified signature vegetarian menu",
+        "opening_hours_source": "ITC Mughal Published Dining Hours",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Dasaprakash Pure Vegetarian Restaurant",
+      "category": "Restaurant",
+      "city": "Agra",
+      "address": "Meher Cinema Complex, Gwalior Road, Agra Cantt, Agra 282001",
+      "latitude": 27.1585,
+      "longitude": 78.009,
+      "opening_time": "11:30 AM",
+      "closing_time": "10:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 450.0,
+      "currency": "INR",
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "description": "Long-established pure vegetarian haven serving authentic South Indian filter coffee, ghee roast dosas, and royal multi-course thalis.",
+      "ai_reason": "\u2713 100% Pure Vegetarian family-friendly establishment\n\u2713 Crisp ghee dosas and traditional coconut chutney\n\u2713 4.5\u2605 reviews",
+      "tip": "Pair the Special South Indian Thali with their signature freshly brewed Kumbakonam degree filter coffee.",
+      "is_dining": true,
+      "meal_type": "lunch",
+      "dietary_tags": [
+        "vegetarian",
+        "pure_vegetarian"
+      ],
+      "vegetarian_dish": "Special South Indian Ghee Roast Thali",
+      "signature_dish": "Special South Indian Thali (Ghee roast masala dosa, sambar, rasam, curd rice, avial, kootu, poori, and payasam)",
+      "dish_ingredients": "Rice, lentils, fresh coconut, clarified butter (ghee), curry leaves, seasonal vegetables, jaggery (100% pure vegetarian)",
+      "nearby": [
+        "Sadar Bazaar",
+        "Agra Cantt"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.97,
+      "provenance": {
+        "place_verification": "Verified Pure Vegetarian Restaurant Directory",
+        "price_source": "Thali Lunch Average (\u20b9450 INR per person)",
+        "dietary_verification": "100% Pure Vegetarian Kitchen",
+        "opening_hours_source": "Daily Restaurant Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Panchhi Petha Authentic Store",
+      "category": "Restaurant",
+      "city": "Agra",
+      "address": "Near Sadar Bazaar Fountain, Agra Cantt, Agra 282001",
+      "latitude": 27.1595,
+      "longitude": 78.008,
+      "opening_time": "09:00 AM",
+      "closing_time": "10:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 200.0,
+      "currency": "INR",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Original heritage sweet maker of Agra's world-famous ash gourd confectionery (petha), crafting over 25 varieties including saffron, paan, and chocolate.",
+      "ai_reason": "\u2713 Agra's most iconic historical sweet specialty\n\u2713 Saffron-infused Kesar Angoori Petha tasting",
+      "tip": "Try the Kesar Angoori and Paan Petha for traditional rich flavors; vacuum packs are available for travel souvenirs.",
+      "is_dining": true,
+      "meal_type": "snack",
+      "dietary_tags": [
+        "vegetarian",
+        "pure_vegetarian",
+        "local_delicacy"
+      ],
+      "vegetarian_dish": "Kesar Angoori & Paan Petha Sampler",
+      "signature_dish": "Kesar Angoori Petha (Translucent crystallized ash gourd balls steeped in pure Kashmiri saffron, cardamom, and rose water)",
+      "dish_ingredients": "Ash gourd (winter melon), sugar, Kashmiri saffron, cardamom, rose water, silver foil (100% pure vegetarian)",
+      "nearby": [
+        "Sadar Bazaar",
+        "Deviram Sweets"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified Geographical Indication Heritage Sweetmaker",
+        "price_source": "Confectionery Tasting Average (\u20b9200 INR per box)",
+        "dietary_verification": "Pure Vegetarian Confectionery",
+        "opening_hours_source": "Daily Store Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Pinch of Spice Fine Dining",
+      "category": "Restaurant",
+      "city": "Agra",
+      "address": "1076/2, Fatehabad Road, Tajganj, Agra, Uttar Pradesh 282001",
+      "latitude": 27.1605,
+      "longitude": 78.044,
+      "opening_time": "12:00 PM",
+      "closing_time": "11:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 850.0,
+      "currency": "INR",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Highly acclaimed contemporary Indian restaurant on Fatehabad Road known for rich Awadhi gravies, clay-oven tandoori platters, and impeccable service.",
+      "ai_reason": "\u2713 Popular refined dinner venue with excellent North Indian vegetarian delicacies\n\u2713 4.6\u2605 reviews",
+      "tip": "Order the Paneer Lababdar accompanied by garlic butter naan and saffron pulao.",
+      "is_dining": true,
+      "meal_type": "dinner",
+      "dietary_tags": [
+        "vegetarian",
+        "vegetarian_friendly"
+      ],
+      "vegetarian_dish": "Paneer Lababdar & Subz Handi Biryani",
+      "signature_dish": "Paneer Lababdar (Fresh cottage cheese cubes in rich tomato, cashew, and melon seed gravy with grated paneer and kasuri methi)",
+      "dish_ingredients": "Fresh paneer, ripe tomatoes, cashew paste, ginger, kasuri methi, butter, cream, whole spices (Vegetarian)",
+      "nearby": [
+        "ITC Mughal",
+        "Tajganj",
+        "Fatehabad Road"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Verified City Dining Guide",
+        "price_source": "A la carte Dinner Average (\u20b9850 INR per person)",
+        "dietary_verification": "Verified vegetarian dishes",
+        "opening_hours_source": "Daily Restaurant Hours",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Shankara Vegis Rooftop Restaurant",
+      "category": "Restaurant",
+      "city": "Agra",
+      "address": "Chowk Kagziyan, South Gate of Taj Mahal, Tajganj, Agra 282001",
+      "latitude": 27.1702,
+      "longitude": 78.0418,
+      "opening_time": "08:00 AM",
+      "closing_time": "10:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 350.0,
+      "currency": "INR",
+      "rating": 4.4,
+      "crowd": "Moderate",
+      "description": "Welcoming traveler-favorite rooftop cafe steps away from the South Gate of Taj Mahal, serving fresh homestyle pure vegetarian thalis and chai.",
+      "ai_reason": "\u2713 Peaceful rooftop terrace viewing old Tajganj neighborhood\n\u2713 Wholesome home-style vegetarian cooking",
+      "tip": "Enjoy an afternoon ginger lemon honey tea with hot vegetable pakoras while relaxing between sightseeing stops.",
+      "is_dining": true,
+      "meal_type": "lunch",
+      "dietary_tags": [
+        "vegetarian",
+        "pure_vegetarian"
+      ],
+      "vegetarian_dish": "Homestyle Rajasthani & North Indian Thali",
+      "signature_dish": "Special Veg Thali (Baingan Bharta, yellow dal tadka, jeera aloo, curd, freshly puffed phulkas, and basmati rice)",
+      "dish_ingredients": "Roasted eggplant, lentils, cumin potatoes, yogurt, whole wheat rotis, fresh coriander (100% pure vegetarian)",
+      "nearby": [
+        "Taj Mahal South Gate",
+        "Tajganj Market"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.97,
+      "provenance": {
+        "place_verification": "Verified Rooftop Dining Directory",
+        "price_source": "Casual Lunch Average (\u20b9350 INR per person)",
+        "dietary_verification": "100% Pure Vegetarian Kitchen",
+        "opening_hours_source": "Daily Cafe Schedule",
+        "data_confidence": "high"
+      }
+    }
+  ]
+}

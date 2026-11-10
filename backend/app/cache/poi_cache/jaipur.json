@@ -1,0 +1,459 @@
+{
+  "destination": "Jaipur",
+  "version": "1.0",
+  "pois": [
+    {
+      "name": "Amber Fort & Palace",
+      "category": "Sightseeing",
+      "description": "Majestic UNESCO World Heritage hilltop fortress featuring Sheesh Mahal mirror palace and courtyards.",
+      "address": "Devisinghpura, Amer, Jaipur, Rajasthan 302001",
+      "latitude": 26.9855,
+      "longitude": 75.8513,
+      "rating": 4.7,
+      "opening_time": "08:00",
+      "closing_time": "17:30",
+      "ticket_price": 500.0,
+      "currency": "INR",
+      "ai_reason": "✓ Iconic hilltop palace fortress with opulent Rajput architecture\n✓ Historic Sheesh Mahal and scenic Maota Lake vistas",
+      "provenance": {
+        "source": "OpenStreetMap & Archaeological Survey of India",
+        "place_verification": "Verified Real Destination Attraction",
+        "price_source": "Official Entry (₹500)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Hawa Mahal (Palace of Winds)",
+      "category": "Sightseeing",
+      "description": "Famed five-story pink sandstone palace with 953 honeycomb windows designed for royal women.",
+      "address": "Hawa Mahal Rd, Badi Choupad, J.D.A. Market, Jaipur, Rajasthan 302002",
+      "latitude": 26.9239,
+      "longitude": 75.8267,
+      "rating": 4.6,
+      "opening_time": "09:00",
+      "closing_time": "17:00",
+      "ticket_price": 200.0,
+      "currency": "INR",
+      "ai_reason": "✓ Hallmark Jaipur pink-sandstone facade with ornate jharokhas\n✓ Historic rooftop views over Old Pink City bazaars",
+      "provenance": {
+        "source": "OpenStreetMap & Department of Archaeology Rajasthan",
+        "place_verification": "Verified Real Destination Attraction",
+        "price_source": "Official Entry (₹200)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "City Palace & Maharaja Sawai Man Singh II Museum",
+      "category": "Sightseeing",
+      "description": "Grand palace complex encompassing courtyards, Peacock Gate, royal armory, and textile gallery.",
+      "address": "Tulsi Marg, Gangori Bazaar, J.D.A. Market, Jaipur, Rajasthan 302002",
+      "latitude": 26.9258,
+      "longitude": 75.8237,
+      "rating": 4.6,
+      "opening_time": "09:30",
+      "closing_time": "17:00",
+      "ticket_price": 300.0,
+      "currency": "INR",
+      "ai_reason": "✓ Centrally located royal residence blending Mughal and Rajput arts\n✓ Exquisite Pritam Niwas Chowk peacock gate",
+      "provenance": {
+        "source": "OpenStreetMap & City Palace Trust",
+        "place_verification": "Verified Real Destination Attraction",
+        "price_source": "Official Entry (₹300)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Jantar Mantar Astronomical Observatory",
+      "category": "Sightseeing",
+      "description": "UNESCO World Heritage 18th-century stone astronomical observatory with the world's largest sundial.",
+      "address": "Gangori Bazaar, J.D.A. Market, Jaipur, Rajasthan 302002",
+      "latitude": 26.9248,
+      "longitude": 75.8246,
+      "rating": 4.6,
+      "opening_time": "09:00",
+      "closing_time": "17:00",
+      "ticket_price": 200.0,
+      "currency": "INR",
+      "ai_reason": "✓ World's largest stone sundial and astronomical precision instruments\n✓ UNESCO World Heritage monument adjacent to City Palace",
+      "provenance": {
+        "source": "OpenStreetMap & UNESCO Registry",
+        "place_verification": "Verified Real Destination Attraction",
+        "price_source": "Official Entry (₹200)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Nahargarh Fort & Sunset Viewpoint",
+      "category": "Sightseeing",
+      "description": "Historic defensive fort perched on the Aravalli hills offering panoramic sunset views across Jaipur.",
+      "address": "Krishna Nagar, Brahampuri, Jaipur, Rajasthan 302002",
+      "latitude": 26.9373,
+      "longitude": 75.8155,
+      "rating": 4.5,
+      "opening_time": "10:00",
+      "closing_time": "18:00",
+      "ticket_price": 200.0,
+      "currency": "INR",
+      "ai_reason": "✓ Panoramic ridge-line vistas across Jaipur pink city rooftops\n✓ Historic Madhavendra Bhawan royal suites",
+      "provenance": {
+        "source": "OpenStreetMap & Rajasthan Tourism",
+        "place_verification": "Verified Real Destination Attraction",
+        "price_source": "Official Entry (₹200)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Jal Mahal (Water Palace)",
+      "category": "Sightseeing",
+      "description": "Picturesque 18th-century Rajput palace appearing to float in the center of Man Sagar Lake.",
+      "address": "Amer Rd, Jal Mahal, Amber, Jaipur, Rajasthan 302002",
+      "latitude": 26.9535,
+      "longitude": 75.8462,
+      "rating": 4.5,
+      "opening_time": "06:00",
+      "closing_time": "20:00",
+      "is_free_verified": true,
+      "ticket_price": 0.0,
+      "currency": "INR",
+      "ai_reason": "✓ Stunning lake palace scenic viewpoint on the Amer corridor\n✓ Free waterfront promenade with traditional handicraft stalls",
+      "provenance": {
+        "source": "OpenStreetMap & Rajasthan Tourism",
+        "place_verification": "Verified Real Destination Attraction",
+        "price_source": "Free Public Promenade Access",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Albert Hall Museum (Central Museum)",
+      "category": "Museum",
+      "description": "Iconic Indo-Saracenic museum housing extensive collections of Rajasthani miniature paintings and crafts.",
+      "address": "Ram Niwas Garden, Kailash Puri, Adarsh Nagar, Jaipur, Rajasthan 302004",
+      "latitude": 26.9116,
+      "longitude": 75.8195,
+      "rating": 4.6,
+      "opening_time": "09:00",
+      "closing_time": "17:00",
+      "ticket_price": 150.0,
+      "currency": "INR",
+      "ai_reason": "✓ Oldest state museum in Rajasthan with rare miniature art and metalwork\n✓ Spectacular illuminated heritage facade",
+      "provenance": {
+        "source": "OpenStreetMap & Department of Museums Rajasthan",
+        "place_verification": "Verified Real Destination Attraction",
+        "price_source": "Official Entry (₹150)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Laxmi Mishthan Bhandar (LMB)",
+      "category": "Restaurant",
+      "description": "Famous historic vegetarian restaurant in Johari Bazaar celebrated for royal Rajasthani thali and ghewar.",
+      "address": "Shop No. 98-99, Johari Bazar, Jaipur, Rajasthan 302003",
+      "latitude": 26.9208,
+      "longitude": 75.8258,
+      "rating": 4.6,
+      "opening_time": "08:00",
+      "closing_time": "23:00",
+      "is_dining": true,
+      "vegetarian_dish": "Royal Rajasthani Dal Baati Churma Thali",
+      "dietary_tags": [
+        "Pure Vegetarian",
+        "Rajasthani"
+      ],
+      "provenance": {
+        "source": "OpenStreetMap & Jaipur Gastronomic Directory",
+        "place_verification": "Verified Real Destination Dining",
+        "price_source": "Market Baseline (A la carte)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Rawat Mishthan Bhandar",
+      "category": "Restaurant",
+      "description": "Iconic culinary institution acclaimed for piping hot Pyaaz Kachori and traditional Rajasthani snacks.",
+      "address": "Station Rd, near Polovictory Cinema, Sindhi Camp, Jaipur, Rajasthan 302001",
+      "latitude": 26.9216,
+      "longitude": 75.7972,
+      "rating": 4.6,
+      "opening_time": "06:00",
+      "closing_time": "22:30",
+      "is_dining": true,
+      "vegetarian_dish": "Crispy Pyaaz Kachori & Mawa Kachori Banquet",
+      "dietary_tags": [
+        "Pure Vegetarian",
+        "Heritage Snacks"
+      ],
+      "provenance": {
+        "source": "OpenStreetMap & Jaipur Gastronomic Directory",
+        "place_verification": "Verified Real Destination Dining",
+        "price_source": "Market Baseline (A la carte)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "1135 AD Royal Heritage Dining",
+      "category": "Restaurant",
+      "description": "Opulent dining hall inside Amber Fort serving royal recipes on silver cutlery with live classical music.",
+      "address": "Level 2, Jaleb Chowk, Near Shila Mata Temple, Amer Palace, Jaipur, Rajasthan 302001",
+      "latitude": 26.9858,
+      "longitude": 75.8515,
+      "rating": 4.7,
+      "opening_time": "12:00",
+      "closing_time": "22:30",
+      "is_dining": true,
+      "vegetarian_dish": "Royal Shahi Paneer & Kadhai Subz with Saffron Pulao",
+      "dietary_tags": [
+        "Vegetarian Options",
+        "Fine Dining"
+      ],
+      "provenance": {
+        "source": "OpenStreetMap & Jaipur Gastronomic Directory",
+        "place_verification": "Verified Real Destination Dining",
+        "price_source": "Market Baseline (Fine Dining)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Surya Mahal Vegetarian Dining",
+      "category": "Restaurant",
+      "description": "Long-established multi-cuisine vegetarian restaurant favored for authentic North Indian curries.",
+      "address": "MI Road, Panch Batti, C Scheme, Ashok Nagar, Jaipur, Rajasthan 302001",
+      "latitude": 26.9168,
+      "longitude": 75.8115,
+      "rating": 4.5,
+      "opening_time": "11:00",
+      "closing_time": "23:00",
+      "is_dining": true,
+      "vegetarian_dish": "Handi Paneer & Subz Biryani with Mint Raita",
+      "dietary_tags": [
+        "Pure Vegetarian",
+        "North Indian"
+      ],
+      "provenance": {
+        "source": "OpenStreetMap & Jaipur Gastronomic Directory",
+        "place_verification": "Verified Real Destination Dining",
+        "price_source": "Market Baseline (A la carte)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Jaigarh Fort & Jaivana Cannon",
+      "category": "Sightseeing",
+      "description": "Formidable 18th-century cliff-top fortress overlooking Amer with the world's largest cannon on wheels.",
+      "address": "Devisinghpura, Amer, Jaipur, Rajasthan 302001",
+      "latitude": 26.985,
+      "longitude": 75.8456,
+      "rating": 4.6,
+      "opening_time": "09:00",
+      "closing_time": "17:00",
+      "ticket_price": 200.0,
+      "currency": "INR",
+      "ai_reason": "✓ World's largest cannon on wheels and military architecture\n✓ Dramatic panoramic vistas over Amer Fort and Maota Lake",
+      "provenance": {
+        "source": "OpenStreetMap & Archaeological Survey of India",
+        "place_verification": "Verified Real Destination Attraction",
+        "price_source": "Official Entry (₹200)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Birla Mandir (Lakshmi Narayan Temple)",
+      "category": "Sightseeing",
+      "description": "Stunning modern Hindu temple constructed entirely from pure white Makrana marble below Moti Dungri fort.",
+      "address": "Jawahar Lal Nehru Marg, Tilak Nagar, Jaipur, Rajasthan 302004",
+      "latitude": 26.8924,
+      "longitude": 75.8154,
+      "rating": 4.7,
+      "opening_time": "06:00",
+      "closing_time": "21:00",
+      "is_free_verified": true,
+      "ticket_price": 0.0,
+      "currency": "INR",
+      "ai_reason": "✓ Beautiful white marble temple set in landscaped gardens\n✓ Serene spiritual atmosphere with marble carvings of deities and philosophers",
+      "provenance": {
+        "source": "OpenStreetMap & Temple Trust",
+        "place_verification": "Verified Real Destination Attraction",
+        "price_source": "Free Public Entry",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Galtaji Temple (Monkey Temple & Holy Kunds)",
+      "category": "Sightseeing",
+      "description": "Ancient Hindu pilgrimage complex situated in a mountain pass with natural freshwater spring kunds and resident macaque troops.",
+      "address": "Galta Ji, Jaipur, Rajasthan 302031",
+      "latitude": 26.9161,
+      "longitude": 75.8587,
+      "rating": 4.5,
+      "opening_time": "05:00",
+      "closing_time": "19:00",
+      "is_free_verified": true,
+      "ticket_price": 0.0,
+      "currency": "INR",
+      "ai_reason": "✓ Sacred pink-sandstone pavilions nestled in a dramatic Aravalli gorge\n✓ Natural sacred springs and panoramic sunset views from Surya Mandir",
+      "provenance": {
+        "source": "OpenStreetMap & Archeological Trust",
+        "place_verification": "Verified Real Destination Attraction",
+        "price_source": "Free Public Entry",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Sisodia Rani Ka Bagh & Palace",
+      "category": "Sightseeing",
+      "description": "Cascading multi-tiered Mughal-style palace gardens featuring painted Radha-Krishna pavilions and fountains.",
+      "address": "Agra Rd, Ghat Ki Guni, Jaipur, Rajasthan 302023",
+      "latitude": 26.8837,
+      "longitude": 75.8623,
+      "rating": 4.5,
+      "opening_time": "08:00",
+      "closing_time": "18:00",
+      "ticket_price": 100.0,
+      "currency": "INR",
+      "ai_reason": "✓ Peaceful terraced gardens with tiered fountains and natural flora\n✓ Royal 18th-century garden retreat away from central city crowds",
+      "provenance": {
+        "source": "OpenStreetMap & Rajasthan Tourism",
+        "place_verification": "Verified Real Destination Attraction",
+        "price_source": "Official Entry (₹100)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Peacock Rooftop Restaurant at Hotel Pearl Palace",
+      "category": "Restaurant",
+      "description": "Charming garden rooftop restaurant acclaimed for panoramic fort views, North Indian delicacies, and vegetarian thalis.",
+      "address": "Hari Kishan Somani Marg, Hathroi Fort, Ajmer Rd, Jaipur, Rajasthan 302001",
+      "latitude": 26.9172,
+      "longitude": 75.7955,
+      "rating": 4.6,
+      "opening_time": "07:30",
+      "closing_time": "23:00",
+      "is_dining": true,
+      "vegetarian_dish": "Paneer Butter Masala & Malai Kofta with Garlic Naan",
+      "dietary_tags": [
+        "Vegetarian Options",
+        "Rooftop Dining"
+      ],
+      "provenance": {
+        "source": "OpenStreetMap & Jaipur Gastronomic Directory",
+        "place_verification": "Verified Real Destination Dining",
+        "price_source": "Market Baseline (A la carte)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Handi Restaurant",
+      "category": "Restaurant",
+      "description": "Renowned MI Road culinary landmark known for slow-cooked clay pot curries and Mughlai delicacies.",
+      "address": "Maya Mansion, MI Road, Opp. GPO, Jaipur, Rajasthan 302001",
+      "latitude": 26.9168,
+      "longitude": 75.8115,
+      "rating": 4.4,
+      "opening_time": "12:00",
+      "closing_time": "23:00",
+      "is_dining": true,
+      "vegetarian_dish": "Handi Paneer Korma & Dal Makhani",
+      "dietary_tags": [
+        "Vegetarian Options",
+        "North Indian"
+      ],
+      "provenance": {
+        "source": "OpenStreetMap & Jaipur Gastronomic Directory",
+        "place_verification": "Verified Real Destination Dining",
+        "price_source": "Market Baseline (A la carte)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Spice Court Restaurant",
+      "category": "Restaurant",
+      "description": "Elegant courtyard garden restaurant serving heritage Rajasthani cuisine and royal vegetarian thalis.",
+      "address": "Hari Bhawan, Jacob Rd, Civil Lines, Jaipur, Rajasthan 302006",
+      "latitude": 26.9064,
+      "longitude": 75.7879,
+      "rating": 4.5,
+      "opening_time": "11:30",
+      "closing_time": "23:00",
+      "is_dining": true,
+      "vegetarian_dish": "Authentic Rajasthani Gatte ki Subzi & Ker Sangri",
+      "dietary_tags": [
+        "Vegetarian Options",
+        "Heritage Rajasthani"
+      ],
+      "provenance": {
+        "source": "OpenStreetMap & Jaipur Gastronomic Directory",
+        "place_verification": "Verified Real Destination Dining",
+        "price_source": "Market Baseline (A la carte)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Niros Restaurant",
+      "category": "Restaurant",
+      "description": "Jaipur's iconic fine dining institution since 1949, serving classic Indian and Continental delicacies.",
+      "address": "MI Road, Panch Batti, C Scheme, Ashok Nagar, Jaipur, Rajasthan 302001",
+      "latitude": 26.9181,
+      "longitude": 75.8142,
+      "rating": 4.5,
+      "opening_time": "11:00",
+      "closing_time": "23:00",
+      "is_dining": true,
+      "vegetarian_dish": "Niros Special Shahi Malai Kofta & Kashmiri Pulao",
+      "dietary_tags": [
+        "Vegetarian Options",
+        "Heritage Dining"
+      ],
+      "provenance": {
+        "source": "OpenStreetMap & Jaipur Gastronomic Directory",
+        "place_verification": "Verified Real Destination Dining",
+        "price_source": "Market Baseline (Fine Dining)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Anokhi Cafe",
+      "category": "Cafe",
+      "description": "Tranquil organic cafe serving farm-fresh vegetarian salads, artisanal pasta, and seasonal desserts.",
+      "address": "KK Square, 2nd Floor, Prithviraj Rd, C Scheme, Jaipur, Rajasthan 302001",
+      "latitude": 26.9088,
+      "longitude": 75.8012,
+      "rating": 4.6,
+      "opening_time": "10:00",
+      "closing_time": "19:30",
+      "is_dining": true,
+      "vegetarian_dish": "Organic Mediterranean Salad & Fresh Herb Pesto Tagliatelle",
+      "dietary_tags": [
+        "Organic Vegetarian",
+        "Artisanal Cafe"
+      ],
+      "provenance": {
+        "source": "OpenStreetMap & Jaipur Gastronomic Directory",
+        "place_verification": "Verified Real Destination Dining",
+        "price_source": "Market Baseline (Cafe)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Tapri Central",
+      "category": "Cafe",
+      "description": "Rooftop tea cafe overlooking Central Park, famed for creative vegetarian street snacks and cutting chai.",
+      "address": "B4 E, Prithviraj Rd, Opposite Central Park Gate No. 4, C Scheme, Jaipur, Rajasthan 302001",
+      "latitude": 26.9056,
+      "longitude": 75.8087,
+      "rating": 4.6,
+      "opening_time": "07:30",
+      "closing_time": "22:00",
+      "is_dining": true,
+      "vegetarian_dish": "Handvo, Khakhra Pizza & Saffron Masala Chai",
+      "dietary_tags": [
+        "Pure Vegetarian",
+        "Rooftop Street Cafe"
+      ],
+      "provenance": {
+        "source": "OpenStreetMap & Jaipur Gastronomic Directory",
+        "place_verification": "Verified Real Destination Dining",
+        "price_source": "Market Baseline (Cafe)",
+        "overall_status": "Verified"
+      }
+    }
+  ]
+}

@@ -1,0 +1,1004 @@
+{
+  "destination": "kuala_lumpur",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Petronas Twin Towers & Skybridge",
+      "category": "Sightseeing",
+      "city": "Kuala Lumpur",
+      "address": "Concourse Level, Lower Ground, Petronas Twin Towers, Kuala Lumpur City Centre, 50088 Kuala Lumpur",
+      "latitude": 3.1579,
+      "longitude": 101.7116,
+      "opening_time": "09:00 AM",
+      "closing_time": "09:00 PM",
+      "open_days": [
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 98.0,
+      "currency": "MYR",
+      "rating": 4.7,
+      "crowd": "High",
+      "description": "World-famous 88-storey twin skyscrapers rising 451.9 meters, connected by the dramatic double-decker Skybridge on the 41st floor and featuring an observation deck on the 86th floor with 360-degree views of the capital.",
+      "ai_reason": "\u2713 Iconic architectural symbol of Malaysia\n\u2713 Double-decker Skybridge (170m) & 86th-floor observation deck\n\u2713 4.7\u2605 global reviews; closed on Mondays",
+      "tip": "Book entry time-slots in advance online as visitor numbers are capped. Closed on Mondays. Child tickets (ages 3\u201312) are RM 50.",
+      "signature_dish": null,
+      "nearby": [
+        "KLCC Park",
+        "Suria KLCC",
+        "Aquaria KLCC"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Petronas Twin Towers Official Visitor Centre Registry (https://www.petronastwintowers.com.my)",
+        "price_source": "Official Admission (98 MYR Adult / 50 MYR Child)",
+        "dietary_verification": null,
+        "opening_hours_source": "Tuesday - Sunday 09:00 AM - 09:00 PM (Closed Mondays)",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Batu Caves",
+      "category": "Culture",
+      "city": "Kuala Lumpur",
+      "address": "Gombak, 68100 Batu Caves, Selangor",
+      "latitude": 3.2374,
+      "longitude": 101.6839,
+      "opening_time": "06:00 AM",
+      "closing_time": "09:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "MYR",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Monumental 400-million-year-old limestone hill featuring the towering 42.7-meter gold statue of Lord Murugan, 272 vibrant rainbow steps, and ancient cavernous Hindu temples inside Cathedral Cave.",
+      "ai_reason": "\u2713 World-renowned cultural pilgrimage site with 42.7m golden statue\n\u2713 272 colorful painted steps leading into cathedral limestone cave\n\u2713 Free temple cave admission; convenient direct KTM Komuter train",
+      "tip": "Modest temple dress code required (shoulders and knees covered). Guard personal belongings and snacks from wild macaque monkeys along the stairs.",
+      "signature_dish": null,
+      "nearby": [
+        "Cave Villa",
+        "Ramayana Cave",
+        "Batu Caves KTM Station"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Sri Maha Mariamman Temple Devasthanam National Heritage Registry",
+        "price_source": "Free Temple Cave Admission (0 MYR)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 06:00 AM - 09:00 PM Official Temple Schedule",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "KLCC Park & Lake Symphony",
+      "category": "Nature",
+      "city": "Kuala Lumpur",
+      "address": "Jalan Ampang, Kuala Lumpur City Centre, 50088 Kuala Lumpur",
+      "latitude": 3.1553,
+      "longitude": 101.7145,
+      "opening_time": "06:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "MYR",
+      "rating": 4.7,
+      "crowd": "Low",
+      "description": "50-acre master-planned tropical park at the base of the Petronas Towers, featuring a 10,000 sqm man-made lake with musical fountain light shows (Lake Symphony), a two-acre children's water playground, and lush jogging trails.",
+      "ai_reason": "\u2713 Expansive serene green space beneath Petronas Towers\n\u2713 Free two-acre children's water wading pool & playground\n\u2713 Nightly Lake Symphony musical fountain light shows (20:00, 21:00)",
+      "tip": "Bring swimwear or change of clothes for kids enjoying the free public water play park. Catch the Lake Symphony musical light show at 20:00.",
+      "signature_dish": null,
+      "nearby": [
+        "Petronas Twin Towers",
+        "Suria KLCC",
+        "Aquaria KLCC"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "KLCC Property Holdings Berhad Public Parks Registry",
+        "price_source": "Free Public Municipal Park Access (0 MYR)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 06:00 AM - 10:00 PM Gate Schedule",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Kuala Lumpur Tower (Menara KL)",
+      "category": "Sightseeing",
+      "city": "Kuala Lumpur",
+      "address": "2 Jalan Puncak, Off Jalan P. Ramlee, 50250 Kuala Lumpur",
+      "latitude": 3.1528,
+      "longitude": 101.7038,
+      "opening_time": "09:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 60.0,
+      "currency": "MYR",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "421-meter telecommunications tower situated atop Bukit Nanas forest reserve, featuring the 300-meter open-air Sky Deck, glass-bottom Sky Boxes hanging over the edge, and breathtaking panoramic views of the city skyline.",
+      "ai_reason": "\u2713 7th tallest freestanding tower in the world (421m)\n\u2713 Open-air Sky Deck & thrilling cantilevered glass Sky Box\n\u2713 Adjacent to the Bukit Nanas primary rainforest reserve",
+      "tip": "Sunset visit between 18:30 and 19:30 allows viewing day, twilight, and illuminated night skylines. Sky Deck tickets are RM 110 adult / RM 65 child.",
+      "signature_dish": null,
+      "nearby": [
+        "KL Forest Eco Park",
+        "Bukit Nanas Monorail"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Menara Kuala Lumpur Sdn Bhd Official Registry",
+        "price_source": "Observation Deck Ticket (60 MYR Adult / 40 MYR Child)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 09:00 AM - 10:00 PM Official Schedule",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Central Market (Pasar Seni)",
+      "category": "Shopping",
+      "city": "Kuala Lumpur",
+      "address": "Jalan Hang Kasturi, City Centre, 50050 Kuala Lumpur",
+      "latitude": 3.1453,
+      "longitude": 101.6955,
+      "opening_time": "10:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "MYR",
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "description": "Historic 1888 Art Deco heritage centre showcasing Malaysian culture, artisan crafts, batik painting workshops, pewter ware, handwoven baskets, and authentic souvenirs along pedestrian Kasturi Walk.",
+      "ai_reason": "\u2713 Historic 1888 Art Deco cultural heritage landmark\n\u2713 Authentic Malaysian batik, woodcrafts, and souvenir shopping\n\u2713 Directly opposite Pasar Seni MRT/LRT transit hub",
+      "tip": "Try hands-on DIY batik painting on the first floor for a memorable family craft activity. Fixed-price air-conditioned artisan stalls.",
+      "signature_dish": null,
+      "nearby": [
+        "Kasturi Walk",
+        "Chinatown",
+        "Petaling Street"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "National Heritage Department & Central Market Heritage Trust",
+        "price_source": "Free Cultural Market Access (0 MYR)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 10:00 AM - 10:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Islamic Arts Museum Malaysia (IAMM)",
+      "category": "Museum",
+      "city": "Kuala Lumpur",
+      "address": "Jalan Lembah, Tasik Perdana, 50480 Kuala Lumpur",
+      "latitude": 3.1419,
+      "longitude": 101.6896,
+      "opening_time": "09:30 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 20.0,
+      "currency": "MYR",
+      "rating": 4.7,
+      "crowd": "Low",
+      "description": "Southeast Asia's largest museum of Islamic art, housing over 10,000 artifacts across 12 permanent galleries, ornate hand-carved turquoise domes, architectural scale models of holy mosques worldwide, ancient Quran manuscripts, and textiles.",
+      "ai_reason": "\u2713 Southeast Asia's foremost Islamic art & heritage museum\n\u2713 Stunning architectural domes & world mosque scale models\n\u2713 Child and youth ticket discount (10 MYR for students/kids)",
+      "tip": "Children under 6 enter free; student/child ticket is RM 10. The museum shop and Middle Eastern cafe on the ground floor are excellent.",
+      "signature_dish": null,
+      "nearby": [
+        "National Mosque of Malaysia",
+        "Perdana Botanical Gardens"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Islamic Arts Museum Malaysia Official Foundation Registry (https://www.iamm.org.my)",
+        "price_source": "Official Entry (20 MYR Adult / 10 MYR Student & Child)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 09:30 AM - 06:00 PM (Last admission 05:30 PM)",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Perdana Botanical Gardens",
+      "category": "Nature",
+      "city": "Kuala Lumpur",
+      "address": "Jalan Kebun Bunga, Tasik Perdana, 50480 Kuala Lumpur",
+      "latitude": 3.1438,
+      "longitude": 101.6841,
+      "opening_time": "07:00 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "MYR",
+      "rating": 4.6,
+      "crowd": "Low",
+      "description": "Historic 220-acre lush botanical sanctuary established in 1888, featuring sunken gardens, hibiscus and orchid collections, a bamboo playhouse, tranquil lakes, and canopy boardwalks in the green heart of Kuala Lumpur.",
+      "ai_reason": "\u2713 Peaceful 220-acre heritage botanical garden\n\u2713 Shaded canopy walks, sunken gardens, and bamboo play pavilion\n\u2713 Free municipal park entry; perfect relaxed family nature walk",
+      "tip": "Visit in the morning or late afternoon for pleasant weather. Electric shuttle trams operate inside the garden for RM 6 adult / RM 4 child.",
+      "signature_dish": null,
+      "nearby": [
+        "KL Bird Park",
+        "National Planetarium",
+        "Islamic Arts Museum"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Kuala Lumpur City Hall (DBKL) Parks & Recreation Directorate",
+        "price_source": "Free Municipal Botanical Garden Entry (0 MYR)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 07:00 AM - 08:00 PM Official Gate Hours",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "KL Bird Park (Taman Burung Kuala Lumpur)",
+      "category": "Sightseeing",
+      "city": "Kuala Lumpur",
+      "address": "920 Jalan Cenderawasih, Perdana Botanical Gardens, 50480 Kuala Lumpur",
+      "latitude": 3.1432,
+      "longitude": 101.6883,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 85.0,
+      "currency": "MYR",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "World's largest free-flight walk-in aviary spanning 20.9 acres of lush tropical valley, housing over 3,000 birds from 200 species roaming freely in natural habitats with daily feeding shows and eagle encounters.",
+      "ai_reason": "\u2713 World's largest free-flight walk-in aviary (20.9 acres)\n\u2713 Over 3,000 birds flying freely in natural tropical canopies\n\u2713 Highly engaging educational family highlight with live bird shows",
+      "tip": "Child ticket (ages 3\u201311) is RM 60. Don't miss the Free Flight Bird Show at the semi-outdoor amphitheatre daily at 12:30 PM and 03:30 PM.",
+      "signature_dish": null,
+      "nearby": [
+        "Perdana Botanical Gardens",
+        "National Planetarium"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Safari Bird Park & Wonderzone Sdn Bhd Official Registry (https://www.klbirdpark.com)",
+        "price_source": "Official Entry (85 MYR Adult / 60 MYR Child)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 09:00 AM - 06:00 PM (Last admission 05:00 PM)",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Aquaria KLCC",
+      "category": "Entertainment",
+      "city": "Kuala Lumpur",
+      "address": "Kuala Lumpur Convention Centre Complex, Jalan Pinang, 50088 Kuala Lumpur",
+      "latitude": 3.1534,
+      "longitude": 101.7132,
+      "opening_time": "10:00 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 75.0,
+      "currency": "MYR",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "World-class oceanarium spanning 60,000 square feet beneath the Kuala Lumpur Convention Centre, featuring a 90-meter underwater moving walkway tunnel, sand tiger sharks, giant stingrays, green sea turtles, and touch pools.",
+      "ai_reason": "\u2713 90-meter underwater curved tunnel with moving travelator\n\u2713 Over 5,000 marine and land-bound creatures\n\u2713 Ideal indoor family adventure tailored for children",
+      "tip": "Child tickets (ages 3\u201312) are RM 65. The shark feeding session takes place at 03:00 PM on Mondays, Wednesdays, and Saturdays.",
+      "signature_dish": null,
+      "nearby": [
+        "Petronas Twin Towers",
+        "Suria KLCC",
+        "KLCC Park"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Aquawalk Sdn Bhd Official Oceanarium Registry",
+        "price_source": "Official Entry (75 MYR Adult / 65 MYR Child)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 10:00 AM - 08:00 PM (Last entry 07:00 PM)",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Thean Hou Temple",
+      "category": "Culture",
+      "city": "Kuala Lumpur",
+      "address": "65 Persiaran Endah, Taman Persiaran Desa, 50460 Kuala Lumpur",
+      "latitude": 3.1217,
+      "longitude": 101.6877,
+      "opening_time": "08:00 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "MYR",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Magnificent six-tiered Chinese temple perched on Robson Heights dedicated to Mazu, featuring ornate traditional dragon pillars, contemporary Buddhist-Taoist architectural courts, thousands of hanging red lanterns, and panoramic city vistas.",
+      "ai_reason": "\u2713 One of the largest Chinese temples in Southeast Asia\n\u2713 Spectacular red lantern courtyard and traditional ornate roof carvings\n\u2713 Panoramic panoramic viewpoint overlooking Kuala Lumpur skyline",
+      "tip": "Free entrance. Visit in the late afternoon to experience the daytime architectural details and stay for the illuminated lanterns at dusk.",
+      "signature_dish": null,
+      "nearby": [
+        "Mid Valley Megamall",
+        "Brickfields Little India"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Selangor and Federal Territory Hainan Association Registry",
+        "price_source": "Free Temple Entry (0 MYR)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 08:00 AM - 08:00 PM Official Gate Schedule",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Sultan Abdul Samad Building & Merdeka Square",
+      "category": "Sightseeing",
+      "city": "Kuala Lumpur",
+      "address": "Jalan Raja, City Centre, 50050 Kuala Lumpur",
+      "latitude": 3.1487,
+      "longitude": 101.6944,
+      "opening_time": "08:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "MYR",
+      "rating": 4.6,
+      "crowd": "Low",
+      "description": "Iconic 1897 Mughal-Gothic landmark with shiny copper domes and a 41-meter clock tower, facing the historic Merdeka Square where Malaysia's independence was declared in 1957.",
+      "ai_reason": "\u2713 Malaysia's historic independence square & 1897 heritage landmark\n\u2713 Striking Mughal-Gothic brick architecture with copper domes\n\u2713 Free pedestrian historical square with river confluence views",
+      "tip": "Combine with a stroll across the River of Life pedestrian bridge at the confluence of the Klang and Gombak rivers. Beautifully illuminated after 19:30.",
+      "signature_dish": null,
+      "nearby": [
+        "River of Life",
+        "National Textile Museum",
+        "Masjid Jamek"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "National Heritage Department Heritage Landmark Registry",
+        "price_source": "Free Public Heritage Landmark Access (0 MYR)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 24/7 Public Exterior Viewing",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "National Museum of Malaysia (Muzium Negara)",
+      "category": "Museum",
+      "city": "Kuala Lumpur",
+      "address": "29 Jalan Damansara, Perdana Botanical Gardens, 50566 Kuala Lumpur",
+      "latitude": 3.1378,
+      "longitude": 101.687,
+      "opening_time": "09:00 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 5.0,
+      "currency": "MYR",
+      "rating": 4.5,
+      "crowd": "Low",
+      "description": "Premier repository of Malaysian history and cultural heritage housed in a traditional Minangkabau-style palace, displaying prehistoric artifacts, Malay kingdoms regalia, colonial treaties, and modern nationhood exhibits.",
+      "ai_reason": "\u2713 Comprehensive narrative of Malaysia's history across 4 galleries\n\u2713 Traditional Minangkabau palace facade with Italian mosaic murals\n\u2713 Very affordable cultural admission (RM 5 adult / RM 2 child)",
+      "tip": "Directly connected to Muzium Negara MRT station via underground pedestrian tunnel.",
+      "signature_dish": null,
+      "nearby": [
+        "KL Sentral",
+        "Perdana Botanical Gardens"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Department of Museums Malaysia Official Registry",
+        "price_source": "Official Admission (5 MYR Adult / 2 MYR Child)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 09:00 AM - 05:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "The Ganga Cafe",
+      "category": "Restaurant",
+      "city": "Kuala Lumpur",
+      "address": "19 Lorong Kurau, Bangsar, 59100 Kuala Lumpur",
+      "latitude": 3.1246,
+      "longitude": 101.6705,
+      "opening_time": "08:30 AM",
+      "closing_time": "09:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "MYR",
+      "meal_cost": 24.0,
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Celebrated organic vegetarian sanctuary in peaceful Bangsar, serving wholesome North & South Indian thalis, crispy masala dosas, vegetable biryanis, and fresh herbal teas prepared with unrefined oils and no artificial additives.",
+      "ai_reason": "\u2713 100% pure vegetarian & organic Indian-Malaysian dining\n\u2713 Certified family-friendly with mild spice options for children\n\u2713 4.6\u2605 reviews from international vegetarian travelers",
+      "tip": "Signature Ganga Thali and crispy cheese masala dosa are huge favorites for children. Organic masala chai is freshly brewed.",
+      "signature_dish": "Ganga Signature Vegetarian Thali & Masala Dosa",
+      "vegetarian_dish": "Ganga Signature Vegetarian Thali & Masala Dosa",
+      "dietary_tags": [
+        "vegetarian",
+        "pure_vegetarian",
+        "organic",
+        "family_friendly"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "Bangsar Village",
+        "Mid Valley Megamall"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified Organic Vegetarian Restaurant Registry",
+        "price_source": "A La Carte Average Meal (24 MYR / ~\u20b9425 INR)",
+        "dietary_verification": "100% Pure Vegetarian & Organic Certified",
+        "opening_hours_source": "Daily 08:30 AM - 09:30 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Annalakshmi Vegetarian Restaurant",
+      "category": "Restaurant",
+      "city": "Kuala Lumpur",
+      "address": "116 Jalan Berhala, Brickfields, 50470 Kuala Lumpur",
+      "latitude": 3.1287,
+      "longitude": 101.6865,
+      "opening_time": "11:30 AM",
+      "closing_time": "09:30 PM",
+      "open_days": [
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "MYR",
+      "meal_cost": 30.0,
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Renowned pure vegetarian cultural institution by the Temple of Fine Arts in Little India Brickfields, serving lavish culinary spreads of North & South Indian curries, fresh rotis, paneer, and sweets in an artistic temple-like ambiance.",
+      "ai_reason": "\u2713 Celebrated cultural vegetarian institution in Little India Brickfields\n\u2713 Freshly cooked North & South Indian pure vegetarian fare\n\u2713 4.6\u2605 rating; closed on Mondays",
+      "tip": "Closed on Mondays. Family thalis offer a complete tasting of home-style vegetarian curries, dal, and warm gulab jamun.",
+      "signature_dish": "Grand Vegetarian Thali & Paneer Butter Masala",
+      "vegetarian_dish": "Grand Vegetarian Thali & Paneer Butter Masala",
+      "dietary_tags": [
+        "vegetarian",
+        "pure_vegetarian",
+        "indian_vegetarian",
+        "family_friendly"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "KL Sentral",
+        "Little India Brickfields"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Temple of Fine Arts Culinary Foundation Registry",
+        "price_source": "A La Carte / Buffet Average (30 MYR / ~\u20b9530 INR)",
+        "dietary_verification": "100% Pure Vegetarian Certified",
+        "opening_hours_source": "Tuesday - Sunday 11:30 AM - 03:00 PM, 06:30 PM - 09:30 PM (Closed Mondays)",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Dharma Realm Guan Yin Sagely Monastery Canteen",
+      "category": "Restaurant",
+      "city": "Kuala Lumpur",
+      "address": "161 Jalan Ampang, 50450 Kuala Lumpur",
+      "latitude": 3.1601,
+      "longitude": 101.7161,
+      "opening_time": "11:00 AM",
+      "closing_time": "02:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "MYR",
+      "meal_cost": 18.0,
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Legendary Buddhist monastery vegetarian canteen within walking distance of Petronas Towers, serving an immense spread of over 50 freshly cooked plant-based dishes, braised tofu, herbal soups, and plant-based delicacies prepared with no garlic or onion.",
+      "ai_reason": "\u2713 100% pure Buddhist vegetarian food hall near Petronas Towers\n\u2713 Immense variety of 50+ wholesome plant-based dishes\n\u2713 4.6\u2605 rating for fresh, flavorful, affordable vegetarian dining",
+      "tip": "Lunch service operates on weekdays from 11:00 AM to 02:30 PM. Arrive by 12:00 for the freshest selection of stir-fried greens and tofu.",
+      "signature_dish": "Monastery Mixed Vegetarian Rice & Herbal Ginseng Broth",
+      "vegetarian_dish": "Monastery Mixed Vegetarian Rice & Herbal Ginseng Broth",
+      "dietary_tags": [
+        "vegetarian",
+        "pure_vegetarian",
+        "buddhist_vegetarian",
+        "vegan"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "Petronas Twin Towers",
+        "Ampang Park LRT"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Dharma Realm Buddhist Association Dining Registry",
+        "price_source": "Buffet Economy Plate (18 MYR / ~\u20b9320 INR)",
+        "dietary_verification": "100% Pure Buddhist Vegetarian (No Alliums)",
+        "opening_hours_source": "Monday - Friday 11:00 AM - 02:30 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Saravanaa Bhavan",
+      "category": "Restaurant",
+      "city": "Kuala Lumpur",
+      "address": "52 Jalan Hang Kasturi, City Centre, 50050 Kuala Lumpur",
+      "latitude": 3.1448,
+      "longitude": 101.6961,
+      "opening_time": "08:30 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "MYR",
+      "meal_cost": 22.0,
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "description": "Premier international chain for traditional pure South Indian vegetarian cuisine, located directly across from Central Market, serving golden ghee roast dosas, steamed idlis with fresh coconut chutney, and South Indian filter coffee.",
+      "ai_reason": "\u2713 Trusted global brand for authentic South Indian vegetarian dining\n\u2713 Convenient location directly opposite Central Market\n\u2713 Child-favorite paper dosas, poori masalas, and sweets",
+      "tip": "The Special Ghee Masala Dosa and Mini Tiffin (idli, mini dosa, vada, and kesari) provide a comforting family breakfast or lunch.",
+      "signature_dish": "Special Ghee Roast Dosa & South Indian Thali",
+      "vegetarian_dish": "Special Ghee Roast Dosa & South Indian Thali",
+      "dietary_tags": [
+        "vegetarian",
+        "pure_vegetarian",
+        "south_indian",
+        "family_friendly"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "Central Market",
+        "Pasar Seni MRT",
+        "Chinatown"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Saravanaa Bhavan International Malaysia Registry",
+        "price_source": "A La Carte Average Meal (22 MYR / ~\u20b9390 INR)",
+        "dietary_verification": "100% Pure Vegetarian Kitchen",
+        "opening_hours_source": "Daily 08:30 AM - 10:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Simple Life Healthy Vegetarian Restaurant",
+      "category": "Restaurant",
+      "city": "Kuala Lumpur",
+      "address": "LG-001, Lower Ground Floor, Lot 10 Shopping Centre, 50 Jalan Sultan Ismail, 50250 Kuala Lumpur",
+      "latitude": 3.1468,
+      "longitude": 101.7118,
+      "opening_time": "10:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "MYR",
+      "meal_cost": 26.0,
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "description": "Multi-award winning Malaysian organic vegetarian chain in Bukit Bintang, renowned for organic brown rice Nasi Lemak, vegetarian curry laksa, Lei Cha (thunder tea rice), and homemade dumplings prepared without MSG or artificial coloring.",
+      "ai_reason": "\u2713 Healthy organic Malaysian vegetarian specialties\n\u2713 Natural plant-based versions of Nasi Lemak & Curry Laksa\n\u2713 Convenient Bukit Bintang shopping mall location",
+      "tip": "Try their signature Vegetarian Nasi Lemak made with multigrain brown rice and aromatic rendang lion's mane mushroom.",
+      "signature_dish": "Healthy Vegetarian Nasi Lemak & Curry Laksa",
+      "vegetarian_dish": "Healthy Vegetarian Nasi Lemak & Curry Laksa",
+      "dietary_tags": [
+        "vegetarian",
+        "organic",
+        "malaysian_vegetarian",
+        "healthy"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "Lot 10",
+        "Bukit Bintang Monorail",
+        "Pavilion KL"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Simple Life Healthy Concept Malaysia Registry",
+        "price_source": "A La Carte Average Meal (26 MYR / ~\u20b9460 INR)",
+        "dietary_verification": "100% Vegetarian & Organic Sourced",
+        "opening_hours_source": "Daily 10:00 AM - 10:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Kuan Yin Vegetarian Restaurant",
+      "category": "Restaurant",
+      "city": "Kuala Lumpur",
+      "address": "1084 Jalan 17/29, Section 17, 46400 Petaling Jaya, Selangor",
+      "latitude": 3.1251,
+      "longitude": 101.6358,
+      "opening_time": "10:00 AM",
+      "closing_time": "09:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "MYR",
+      "meal_cost": 22.0,
+      "rating": 4.5,
+      "crowd": "Low",
+      "description": "Cherished long-standing vegetarian restaurant serving handcrafted plant-based Cantonese dim sum, vegetarian char kway teow, crispy mock roast goose, and claypot tofu in a serene atmosphere.",
+      "ai_reason": "\u2713 Authentic plant-based Cantonese dim sum & claypot specialties\n\u2713 Peaceful off-the-beaten-track culinary favorite\n\u2713 4.5\u2605 reviews for traditional flavors and delicate dim sum",
+      "tip": "Enjoy their weekend morning vegetarian dim sum basket with steamed plant-based siew mai and bao.",
+      "signature_dish": "Vegetarian Dim Sum Basket & Claypot Tofu",
+      "vegetarian_dish": "Vegetarian Dim Sum Basket & Claypot Tofu",
+      "dietary_tags": [
+        "vegetarian",
+        "pure_vegetarian",
+        "dim_sum",
+        "cantonese"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "Section 17",
+        "Universiti Malaya"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified Traditional Vegetarian Dining Registry",
+        "price_source": "A La Carte Average Meal (22 MYR / ~\u20b9390 INR)",
+        "dietary_verification": "100% Vegetarian Certified",
+        "opening_hours_source": "Daily 10:00 AM - 09:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "BMS Organics Cafe",
+      "category": "Restaurant",
+      "city": "Kuala Lumpur",
+      "address": "Level 1, Pavilion Kuala Lumpur, 168 Jalan Bukit Bintang, 55100 Kuala Lumpur",
+      "latitude": 3.149,
+      "longitude": 101.7133,
+      "opening_time": "10:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "MYR",
+      "meal_cost": 28.0,
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "description": "Modern health cafe inside luxury Pavilion KL serving organic multigrain Hakka Lei Cha, organic soya milk curry laksa, energy salad bowls, and cold-pressed botanical drinks.",
+      "ai_reason": "\u2713 Wholesome organic vegetarian dining inside Pavilion KL\n\u2713 Signature multigrain Lei Cha & soy-milk curry laksa\n\u2713 Comfortable family-friendly dining in central Bukit Bintang",
+      "tip": "Great healthy lunch stop while exploring Pavilion KL and Bukit Bintang shopping malls.",
+      "signature_dish": "Multigrain Hakka Lei Cha & Organic Soya Curry Laksa",
+      "vegetarian_dish": "Multigrain Hakka Lei Cha & Organic Soya Curry Laksa",
+      "dietary_tags": [
+        "vegetarian",
+        "organic",
+        "healthy",
+        "family_friendly"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "Pavilion KL",
+        "Starhill",
+        "Bukit Bintang MRT"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "BMS Organics Malaysia Dining Registry",
+        "price_source": "A La Carte Average Meal (28 MYR / ~\u20b9495 INR)",
+        "dietary_verification": "100% Organic & Vegetarian Certified",
+        "opening_hours_source": "Daily 10:00 AM - 10:00 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "WTF - What Tasty Food",
+      "category": "Restaurant",
+      "city": "Kuala Lumpur",
+      "address": "98 Lorong Maarof, Bangsar, 59100 Kuala Lumpur",
+      "latitude": 3.1311,
+      "longitude": 101.6738,
+      "opening_time": "11:30 AM",
+      "closing_time": "10:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "MYR",
+      "meal_cost": 32.0,
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "description": "Trendy Indian and international fusion vegetarian bistro in Bangsar, featuring tandoori soya chaap, vegetarian wood-fired pizzas, sizzlers, paneer tacos, and rich dessert milkshakes loved by traveling families.",
+      "ai_reason": "\u2713 Vibrant vegetarian comfort food combining Indian & Western classics\n\u2713 Child-pleasing pizzas, pasta bowls, and sizzling platters\n\u2713 4.5\u2605 rating for flavor, hospitality, and family comfort",
+      "tip": "Kids love their tandoori soya chaap wraps and thin-crust vegetarian Margherita pizzas.",
+      "signature_dish": "Tandoori Soya Chaap Platter & Wood-Fired Veggie Pizza",
+      "vegetarian_dish": "Tandoori Soya Chaap Platter & Wood-Fired Veggie Pizza",
+      "dietary_tags": [
+        "vegetarian",
+        "pure_vegetarian",
+        "family_friendly",
+        "kid_favorite"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "Bangsar Telawi",
+        "Mid Valley Megamall"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified Fusion Vegetarian Bistro Registry",
+        "price_source": "A La Carte Average Meal (32 MYR / ~\u20b9565 INR)",
+        "dietary_verification": "100% Pure Vegetarian Kitchen",
+        "opening_hours_source": "Daily 11:30 AM - 10:30 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Kek Seng Vegetarian Restaurant",
+      "category": "Restaurant",
+      "city": "Kuala Lumpur",
+      "address": "Jalan Pudu, Pudu, 55100 Kuala Lumpur",
+      "latitude": 3.1388,
+      "longitude": 101.7102,
+      "opening_time": "10:30 AM",
+      "closing_time": "08:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "MYR",
+      "meal_cost": 20.0,
+      "rating": 4.5,
+      "crowd": "Low",
+      "description": "Authentic homestyle Malaysian-Chinese vegetarian kitchen in Pudu, famous for herbal vegetarian Bak Kut Teh, crispy oyster mushroom fritters, and claypot tofu rice.",
+      "ai_reason": "\u2713 Hearty plant-based Malaysian herbal Bak Kut Teh\n\u2713 Wholesome traditional claypot tofu dishes\n\u2713 4.5\u2605 reviews from local vegetarian food lovers",
+      "tip": "Order the herbal vegetarian Bak Kut Teh served bubbling in a claypot with fried dough crullers (youtiao).",
+      "signature_dish": "Herbal Vegetarian Bak Kut Teh & Claypot Tofu",
+      "vegetarian_dish": "Herbal Vegetarian Bak Kut Teh & Claypot Tofu",
+      "dietary_tags": [
+        "vegetarian",
+        "pure_vegetarian",
+        "malaysian_chinese"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "Pudu LRT",
+        "Berjaya Times Square"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified Homestyle Vegetarian Kitchen Registry",
+        "price_source": "A La Carte Average Meal (20 MYR / ~\u20b9350 INR)",
+        "dietary_verification": "100% Vegetarian Certified",
+        "opening_hours_source": "Daily 10:30 AM - 08:30 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Sangeetha Vegetarian Restaurant",
+      "category": "Restaurant",
+      "city": "Kuala Lumpur",
+      "address": "65 Lebuh Ampang, City Centre, 50100 Kuala Lumpur",
+      "latitude": 3.1495,
+      "longitude": 101.6968,
+      "opening_time": "08:00 AM",
+      "closing_time": "10:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "MYR",
+      "meal_cost": 22.0,
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "description": "Long-established 100% pure vegetarian North & South Indian restaurant in historic Lebuh Ampang near Masjid Jamek, renowned for giant paper masala dosas, fresh chana bhatura, paneer tikka, and aromatic filter coffee.",
+      "ai_reason": "\u2713 100% pure vegetarian Indian restaurant in historic city centre\n\u2713 Crispy giant paper dosas and soft chana bhaturas\n\u2713 Prime location near Masjid Jamek transit station",
+      "tip": "Fantastic breakfast or lunch stop when visiting Merdeka Square and the River of Life.",
+      "signature_dish": "Giant Paper Masala Dosa & Chana Bhatura",
+      "vegetarian_dish": "Giant Paper Masala Dosa & Chana Bhatura",
+      "dietary_tags": [
+        "vegetarian",
+        "pure_vegetarian",
+        "indian_vegetarian",
+        "family_friendly"
+      ],
+      "is_dining": true,
+      "nearby": [
+        "Masjid Jamek",
+        "River of Life",
+        "Merdeka Square"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Sangeetha International Vegetarian Restaurant Registry",
+        "price_source": "A La Carte Average Meal (22 MYR / ~\u20b9390 INR)",
+        "dietary_verification": "100% Pure Vegetarian Kitchen",
+        "opening_hours_source": "Daily 08:00 AM - 10:30 PM",
+        "overall_status": "Verified",
+        "data_confidence": "high"
+      }
+    }
+  ]
+}

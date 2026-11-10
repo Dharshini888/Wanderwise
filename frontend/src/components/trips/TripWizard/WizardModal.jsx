@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { IconX, IconSparkles, IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import { fetchCurrencyRegistry, checkDuplicateTrip } from '../../../api/trips';
+import { useAuth } from '../../../context/AuthContext';
 
 import DestinationStep from './steps/DestinationStep';
 import DateStep from './steps/DateStep';
@@ -21,7 +22,29 @@ import ReviewStep from './steps/ReviewStep';
 export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
+  const [generationStage, setGenerationStage] = useState(0);
   const [currencyList, setCurrencyList] = useState([]);
+
+  const GENERATION_STAGES = [
+    { title: 'Personalizing Itinerary Plan', desc: 'Resolving travel style, group dynamics & pace preferences...' },
+    { title: 'Curating Real Places & Heritage Sites', desc: 'Selecting verified attractions, UNESCO landmarks & viewpoints...' },
+    { title: 'Matching Dining & Dietary Criteria', desc: 'Verifying restaurants, street food & vegetarian-friendly venues...' },
+    { title: 'Calculating Route & Door-to-Door Budget', desc: 'Estimating intercity transport, lodging & category allocations...' },
+    { title: 'Finalizing & Saving Trip', desc: 'Persisting your complete day-by-day structured itinerary...' },
+  ];
+
+  useEffect(() => {
+    let interval;
+    if (submitting) {
+      setGenerationStage(0);
+      interval = setInterval(() => {
+        setGenerationStage((prev) => (prev < GENERATION_STAGES.length - 1 ? prev + 1 : prev));
+      }, 3000);
+    } else {
+      setGenerationStage(0);
+    }
+    return () => clearInterval(interval);
+  }, [submitting]);
 
   const [form, setForm] = useState({
     destination: '',
@@ -58,6 +81,8 @@ export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
     weather_preference: 'mix',
   });
 
+  const { user } = useAuth();
+
   useEffect(() => {
     if (isOpen) {
       fetchCurrencyRegistry()
@@ -67,8 +92,20 @@ export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
           }
         })
         .catch(() => {});
+
+      if (user) {
+        setForm((prev) => ({
+          ...prev,
+          currency: user.currency || prev.currency || 'USD',
+          budget_type: user.preferred_budget || prev.budget_type || 'mid_range',
+          travel_style: user.travel_styles ? user.travel_styles.split(',')[0].trim().toLowerCase() : prev.travel_style,
+          interests: user.preferred_activities || prev.interests,
+          food_preferences: user.dietary_preferences || prev.food_preferences,
+          weather_preference: user.preferred_climate || prev.weather_preference,
+        }));
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, user]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -201,8 +238,13 @@ export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
 
       await onSuccess(payload);
       onClose();
-    } catch (_) {}
-    setSubmitting(false);
+    } catch (err) {
+      console.error('[WizardModal] Generation error:', err);
+      const errMsg = err?.response?.data?.detail || err?.message || 'Failed to generate itinerary. Please try again.';
+      alert(`Itinerary generation notice: ${errMsg}`);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const renderStepTitle = () => {
@@ -227,7 +269,44 @@ export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/65 backdrop-blur-md p-4 sm:p-6 overflow-hidden">
-      <div className="bg-white dark:bg-gray-800 rounded-3xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-3xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden relative">
+        {/* Active Generation Loading Overlay */}
+        {submitting && (
+          <div className="absolute inset-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md z-50 flex flex-col items-center justify-center p-6 text-center space-y-5 animate-fadeIn">
+            <div className="relative">
+              <div className="w-16 h-16 border-4 border-blue-500/20 border-t-blue-600 rounded-full animate-spin"></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <IconSparkles size={24} className="text-blue-600 animate-pulse" />
+              </div>
+            </div>
+            <div className="space-y-1.5 max-w-sm">
+              <span className="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400">
+                Stage {generationStage + 1} of {GENERATION_STAGES.length}
+              </span>
+              <h3 className="text-base font-extrabold text-gray-900 dark:text-white font-heading">
+                {GENERATION_STAGES[generationStage]?.title || 'Planning Your Itinerary'}
+              </h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {GENERATION_STAGES[generationStage]?.desc || 'Validating routes, verified places, and budget allocation...'}
+              </p>
+            </div>
+            {/* Visual Step Indicator Dots */}
+            <div className="flex items-center gap-1.5 pt-1">
+              {GENERATION_STAGES.map((_, sIdx) => (
+                <div
+                  key={sIdx}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    sIdx === generationStage
+                      ? 'w-6 bg-blue-600'
+                      : sIdx < generationStage
+                      ? 'w-2 bg-emerald-500'
+                      : 'w-2 bg-gray-300 dark:bg-gray-700'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
         {/* Header & Progress Bar */}
         <div className="p-6 pb-4 shrink-0 border-b border-gray-100 dark:border-gray-700/80 space-y-3">
           <div className="flex items-center justify-between">

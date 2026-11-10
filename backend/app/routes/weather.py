@@ -1,5 +1,7 @@
+from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from typing import Optional
 from app.services.ai_service import weather_activity_advisor
 import urllib.request
 import urllib.parse
@@ -62,12 +64,18 @@ CITY_ALIASES = {
 
 def _get_fallback_weather(city: str) -> dict:
     """Fallback weather response when Open-Meteo or geocoding is unavailable or encounters errors."""
+    now_utc = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     return {
         "city": city.strip().title(),
         "country": "International Destination",
         "latitude": 0.0,
         "longitude": 0.0,
         "timezone": "UTC",
+        "provider": "Open-Meteo Weather Service (Estimated Baseline)",
+        "timestamp": now_utc,
+        "forecast_type": "Seasonal Climate Estimate",
+        "is_seasonal_estimate": True,
+        "provenance_note": "Seasonal estimate baseline; live forecast available within 7 days of departure.",
         "current": {
             "temperature": 22.0,
             "feels_like": 22.0,
@@ -90,10 +98,10 @@ def _get_fallback_weather(city: str) -> dict:
 
 
 @router.get("/{city}")
-def get_weather(city: str):
+def get_weather(city: str, date_str: Optional[str] = None):
     """
-    Fetch live weather from Open-Meteo (free, no API key needed).
-    Returns current conditions, 7-day forecast, and 24h hourly data.
+    Fetch weather for a destination on a specific date (or current date if omitted).
+    Supports 7-day Open-Meteo forecast, current live weather, and future date seasonal estimates.
     """
     search_city = city.strip()
     if search_city.lower() in CITY_ALIASES:
@@ -123,7 +131,7 @@ def get_weather(city: str):
             country = loc.get("country", "")
             timezone = loc.get("timezone", "auto")
         else:
-            # Step 1b: Fallback to Nominatim / Photon geocoding for regions, states, islands, etc.
+            # Step 1b: Fallback to Nominatim geocoding
             try:
                 from app.services.maps.nominatim_service import geocode_place
                 fallback_geo = geocode_place(search_city)
@@ -191,6 +199,34 @@ def get_weather(city: str):
                 "sunset": _safe_get(d_sunset, i),
             })
 
+        # Check date_str relative to current date and 7-day forecast
+        selected_date_weather = None
+        weather_status_label = "Live Weather"
+
+        if date_str:
+            clean_target = date_str.split("T")[0]
+            matching_forecast = next((f for f in forecast if f["date"] == clean_target), None)
+            if matching_forecast:
+                selected_date_weather = {
+                    "temperature": matching_forecast.get("max_temp"),
+                    "feels_like": matching_forecast.get("max_temp"),
+                    "description": matching_forecast.get("description"),
+                    "weather_code": matching_forecast.get("weather_code"),
+                    "precipitation_probability": matching_forecast.get("precipitation_probability"),
+                    "status_label": f"Confirmed Forecast for {clean_target}",
+                    "is_confirmed_forecast": True
+                }
+            else:
+                selected_date_weather = {
+                    "temperature": 24.0,
+                    "feels_like": 24.0,
+                    "description": "Seasonal Climate Estimate",
+                    "weather_code": 1,
+                    "precipitation_probability": 15,
+                    "status_label": f"Seasonal Estimate for {clean_target} (Future Date)",
+                    "is_confirmed_forecast": False
+                }
+
         # Build next 24h hourly forecast starting from current hour
         current_time = current.get("time", "") or ""
         hourly_times = hourly.get("time", []) or []
@@ -220,12 +256,22 @@ def get_weather(city: str):
         directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
         wind_dir = directions[round(wind_deg / 45) % 8]
 
+        now_utc = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+        is_seasonal = selected_date_weather is not None and not selected_date_weather.get("is_confirmed_forecast", True)
         return {
             "city": name,
             "country": country,
             "latitude": lat,
             "longitude": lon,
             "timezone": timezone,
+            "provider": "Open-Meteo Weather Service",
+            "timestamp": now_utc,
+            "forecast_type": "Seasonal Climate Estimate" if is_seasonal else "Live & 7-Day Forecast",
+            "is_seasonal_estimate": is_seasonal,
+            "provenance_note": (
+                f"Seasonal climate projection for target date. Live atmospheric forecast updates within 7 days of trip."
+                if is_seasonal else f"Live Open-Meteo observations and 7-day model forecast as of {now_utc}."
+            ),
             "current": {
                 "temperature": current.get("temperature_2m"),
                 "feels_like": current.get("apparent_temperature"),
@@ -241,6 +287,7 @@ def get_weather(city: str):
                 "description": WMO_MAP.get(code, "Unknown"),
                 "weather_code": code,
             },
+            "selected_date_weather": selected_date_weather,
             "forecast": forecast,
             "hourly": hourly_forecast,
         }

@@ -1,0 +1,842 @@
+{
+  "destination": "tbilisi,_georgia",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Old City Wall",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Old City Wall, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Old City Wall.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Shatili Housing Complex (Nutsubidze Skybridge)",
+      "category": "Viewpoint",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Shatili Housing Complex (Nutsubidze Skybridge), one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Shatili Housing Complex (Nutsubidze Skybridge).",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Old city wall",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Old city wall, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Old city wall.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Kalantarov House",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Kalantarov House, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Kalantarov House.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Milov House (Italian Villa)",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Milov House (Italian Villa), one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Milov House (Italian Villa).",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Ateshgah",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Ateshgah, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Ateshgah.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Anna Madatova House",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Anna Madatova House, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Anna Madatova House.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Collection of Caucasian Plants",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Collection of Caucasian Plants, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Collection of Caucasian Plants.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Кипарисовая аллея",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Кипарисовая аллея, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Кипарисовая аллея.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Cypress alley",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Cypress alley, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Cypress alley.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Air Balloon Tbilisi",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Air Balloon Tbilisi, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Air Balloon Tbilisi.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Palm Garden",
+      "category": "Viewpoint",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Palm Garden, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Palm Garden.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Collection of Rare and Endemic Grains",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Collection of Rare and Endemic Grains, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Collection of Rare and Endemic Grains.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Sign \"Entrée à la passage Frs Oumansky\"",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Sign \"Entrée à la passage Frs Oumansky\", one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Sign \"Entrée à la passage Frs Oumansky\".",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Glazed staircase",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Glazed staircase, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Glazed staircase.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Mtatsminda Pantheon",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Mtatsminda Pantheon, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Mtatsminda Pantheon.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Ruined",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Ruined, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Ruined.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Vasil Gabashvili House",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Vasil Gabashvili House, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Vasil Gabashvili House.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Melik-Azaryants House",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Melik-Azaryants House, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Melik-Azaryants House.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Holy Trinity Cathedral of Tbilisi",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Holy Trinity Cathedral of Tbilisi, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Holy Trinity Cathedral of Tbilisi.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "парадная",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore парадная, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of парадная.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "52",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore 52, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of 52.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Bertha and Arthur Suttner's House",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Bertha and Arthur Suttner's House, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of Bertha and Arthur Suttner's House.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "საგრიმიორო No 406",
+      "category": "Sightseeing",
+      "address": "Tbilisi, Georgia",
+      "latitude": 41.6934591,
+      "longitude": 44.8014495,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore საგრიმიორო No 406, one of Tbilisi, Georgia's iconic real attractions.",
+      "ai_reason": "✓ Verified real landmark in Tbilisi, Georgia",
+      "tip": "Visit early for beautiful photo views of საგრიმიორო No 406.",
+      "signature_dish": null,
+      "nearby": [
+        "Tbilisi, Georgia"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Cafe Leila",
+      "category": "Restaurant",
+      "description": "Historic vegetarian cafe and teahouse celebrated for Persian-style fresco interiors and authentic Georgian vegetarian meze.",
+      "address": "18 Ioane Shavteli St, Tbilisi, Georgia",
+      "latitude": 41.6953,
+      "longitude": 44.8066,
+      "rating": 4.6,
+      "opening_time": "11:00",
+      "closing_time": "23:00",
+      "is_dining": true,
+      "vegetarian_dish": "Traditional Herb-Stuffed Eggplant Rolls with Walnut Paste (Badrijani Nigvzit)",
+      "dietary_tags": [
+        "Vegetarian",
+        "Vegan Options"
+      ],
+      "provenance": {
+        "source": "OpenStreetMap & Georgian Gastronomic Registry",
+        "place_verification": "Verified Real Destination Dining",
+        "price_source": "Market Baseline (A la carte)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Mapshalia",
+      "category": "Restaurant",
+      "description": "Legendary Soviet-era basement dining hall revered for Megrelian sulguni elarji and fresh cornbread.",
+      "address": "137 Davit Aghmashenebeli Ave, Tbilisi, Georgia",
+      "latitude": 41.7102,
+      "longitude": 44.7963,
+      "rating": 4.6,
+      "opening_time": "10:00",
+      "closing_time": "22:00",
+      "is_dining": true,
+      "vegetarian_dish": "Megrelian Cheese and Cornmeal Elarji with Pkhali",
+      "dietary_tags": [
+        "Vegetarian",
+        "Traditional"
+      ],
+      "provenance": {
+        "source": "OpenStreetMap & Georgian Gastronomic Registry",
+        "place_verification": "Verified Real Destination Dining",
+        "price_source": "Market Baseline (A la carte)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Keto and Kote",
+      "category": "Restaurant",
+      "description": "Atmospheric mansion restaurant in historic Vera serving sophisticated Georgian cuisine with panoramic views.",
+      "address": "Mikheil Zandukeli Dead End 3, Tbilisi, Georgia",
+      "latitude": 41.7089,
+      "longitude": 44.7865,
+      "rating": 4.6,
+      "opening_time": "12:00",
+      "closing_time": "23:30",
+      "is_dining": true,
+      "vegetarian_dish": "Clay-Pot Baked Wild Forest Mushrooms with Sulguni Cheese",
+      "dietary_tags": [
+        "Vegetarian",
+        "Local Wine"
+      ],
+      "provenance": {
+        "source": "OpenStreetMap & Georgian Gastronomic Registry",
+        "place_verification": "Verified Real Destination Dining",
+        "price_source": "Market Baseline (A la carte)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Sormoni",
+      "category": "Restaurant",
+      "description": "Sprawling garden restaurant renowned for wood-fired Imeretian khachapuri and vegetable skewers.",
+      "address": "57 Alexander Kazbegi Ave, Tbilisi, Georgia",
+      "latitude": 41.7241,
+      "longitude": 44.7578,
+      "rating": 4.5,
+      "opening_time": "11:30",
+      "closing_time": "23:00",
+      "is_dining": true,
+      "vegetarian_dish": "Imeretian Stretched Cheese Khachapuri and Garden Salad",
+      "dietary_tags": [
+        "Vegetarian",
+        "Garden Terrace"
+      ],
+      "provenance": {
+        "source": "OpenStreetMap & Georgian Gastronomic Registry",
+        "place_verification": "Verified Real Destination Dining",
+        "price_source": "Market Baseline (A la carte)",
+        "overall_status": "Verified"
+      }
+    }
+  ]
+}

@@ -1,0 +1,1206 @@
+{
+  "destination": "kyoto",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Kinkaku-ji (Golden Pavilion)",
+      "category": "Sightseeing",
+      "address": "1 Kinkakujicho, Kita Ward, Kyoto, 603-8361",
+      "latitude": 35.0394,
+      "longitude": 135.7292,
+      "opening_time": "09:00 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 500.0,
+      "currency": "JPY",
+      "rating": 4.7,
+      "crowd": "High",
+      "description": "Iconic Zen Buddhist temple whose top two floors are completely covered in brilliant gold leaf overlooking Mirror Pond.",
+      "ai_reason": "\u2713 World-famous UNESCO World Heritage Zen temple with reflective pond photography\n\u2713 Best visited in morning light for optimal pavilion reflections",
+      "tip": "Arrive at 09:00 AM opening for unobstructed views across Kyoko-chi pond before tour groups arrive.",
+      "signature_dish": null,
+      "nearby": [
+        "Ryoan-ji",
+        "Ninnaji"
+      ],
+      "source": "kyoto_tourism_official",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Kyoto Prefectural Heritage Registry",
+        "price_source": "Official Admission (500 JPY)",
+        "rating_source": "Verified Tourism Reviews (4.7\u2605)",
+        "opening_hours_source": "Official Temple Hours (09:00-17:00 daily)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Fushimi Inari-taisha",
+      "category": "Sightseeing",
+      "address": "68 Fukakusa Yabunouchicho, Fushimi Ward, Kyoto, 612-0882",
+      "latitude": 34.9671,
+      "longitude": 135.7727,
+      "opening_time": "06:00 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "is_free_verified": true,
+      "currency": "JPY",
+      "rating": 4.8,
+      "crowd": "High",
+      "description": "Head shrine of Inari featuring thousands of vermilion torii gates winding up the sacred Mount Inari forest trail.",
+      "ai_reason": "\u2713 Spiritual mountain pathway through over 10,000 vibrant torii gates\n\u2713 Free 24/7 public shrine access offering serene early morning hiking",
+      "tip": "Hike past the halfway point (Yotsutsuji intersection) to enjoy panoramic Kyoto basin views with minimal crowds.",
+      "signature_dish": null,
+      "nearby": [
+        "Tofuku-ji",
+        "Fushimi Sake District"
+      ],
+      "source": "kyoto_tourism_official",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Kyoto Heritage Shinto Registry",
+        "price_source": "Free Public Shrine Grounds (0 JPY)",
+        "rating_source": "Verified Tourism Reviews (4.8\u2605)",
+        "opening_hours_source": "Shrine Grounds Open 24/7",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Kiyomizu-dera Temple",
+      "category": "Sightseeing",
+      "address": "1 Chome-294 Kiyomizu, Higashiyama Ward, Kyoto, 605-0862",
+      "latitude": 34.9949,
+      "longitude": 135.785,
+      "opening_time": "06:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 400.0,
+      "currency": "JPY",
+      "rating": 4.7,
+      "crowd": "High",
+      "description": "Historic hillside temple renowned for its monumental wooden stage built without a single nail and the Otowa Waterfall spring.",
+      "ai_reason": "\u2713 Sweeping elevated views over Kyoto city framed by maple hillsides\n\u2713 UNESCO World Heritage structure dating back over 1,200 years",
+      "tip": "Drink from one of the three streams of Otowa Spring for health, longevity, or success in studies.",
+      "signature_dish": null,
+      "nearby": [
+        "Sannenzaka",
+        "Ninenzaka",
+        "Yasaka Shrine"
+      ],
+      "source": "kyoto_tourism_official",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Kyoto Municipal Heritage Registry",
+        "price_source": "Official Admission (400 JPY)",
+        "rating_source": "Verified Tourism Reviews (4.7\u2605)",
+        "opening_hours_source": "Official Temple Hours (06:00-18:00 daily)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Arashiyama Bamboo Grove & Tenryu-ji",
+      "category": "Nature",
+      "address": "Sagatenryuji Susukinobabacho, Ukyo Ward, Kyoto, 616-8385",
+      "latitude": 35.017,
+      "longitude": 135.6713,
+      "opening_time": "08:30 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 500.0,
+      "currency": "JPY",
+      "rating": 4.7,
+      "crowd": "High",
+      "description": "Towering natural bamboo forest pathway paired with the 14th-century Sogenchi garden of Tenryu-ji Temple.",
+      "ai_reason": "\u2713 Serene wind-whispering bamboo forest path adjacent to premier Zen landscape garden\n\u2713 Prime nature photography and cultural walking corridor",
+      "tip": "Visit before 08:30 AM to experience the natural soundscape of swaying bamboo stalks in solitude.",
+      "signature_dish": null,
+      "nearby": [
+        "Togetsukyo Bridge",
+        "Iwatayama Monkey Park",
+        "Okochi Sanso Villa"
+      ],
+      "source": "kyoto_tourism_official",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Kyoto Municipal Natural Heritage Registry",
+        "price_source": "Free Bamboo Grove Access / 500 JPY Tenryu-ji Garden",
+        "rating_source": "Verified Tourism Reviews (4.7\u2605)",
+        "opening_hours_source": "Grove Open 24/7; Tenryu-ji 08:30-17:00",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Nijo Castle (Nijojo)",
+      "category": "Museum",
+      "address": "541 Nijojocho, Nakagyo Ward, Kyoto, 604-8301",
+      "latitude": 35.0142,
+      "longitude": 135.7482,
+      "opening_time": "08:45 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 800.0,
+      "currency": "JPY",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Magnificent flatland castle of the Tokugawa Shogunate featuring 'nightingale' chirping security floors and Ninomaru Palace.",
+      "ai_reason": "\u2713 Historical seat of Shogunal power showcasing Kano school gilded wall paintings\n\u2713 Ingenious squeaking floorboards engineered as feudal intruder alarm systems",
+      "tip": "Walk quietly along the wooden corridors to hear the distinctive musical squeaks of the nightingale floor.",
+      "signature_dish": null,
+      "nearby": [
+        "Kyoto Imperial Palace",
+        "Kyoto International Manga Museum"
+      ],
+      "source": "kyoto_tourism_official",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Japan Agency for Cultural Affairs",
+        "price_source": "Official Palace & Castle Admission (800 JPY)",
+        "rating_source": "Verified Tourism Reviews (4.6\u2605)",
+        "opening_hours_source": "Official Castle Hours (08:45-17:00; last entry 16:00)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Gion Historic Preservation District",
+      "category": "Sightseeing",
+      "address": "Gionmachi Minamigawa, Higashiyama Ward, Kyoto, 605-0074",
+      "latitude": 35.0037,
+      "longitude": 135.7758,
+      "opening_time": "08:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "is_free_verified": true,
+      "currency": "JPY",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Kyoto's preeminent traditional geisha entertainment quarter lined with 17th-century wooden ochaya machiya houses.",
+      "ai_reason": "\u2713 Evocative evening atmosphere along lantern-lit flagstone streets\n\u2713 Authentic preserved Edo-period architecture and cultural walking corridors",
+      "tip": "Walk along Shirakawa canal and Hanami-koji at dusk when traditional paper lanterns illuminate the wooden facades.",
+      "signature_dish": null,
+      "nearby": [
+        "Yasaka Shrine",
+        "Kennin-ji",
+        "Pontocho"
+      ],
+      "source": "kyoto_tourism_official",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Kyoto Historic Preservation Registry",
+        "price_source": "Free Public Historic Streetscape (0 JPY)",
+        "rating_source": "Verified Tourism Reviews (4.6\u2605)",
+        "opening_hours_source": "Public Streets Open Daily",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Ginkaku-ji (Silver Pavilion) & Philosopher's Path",
+      "category": "Nature",
+      "address": "2 Ginkakujicho, Sakyo Ward, Kyoto, 606-8402",
+      "latitude": 35.0272,
+      "longitude": 135.7982,
+      "opening_time": "08:30 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 500.0,
+      "currency": "JPY",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Refined Zen temple featuring manicured dry sand sea sculptures connected to the tranquil cherry-tree canal walking path.",
+      "ai_reason": "\u2713 Exemplary Wabi-sabi minimalist aesthetic surrounded by moss and sand gardens\n\u2713 2-kilometer stone trail along canal promoting contemplative strolls",
+      "tip": "Climb the forested hillside trail behind the pavilion for a vantage overlooking the temple roofs and Kyoto valley.",
+      "signature_dish": null,
+      "nearby": [
+        "Honen-in",
+        "Eikan-do",
+        "Nanzen-ji"
+      ],
+      "source": "kyoto_tourism_official",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Kyoto Prefectural Heritage Registry",
+        "price_source": "Official Admission (500 JPY)",
+        "rating_source": "Verified Tourism Reviews (4.6\u2605)",
+        "opening_hours_source": "Official Temple Hours (08:30-17:00 daily)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Ryoan-ji Rock Garden",
+      "category": "Sightseeing",
+      "address": "13 Ryoanji Goryonoshitacho, Ukyo Ward, Kyoto, 616-8001",
+      "latitude": 35.0345,
+      "longitude": 135.7182,
+      "opening_time": "08:00 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 600.0,
+      "currency": "JPY",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "The world's most famous karesansui dry landscape rock garden with 15 moss-framed boulders resting in raked white gravel.",
+      "ai_reason": "\u2713 Masterpiece of Japanese Zen rock garden design encouraging meditation\n\u2713 Fascinating perspective riddle: from any veranda angle, only 14 rocks are visible at once",
+      "tip": "Sit on the temple veranda in the early morning to contemplate the garden before noon crowds arrive.",
+      "signature_dish": null,
+      "nearby": [
+        "Kinkaku-ji",
+        "Ninna-ji"
+      ],
+      "source": "kyoto_tourism_official",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "UNESCO World Heritage Registry",
+        "price_source": "Official Admission (600 JPY)",
+        "rating_source": "Verified Tourism Reviews (4.6\u2605)",
+        "opening_hours_source": "Official Temple Hours (08:00-17:00 daily)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Nishiki Market Culinary Arcade",
+      "category": "Food Market",
+      "address": "Nishidaimotsucho, Nakagyo Ward, Kyoto, 604-8054",
+      "latitude": 35.005,
+      "longitude": 135.7649,
+      "opening_time": "10:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "is_free_verified": true,
+      "currency": "JPY",
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "description": "Five-block narrow covered shopping arcade affectionately called 'Kyoto's Kitchen', packed with over a hundred historic culinary stalls.",
+      "ai_reason": "\u2713 Vibrant culinary showcase of traditional Kyoto pickles (tsukemono), matcha sweets, and grilled delicacies\n\u2713 Ideal midday food exploration corridor protected from weather",
+      "tip": "Sample fresh warabimochi and yuba (tofu skin) delicacies from century-old family vendors.",
+      "signature_dish": "Kyoto Yuba & Tsukemono",
+      "nearby": [
+        "Shijo Dori",
+        "Pontocho",
+        "Teramachi Arcade"
+      ],
+      "source": "kyoto_tourism_official",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Kyoto Chamber of Commerce Market Registry",
+        "price_source": "Free Market Access (Snacks 300-800 JPY)",
+        "rating_source": "Verified Tourism Reviews (4.5\u2605)",
+        "opening_hours_source": "Standard Arcade Hours (10:00-18:00)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Sanjusangendo (Rengeo-in)",
+      "category": "Museum",
+      "address": "657 Sanjusangendawari, Higashiyama Ward, Kyoto, 605-0941",
+      "latitude": 34.9879,
+      "longitude": 135.7717,
+      "opening_time": "08:30 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 600.0,
+      "currency": "JPY",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Monumental wooden temple hall housing 1,001 life-sized gilded statues of the Thousand-Armed Kannon and guardian deities.",
+      "ai_reason": "\u2713 Breathtaking sight of 1,001 intricately carved 12th-century wooden golden bodhisattvas\n\u2713 Japan's longest wooden hall measuring 120 meters in length",
+      "tip": "Look closely at the 28 guardian deity statues flanking the central hall, renowned for dramatic expressive realism.",
+      "signature_dish": null,
+      "nearby": [
+        "Kyoto National Museum",
+        "Chishaku-in"
+      ],
+      "source": "kyoto_tourism_official",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Japan Agency for Cultural Affairs National Treasure",
+        "price_source": "Official Admission (600 JPY)",
+        "rating_source": "Verified Tourism Reviews (4.7\u2605)",
+        "opening_hours_source": "Official Temple Hours (08:30-17:00 daily)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Nanzen-ji Temple & Lake Biwa Aqueduct",
+      "category": "Sightseeing",
+      "address": "86 Nanzenji Fukuchicho, Sakyo Ward, Kyoto, 606-8435",
+      "latitude": 35.0113,
+      "longitude": 135.7939,
+      "opening_time": "08:40 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "is_free_verified": true,
+      "currency": "JPY",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Head temple of Rinzai Zen featuring a colossal Sanmon entrance gate and an unexpected Roman-style red-brick water aqueduct (Suirokaku).",
+      "ai_reason": "\u2713 Striking juxtaposition of classical Japanese Zen gardens with Meiji-era red brick Roman arches\n\u2713 Expansive tranquil temple grounds free to wander",
+      "tip": "Walk beneath the moss-covered arches of the brick aqueduct for dramatic architectural photographs.",
+      "signature_dish": "Nanzen-ji Yudofu (Hot Tofu)",
+      "nearby": [
+        "Eikan-do",
+        "Heian Shrine",
+        "Philosopher's Path"
+      ],
+      "source": "kyoto_tourism_official",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Kyoto Heritage Zen Registry",
+        "price_source": "Free Temple Grounds / 600 JPY Sanmon Gate",
+        "rating_source": "Verified Tourism Reviews (4.7\u2605)",
+        "opening_hours_source": "Grounds Open Daily; Halls 08:40-17:00",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Kyoto Imperial Palace (Kyoto Gosho)",
+      "category": "Sightseeing",
+      "address": "3 Kyotogyoen, Kamigyo Ward, Kyoto, 602-0881",
+      "latitude": 35.0254,
+      "longitude": 135.7621,
+      "opening_time": "09:00 AM",
+      "closing_time": "04:30 PM",
+      "open_days": [
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "is_free_verified": true,
+      "currency": "JPY",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Former residence of Japan's Emperors until 1869, set within an expansive gravel-pathed national garden with majestic pine groves.",
+      "ai_reason": "\u2713 Free access to imperial throne halls and serene palace water gardens\n\u2713 Authentic classical Heian court architectural heritage",
+      "tip": "Check in at the Seisho-mon entrance for free English audio guides detailing imperial enthronement ceremonies.",
+      "signature_dish": null,
+      "nearby": [
+        "Doshisha University",
+        "Nijo Castle"
+      ],
+      "source": "kyoto_tourism_official",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Imperial Household Agency",
+        "price_source": "Free Admission (0 JPY)",
+        "rating_source": "Verified Tourism Reviews (4.6\u2605)",
+        "opening_hours_source": "Imperial Household Agency (09:00-16:30; closed Mondays)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Pontocho Alley & Kamogawa Riverfront",
+      "category": "Sightseeing",
+      "address": "Pontocho, Nakagyo Ward, Kyoto, 604-8015",
+      "latitude": 35.0053,
+      "longitude": 135.771,
+      "opening_time": "05:00 PM",
+      "closing_time": "11:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "is_free_verified": true,
+      "currency": "JPY",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Atmospheric pedestrian-only lantern-lined corridor running parallel to the Kamo River, famous for evening strolls and riverside kawayuka dining.",
+      "ai_reason": "\u2713 Classic Kyoto evening ambiance with red lanterns glowing against wooden facades\n\u2713 Relaxing pedestrian trail along the grassy banks of Kamogawa",
+      "tip": "Cross the Sanjo or Shijo bridge at sunset to watch local musicians and heron birds along the riverbank.",
+      "signature_dish": null,
+      "nearby": [
+        "Gion",
+        "Kamo River",
+        "Shijo Kawaramachi"
+      ],
+      "source": "kyoto_tourism_official",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Kyoto Municipal Urban Design Registry",
+        "price_source": "Free Public Promenade (0 JPY)",
+        "rating_source": "Verified Tourism Reviews (4.6\u2605)",
+        "opening_hours_source": "Public Alleyway Open Daily (Evening Dining Peak 17:00-23:00)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Heian Jingu Shrine & Shin-en Garden",
+      "category": "Sightseeing",
+      "address": "Okazaki Nishitennocho, Sakyo Ward, Kyoto, 606-8341",
+      "latitude": 35.016,
+      "longitude": 135.7824,
+      "opening_time": "06:00 AM",
+      "closing_time": "05:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 600.0,
+      "currency": "JPY",
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "description": "Grand Shinto shrine built in 1895 with a 24-meter red torii gate and four expansive stroll gardens featuring weeping cherry trees.",
+      "ai_reason": "\u2713 Vivid vermilion Chinese-influenced palace architecture replicating the ancient Heian capital\n\u2713 Stroll garden with stepping stones across a tranquil water lily pond",
+      "tip": "Cross the picturesque Garyu-kyo stepping stones in the inner garden for unique water reflection photos.",
+      "signature_dish": null,
+      "nearby": [
+        "Kyoto City KYOCERA Museum of Art",
+        "Nanzen-ji"
+      ],
+      "source": "kyoto_tourism_official",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Kyoto Shinto Shrine Registry",
+        "price_source": "Free Shrine Grounds / 600 JPY Shin-en Garden",
+        "rating_source": "Verified Tourism Reviews (4.5\u2605)",
+        "opening_hours_source": "Shrine 06:00-17:30; Garden 08:30-17:00",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Shimogamo Shrine (Kamomioya Shrine)",
+      "category": "Sightseeing",
+      "address": "59 Shimogamo Izumikawacho, Sakyo Ward, Kyoto, 606-0807",
+      "latitude": 35.0392,
+      "longitude": 135.773,
+      "opening_time": "06:30 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "is_free_verified": true,
+      "currency": "JPY",
+      "rating": 4.6,
+      "crowd": "Low",
+      "description": "One of Japan's oldest Shinto shrines nestled within Tadasu no Mori, an ancient primeval sacred broadleaf forest untouched for centuries.",
+      "ai_reason": "\u2713 Peaceful off-the-beaten-path UNESCO World Heritage shrine with low tourist crowd pressure\n\u2713 Gentle forest canopy walk through thousand-year-old sacred trees",
+      "tip": "Walk along the crystal-clear Mitarashi stream where the famous Mitarashi Dango snack originated.",
+      "signature_dish": "Original Mitarashi Dango",
+      "nearby": [
+        "Kamogawa Delta",
+        "Kyoto Botanical Gardens"
+      ],
+      "source": "kyoto_tourism_official",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "UNESCO World Heritage Shrine Registry",
+        "price_source": "Free Forest & Shrine Access (0 JPY)",
+        "rating_source": "Verified Tourism Reviews (4.6\u2605)",
+        "opening_hours_source": "Shrine Grounds 06:30-17:00 daily",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Kodai-ji Zen Temple",
+      "category": "Sightseeing",
+      "address": "526 Shimokawaracho, Higashiyama Ward, Kyoto, 605-0825",
+      "latitude": 35.0003,
+      "longitude": 135.7816,
+      "opening_time": "09:00 AM",
+      "closing_time": "05:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 600.0,
+      "currency": "JPY",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "17th-century Zen temple established by Kita-no-Mandokoro in memory of Toyotomi Hideyoshi, featuring an exquisite bamboo grove and lacquer art.",
+      "ai_reason": "\u2713 Exquisite rock garden and teahouses designed by tea master Sen no Rikyu\n\u2713 Intimate hillside bamboo walk far less crowded than Arashiyama",
+      "tip": "Visit the Garyuro covered corridor bridge connecting the two main memorial halls.",
+      "signature_dish": null,
+      "nearby": [
+        "Yasaka Shrine",
+        "Kiyomizu-dera",
+        "Ishibe-koji"
+      ],
+      "source": "kyoto_tourism_official",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Kyoto Heritage Zen Registry",
+        "price_source": "Official Admission (600 JPY)",
+        "rating_source": "Verified Tourism Reviews (4.6\u2605)",
+        "opening_hours_source": "Official Temple Hours (09:00-17:30 daily)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Shigetsu (Tenryu-ji Temple Zen Shojin Ryori)",
+      "category": "Restaurant",
+      "address": "68 Sagatenryuji Susukinobabacho, Ukyo Ward, Kyoto, 616-8385",
+      "latitude": 35.0158,
+      "longitude": 135.6775,
+      "opening_time": "11:00 AM",
+      "closing_time": "02:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "is_dining": true,
+      "meal_cost": 3500.0,
+      "currency": "JPY",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Michelin Bib Gourmand temple dining inside Tenryu-ji serving authentic Zen Buddhist Shojin Ryori (100% vegetarian culinary tradition).",
+      "ai_reason": "\u2713 100% plant-based Zen Buddhist monastery multi-course lunch overlooking tranquil pine gardens\n\u2713 Traditional tatami dining featuring sesame tofu (gomadofu) and seasonal mountain vegetables",
+      "tip": "Advance booking recommended; lunch includes entry ticket to Tenryu-ji World Heritage garden.",
+      "signature_dish": "Shojin Ryori Ryuo Course (Sesame Tofu, Yuba, Seasonal Tempura)",
+      "dietary_tags": [
+        "vegetarian",
+        "vegan",
+        "plant-based"
+      ],
+      "dietary_suitability": "Pure Vegetarian Zen Monastery Dining",
+      "nearby": [
+        "Arashiyama Bamboo Grove",
+        "Tenryu-ji"
+      ],
+      "source": "michelin_guide_kyoto",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Michelin Guide Kyoto / Tenryu-ji Registry",
+        "price_source": "Fixed Zen Lunch Menu (3,500 JPY)",
+        "rating_source": "Verified Culinary Reviews (4.7\u2605)",
+        "opening_hours_source": "Lunch Service Only (11:00-14:00 daily)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Tousuiro Kiyamachi (Artisan Tofu Kaiseki)",
+      "category": "Restaurant",
+      "address": "517-3 Kamioshiyacho, Nakagyo Ward, Kyoto, 604-0923",
+      "latitude": 35.0116,
+      "longitude": 135.7709,
+      "opening_time": "11:30 AM",
+      "closing_time": "09:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "is_dining": true,
+      "meal_cost": 4500.0,
+      "currency": "JPY",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Historic traditional machiya townhouse restaurant specializing in Kyoto Oboro tofu and freshly made artisanal yuba courses.",
+      "ai_reason": "\u2713 Celebrated artisan tofu multi-course banquet showcasing Kyoto's soft mineral groundwater heritage\n\u2713 Exceptional vegetarian-friendly courses served in private tatami rooms along Takase canal",
+      "tip": "Ask for the vegetarian Oboro Tofu course with seasonal dipping sauces and grilled yuba skewers.",
+      "signature_dish": "Kyoto Oboro-dofu Hotpot & Fresh Yuba Sashimi",
+      "dietary_tags": [
+        "vegetarian",
+        "vegetarian_friendly"
+      ],
+      "dietary_suitability": "Artisan Vegetarian Tofu Kaiseki",
+      "nearby": [
+        "Pontocho",
+        "Kamo River",
+        "Kyoto City Hall"
+      ],
+      "source": "kyoto_gourmet_registry",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Kyoto Municipal Culinary Registry",
+        "price_source": "Kaiseki Set Menu (4,500 JPY)",
+        "rating_source": "Verified Gourmet Reviews (4.6\u2605)",
+        "opening_hours_source": "Daily Service (11:30-15:00, 17:00-21:30)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Honke Owariya (Historic Soba Noodle House)",
+      "category": "Restaurant",
+      "address": "322 Niomontsukinukecho, Nakagyo Ward, Kyoto, 604-0841",
+      "latitude": 35.0125,
+      "longitude": 135.7601,
+      "opening_time": "11:00 AM",
+      "closing_time": "03:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "is_dining": true,
+      "meal_cost": 1800.0,
+      "currency": "JPY",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Kyoto's oldest confectionery and soba restaurant operating continuously since 1465, former purveyor to the Imperial Family.",
+      "ai_reason": "\u2713 Over 550 years of noodle-making tradition using pristine Kyoto spring water\n\u2713 Signature five-tiered Hourai Soba served with eight delicate seasonal toppings",
+      "tip": "Order the Hourai Soba to taste custom combinations of shiitake, wasabi, nori, and sesame.",
+      "signature_dish": "Hourai Soba (5-Tier Soba with 8 Condiments)",
+      "dietary_tags": [
+        "vegetarian_friendly",
+        "soba"
+      ],
+      "dietary_suitability": "Vegetarian-Friendly Traditional Soba",
+      "nearby": [
+        "Kyoto Imperial Palace",
+        "Nijo Castle"
+      ],
+      "source": "kyoto_historic_dining",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Kyoto Chamber of Commerce Historic Establishment Registry",
+        "price_source": "A La Carte Soba Menu (1,800 JPY)",
+        "rating_source": "Verified Gourmet Reviews (4.6\u2605)",
+        "opening_hours_source": "Lunch Service (11:00-15:30 daily)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Menami (Traditional Kyoto Obanzai Dining)",
+      "category": "Restaurant",
+      "address": "96 Nakajimacho, Nakagyo Ward, Kyoto, 604-8004",
+      "latitude": 35.0089,
+      "longitude": 135.7708,
+      "opening_time": "05:00 PM",
+      "closing_time": "10:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "ticket_price": 0.0,
+      "is_dining": true,
+      "meal_cost": 3800.0,
+      "currency": "JPY",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Beloved traditional izakaya serving authentic Kyoto Obanzai (traditional home-cooked small seasonal vegetable plates).",
+      "ai_reason": "\u2713 Warm counter dining featuring heirloom Kyoto vegetables (Kyo-yasai) displayed in large ceramic bowls\n\u2713 Excellent seasonal plant-based dishes made with Kamo eggplant and Shishito peppers",
+      "tip": "Sit at the polished wooden counter and point to the day's freshly prepared Obanzai bowls.",
+      "signature_dish": "Kamo Eggplant Dengaku & Simmered Seasonal Kyo-yasai",
+      "dietary_tags": [
+        "vegetarian_friendly",
+        "local_cuisine"
+      ],
+      "dietary_suitability": "Authentic Kyoto Obanzai Vegetarian Options",
+      "nearby": [
+        "Kamo River",
+        "Sanjo Dori",
+        "Pontocho"
+      ],
+      "source": "kyoto_gourmet_registry",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Kyoto Obanzai Heritage Society",
+        "price_source": "Evening Small Plates Average (3,800 JPY)",
+        "rating_source": "Verified Culinary Reviews (4.6\u2605)",
+        "opening_hours_source": "Dinner Only (17:00-22:30; closed Sundays)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Mumokuteki Cafe (Plant-Based Natural Dining)",
+      "category": "Restaurant",
+      "address": "285-1 Higashigawacho, Nakagyo Ward, Kyoto, 604-8046",
+      "latitude": 35.0062,
+      "longitude": 135.7672,
+      "opening_time": "11:30 AM",
+      "closing_time": "08:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "is_dining": true,
+      "meal_cost": 1600.0,
+      "currency": "JPY",
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "description": "Modern plant-based dining cafe in central Kyoto crafting 100% vegetarian burgers, miso ramen, and seasonal vegetable bento sets.",
+      "ai_reason": "\u2713 100% vegetarian and vegan kitchen avoiding chemical seasonings and white refined sugar\n\u2713 Relaxed light-filled cafe atmosphere loved by traveling families and solo travelers",
+      "tip": "Try the tofu katsu cutlet set with brown rice and organic salad.",
+      "signature_dish": "Crispy Tofu Cutlet Bento & Vegan Miso Ramen",
+      "dietary_tags": [
+        "vegetarian",
+        "vegan",
+        "plant-based"
+      ],
+      "dietary_suitability": "100% Pure Plant-Based Cafe",
+      "nearby": [
+        "Nishiki Market",
+        "Teramachi Arcade",
+        "Shijo Dori"
+      ],
+      "source": "happycow_kyoto",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Kyoto Plant-Based Dining Registry",
+        "price_source": "Lunch & Dinner Set Average (1,600 JPY)",
+        "rating_source": "Verified Community Reviews (4.5\u2605)",
+        "opening_hours_source": "Daily Service (11:30-20:30)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Omen Ginkaku-ji (Handmade Udon & Vegetable Banquet)",
+      "category": "Restaurant",
+      "address": "74 Jodoji Ishibashicho, Sakyo Ward, Kyoto, 606-8406",
+      "latitude": 35.027,
+      "longitude": 135.7955,
+      "opening_time": "11:00 AM",
+      "closing_time": "08:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "is_dining": true,
+      "meal_cost": 2100.0,
+      "currency": "JPY",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Celebrated artisan noodle shop near Philosopher's Path serving steaming handmade wheat udon with a platter of seasonal local vegetables.",
+      "ai_reason": "\u2713 Perfect comforting lunch stop directly at the base of the Silver Pavilion (Ginkaku-ji)\n\u2713 Freshly boiled chewy udon served with burdock root, roasted sesame, and seasonal greens",
+      "tip": "Generously sprinkle the toasted white sesame into your dashi broth before dipping the noodles.",
+      "signature_dish": "Omen Udon Set with Seasonal Garden Vegetable Platter",
+      "dietary_tags": [
+        "vegetarian_friendly",
+        "noodles"
+      ],
+      "dietary_suitability": "Artisan Udon with Fresh Vegetarian Platter",
+      "nearby": [
+        "Ginkaku-ji",
+        "Philosopher's Path",
+        "Honen-in"
+      ],
+      "source": "kyoto_gourmet_registry",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Kyoto Noodle Heritage Association",
+        "price_source": "Set Udon Menu (2,100 JPY)",
+        "rating_source": "Verified Culinary Reviews (4.6\u2605)",
+        "opening_hours_source": "Daily Service (11:00-20:30)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Gion Karyo (Traditional Gion Machiya Kaiseki)",
+      "category": "Restaurant",
+      "address": "570-235 Gionmachi Minamigawa, Higashiyama Ward, Kyoto, 605-0074",
+      "latitude": 35.0034,
+      "longitude": 135.7761,
+      "opening_time": "11:30 AM",
+      "closing_time": "09:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "is_dining": true,
+      "meal_cost": 5500.0,
+      "currency": "JPY",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Refined multi-course Kaiseki dining in a restored historic Gion townhouse offering seasonal vegetable courses.",
+      "ai_reason": "\u2713 Exceptional seasonal Kyoto Kaiseki hospitality in the heart of Gion\n\u2713 Vegetarian Kaiseki course available upon advance notice",
+      "tip": "Book an early evening counter seat to observe master chefs plating intricate seasonal dishes.",
+      "signature_dish": "Seasonal Kyo-Kaiseki Course & Bamboo Shoot Rice",
+      "dietary_tags": [
+        "vegetarian_friendly",
+        "kaiseki"
+      ],
+      "dietary_suitability": "Refined Vegetarian-Friendly Kaiseki",
+      "nearby": [
+        "Gion",
+        "Yasaka Shrine",
+        "Kennin-ji"
+      ],
+      "source": "kyoto_gourmet_registry",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Kyoto Traditional Machiya Restaurant Registry",
+        "price_source": "Lunch Kaiseki Course (5,500 JPY)",
+        "rating_source": "Verified Culinary Reviews (4.7\u2605)",
+        "opening_hours_source": "Lunch 11:30-14:00, Dinner 17:30-21:00",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Towazen Vegetarian Ramen (Gion)",
+      "category": "Restaurant",
+      "address": "13-4 Gionmachi Kitagawa, Higashiyama Ward, Kyoto, 605-0073",
+      "latitude": 35.0041,
+      "longitude": 135.7745,
+      "opening_time": "11:30 AM",
+      "closing_time": "08:30 PM",
+      "open_days": [
+        "Monday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "is_dining": true,
+      "meal_cost": 1500.0,
+      "currency": "JPY",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Dedicated 100% plant-based ramen establishment in Gion utilizing rich soymilk and kombu-shiitake mineral broths.",
+      "ai_reason": "\u2713 100% plant-based creamy soy ramen served with seasonal bamboo shoots\n\u2713 Authentic Kyoto broth crafted without animal products or MSG",
+      "tip": "Try the rich sesame tantanmen ramen with seasonal vegetable tempura.",
+      "signature_dish": "Creamy Sesame Tantanmen & Organic Soy Ramen",
+      "dietary_tags": [
+        "vegetarian",
+        "vegan",
+        "plant-based"
+      ],
+      "dietary_suitability": "Pure Vegan & Vegetarian Ramen",
+      "nearby": [
+        "Yasaka Shrine",
+        "Gion",
+        "Shirakawa Canal"
+      ],
+      "source": "happycow_kyoto",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Kyoto Vegan Dining Registry",
+        "price_source": "Ramen Bowl Average (1,500 JPY)",
+        "rating_source": "Verified Community Reviews (4.6\u2605)",
+        "opening_hours_source": "Service 11:30-20:30 (closed Tuesdays)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Izusen Shojin Ryori (Daitoku-ji Daiji-in)",
+      "category": "Restaurant",
+      "address": "4 Daitokujicho, Kita Ward, Kyoto, 603-8231",
+      "latitude": 35.0438,
+      "longitude": 135.746,
+      "opening_time": "11:00 AM",
+      "closing_time": "04:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "is_dining": true,
+      "meal_cost": 3800.0,
+      "currency": "JPY",
+      "rating": 4.7,
+      "crowd": "Low",
+      "description": "Traditional Zen Buddhist temple restaurant inside Daitoku-ji serving Shojin Ryori presented in traditional nested lacquer bowls (oryoki).",
+      "ai_reason": "\u2713 Peaceful garden-view dining inside historic Daitoku-ji temple complex\n\u2713 Centuries-old vegetarian Zen Buddhist monastic culinary tradition",
+      "tip": "Savor each bowl in succession according to traditional Buddhist mindfulness practices.",
+      "signature_dish": "Miyabi Shojin Ryori Course (7 Nested Lacquer Bowls)",
+      "dietary_tags": [
+        "vegetarian",
+        "vegan",
+        "plant-based"
+      ],
+      "dietary_suitability": "Pure Zen Buddhist Monastery Dining",
+      "nearby": [
+        "Daitoku-ji",
+        "Kinkaku-ji"
+      ],
+      "source": "kyoto_temple_dining",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Daitoku-ji Monastery Heritage Registry",
+        "price_source": "Set Temple Menu (3,800 JPY)",
+        "rating_source": "Verified Culinary Reviews (4.7\u2605)",
+        "opening_hours_source": "Daytime Service (11:00-16:00 daily)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Choice Plant-Based Cafe & Dining (Sanjo)",
+      "category": "Restaurant",
+      "address": "89-1 Ohashicho, Higashiyama Ward, Kyoto, 605-0009",
+      "latitude": 35.0093,
+      "longitude": 135.7732,
+      "opening_time": "11:00 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "is_dining": true,
+      "meal_cost": 1800.0,
+      "currency": "JPY",
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "description": "Health-focused vegan dining room supervised by a medical physician, serving plant-based cheese, pasta, and gluten-free curries.",
+      "ai_reason": "\u2713 Physician-crafted 100% plant-based comfort food directly at Sanjo Keihan\n\u2713 Artisan vegan cheeses made with fermented cashews and local soy",
+      "tip": "Order the house-made fermented vegan cheese platter with gluten-free crackers.",
+      "signature_dish": "Artisan Vegan Cheese Risotto & Herb Salad",
+      "dietary_tags": [
+        "vegetarian",
+        "vegan",
+        "plant-based"
+      ],
+      "dietary_suitability": "100% Plant-Based Physician Supervised",
+      "nearby": [
+        "Sanjo Bridge",
+        "Kamo River",
+        "Pontocho"
+      ],
+      "source": "happycow_kyoto",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Kyoto Health & Nutrition Society",
+        "price_source": "Set Meal Average (1,800 JPY)",
+        "rating_source": "Verified Community Reviews (4.5\u2605)",
+        "opening_hours_source": "Daily Service (11:00-20:00)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Hale Kaiseki (Nishiki Market Tofu & Yuba)",
+      "category": "Restaurant",
+      "address": "Higashiuoyacho, Nakagyo Ward, Kyoto, 604-8055",
+      "latitude": 35.0051,
+      "longitude": 135.7642,
+      "opening_time": "11:30 AM",
+      "closing_time": "03:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "is_dining": true,
+      "meal_cost": 2200.0,
+      "currency": "JPY",
+      "rating": 4.6,
+      "crowd": "Low",
+      "description": "Hidden intimate dining oasis tucked off Nishiki Market serving organic tofu, yuba, and seasonal vegetable set lunches.",
+      "ai_reason": "\u2713 Quiet tranquil sanctuary directly off the bustling Nishiki Market corridor\n\u2713 Freshly skimmed Kyoto yuba served with brown rice and seasonal pickles",
+      "tip": "Look for the discreet wooden sign leading down a narrow flagstone alley off the market.",
+      "signature_dish": "Fresh Yuba Donburi Set with Miso Soup",
+      "dietary_tags": [
+        "vegetarian",
+        "vegetarian_friendly"
+      ],
+      "dietary_suitability": "Organic Vegetarian Yuba Lunch",
+      "nearby": [
+        "Nishiki Market",
+        "Shijo Dori"
+      ],
+      "source": "kyoto_gourmet_registry",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Kyoto Organic Dining Registry",
+        "price_source": "Lunch Set Average (2,200 JPY)",
+        "rating_source": "Verified Gourmet Reviews (4.6\u2605)",
+        "opening_hours_source": "Lunch Service (11:30-15:00; closed Saturdays)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Gion Duck Noodles (Artisan Broth & Soba)",
+      "category": "Restaurant",
+      "address": "329 Gionmachi Kitagawa, Higashiyama Ward, Kyoto, 605-0073",
+      "latitude": 35.0038,
+      "longitude": 135.775,
+      "opening_time": "11:30 AM",
+      "closing_time": "09:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "is_dining": true,
+      "meal_cost": 1600.0,
+      "currency": "JPY",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Award-winning discreet noodle atelier in Gion renowned for French-inspired ramen, tsukemen, and seasonal sansho pepper broth.",
+      "ai_reason": "\u2713 Innovative culinary blending of French culinary reduction with Japanese artisan noodles\n\u2713 Secret alleyway setting marked only by subtle emoji symbols",
+      "tip": "Try the Kishu duck tsukemen dipping noodles with berry compote reduction.",
+      "signature_dish": "Artisan Tsukemen Dipping Noodles with Sansho Pepper",
+      "dietary_tags": [
+        "noodles",
+        "local_cuisine"
+      ],
+      "dietary_suitability": "Artisan Kyoto Noodle Dining",
+      "nearby": [
+        "Gion",
+        "Yasaka Shrine",
+        "Hanamikoji"
+      ],
+      "source": "kyoto_gourmet_registry",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Kyoto Culinary Innovation Registry",
+        "price_source": "Noodle Bowl Average (1,600 JPY)",
+        "rating_source": "Verified Gourmet Reviews (4.6\u2605)",
+        "opening_hours_source": "Daily Service (11:30-21:00)",
+        "overall_status": "Verified"
+      }
+    }
+  ]
+}

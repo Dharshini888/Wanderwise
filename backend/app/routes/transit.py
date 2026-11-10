@@ -28,7 +28,9 @@ class TransitRequest(BaseModel):
     preferred_mode: str = "fastest"
     budget: float = 5000.0
     budget_currency: str = "INR"
-    date: str = "Tomorrow"
+    date: str = "Today"
+    departure_type: Optional[str] = "now"
+    departure_time: Optional[str] = None
     request_id: Optional[str] = None
 
 
@@ -50,7 +52,7 @@ def get_route(data: TransitRequest):
     d_lat = data.dest_lat if data.dest_lat is not None else data.destination_lat
     d_lon = data.dest_lon if data.dest_lon is not None else data.destination_lon
 
-    logger.info(f"[TRANSIT] Route request received: {data.origin} -> {data.destination} (Coords: {data.origin_lat},{data.origin_lon} -> {d_lat},{d_lon})")
+    logger.info(f"[TRANSIT] Route request received: {data.origin} -> {data.destination} (Coords: {data.origin_lat},{data.origin_lon} -> {d_lat},{d_lon}, Dep: {data.departure_type} / {data.departure_time})")
 
     return TransitOrchestrator.get_transit_plan(
         origin=data.origin,
@@ -66,6 +68,8 @@ def get_route(data: TransitRequest):
         budget=data.budget,
         budget_currency=data.budget_currency,
         date=data.date,
+        departure_type=data.departure_type or "now",
+        departure_time=data.departure_time,
         request_id=req_id,
     )
 
@@ -191,6 +195,7 @@ def get_debug_providers():
     rr_health = RailRadarProvider.health_check()
     return {
         "transitous": {"configured": True},
+        "transitland": {"configured": bool(os.getenv("TRANSITLAND_API_KEY"))},
         "navitia": {"configured": bool(os.getenv("NAVITIA_API_KEY"))},
         "railradar": rr_health,
         "flight_provider": {"configured": bool(os.getenv("FLIGHT_API_KEY") or os.getenv("AVIATIONSTACK_API_KEY"))},
@@ -202,3 +207,34 @@ def get_debug_providers():
 @router.get("/debug/railradar")
 def get_debug_railradar():
     return RailRadarProvider.health_check()
+
+
+@router.get("/capabilities")
+def get_capabilities():
+    from ..services.transit.provider_registry import PROVIDER_CAPABILITIES, FALLBACK_CHAIN
+    return {
+        "providers": PROVIDER_CAPABILITIES,
+        "fallback_chain": FALLBACK_CHAIN
+    }
+
+
+@router.get("/realtime/{route_id}")
+def get_route_realtime(
+    route_id: str,
+    provider: Optional[str] = None,
+    train_number: Optional[str] = None,
+    origin_lat: Optional[float] = None,
+    origin_lon: Optional[float] = None,
+    dest_lat: Optional[float] = None,
+    dest_lon: Optional[float] = None,
+):
+    from ..services.transit.live_transit_service import LiveTransitService
+    return LiveTransitService.get_realtime_route_status(
+        route_id=route_id,
+        provider=provider,
+        train_number=train_number,
+        origin_lat=origin_lat,
+        origin_lon=origin_lon,
+        dest_lat=dest_lat,
+        dest_lon=dest_lon,
+    )

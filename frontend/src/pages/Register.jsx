@@ -55,12 +55,18 @@ export default function Register() {
   const { register: authRegister } = useAuth();
   const [step, setStep]       = useState(1);
   const [currencies, setCurrencies] = useState(CURRENCIES_FALLBACK);
+  const [budgetTiers, setBudgetTiers] = useState([
+    { key: "budget", label: "Budget (<$50/day)" },
+    { key: "mid_range", label: "Mid-range ($50–150/day)" },
+    { key: "comfort", label: "Comfort ($150–350/day)" },
+    { key: "luxury", label: "Luxury ($350+/day)" },
+  ]);
   const [form, setForm]       = useState({
     firstName: "", lastName: "", email: "", phone: "", password: "", confirm: "",
     styles: ["Solo", "Food & Dining"],
     climate: "Beach 🏖️",
     currency: "USD",
-    budget: "Mid-range ($50–150/day)",
+    budget: "mid_range",
     diet: "No Preference",
     languages: "English",
     accessibility: "None",
@@ -83,6 +89,31 @@ export default function Register() {
       })
       .catch(() => { /* keep fallback */ });
   }, []);
+
+  // Fetch dynamic currency-converted budget ranges whenever currency changes
+  useEffect(() => {
+    const code = parseCurrencyCode(form.currency) || "USD";
+    api.get(`/api/currency/budget-tiers?currency=${code}`)
+      .then(r => {
+        if (r.data && Array.isArray(r.data.tiers)) {
+          setBudgetTiers(r.data.tiers);
+        }
+      })
+      .catch(() => {});
+  }, [form.currency]);
+
+  const handleGoogleLogin = async () => {
+    try {
+      const res = await api.get('/api/auth/google/url');
+      if (res.data && res.data.configured && res.data.auth_url) {
+        window.location.href = res.data.auth_url;
+      } else {
+        setError(res.data?.setup_help || "Google OAuth is not configured on this server. Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in backend/.env.");
+      }
+    } catch (err) {
+      setError(err.response?.data?.detail || "Could not connect to Google authentication service.");
+    }
+  };
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
   const toggleStyle = s => set("styles", form.styles.includes(s) ? form.styles.filter(x=>x!==s) : [...form.styles, s]);
@@ -261,7 +292,7 @@ export default function Register() {
                 Continue <IconChevronRight size={17}/>
               </button>
               <div className="au-divider"><div className="au-divider__line"/><span className="au-divider__text">or sign up with</span><div className="au-divider__line"/></div>
-              <button type="button" className="au-btn au-btn--google" id="reg-google-btn">
+              <button type="button" className="au-btn au-btn--google" id="reg-google-btn" onClick={handleGoogleLogin}>
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
                 Continue with Google
               </button>
@@ -340,7 +371,11 @@ export default function Register() {
                 </div>
                 <div className="au-field">
                   <label htmlFor="reg-bud" className="au-lbl">Budget Range</label>
-                  <select id="reg-bud" className="au-input au-input--no-icon" value={form.budget} onChange={e=>set("budget",e.target.value)}>{BUDGETS.map(b=><option key={b}>{b}</option>)}</select>
+                  <select id="reg-bud" className="au-input au-input--no-icon" value={form.budget} onChange={e=>set("budget",e.target.value)}>
+                    {budgetTiers.map(b => (
+                      <option key={b.key} value={b.key}>{b.label}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 

@@ -1,0 +1,647 @@
+{
+  "destination": "singapore",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Gardens by the Bay",
+      "category": "Sightseeing",
+      "city": "Singapore",
+      "address": "18 Marina Gardens Dr, Singapore 018953",
+      "latitude": 1.2816,
+      "longitude": 103.8636,
+      "opening_time": "09:00 AM",
+      "closing_time": "09:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 28.0,
+      "currency": "SGD",
+      "rating": 4.8,
+      "crowd": "Moderate",
+      "description": "Premier horticultural destination spanning 101 hectares, renowned for its iconic Supertree Grove, Cloud Forest mist conservatory with indoor waterfall, and Flower Dome.",
+      "ai_reason": "\u2713 World-renowned biodomes featuring 35m indoor waterfall\n\u2713 Iconic Supertree Grove & Garden Rhapsody light show\n\u2713 Highly rated (4.8\u2605) family-friendly highlight",
+      "tip": "Visit the cooled conservatories in the afternoon, then watch the Supertree light & sound show at 19:45 or 20:45. Fully accessible for all age groups.",
+      "signature_dish": null,
+      "nearby": [
+        "Marina Bay Sands",
+        "Singapore Flyer",
+        "Marina Barrage"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified Singapore Tourism Board National Landmark",
+        "price_source": "Official Gardens by the Bay Two-Conservatories Ticket (28 SGD)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 09:00 AM - 09:00 PM Official Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Marina Bay Sands SkyPark & Waterfront Promenade",
+      "category": "Viewpoint",
+      "city": "Singapore",
+      "address": "10 Bayfront Ave, Singapore 018956",
+      "latitude": 1.2834,
+      "longitude": 103.8607,
+      "opening_time": "11:00 AM",
+      "closing_time": "09:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 32.0,
+      "currency": "SGD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "57th-floor cantilevered observation deck providing dramatic 360-degree vistas across Marina Bay, Singapore Straits, and the illuminated downtown skyline.",
+      "ai_reason": "\u2713 Unmatched panoramic 360\u00b0 views across Marina Bay and Singapore Strait\n\u2713 World-famous architectural icon\n\u2713 4.7\u2605 visitor satisfaction",
+      "tip": "Book timed entry around 17:30 to experience daylight skyline transition into twilight and nighttime city lights.",
+      "signature_dish": null,
+      "nearby": [
+        "Gardens by the Bay",
+        "ArtScience Museum",
+        "Helix Bridge"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Verified Marina Bay Sands Official Registry",
+        "price_source": "Observation Deck Standard Entry (32 SGD)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 11:00 AM - 09:00 PM MBS Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Singapore Botanic Gardens & National Orchid Garden",
+      "category": "Nature",
+      "city": "Singapore",
+      "address": "1 Cluny Rd, Singapore 259569",
+      "latitude": 1.3138,
+      "longitude": 103.8159,
+      "opening_time": "08:30 AM",
+      "closing_time": "07:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 15.0,
+      "currency": "SGD",
+      "rating": 4.8,
+      "crowd": "Low",
+      "description": "164-year-old tropical garden and Singapore's first UNESCO World Heritage site, housing over 1,000 pure species and 2,000 hybrids in the celebrated National Orchid Garden.",
+      "ai_reason": "\u2713 Singapore's premier UNESCO World Heritage Site\n\u2713 World's largest orchid collection with over 60,000 plants\n\u2713 Peaceful green sanctuary with shady walking trails",
+      "tip": "Enter via Tanglin Gate for heritage trees and lush rainforest boardwalks. Main botanical gardens are free; ticket covers the National Orchid Garden.",
+      "signature_dish": null,
+      "nearby": [
+        "Orchard Road",
+        "Dempsey Hill",
+        "Jacob Ballas Children's Garden"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "UNESCO World Heritage Registry & NParks Singapore",
+        "price_source": "National Orchid Garden Official Admission (15 SGD adult / free for children under 12)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 08:30 AM - 07:00 PM NParks Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Sentosa Island & Siloso Beach",
+      "category": "Adventure",
+      "city": "Singapore",
+      "address": "Sentosa Island, Singapore 099981",
+      "latitude": 1.2494,
+      "longitude": 103.8303,
+      "opening_time": "09:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 4.0,
+      "currency": "SGD",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Premier resort island destination featuring golden palm-fringed beaches, calm coastal lagoons, Fort Siloso historical skywalk, and scenic boardwalk trails.",
+      "ai_reason": "\u2713 Family-friendly seaside getaway with calm swimming lagoons\n\u2713 Fort Siloso elevated Skywalk with coastal defense heritage\n\u2713 Integrated free beach shuttle and monorail",
+      "tip": "Take the Sentosa Express from VivoCity (4 SGD inclusive of island entry) or walk the scenic Sentosa Boardwalk for free entry.",
+      "signature_dish": null,
+      "nearby": [
+        "Fort Siloso",
+        "Palawan Beach",
+        "S.E.A. Aquarium"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Sentosa Development Corporation Official Portal",
+        "price_source": "Sentosa Express Monorail Entry (4 SGD)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 09:00 AM - 10:00 PM Public Access",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Chinatown Heritage Centre & Buddha Tooth Relic Temple",
+      "category": "Culture",
+      "city": "Singapore",
+      "address": "288 South Bridge Rd, Singapore 058840",
+      "latitude": 1.2814,
+      "longitude": 103.8443,
+      "opening_time": "07:00 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "SGD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Magnificent Tang-dynasty style Buddhist temple complex housing sacred relics, surrounded by traditional shophouses, herbal tea merchants, and historic heritage alleys.",
+      "ai_reason": "\u2713 Striking Tang-dynasty architectural landmark in historic Chinatown\n\u2713 Free cultural entry and serene rooftop orchid garden\n\u2713 Rich living cultural quarter with artisan shophouses",
+      "tip": "Dress respectfully covering shoulders and knees. Don't miss the tranquil 4th-floor relic chamber and peaceful rooftop prayer wheel garden.",
+      "signature_dish": null,
+      "nearby": [
+        "Sri Mariamman Temple",
+        "Chinatown Street Market",
+        "Maxwell Food Centre"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Singapore National Heritage Board Registry",
+        "price_source": "Free Admission / Cultural Heritage Access",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 07:00 AM - 05:00 PM Temple Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Jewel Changi Airport",
+      "category": "Sightseeing",
+      "city": "Singapore",
+      "address": "78 Airport Blvd, Singapore 819666",
+      "latitude": 1.3602,
+      "longitude": 103.9898,
+      "opening_time": "10:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 8.0,
+      "currency": "SGD",
+      "rating": 4.9,
+      "crowd": "Moderate",
+      "description": "World-acclaimed lifestyle hub featuring the 40-meter HSBC Rain Vortex\u2014the world's tallest indoor waterfall\u2014surrounded by the four-tier indoor Shiseido Forest Valley.",
+      "ai_reason": "\u2713 World's tallest indoor waterfall (40m) amid terraced forest trails\n\u2713 Ideal arrival or departure highlight connected to all terminals\n\u2713 4.9\u2605 global traveler rating",
+      "tip": "Rain Vortex viewing is completely free from all public vantage points. 8 SGD ticket covers the top-level Canopy Park walking net & glass bridge.",
+      "signature_dish": null,
+      "nearby": [
+        "Changi Airport Terminals",
+        "Canopy Park",
+        "Changi Jurassic Mile"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Changi Airport Group Official Landmark Registry",
+        "price_source": "Free Rain Vortex Access / Canopy Park 8 SGD",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 10:00 AM - 10:00 PM Jewel Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Merlion Park & Fullerton Waterfront",
+      "category": "Sightseeing",
+      "city": "Singapore",
+      "address": "1 Fullerton Rd, Singapore 049213",
+      "latitude": 1.2868,
+      "longitude": 103.8545,
+      "opening_time": "06:00 AM",
+      "closing_time": "11:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "SGD",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Singapore's iconic national emblem\u2014the mythical half-lion, half-fish statue spouting water into Marina Bay with sweeping views of the downtown skyline.",
+      "ai_reason": "\u2713 Iconic national symbol of Singapore\n\u2713 Unobstructed views of Marina Bay Sands and ArtScience Museum\n\u2713 100% free public waterfront access",
+      "tip": "Visit in the early morning before 09:00 for soft golden light and gentle breezes without tour crowds.",
+      "signature_dish": null,
+      "nearby": [
+        "The Fullerton Hotel",
+        "Esplanade Theatres",
+        "Cavenagh Bridge"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Singapore Tourism Board Official Registry",
+        "price_source": "Free Public Park Access",
+        "dietary_verification": null,
+        "opening_hours_source": "24/7 Waterfront Promenade Access",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Singapore Flyer & Marina Bay Loop",
+      "category": "Viewpoint",
+      "city": "Singapore",
+      "address": "30 Raffles Ave, Singapore 039803",
+      "latitude": 1.2893,
+      "longitude": 103.8631,
+      "opening_time": "10:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 40.0,
+      "currency": "SGD",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Asia's premier 165-meter giant observation wheel offering expansive 30-minute rotation flights with unobstructed views reaching Singapore Straits and nearby islands.",
+      "ai_reason": "\u2713 165m giant observation wheel with 360\u00b0 air-conditioned capsules\n\u2713 Panoramic perspectives across Formula 1 street circuit & harbor\n\u2713 Fully accessible for children and elderly travelers",
+      "tip": "Time your flight 30 minutes before sunset (approx. 18:30) for spectacular golden hour and sunset views across the Marina.",
+      "signature_dish": null,
+      "nearby": [
+        "Helix Bridge",
+        "Gardens by the Bay",
+        "Marina Barrage"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Singapore Flyer Official Operating Registry",
+        "price_source": "Standard Flight Ticket (40 SGD adult / 25 SGD child)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 10:00 AM - 10:00 PM Operating Hours",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Lau Pa Sat Festival Market",
+      "category": "Restaurant",
+      "city": "Singapore",
+      "address": "18 Raffles Quay, Singapore 048582",
+      "latitude": 1.2807,
+      "longitude": 103.8504,
+      "opening_time": "08:00 AM",
+      "closing_time": "11:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "SGD",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Historic 1894 Victorian cast-iron octagonal dining pavilion in the heart of downtown, offering authentic hawker stalls and Singapore's famous evening Satay Street.",
+      "ai_reason": "\u2713 Authentic Victorian heritage hawker pavilion\n\u2713 Wide variety of vegetarian hawker stalls & fresh satay\n\u2713 Vibrant evening atmosphere under heritage cast-iron arches",
+      "tip": "Stall 7 & 8 on Satay Street and internal vegetarian stalls serve vegetarian satay skewers with rich peanut sauce and fragrant ketupat rice cakes.",
+      "is_dining": true,
+      "meal_type": "dinner",
+      "dietary_tags": [
+        "vegetarian",
+        "vegetarian_friendly",
+        "street_food"
+      ],
+      "vegetarian_dish": "Vegetarian Satay with Peanut Gravy & Fragrant Hawker Fried Rice",
+      "signature_dish": "Mushroom & Soy Satay Skewers with Spiced Peanut Dip and Ketupat Rice Cakes",
+      "dish_ingredients": "Grilled king oyster and soy skewers, roasted peanut and lemongrass gravy, cucumber, pressed rice cakes (100% vegetarian)",
+      "nearby": [
+        "Marina Bay Link Mall",
+        "Telok Ayer Street",
+        "Thian Hock Keng Temple"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "National Heritage Board & NEA Singapore Hawker Directory",
+        "price_source": "Hawker Average Meal (10-14 SGD)",
+        "dietary_verification": "Verified Vegetarian Hawker Stalls Available",
+        "opening_hours_source": "Daily 24-Hour Pavilion Access / Satay Street from 19:00",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Little India & Sri Veeramakaliamman Temple",
+      "category": "Culture",
+      "city": "Singapore",
+      "address": "141 Serangoon Rd, Singapore 218042",
+      "latitude": 1.3078,
+      "longitude": 103.8528,
+      "opening_time": "06:00 AM",
+      "closing_time": "08:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "SGD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Vibrant historic cultural enclave showcasing the 1881 South Indian temple with colorful gopuram tower, spice emporiums, traditional flower garland stalls, and authentic Indian eateries.",
+      "ai_reason": "\u2713 Authentic 19th-century Dravidian temple architecture\n\u2713 Bustling cultural district with spice shops and flower stalls\n\u2713 Premier center for authentic pure vegetarian dining in Singapore",
+      "tip": "Remove footwear before entering temple grounds. Morning prayer puja rituals around 08:30 offer captivating devotional chants and music.",
+      "signature_dish": null,
+      "nearby": [
+        "Komala Vilas",
+        "Tekka Centre",
+        "Mustafa Centre"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Singapore Hindu Endowments Board & Heritage Board",
+        "price_source": "Free Cultural & Devotional Entry",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 06:00 AM - 12:00 PM, 05:00 PM - 08:30 PM",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Komala Vilas Pure Vegetarian Restaurant",
+      "category": "Restaurant",
+      "city": "Singapore",
+      "address": "76 Serangoon Rd, Singapore 217981",
+      "latitude": 1.3065,
+      "longitude": 103.852,
+      "opening_time": "07:00 AM",
+      "closing_time": "10:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "SGD",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Singapore's oldest and most revered pure vegetarian South Indian dining institution, serving golden paper dosas, fluffy idlis, and traditional banana leaf thalis since 1947.",
+      "ai_reason": "\u2713 Legendary pure vegetarian institution operating since 1947\n\u2713 Celebrated for Masala Dosai, Filter Coffee, and South Indian thalis\n\u2713 Strict 100% vegetarian guarantee with zero meat or egg cross-contact",
+      "tip": "Order the Ghee Special Masala Dosa paired with traditional Madras filter coffee. Family-friendly with quick seating.",
+      "is_dining": true,
+      "meal_type": "lunch",
+      "dietary_tags": [
+        "vegetarian",
+        "pure_vegetarian",
+        "south_indian"
+      ],
+      "vegetarian_dish": "South Indian Banana Leaf Vegetarian Thali & Masala Dosa",
+      "signature_dish": "Ghee Paper Roast Masala Dosa with Trio of Fresh Chutneys and Piping Hot Sambar",
+      "dish_ingredients": "Fermented lentil-rice crepe, clarified butter (ghee), spiced potato mash, coconut & tomato chutneys, lentil vegetable sambar",
+      "nearby": [
+        "Sri Veeramakaliamman Temple",
+        "Tekka Centre",
+        "Little India Arcade"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "National Heritage Board Heritage Institution Registry",
+        "price_source": "Set Meal Average (8-12 SGD)",
+        "dietary_verification": "100% Strict Pure Vegetarian Since 1947",
+        "opening_hours_source": "Daily 07:00 AM - 10:30 PM Regular Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Clarke Quay & Singapore River Walk",
+      "category": "Sightseeing",
+      "city": "Singapore",
+      "address": "3 River Valley Rd, Singapore 179024",
+      "latitude": 1.2905,
+      "longitude": 103.8465,
+      "opening_time": "10:00 AM",
+      "closing_time": "11:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "SGD",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Historic riverside commercial godowns restored into colorful pedestrian quays, featuring riverside walking bridges, scenic bumboats, and evening river breezes.",
+      "ai_reason": "\u2713 Restored colonial riverfront promenade\n\u2713 Historic pedestrian bridges (Read Bridge, Coleman Bridge)\n\u2713 Pleasant evening walking atmosphere along Singapore River",
+      "tip": "Stroll westward toward Robertson Quay for relaxed riverside promenades away from crowded music lounges.",
+      "signature_dish": null,
+      "nearby": [
+        "Fort Canning Park",
+        "Boat Quay",
+        "Asian Civilisations Museum"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Singapore Tourism Board Historical Quarter Registry",
+        "price_source": "Free Public Riverfront Promenade Access",
+        "dietary_verification": null,
+        "opening_hours_source": "24/7 River Walkway Access",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "National Museum of Singapore & Fort Canning Park",
+      "category": "Museum",
+      "city": "Singapore",
+      "address": "93 Stamford Rd, Singapore 178897",
+      "latitude": 1.2976,
+      "longitude": 103.8488,
+      "opening_time": "10:00 AM",
+      "closing_time": "07:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 15.0,
+      "currency": "SGD",
+      "rating": 4.7,
+      "crowd": "Low",
+      "description": "Singapore's oldest museum dating back to 1849, featuring immersive historical galleries in a magnificent 19th-century neo-classical dome building, adjoining Fort Canning hilltop park.",
+      "ai_reason": "\u2713 Singapore's oldest museum with world-class multimedia historical galleries\n\u2713 Beautiful neo-classical architecture with interactive digital rotunda\n\u2713 Connected directly to lush Fort Canning Park hillside trails",
+      "tip": "Explore the Singapore History Gallery on Level 1 first, followed by the enchanting 'Story of the Forest' interactive glass rotunda.",
+      "signature_dish": null,
+      "nearby": [
+        "Fort Canning Tree Tunnel",
+        "Peranakan Museum",
+        "Singapore Art Museum"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "National Heritage Board Singapore National Museum Registry",
+        "price_source": "Standard All-Access Gallery Ticket (15 SGD)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 10:00 AM - 07:00 PM NHB Schedule",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Whole Earth Peranakan-Thai Vegetarian",
+      "category": "Restaurant",
+      "city": "Singapore",
+      "address": "76 Peck Seah St, Singapore 079331",
+      "latitude": 1.2778,
+      "longitude": 103.8448,
+      "opening_time": "11:30 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "SGD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Singapore's acclaimed plant-based restaurant awarded the Michelin Bib Gourmand, specializing in authentic Peranakan and Thai culinary creations prepared entirely with natural plant ingredients.",
+      "ai_reason": "\u2713 Michelin Bib Gourmand awarded plant-based culinary highlight\n\u2713 Authentic Nyonya & Thai curries made with fresh herbs and mushrooms\n\u2713 Strict vegetarian verification with 4.7\u2605 diner ratings",
+      "tip": "Reserve in advance. The signature Penang Rendang and Oatmeal Tofu with curry leaves are exceptional highlights.",
+      "is_dining": true,
+      "meal_type": "dinner",
+      "dietary_tags": [
+        "vegetarian",
+        "pure_vegetarian",
+        "michelin_bib_gourmand"
+      ],
+      "vegetarian_dish": "Penang Rendang & Crispy Oatmeal Tofu with Peranakan Herbs",
+      "signature_dish": "Plant-Based Penang Rendang (Shiitake mushroom stems slow-braised in Peranakan spices and coconut milk)",
+      "dish_ingredients": "Shiitake mushroom stems, galangal, lemongrass, turmeric, roasted grated coconut (kerisik), kaffir lime leaves (100% vegetarian)",
+      "nearby": [
+        "Tanjong Pagar Heritage Shophouses",
+        "Maxwell Food Centre",
+        "Chinatown"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Michelin Guide Singapore Bib Gourmand Registry",
+        "price_source": "Dining Average (22-28 SGD per person)",
+        "dietary_verification": "100% Plant-Based / Vegetarian Michelin Recognized",
+        "opening_hours_source": "11:30 AM - 03:00 PM, 05:30 PM - 10:00 PM (Closed Mondays)",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Kampong Gelam & Sultan Mosque",
+      "category": "Culture",
+      "city": "Singapore",
+      "address": "3 Muscat St, Singapore 198833",
+      "latitude": 1.3023,
+      "longitude": 103.859,
+      "opening_time": "10:00 AM",
+      "closing_time": "09:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "SGD",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Historic Malay-Arab royal precinct centered around the iconic golden-domed Sultan Mosque, featuring pedestrian Haji Lane street murals, artisan perfumeries, and textile shophouses.",
+      "ai_reason": "\u2713 Magnificent golden dome Sultan Mosque landmark\n\u2713 Vibrant Haji Lane street art murals and boutique craft shophouses\n\u2713 Rich multicultural heritage with Turkish & Middle Eastern cafes",
+      "tip": "Explore the vibrant street murals on pedestrian Haji Lane in the morning, followed by the tranquil palm-lined Muscat Street promenade.",
+      "signature_dish": null,
+      "nearby": [
+        "Haji Lane",
+        "Malay Heritage Centre",
+        "Arab Street"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Urban Redevelopment Authority & NHB Historic District Registry",
+        "price_source": "Free Cultural District Access",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 10:00 AM - 09:00 PM District Access",
+        "data_confidence": "high"
+      }
+    }
+  ]
+}

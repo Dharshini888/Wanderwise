@@ -3,6 +3,7 @@ import {
   IconRoute, IconSparkles, IconClock, IconAlertTriangle, 
   IconCar, IconWalk, IconPlane, IconTrain, IconBus
 } from '@tabler/icons-react';
+import RealtimeStatus from './RealtimeStatus';
 
 /**
  * Safe transit time formatter.
@@ -389,9 +390,11 @@ export function RoutesTab({ routeOptions, selectedRouteId, onSelect }) {
               <td className="p-3 text-right">{route.transfers !== null ? route.transfers : '—'}</td>
               <td className="p-3 text-right text-emerald-500 font-bold">{route.fare ? `₹${route.fare}` : 'Unavailable'}</td>
               <td className="p-3 text-center">
-                {['Provider Verified', 'Schedule Verified', 'VERIFIED'].includes(route.verification_status)
-                  ? <span className="text-emerald-500">🟢 {route.verification_status}</span>
-                  : <span className="text-amber-500">⚠️ {route.verification_status || 'Estimated'}</span>}
+                <RealtimeStatus
+                  verification={route.verification || route.verification_status}
+                  realtime={route.realtime}
+                  provider={route.provider}
+                />
               </td>
             </tr>
           ))}

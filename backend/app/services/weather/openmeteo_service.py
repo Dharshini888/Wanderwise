@@ -1,5 +1,5 @@
 import requests
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from ..cache.transit_cache import TransitCache
 
 WEATHER_CODES = {
@@ -17,11 +17,23 @@ WEATHER_CODES = {
     95: ("Thunderstorm", "⛈️")
 }
 
-def get_openmeteo_weather(lat: float, lon: float, location_name: str) -> Dict[str, Any]:
+def get_openmeteo_weather(lat: Optional[float], lon: Optional[float], location_name: str) -> Dict[str, Any]:
     """
     Fetches real-time weather from Open-Meteo API (100% free, no API key).
     Returns: {"temp_c": float, "condition": str, "icon": str, "rain_probability": int, "visibility_km": float, "wind_kmh": float, "source": str}
     """
+    if lat is None or lon is None:
+        return {
+            "location": location_name,
+            "temp_c": 25.0,
+            "condition": "Pleasant",
+            "icon": "🌤️",
+            "rain_probability": 10,
+            "visibility_km": 10.0,
+            "wind_kmh": 12.0,
+            "source": "Default Baseline"
+        }
+
     cache_key = f"weather_{lat:.2f}_{lon:.2f}"
     cached = TransitCache.get(cache_key)
     if cached:

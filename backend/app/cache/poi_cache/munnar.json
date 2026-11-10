@@ -1,0 +1,68 @@
+{
+  "destination": "munnar",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Honey Tree",
+      "category": "Sightseeing",
+      "address": "Munnar",
+      "latitude": 10.0869959,
+      "longitude": 77.0600915,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Honey Tree, one of Munnar's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Munnar",
+      "tip": "Visit early for beautiful photo views of Honey Tree.",
+      "signature_dish": null,
+      "nearby": [
+        "Munnar"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    },
+    {
+      "name": "Calmelagiri Botanical Garden",
+      "category": "Viewpoint",
+      "address": "Munnar",
+      "latitude": 10.0869959,
+      "longitude": 77.0600915,
+      "opening_time": null,
+      "closing_time": null,
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "USD",
+      "rating": null,
+      "crowd": "Moderate",
+      "description": "Explore Calmelagiri Botanical Garden, one of Munnar's iconic real attractions.",
+      "ai_reason": "\u2713 Verified real landmark in Munnar",
+      "tip": "Visit early for beautiful photo views of Calmelagiri Botanical Garden.",
+      "signature_dish": null,
+      "nearby": [
+        "Munnar"
+      ],
+      "source": "wikipedia_openstreetmap",
+      "confidence": 0.98
+    }
+  ]
+}
