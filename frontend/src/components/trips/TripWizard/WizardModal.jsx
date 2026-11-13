@@ -24,6 +24,8 @@ export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
   const [submitting, setSubmitting] = useState(false);
   const [generationStage, setGenerationStage] = useState(0);
   const [currencyList, setCurrencyList] = useState([]);
+  const [isBudgetFeasible, setIsBudgetFeasible] = useState(true);
+  const [feasibilityData, setFeasibilityData] = useState(null);
 
   const GENERATION_STAGES = [
     { title: 'Personalizing Itinerary Plan', desc: 'Resolving travel style, group dynamics & pace preferences...' },
@@ -65,7 +67,7 @@ export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
     budget: '1500',
     currency: 'USD',
     budget_type: 'Mid-range',
-    interests: 'History, Street Food, Photography, Local Culture',
+    interests: '',
     food_preferences: 'Street Food, Local Delicacies',
     food_allergies: '',
     accommodation_preference: 'hotel',
@@ -99,7 +101,7 @@ export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
           currency: user.currency || prev.currency || 'USD',
           budget_type: user.preferred_budget || prev.budget_type || 'mid_range',
           travel_style: user.travel_styles ? user.travel_styles.split(',')[0].trim().toLowerCase() : prev.travel_style,
-          interests: user.preferred_activities || prev.interests,
+          interests: prev.interests || '',
           food_preferences: user.dietary_preferences || prev.food_preferences,
           weather_preference: user.preferred_climate || prev.weather_preference,
         }));
@@ -240,7 +242,10 @@ export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
       onClose();
     } catch (err) {
       console.error('[WizardModal] Generation error:', err);
-      const errMsg = err?.response?.data?.detail || err?.message || 'Failed to generate itinerary. Please try again.';
+      const errDetail = err?.response?.data?.detail;
+      const errMsg = typeof errDetail === 'object'
+        ? (errDetail.message || JSON.stringify(errDetail))
+        : (errDetail || err?.message || 'Failed to generate itinerary. Please try again.');
       alert(`Itinerary generation notice: ${errMsg}`);
     } finally {
       setSubmitting(false);
@@ -346,7 +351,19 @@ export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
           {step === 11 && <AiPreferencesStep form={form} onToggleAiPref={handleToggleAiPref} />}
           {step === 12 && <DailyRoutineStep form={form} onChange={handleChange} />}
           {step === 13 && <WeatherStep form={form} onChange={handleChange} />}
-          {step === 14 && <ReviewStep form={form} />}
+          {step === 14 && (
+            <ReviewStep
+              form={form}
+              onNavigateStep={(targetStep) => setStep(targetStep)}
+              onFeasibilityChange={(feasible, data) => {
+                setIsBudgetFeasible(feasible);
+                setFeasibilityData(data);
+              }}
+              onSelectAlternative={(altName) => {
+                setForm((prev) => ({ ...prev, destination: altName }));
+              }}
+            />
+          )}
         </div>
 
         {/* Footer Navigation */}
@@ -369,6 +386,15 @@ export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
               className="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 flex items-center gap-1 shadow-md"
             >
               Next Step <IconChevronRight size={16} />
+            </button>
+          ) : !isBudgetFeasible ? (
+            <button
+              type="button"
+              disabled={true}
+              title={feasibilityData?.shortfall ? `Budget shortfall: ${feasibilityData.formatted_shortfall}` : 'Budget is insufficient for this destination'}
+              className="px-6 py-2.5 rounded-xl text-xs font-extrabold bg-gray-400 dark:bg-gray-600 text-white cursor-not-allowed shadow flex items-center gap-2 opacity-80"
+            >
+              <IconSparkles size={18} /> Budget Insufficient — Adjust Parameters
             </button>
           ) : (
             <button

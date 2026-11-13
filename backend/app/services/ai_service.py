@@ -109,30 +109,84 @@ def _ai(prompt: str, system: str = None) -> str:
 # ITINERARY
 # ──────────────────────────────────────────────
 
-def check_budget_alert(destination: str, days: int, budget: float, currency: str = "USD") -> dict:
-    """Analyze budget and return warning dict if budget is below minimum threshold."""
-    min_per_day_usd = 50.0
-    rate_map = {"INR": 1800.0, "EUR": 45.0, "GBP": 40.0, "JPY": 6000.0, "AUD": 70.0, "CAD": 65.0}
-    min_per_day = rate_map.get(currency.upper(), min_per_day_usd)
-    estimated_minimum = min_per_day * max(days, 1)
-
-    if budget > 0 and budget < estimated_minimum:
+def check_budget_alert(
+    destination: str,
+    days: int,
+    budget: float,
+    currency: str = "USD",
+    adults: int = 1,
+    children: int = 0,
+    origin_city: str = "Coimbatore",
+    tier: str = "mid_range"
+) -> dict:
+    """Analyze budget using Central Budget Allocation Engine and return validation result."""
+    try:
+        from app.services.budget_allocation_service import BudgetAllocationService
+        plan = BudgetAllocationService.calculate_plan(
+            total_budget=budget,
+            currency=currency,
+            tier=tier,
+            destination=destination,
+            origin_city=origin_city,
+            days=days,
+            adults=adults,
+            children=children
+        )
+        if not plan["is_feasible"]:
+            return {
+                "has_warning": True,
+                "is_feasible": False,
+                "estimated_minimum": plan["total_estimated_trip_cost"],
+                "total_estimated_trip_cost": plan["total_estimated_trip_cost"],
+                "shortfall": plan["shortfall"],
+                "shortfall_pct": plan["shortfall_percentage"],
+                "user_budget": budget,
+                "currency": currency,
+                "message": plan["feasibility_note"],
+                "categories": plan["categories"],
+                "transportation_details": plan.get("transportation_details"),
+                "affordable_alternatives": plan.get("affordable_alternatives", []),
+                "suggestions": [
+                    f"Increase travel budget to at least {plan['formatted_total_estimated_cost']}",
+                    f"Reduce travel duration to {plan.get('suggested_duration_days', 2)} days",
+                    "Choose an affordable alternative destination"
+                ]
+            }
         return {
-            "has_warning": True,
-            "estimated_minimum": estimated_minimum,
+            "has_warning": False,
+            "is_feasible": True,
+            "estimated_minimum": plan["total_estimated_trip_cost"],
+            "total_estimated_trip_cost": plan["total_estimated_trip_cost"],
             "user_budget": budget,
             "currency": currency,
-            "message": f"⚠️ Budget Alert: Your budget ({currency} {budget:,.0f}) is lower than the estimated minimum cost ({currency} {estimated_minimum:,.0f}) for {days} day(s) in {destination}.",
-            "suggestions": [
-                "Increase travel budget",
-                "Reduce travel days",
-                "Choose budget hotels or hostels",
-                "Skip paid attractions and visit free sights",
-                "Travel during off season",
-                "Use public buses and metros instead of taxis"
-            ]
+            "transportation_details": plan.get("transportation_details")
         }
-    return {"has_warning": False, "estimated_minimum": estimated_minimum, "user_budget": budget, "currency": currency}
+    except Exception as e:
+        print(f"[check_budget_alert fallback]: {e}")
+        min_per_day_usd = 60.0
+        rate_map = {"INR": 3500.0, "EUR": 70.0, "GBP": 60.0, "JPY": 9000.0, "AUD": 90.0, "CAD": 85.0}
+        min_per_day = rate_map.get(currency.upper(), min_per_day_usd)
+        estimated_minimum = min_per_day * max(days, 1) * max(1, adults + children)
+
+        if budget > 0 and budget < estimated_minimum:
+            return {
+                "has_warning": True,
+                "is_feasible": False,
+                "estimated_minimum": estimated_minimum,
+                "shortfall": round(estimated_minimum - budget, 2),
+                "user_budget": budget,
+                "currency": currency,
+                "message": f"⚠️ Budget Alert: Your budget ({currency} {budget:,.0f}) is lower than the estimated minimum cost ({currency} {estimated_minimum:,.0f}) for {days} day(s) in {destination}.",
+                "suggestions": [
+                    "Increase travel budget",
+                    "Reduce travel days",
+                    "Choose budget hotels or hostels",
+                    "Skip paid attractions and visit free sights",
+                    "Travel during off season",
+                    "Use public buses and metros instead of taxis"
+                ]
+            }
+        return {"has_warning": False, "is_feasible": True, "estimated_minimum": estimated_minimum, "user_budget": budget, "currency": currency}
 
 
 from .poi_service import fetch_real_pois_for_destination
@@ -195,11 +249,16 @@ def schedule_unique_multiday_itinerary(destination: str, days: int) -> Dict[int,
         # If day has fewer than 2 unique POIs, schedule an extended exploration activity
         if len(day_pois) < 2:
             is_extended_exploration = True
+            from app.services.route_optimizer import destination_has_rail
+            has_rail = destination_has_rail(destination)
+            rail_act_name = "Scenic Mountain Railway & Leisure Trail" if has_rail else f"Scenic Nature & Coastal Trail in {destination}"
+            rail_act_desc = f"Enjoy scenic train journeys and relaxing nature trails near {destination}." if has_rail else f"Enjoy scenic road drives and relaxing nature trails near {destination}."
+
             extended_activities = [
-                {"name": f"Day Trip to Nearby Towns & Countryside around {destination}", "desc": f"Explore picturesque villages and scenic mountain drives surrounding {destination}."},
+                {"name": f"Day Trip to Nearby Towns & Countryside around {destination}", "desc": f"Explore picturesque villages and scenic landscapes surrounding {destination}."},
                 {"name": f"Local Culinary & Cooking Workshop in {destination}", "desc": f"Learn authentic regional recipes from local chefs in {destination}."},
                 {"name": f"Heritage Walking Trail & Local Artisan Craft Experience", "desc": f"Walk through historic quarters and meet traditional artisans in {destination}."},
-                {"name": "Scenic Mountain Railway & Leisure Trail", "desc": f"Enjoy scenic train journeys and relaxing nature trails near {destination}."}
+                {"name": rail_act_name, "desc": rail_act_desc}
             ]
             ext = extended_activities[(d - 1) % len(extended_activities)]
             day_pois.append({"time": "Full Day", "category": "Extended Experience", "name": ext["name"], "desc": ext["desc"]})
@@ -1126,10 +1185,11 @@ def generate_structured_itinerary(destination: str, days: int, budget: float,
     # Validation check via FinalItineraryValidator
     from app.ai.validators.final_itinerary_validator import FinalItineraryValidator
     try:
-        from datetime import datetime
+        from datetime import datetime, date, timedelta
         s_date = datetime.strptime(start_date, "%Y-%m-%d").date() if start_date else date.today()
         e_date = datetime.strptime(end_date, "%Y-%m-%d").date() if end_date else s_date + timedelta(days=max(days, 1)-1)
     except Exception:
+        from datetime import date, timedelta
         s_date = date.today()
         e_date = s_date + timedelta(days=max(days, 1)-1)
 
@@ -1152,6 +1212,11 @@ def generate_structured_itinerary(destination: str, days: int, budget: float,
     )
     if validated_days:
         trip_data["days"] = validated_days
+        if hasattr(FinalItineraryValidator, "last_interest_coverage_report") and FinalItineraryValidator.last_interest_coverage_report:
+            if not isinstance(trip_data.get("metadata"), dict):
+                trip_data["metadata"] = {}
+            trip_data["metadata"]["interest_coverage_report"] = FinalItineraryValidator.last_interest_coverage_report
+            trip_data["interest_coverage_report"] = FinalItineraryValidator.last_interest_coverage_report
 
     return trip_data
 
@@ -1160,29 +1225,80 @@ def generate_structured_itinerary(destination: str, days: int, budget: float,
 def regenerate_day_itinerary(destination: str, day_number: int,
                              locked_activities: list = None,
                              notes: str = "",
+                             exclude_poi_names: list = None,
                              generation_id: str = "") -> list:
     """
-    Regenerate activities for a single day while respecting user locked activities.
+    Regenerate activities for a single day while respecting user locked activities
+    and strictly avoiding duplicate attractions already scheduled on other days.
     """
     locked_str = json.dumps(locked_activities or [])
     notes_val = notes if notes else "Fresh new mix of attractions"
-    context_dict = {
-        "locked_activities": locked_activities or [],
-        "notes": notes,
-        "generation_id": generation_id
-    }
-    system_instruction = "You are WanderWise AI. Return ONLY a valid JSON array of 4-5 activity objects for a single day."
+    exclude_list = list(exclude_poi_names or [])
+    from app.services.pricing.canonical_pricing_registry import normalize_place_entity_key
+    seen_keys = {normalize_place_entity_key(n) for n in exclude_list if n}
+
+    # Extract keys of locked activities
+    for l_act in (locked_activities or []):
+        l_name = l_act.get("title") or (l_act.get("place", {}).get("name") if isinstance(l_act.get("place"), dict) else "")
+        if l_name:
+            seen_keys.add(normalize_place_entity_key(l_name))
+
+    system_instruction = "You are WanderWise AI. Return ONLY a valid JSON array of 3-4 activity objects for a single day."
     prompt = (
-        "Regenerate Day " + str(day_number) + " itinerary for " + str(destination) + ".\n"
-        "Special Requests / Notes: " + str(notes_val) + "\n"
-        "LOCKED ACTIVITIES (DO NOT CHANGE OR OMIT THESE): " + str(locked_str) + "\n\n"
-        "Return a JSON array of 4-5 activity objects with start_time, end_time, time_slot, title, description, location, place_category, estimated_duration, ticket_price, transport_mode, weather_suitability, crowd_level, ai_reason, confidence_score.\n"
+        f"Regenerate Day {day_number} itinerary for {destination}.\n"
+        f"Special Requests / Notes: {notes_val}\n"
+        f"LOCKED ACTIVITIES (DO NOT CHANGE OR OMIT THESE): {locked_str}\n"
+        f"AVOID THESE VENUES (ALREADY VISITED ON OTHER DAYS): {json.dumps(exclude_list[:15])}\n\n"
+        "Return a JSON array of 3-4 activity objects with start_time, end_time, time_slot, title, description, place, ticket_price, transport_mode, ai_reason.\n"
         "Ensure locked activities are preserved exactly in their original time slots.\n"
         "Only return JSON array."
     )
+    raw_res = None
     try:
         raw_resp = _ai(prompt, system=system_instruction)
         res = _clean_json_response(raw_resp)
-        return res if isinstance(res, list) else res.get("activities", [])
+        raw_res = res if isinstance(res, list) else (res.get("activities", []) if isinstance(res, dict) else [])
     except Exception:
-        return locked_activities or []
+        raw_res = []
+
+    # Combine locked activities with newly generated activities, ensuring no duplicate venues
+    final_acts = list(locked_activities or [])
+    for act in (raw_res or []):
+        p_name = act.get("title") or (act.get("place", {}).get("name") if isinstance(act.get("place"), dict) else "")
+        p_key = normalize_place_entity_key(p_name)
+        if p_key and p_key not in seen_keys:
+            seen_keys.add(p_key)
+            final_acts.append(act)
+
+    # If count is below 3 (e.g. LLM failure or offline), backfill from authentic POIs
+    if len(final_acts) < 3:
+        from app.services.poi_service import fetch_real_pois_for_destination
+        real_pois = fetch_real_pois_for_destination(destination)
+        for poi in real_pois:
+            poi_key = normalize_place_entity_key(poi["name"])
+            if poi_key not in seen_keys:
+                seen_keys.add(poi_key)
+                is_din = poi.get("is_dining") or any(k in poi.get("category", "").lower() for k in ["restaurant", "cafe", "dining"])
+                final_acts.append({
+                    "start_time": "14:00" if len(final_acts) == 1 else "16:30",
+                    "end_time": "15:30" if len(final_acts) == 1 else "18:00",
+                    "duration_minutes": 90,
+                    "time_slot": "afternoon" if len(final_acts) == 1 else "evening",
+                    "title": f"Explore {poi['name']}" if not is_din else f"Dining at {poi['name']}",
+                    "description": poi.get("description") or f"Experience {poi['name']} in {destination}.",
+                    "place": poi,
+                    "ticket_price": float(poi.get("ticket_price") or 0.0) if not is_din else 0.0,
+                    "meal_cost": float(poi.get("meal_cost") or 25.0) if is_din else None,
+                    "activity_type": "meal" if is_din else "sightseeing",
+                    "transport_mode": "Public Transit / Walking",
+                    "ai_reason": f"✓ Fresh verified landmark in {destination}",
+                    "confidence_score": 0.95
+                })
+                if len(final_acts) >= 3:
+                    break
+
+    return final_acts
+
+
+# Canonical alias for itinerary day generation
+generate_trip_days = generate_structured_itinerary

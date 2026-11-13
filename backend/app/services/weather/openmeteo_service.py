@@ -31,7 +31,8 @@ def get_openmeteo_weather(lat: Optional[float], lon: Optional[float], location_n
             "rain_probability": 10,
             "visibility_km": 10.0,
             "wind_kmh": 12.0,
-            "source": "Default Baseline"
+            "source": "Default Baseline",
+            "weather_confidence": "Seasonal Climate Standard"
         }
 
     cache_key = f"weather_{lat:.2f}_{lon:.2f}"
@@ -65,7 +66,8 @@ def get_openmeteo_weather(lat: Optional[float], lon: Optional[float], location_n
                 "rain_probability": rain_prob,
                 "visibility_km": vis_km,
                 "wind_kmh": wind,
-                "source": "Live (Open-Meteo)"
+                "source": "Live (Open-Meteo)",
+                "weather_confidence": "Live Forecast"
             }
             TransitCache.set(cache_key, result)
             return result
@@ -80,5 +82,6 @@ def get_openmeteo_weather(lat: Optional[float], lon: Optional[float], location_n
         "rain_probability": 0,
         "visibility_km": 0,
         "wind_kmh": 0,
-        "source": "Unavailable"
+        "source": "Unavailable",
+        "weather_confidence": "Weather Unavailable"
     }

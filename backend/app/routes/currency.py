@@ -36,6 +36,7 @@ def get_budget_allocation(
     days: int = Query(5, ge=1, description="Number of days"),
     adults: int = Query(1, ge=1, description="Adult count"),
     children: int = Query(0, ge=0, description="Child count"),
+    travel_style: Optional[str] = Query(None, description="Travel style: family, solo, couple, friends, etc."),
     transport_mode: str = Query("Mixed Transport", description="Transport mode"),
     accommodation_preference: str = Query("hotel", description="Accommodation preference")
 ):
@@ -43,6 +44,7 @@ def get_budget_allocation(
     Centralized API providing explainable, testable door-to-door financial breakdown
     for any comfort tier and destination.
     """
+    resolved_travel_style = travel_style or ("family" if children > 0 else "solo")
     return BudgetAllocationService.calculate_plan(
         total_budget=budget,
         currency=currency,
@@ -52,6 +54,7 @@ def get_budget_allocation(
         days=days,
         adults=adults,
         children=children,
+        travel_style=resolved_travel_style,
         transport_mode=transport_mode,
         accommodation_preference=accommodation_preference
     )

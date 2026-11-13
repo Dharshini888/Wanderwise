@@ -62,9 +62,71 @@ CITY_ALIASES = {
 }
 
 
-def _get_fallback_weather(city: str) -> dict:
-    """Fallback weather response when Open-Meteo or geocoding is unavailable or encounters errors."""
+def _estimate_seasonal_climate(city: str, lat: Optional[float] = None, month: int = 3) -> dict:
+    """Dynamic global seasonal climate estimation based on geography, latitude bands, and calendar month."""
+    city_l = (city or "").lower()
+    is_tropical = (lat is not None and abs(lat) <= 23.5) or any(t in city_l for t in ["bali", "phuket", "singapore", "bangkok", "maldives", "hawaii", "colombo", "varkala", "goa", "chennai"])
+    is_mediterranean = (lat is not None and 35.0 < abs(lat) <= 45.0) or any(t in city_l for t in ["istanbul", "rome", "athens", "madrid", "barcelona"])
+    is_subtropical = (lat is not None and 23.5 < abs(lat) <= 35.0) or any(t in city_l for t in ["cairo", "dubai", "jaipur", "delhi", "tokyo", "kyoto"])
+
+    if is_tropical:
+        temp = 28.0
+        desc = "Tropical Climate (Historical Seasonal Standard)"
+        precip = 25
+    elif is_mediterranean:
+        temp = 14.5 if month in [3, 4, 10, 11] else (26.0 if month in [6, 7, 8, 9] else 9.0)
+        desc = "Mediterranean Seasonal Climate Standard"
+        precip = 20
+    elif is_subtropical:
+        temp = 20.0
+        desc = "Subtropical Seasonal Climate Standard"
+        precip = 15
+    else:
+        temp = 18.0
+        desc = "Temperate Seasonal Climate Standard"
+        precip = 15
+
+    return {
+        "temperature": temp,
+        "feels_like": round(temp + 1.0, 1),
+        "description": desc,
+        "precipitation_probability": precip
+    }
+
+
+def _get_fallback_weather(city: str, date_str: Optional[str] = None) -> dict:
+    """Fallback weather response when Open-Meteo or geocoding is unavailable or encounters network errors."""
     now_utc = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    is_seasonal = bool(date_str)
+    weather_status = "Forecast unavailable" if is_seasonal else "Weather Unavailable"
+    weather_confidence = "Seasonal Climate Standard" if is_seasonal else "Weather Unavailable"
+
+    clean_target = date_str.split("T")[0] if date_str else ""
+    target_month = 3
+    if clean_target:
+        try:
+            target_month = int(clean_target.split("-")[1])
+        except Exception:
+            pass
+
+    climate_est = _estimate_seasonal_climate(city, month=target_month)
+
+    selected_date_weather = None
+    if date_str:
+        selected_date_weather = {
+            "temperature": climate_est["temperature"],
+            "feels_like": climate_est["feels_like"],
+            "description": climate_est["description"],
+            "weather_code": 1,
+            "precipitation_probability": climate_est["precipitation_probability"],
+            "status_label": f"Forecast unavailable — Seasonal Climate Standard for {clean_target}",
+            "weather_status": "Forecast unavailable",
+            "weather_confidence": "Seasonal Climate Standard",
+            "is_confirmed_forecast": False,
+            "forecast_unavailable": True,
+            "provenance_note": f"Live atmospheric forecast unavailable for distant dates ({clean_target}). Typical historical seasonal climate standard displayed."
+        }
+
     return {
         "city": city.strip().title(),
         "country": "International Destination",
@@ -73,13 +135,18 @@ def _get_fallback_weather(city: str) -> dict:
         "timezone": "UTC",
         "provider": "Open-Meteo Weather Service (Estimated Baseline)",
         "timestamp": now_utc,
-        "forecast_type": "Seasonal Climate Estimate",
-        "is_seasonal_estimate": True,
-        "provenance_note": "Seasonal estimate baseline; live forecast available within 7 days of departure.",
+        "forecast_type": "Seasonal Climate Estimate" if is_seasonal else "Estimated Baseline",
+        "is_seasonal_estimate": is_seasonal,
+        "weather_status": weather_status,
+        "weather_confidence": weather_confidence,
+        "provenance_note": (
+            f"Forecast unavailable for distant travel dates ({clean_target}). Typical historical seasonal climate standard displayed."
+            if is_seasonal else "Seasonal estimate baseline; live forecast available within 14 days of departure."
+        ),
         "current": {
-            "temperature": 22.0,
-            "feels_like": 22.0,
-            "humidity": 55,
+            "temperature": climate_est["temperature"],
+            "feels_like": climate_est["feels_like"],
+            "humidity": 65,
             "wind_speed": 10.0,
             "wind_direction": "N",
             "wind_degrees": 0,
@@ -88,9 +155,10 @@ def _get_fallback_weather(city: str) -> dict:
             "visibility": 10000,
             "pressure": 1013,
             "is_day": 1,
-            "description": "Partly cloudy (Estimated)",
-            "weather_code": 2,
+            "description": climate_est["description"],
+            "weather_code": 1,
         },
+        "selected_date_weather": selected_date_weather,
         "forecast": [],
         "hourly": [],
         "source": "Estimated Fallback Weather"
@@ -199,13 +267,21 @@ def get_weather(city: str, date_str: Optional[str] = None):
                 "sunset": _safe_get(d_sunset, i),
             })
 
-        # Check date_str relative to current date and 7-day forecast
+        # Check date_str relative to current date and 14-day live forecast horizon
         selected_date_weather = None
         weather_status_label = "Live Weather"
 
         if date_str:
             clean_target = date_str.split("T")[0]
-            matching_forecast = next((f for f in forecast if f["date"] == clean_target), None)
+            try:
+                target_date_obj = datetime.strptime(clean_target, "%Y-%m-%d").date()
+                today_obj = datetime.now(timezone.utc).date()
+                days_ahead = (target_date_obj - today_obj).days
+            except Exception:
+                days_ahead = 30
+
+            matching_forecast = next((f for f in forecast if f["date"] == clean_target), None) if days_ahead <= 14 else None
+
             if matching_forecast:
                 selected_date_weather = {
                     "temperature": matching_forecast.get("max_temp"),
@@ -214,17 +290,31 @@ def get_weather(city: str, date_str: Optional[str] = None):
                     "weather_code": matching_forecast.get("weather_code"),
                     "precipitation_probability": matching_forecast.get("precipitation_probability"),
                     "status_label": f"Confirmed Forecast for {clean_target}",
-                    "is_confirmed_forecast": True
+                    "weather_status": "Live Forecast",
+                    "weather_confidence": "Live Forecast",
+                    "is_confirmed_forecast": True,
+                    "forecast_unavailable": False
                 }
             else:
+                target_month = 3
+                if clean_target:
+                    try:
+                        target_month = int(clean_target.split("-")[1])
+                    except Exception:
+                        pass
+                climate_est = _estimate_seasonal_climate(search_city, lat=lat, month=target_month)
                 selected_date_weather = {
-                    "temperature": 24.0,
-                    "feels_like": 24.0,
-                    "description": "Seasonal Climate Estimate",
+                    "temperature": climate_est["temperature"],
+                    "feels_like": climate_est["feels_like"],
+                    "description": climate_est["description"],
                     "weather_code": 1,
-                    "precipitation_probability": 15,
-                    "status_label": f"Seasonal Estimate for {clean_target} (Future Date)",
-                    "is_confirmed_forecast": False
+                    "precipitation_probability": climate_est["precipitation_probability"],
+                    "status_label": f"Forecast unavailable — Seasonal Climate Standard for {clean_target}",
+                    "weather_status": "Forecast unavailable",
+                    "weather_confidence": "Seasonal Climate Standard",
+                    "is_confirmed_forecast": False,
+                    "forecast_unavailable": True,
+                    "provenance_note": f"Live atmospheric forecast unavailable for distant dates ({clean_target}). Typical historical seasonal climate standard displayed."
                 }
 
         # Build next 24h hourly forecast starting from current hour
@@ -258,6 +348,11 @@ def get_weather(city: str, date_str: Optional[str] = None):
 
         now_utc = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
         is_seasonal = selected_date_weather is not None and not selected_date_weather.get("is_confirmed_forecast", True)
+        
+        # Weather confidence labeling: Live Forecast (<= 14 days), Seasonal Climate Standard (> 14 days)
+        weather_status = "Forecast unavailable" if is_seasonal else "Live Forecast"
+        weather_confidence = "Seasonal Climate Standard" if is_seasonal else "Live Forecast"
+
         return {
             "city": name,
             "country": country,
@@ -268,8 +363,10 @@ def get_weather(city: str, date_str: Optional[str] = None):
             "timestamp": now_utc,
             "forecast_type": "Seasonal Climate Estimate" if is_seasonal else "Live & 7-Day Forecast",
             "is_seasonal_estimate": is_seasonal,
+            "weather_status": weather_status,
+            "weather_confidence": weather_confidence,
             "provenance_note": (
-                f"Seasonal climate projection for target date. Live atmospheric forecast updates within 7 days of trip."
+                f"Seasonal climate projection for target date. Live atmospheric forecast updates within 14 days of trip."
                 if is_seasonal else f"Live Open-Meteo observations and 7-day model forecast as of {now_utc}."
             ),
             "current": {
@@ -294,8 +391,8 @@ def get_weather(city: str, date_str: Optional[str] = None):
     except HTTPException as he:
         raise he
     except Exception as e:
-        print(f"[Weather Error] Live weather lookup failed for '{city}': {e}.")
-        raise HTTPException(status_code=503, detail=f"Weather service unavailable for {city}")
+        print(f"[Weather Error] Live weather lookup failed for '{city}': {e}. Returning robust seasonal fallback.")
+        return _get_fallback_weather(city, date_str=date_str)
 
 
 @router.post("/activities")

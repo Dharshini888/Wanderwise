@@ -59,7 +59,12 @@ class MockProvider(BaseAIProvider):
         is_avoid_traps = "tourist_trap" in prompt_lower or "tourist traps" in prompt_lower
         is_instagram = "instagram" in prompt_lower or "photography" in prompt_lower
         is_local_culture = "local_culture" in prompt_lower or "local culture" in prompt_lower or "culture" in prompt_lower
-        is_vegetarian = "vegetarian" in prompt_lower or "vegan" in prompt_lower
+        diet_match = re.search(r"Traveler dietary requirement:\s*['\"]([^'\"]+)['\"]", prompt, re.IGNORECASE)
+        if diet_match:
+            d_val = diet_match.group(1).lower().strip()
+            is_vegetarian = ("veg" in d_val or "vegan" in d_val) and not any(k in d_val for k in ["no preference", "none", "non-veg", "unrestricted", "any"])
+        else:
+            is_vegetarian = ("vegetarian" in prompt_lower or "vegan" in prompt_lower) and "no preference" not in prompt_lower
 
         # 6. Destination Compatibility (Landlocked vs Beaches & Gaming)
         is_landlocked = any(c in dest.lower() for c in ["bolivia", "switzerland", "nepal", "austria", "bhutan", "laos", "paraguay"])
@@ -2225,7 +2230,6 @@ class MockProvider(BaseAIProvider):
         if not attraction_pois:
             attraction_pois = valid_pois
 
-        is_vegetarian = "veg" in prompt_lower
         days_list = []
         used_poi_names = set()
 

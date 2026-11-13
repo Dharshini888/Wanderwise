@@ -22,7 +22,16 @@ STATIC_COORDS = {
     "bali": {"lat": -8.4095, "lon": 115.1889, "display_name": "Bali, Indonesia", "country_code": "ID"},
     "rome": {"lat": 41.9028, "lon": 12.4964, "display_name": "Rome, Italy", "country_code": "IT"},
     "singapore": {"lat": 1.3521, "lon": 103.8198, "display_name": "Singapore", "country_code": "SG"},
-    "hawaii": {"lat": 21.3069, "lon": -157.8583, "display_name": "Hawaii, USA", "country_code": "US"}
+    "hawaii": {"lat": 21.3069, "lon": -157.8583, "display_name": "Hawaii, USA", "country_code": "US"},
+    "switzerland": {"lat": 46.8182, "lon": 8.2275, "display_name": "Switzerland", "country_code": "CH"},
+    "zurich": {"lat": 47.3769, "lon": 8.5417, "display_name": "Zurich, Switzerland", "country_code": "CH"},
+    "lucerne": {"lat": 47.0502, "lon": 8.3093, "display_name": "Lucerne, Switzerland", "country_code": "CH"},
+    "interlaken": {"lat": 46.6863, "lon": 7.8632, "display_name": "Interlaken, Switzerland", "country_code": "CH"},
+    "geneva": {"lat": 46.2044, "lon": 6.1432, "display_name": "Geneva, Switzerland", "country_code": "CH"},
+    "istanbul": {"lat": 41.0082, "lon": 28.9784, "display_name": "Istanbul, Turkey", "country_code": "TR"},
+    "cairo": {"lat": 30.0444, "lon": 31.2357, "display_name": "Cairo, Egypt", "country_code": "EG"},
+    "bern": {"lat": 46.9480, "lon": 7.4474, "display_name": "Bern, Switzerland", "country_code": "CH"},
+    "zermatt": {"lat": 45.9763, "lon": 7.7491, "display_name": "Zermatt, Switzerland", "country_code": "CH"}
 }
 
 def reverse_geocode(lat: float, lon: float) -> Optional[Dict[str, Any]]:

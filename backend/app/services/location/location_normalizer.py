@@ -317,6 +317,30 @@ CURRENCY_SYMBOLS: Dict[str, str] = {
 }
 
 GLOBAL_DESTINATION_GAZETTEER: Dict[str, Dict[str, Any]] = {
+    "istanbul": {
+        "name": "Istanbul",
+        "country": "Turkey",
+        "country_code": "TR",
+        "currency": "TRY",
+        "currency_symbol": "₺",
+        "latitude": 41.0082,
+        "longitude": 28.9784,
+        "region": "Transcontinental Europe/Asia",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+    "cairo": {
+        "name": "Cairo",
+        "country": "Egypt",
+        "country_code": "EG",
+        "currency": "EGP",
+        "currency_symbol": "E£",
+        "latitude": 30.0444,
+        "longitude": 31.2357,
+        "region": "North Africa / Middle East",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
     "tbilisi": {
         "name": "Tbilisi",
         "country": "Georgia",
@@ -581,6 +605,114 @@ GLOBAL_DESTINATION_GAZETTEER: Dict[str, Dict[str, Any]] = {
         "is_long_haul": True,
         "is_regional_international": False,
     },
+    "switzerland": {
+        "name": "Switzerland",
+        "country": "Switzerland",
+        "country_code": "CH",
+        "currency": "CHF",
+        "currency_symbol": "CHF",
+        "latitude": 46.8182,
+        "longitude": 8.2275,
+        "region": "Central Europe",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+    "zurich": {
+        "name": "Zurich",
+        "country": "Switzerland",
+        "country_code": "CH",
+        "currency": "CHF",
+        "currency_symbol": "CHF",
+        "latitude": 47.3769,
+        "longitude": 8.5417,
+        "region": "Central Europe",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+    "lucerne": {
+        "name": "Lucerne",
+        "country": "Switzerland",
+        "country_code": "CH",
+        "currency": "CHF",
+        "currency_symbol": "CHF",
+        "latitude": 47.0502,
+        "longitude": 8.3093,
+        "region": "Central Europe",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+    "interlaken": {
+        "name": "Interlaken",
+        "country": "Switzerland",
+        "country_code": "CH",
+        "currency": "CHF",
+        "currency_symbol": "CHF",
+        "latitude": 46.6863,
+        "longitude": 7.8632,
+        "region": "Central Europe",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+    "geneva": {
+        "name": "Geneva",
+        "country": "Switzerland",
+        "country_code": "CH",
+        "currency": "CHF",
+        "currency_symbol": "CHF",
+        "latitude": 46.2044,
+        "longitude": 6.1432,
+        "region": "Central Europe",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+}
+
+DESTINATION_PRICE_INDEX: Dict[str, float] = {
+    "CH": 2.4,   # Switzerland
+    "NO": 2.2,   # Norway
+    "IS": 2.2,   # Iceland
+    "SG": 2.0,   # Singapore
+    "DK": 2.0,   # Denmark
+    "AU": 1.9,   # Australia
+    "US": 1.7,   # United States
+    "GB": 1.7,   # United Kingdom
+    "FR": 1.6,   # France
+    "DE": 1.6,   # Germany
+    "NL": 1.6,   # Netherlands
+    "AT": 1.6,   # Austria
+    "SE": 1.6,   # Sweden
+    "JP": 1.1,   # Japan (Yen depreciation market-adjusted)
+    "IT": 1.4,   # Italy
+    "NZ": 1.6,   # New Zealand
+    "CA": 1.6,   # Canada
+    "AE": 1.5,   # UAE / Dubai
+    "ES": 1.2,   # Spain
+    "KR": 1.3,   # South Korea
+    "GR": 1.1,   # Greece
+    "PT": 1.1,   # Portugal
+    "HR": 1.1,   # Croatia
+    "CZ": 0.9,   # Czechia
+    "PL": 0.85,  # Poland
+    "TR": 0.85,  # Turkey
+    "MY": 0.58,  # Malaysia (Market-calibrated regional index)
+    "TH": 0.58,  # Thailand (Market-calibrated regional index)
+    "ZA": 0.80,  # South Africa
+    "BR": 0.85,  # Brazil
+    "CL": 0.95,  # Chile
+    "GE": 0.55,  # Georgia
+    "BO": 0.50,  # Bolivia
+    "VN": 0.48,  # Vietnam
+    "ID": 0.50,  # Indonesia
+    "PH": 0.50,  # Philippines
+    "EG": 0.50,  # Egypt
+    "IN": 0.42,  # India
+    "NP": 0.40,  # Nepal
+    "LK": 0.40,  # Sri Lanka
+}
+
+EUROPEAN_COUNTRY_CODES = {
+    "CH", "FR", "DE", "IT", "GB", "ES", "NL", "BE", "AT", "SE", "NO", "DK",
+    "PL", "CZ", "HU", "GR", "PT", "IE", "FI", "IS", "RO", "BG", "HR"
 }
 
 INDIAN_CITIES = {
@@ -647,7 +779,12 @@ def resolve_destination_info(destination: str, origin: Optional[str] = None) -> 
         currency_symbol = CURRENCY_SYMBOLS.get(currency, "$")
         lat = None
         lon = None
-        is_long_haul = any(term in dest_low for term in ["south america", "bolivia", "peru", "chile", "brazil", "argentina", "iceland", "hawaii"])
+        is_transcontinental = (
+            country_code in EUROPEAN_COUNTRY_CODES
+            or country_code in ["US", "CA", "MX", "BR", "AR", "CL", "PE", "BO", "AU", "NZ", "ZA", "KE"]
+            or any(term in dest_low for term in ["switzerland", "zurich", "lucerne", "interlaken", "geneva", "europe", "south america", "bolivia", "peru", "chile", "brazil", "argentina", "iceland", "hawaii", "usa", "canada", "australia"])
+        )
+        is_long_haul = is_transcontinental
         is_regional_international = not is_long_haul and country_code != "IN"
 
     # Evaluate domestic India route truth
@@ -681,6 +818,7 @@ def resolve_destination_info(destination: str, origin: Optional[str] = None) -> 
         "is_india_domestic": is_india_domestic,
         "is_long_haul": is_long_haul,
         "is_regional_international": is_regional_international,
+        "price_multiplier": DESTINATION_PRICE_INDEX.get(country_code, 1.0),
         "flight_provenance_source": flight_provenance,
     }
 

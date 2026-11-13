@@ -69,61 +69,79 @@ class AIEngine:
         start_date = context_dict.get("start_date") or prefs.get("start_date") or ""
         end_date = context_dict.get("end_date") or prefs.get("end_date") or ""
 
-        # Personalized Companion & Style Instructions
+        # 1. Companion & Group Travel Style Instructions (Derived purely from travel_style)
         style_instructions_list = []
-        style_lower = str(travel_style).lower() + " " + str(interests).lower()
+        travel_style_clean = str(travel_style or "").lower().strip()
 
-        if "adventure" in style_lower:
-            style_instructions_list.append("""- ADVENTURE TRAVEL PERSONALIZATION:
-  * Prioritize adventure activities, outdoor exploration, scenic trails, nature treks, or water sports.
-  * Schedule active morning and afternoon excursions with safety considerations.""")
-
-        if "relax" in style_lower or "peace" in style_lower:
-            style_instructions_list.append("""- RELAXATION TRAVEL PERSONALIZATION:
-  * Prioritize peaceful places, gardens, scenic viewpoints, spas, and unhurried schedules.
-  * Provide generous downtime between activities and avoid rushed multi-leg transfers.""")
-
-        if "cultur" in style_lower or "heritage" in style_lower or "history" in style_lower:
-            style_instructions_list.append("""- CULTURAL & HERITAGE PERSONALIZATION:
-  * Prioritize historic heritage, iconic monuments, architectural wonders, local museums, and authentic traditions.
-  * Include rich context and historic background for each visit.""")
-
-        if "food" in style_lower or "culinary" in style_lower or "dining" in style_lower:
-            style_instructions_list.append("""- FOOD & CULINARY PERSONALIZATION:
-  * Prioritize authentic local dining, regional specialties, iconic food markets, and culinary experiences.
-  * Dedicate focused time to meal stops with specific local dish recommendations.""")
-
-        if "nature" in style_lower or "park" in style_lower or "forest" in style_lower or "mountain" in style_lower:
-            style_instructions_list.append("""- NATURE & OUTDOOR PERSONALIZATION:
-  * Prioritize national parks, botanical gardens, scenic natural viewpoints, and outdoor landscapes.
-  * Plan outdoor visits during the best daylight and weather windows.""")
-
-        if "shop" in style_lower or "bazaar" in style_lower or "market" in style_lower:
-            style_instructions_list.append("""- SHOPPING & LOCAL MARKETS PERSONALIZATION:
-  * Prioritize vibrant artisan markets, traditional craft bazaars, specialty boutiques, and shopping streets.
-  * Highlight authentic local crafts, souvenirs, and textiles.""")
-
-        if "solo" in style_lower:
+        if "solo" in travel_style_clean:
             style_instructions_list.append("""- SOLO TRAVELER PERSONALIZATION:
   * Select solo-friendly attractions, safe/public locations, and walkable exploration spots.
   * Recommend cafes, food markets, and casual dining comfortable for a single person.""")
-        elif "friend" in style_lower:
+        elif "friend" in travel_style_clean:
             style_instructions_list.append("""- FRIENDS GROUP PERSONALIZATION:
   * Prioritize group-friendly experiences, social dining, vibrant neighborhoods, and shared activities.""")
-        elif "fam" in style_lower:
+        elif "fam" in travel_style_clean:
             style_instructions_list.append("""- FAMILY TRAVEL PERSONALIZATION:
   * Prioritize family-friendly attractions with age-appropriate activities and comfortable pacing.""")
-        elif "couple" in style_lower or "romantic" in style_lower:
+        elif "couple" in travel_style_clean or "romantic" in travel_style_clean:
             style_instructions_list.append("""- COUPLE / ROMANTIC PERSONALIZATION:
   * Include scenic viewpoints, romantic dining, relaxed evening strolls, and cultural highlights.""")
-        elif "luxury" in style_lower:
+        elif "luxury" in travel_style_clean:
             style_instructions_list.append("""- LUXURY TRAVEL PERSONALIZATION:
   * Recommend high-end dining, premium cultural experiences, private/comfortable transit, and top-tier spots.""")
-        elif "backpack" in style_lower or "budget" in style_lower:
+        elif "backpack" in travel_style_clean or "budget" in travel_style_clean:
             style_instructions_list.append("""- BACKPACKER / BUDGET PERSONALIZATION:
   * Focus on free/low-cost historic landmarks, local street food markets, walking trails, and public transit.""")
 
-        style_instructions = "\n".join(style_instructions_list)
+        # 2. Explicit User Interest Instructions (Derived purely from interests)
+        interests_clean = str(interests or "").lower().strip()
+        interest_instructions_list = []
+
+        if "adventure" in interests_clean:
+            interest_instructions_list.append("""- ADVENTURE INTEREST:
+  * Prioritize outdoor exploration, scenic trails, nature treks, or active excursions.""")
+        if "relax" in interests_clean or "peace" in interests_clean:
+            interest_instructions_list.append("""- RELAXATION INTEREST:
+  * Prioritize peaceful places, gardens, scenic viewpoints, spas, and unhurried schedules.""")
+        if "cultur" in interests_clean or "heritage" in interests_clean or "history" in interests_clean:
+            interest_instructions_list.append("""- CULTURAL & HISTORIC INTEREST:
+  * Prioritize historic heritage, iconic monuments, architectural wonders, and museums.""")
+        if "street food" in interests_clean or "local food" in interests_clean:
+            interest_instructions_list.append("""- STREET FOOD & LOCAL DELICACIES:
+  * Feature authentic local food stalls, markets, and regional street specialties.""")
+        elif "luxury dining" in interests_clean:
+            interest_instructions_list.append("""- FINE DINING & GASTRONOMY:
+  * Feature celebrated culinary venues and acclaimed regional restaurants.""")
+        if "nature" in interests_clean or "wildlife" in interests_clean or "hiking" in interests_clean:
+            interest_instructions_list.append("""- NATURE & OUTDOOR INTEREST:
+  * Prioritize national parks, botanical gardens, scenic natural viewpoints, and outdoor landscapes.""")
+        if "shop" in interests_clean or "market" in interests_clean:
+            interest_instructions_list.append("""- SHOPPING & MARKETS INTEREST:
+  * Prioritize artisan markets, traditional craft bazaars, specialty boutiques, and shopping streets.""")
+        if "photo" in interests_clean:
+            interest_instructions_list.append("""- PHOTOGRAPHY INTEREST:
+  * Prioritize scenic viewpoints, golden hour vantage points, and visually striking landmarks.""")
+        if "hidden" in interests_clean or "gem" in interests_clean:
+            interest_instructions_list.append("""- HIDDEN GEMS INTEREST:
+  * Prioritize lesser-known, authentic local treasures away from dense tour groups.""")
+
+        combined_personalization = style_instructions_list + interest_instructions_list
+        style_instructions = "\n".join(combined_personalization)
+
+        food_prefs_clean = str(food_prefs or "").strip().lower()
+        has_specific_diet = any(k in food_prefs_clean for k in ["veg", "vegan", "halal", "kosher", "gluten", "dairy", "jain", "pescatarian"]) and not any(k in food_prefs_clean for k in ["no preference", "none", "unrestricted", "any"])
+        if has_specific_diet:
+            dietary_directive = f"""3. DIETARY REQUIREMENTS & DINING DIRECTIVE:
+   * Traveler dietary requirement: '{food_prefs}'.
+   * For ALL meal and dining activities, strictly recommend food spots and restaurants that cater to '{food_prefs}'.
+   * Do NOT label a restaurant vegetarian, vegan, halal, kosher, or gluten-free unless reliable information supports that claim.
+   * If dietary suitability of a recommended venue cannot be confirmed with certainty, include an explicit note in the description: 'Dietary suitability needs local confirmation.'
+   * Recommend specific dishes matching '{food_prefs}'."""
+        else:
+            dietary_directive = f"""3. DIETARY REQUIREMENTS & DINING DIRECTIVE:
+   * Traveler dietary requirement: '{food_prefs}' (Authentic Regional Cuisine / No Restrictions).
+   * Feature authentic local restaurants, street food stalls, and regional specialties without imposing artificial dietary restrictions.
+   * Do NOT assume or force vegetarian choices when 'No Preference' is selected."""
 
         # Stage A: Destination-Aware Candidate Retrieval (Independent of generation)
         discovered_candidates = fetch_real_pois_for_destination(destination, country)
@@ -206,13 +224,9 @@ PERSONALIZATION & SCHEDULING DIRECTIVES
 =========================
 1. DURATION: Generate EXACTLY {total_days} itinerary days (Day 1 to Day {total_days}).
 2. PERSONALIZATION: Do NOT generate a generic itinerary. The selected activities, dining spots, transit mode, and daily schedule MUST directly reflect the selected interests ({interests}), travel style ({travel_style}), and traveler composition.
+   * STRICT INTEREST PURITY RULE: Never inject or claim unselected interests (e.g. do NOT invent 'Solo' or 'Food & Dining' interests unless explicitly listed in Selected Activity Interests). Meals are basic logistics unless 'Street Food' or 'Luxury Dining' was selected.
 {style_instructions}
-3. DIETARY REQUIREMENTS & DINING DIRECTIVE:
-   * Traveler dietary requirement: '{food_prefs}'.
-   * For ALL meal and dining activities, strictly recommend food spots and restaurants that cater to '{food_prefs}' (e.g. Vegetarian, Vegan, Halal, Kosher, Gluten-Free).
-   * Do NOT label a restaurant vegetarian, vegan, halal, kosher, or gluten-free unless reliable information supports that claim.
-   * If dietary suitability of a recommended venue cannot be confirmed with certainty, include an explicit note in the description: 'Dietary suitability needs local confirmation.'
-   * Recommend specific dishes matching '{food_prefs}'.
+{dietary_directive}
 4. CLIMATE & WEATHER AWARENESS:
    * Traveler preferred climate: '{weather_pref}'.
    * Thoughtfully align outdoor and indoor activities to local weather realities and user climate preferences.
@@ -333,11 +347,17 @@ LANGUAGE REQUIREMENT & PROPER NOUNS
             # Destination-independent fallback generator using ONLY authentic discovered candidates
             fallback_days = []
             from app.services.poi_service import is_valid_destination_poi
+            from app.services.route_optimizer import destination_has_rail
+            has_rail = destination_has_rail(destination)
+            safe_trans = (transportation or "Walking")
+            if not has_rail and any(k in safe_trans.lower() for k in ["train", "metro", "subway", "rail", "tram"]):
+                safe_trans = "Taxi / Road Transport"
+
             valid_cands = [p for p in (discovered_candidates or []) if is_valid_destination_poi(p, destination)]
             
             # Separate dining and attractions
-            c_dining = [p for p in valid_cands if p.get("is_dining") or p.get("category") in ["Restaurant", "Cafe", "Food Market"]]
-            c_attractions = [p for p in valid_cands if not p.get("is_dining") and p.get("category") not in ["Restaurant", "Cafe", "Food Market"]]
+            c_dining = [p for p in valid_cands if p.get("is_dining") or p.get("category") in ["Restaurant", "Cafe", "Food Market", "Dining"]]
+            c_attractions = [p for p in valid_cands if not p.get("is_dining") and p.get("category") not in ["Restaurant", "Cafe", "Food Market", "Dining"]]
             if not c_attractions:
                 c_attractions = valid_cands
 
@@ -370,7 +390,7 @@ LANGUAGE REQUIREMENT & PROPER NOUNS
                         "cost": {"amount": t_amt, "currency": curr_code, "symbol": curr_symbol, "estimated": True},
                         "ticket_price": t_amt,
                         "formatted_cost": f"{curr_symbol}{t_amt:,.0f}" if t_amt > 0 else ("Free Entry" if p1.get("is_free_verified") else "Price not verified"),
-                        "transport_mode": transportation or "Walking",
+                        "transport_mode": safe_trans,
                         "ai_reason": p1.get("ai_reason") or f"✓ Verified landmark venue in {destination}",
                         "confidence_score": 0.98,
                         "provenance": p1.get("provenance") or {
@@ -448,13 +468,54 @@ LANGUAGE REQUIREMENT & PROPER NOUNS
                         "cost": {"amount": t_amt2, "currency": curr_code, "symbol": curr_symbol, "estimated": True},
                         "ticket_price": t_amt2,
                         "formatted_cost": f"{curr_symbol}{t_amt2:,.0f}" if t_amt2 > 0 else ("Free Entry" if p2.get("is_free_verified") else "Price not verified"),
-                        "transport_mode": transportation or "Walking",
+                        "transport_mode": safe_trans,
                         "ai_reason": p2.get("ai_reason") or f"✓ Verified landmark venue in {destination}",
                         "confidence_score": 0.98,
                         "provenance": p2.get("provenance") or {
                             "place_verification": f"Verified POI Database ({destination})",
                             "status": "Verified",
                             "overall_status": "Verified"
+                        }
+                    })
+
+                # If all unique attractions are exhausted, schedule honest self-guided exploration/leisure
+                if not d_acts:
+                    d_acts.append({
+                        "id": f"act_safe_d{d}_leisure",
+                        "start_time": "10:00",
+                        "end_time": "15:30",
+                        "duration_minutes": 330,
+                        "time_slot": "day",
+                        "title": f"Independent Exploration & Leisure in {destination}",
+                        "description": f"Dedicated leisure and personal discovery time in {destination}. Explore local neighborhood streets, artisan shops, or relax at your own pace without scheduled venue admissions.",
+                        "activity_type": "area_suggestion",
+                        "is_area_suggestion": True,
+                        "place": {
+                            "name": f"{destination} Leisure & Artisan District",
+                            "category": "Area Suggestion",
+                            "address": destination,
+                            "latitude": None,
+                            "longitude": None,
+                            "rating": None
+                        },
+                        "cost": {"amount": 0.0, "currency": curr_code, "symbol": curr_symbol, "estimated": False},
+                        "ticket_price": 0.0,
+                        "formatted_cost": "Free Entry",
+                        "transport_mode": "Walking",
+                        "ai_reason": f"Honest leisure schedule: All verified curated destination landmarks in {destination} have been experienced on prior days.",
+                        "confidence_score": 0.90,
+                        "provenance": {
+                            "place_verification": "Area Exploration",
+                            "status": "Unavailable",
+                            "overall_status": "Unavailable",
+                            "identity_status": "Estimated",
+                            "location_status": "Estimated",
+                            "coordinate_status": "Unavailable",
+                            "hours_status": "Tentative schedule",
+                            "price_status": "Free Public Access",
+                            "route_status": "Route unavailable",
+                            "rating_status": "Unrated",
+                            "last_verified": "2026-11-10T00:00:00Z"
                         }
                     })
 

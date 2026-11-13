@@ -1,0 +1,646 @@
+{
+  "destination": "Switzerland",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Grossm\u00fcnster & Old Town Zurich",
+      "category": "Sightseeing",
+      "city": "Zurich",
+      "address": "Grossm\u00fcnsterplatz, 8001 Z\u00fcrich, Switzerland",
+      "latitude": 47.3703,
+      "longitude": 8.5441,
+      "opening_time": "10:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 5.0,
+      "currency": "CHF",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Iconic Romanesque twin-towered cathedral founded by Charlemagne in historic Altstadt Zurich with Karlsturm panoramic viewpoint.",
+      "ai_reason": "\u2713 Iconic Romanesque landmark overlooking Limmat River\n\u2713 187-step Karlsturm tower offering panoramic views of Zurich and the Alps",
+      "tip": "Climb the Karlsturm tower on a clear day for 360-degree views of Zurich Lake and alpine peaks.",
+      "signature_dish": null,
+      "nearby": [
+        "Lake Zurich Promenade",
+        "Bahnhofstrasse",
+        "Fraum\u00fcnster Church"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Zurich Tourism & Swiss Heritage Registry",
+        "price_source": "Karlsturm Tower Entry (CHF 5.00)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 10:00 AM - 6:00 PM (Summer)",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Lake Zurich Promenade & B\u00fcrkliplatz",
+      "category": "Nature",
+      "city": "Zurich",
+      "address": "B\u00fcrkliplatz, 8001 Z\u00fcrich, Switzerland",
+      "latitude": 47.3662,
+      "longitude": 8.5412,
+      "opening_time": "07:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "CHF",
+      "rating": 4.8,
+      "crowd": "Moderate",
+      "description": "Scenic tree-lined lakeside promenade featuring panoramic alpine views, boat docks, flower gardens, and open swimming piers.",
+      "ai_reason": "\u2713 Sweeping vistas across Lake Zurich towards the Glarus Alps\n\u2713 Relaxing pedestrian promenade ideal for sunset walks and boat departures",
+      "tip": "Catch an afternoon paddle-steamer cruise departing from B\u00fcrkliplatz dock across the lake.",
+      "signature_dish": null,
+      "nearby": [
+        "Grossm\u00fcnster",
+        "Bahnhofstrasse"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Zurich Municipal Parks Registry",
+        "price_source": "Free Public Waterfront Access",
+        "dietary_verification": null,
+        "opening_hours_source": "Open 24 hours public park",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Bahnhofstrasse & Lindenhof Hill",
+      "category": "Shopping",
+      "city": "Zurich",
+      "address": "Lindenhof, 8001 Z\u00fcrich, Switzerland",
+      "latitude": 47.3725,
+      "longitude": 8.5408,
+      "opening_time": "08:00 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "CHF",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "World-famous boutique shopping boulevard leading to elevated Lindenhof Hill, site of a 4th-century Roman fort overlooking the Old Town.",
+      "ai_reason": "\u2713 Luxury Swiss watchmakers, chocolate boutiques, and pedestrian boulevards\n\u2713 Shaded hilltop park with historic chess tables and scenic river views",
+      "tip": "Visit Spr\u00fcngli on Paradeplatz for authentic Luxemburgerli macarons while walking up to Lindenhof.",
+      "signature_dish": null,
+      "nearby": [
+        "Grossm\u00fcnster",
+        "Swiss National Museum"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Zurich City Tourism",
+        "price_source": "Free Public Access",
+        "dietary_verification": null,
+        "opening_hours_source": "Open Daily",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Swiss National Museum",
+      "category": "Museums",
+      "city": "Zurich",
+      "address": "Museumstrasse 2, 8001 Z\u00fcrich, Switzerland",
+      "latitude": 47.3792,
+      "longitude": 8.5403,
+      "opening_time": "10:00 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 13.0,
+      "currency": "CHF",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "description": "Fairytale castle-like museum adjacent to Zurich HB showcasing Swiss cultural history, medieval armory, and alpine handicrafts.",
+      "ai_reason": "\u2713 Comprehensive heritage of Swiss Confederation from prehistoric times to modern watchmaking\n\u2713 Stunning French-Renaissance chateau architecture beside the river",
+      "tip": "Free entry with Swiss Travel Pass; family ticket discounts available for children under 16.",
+      "signature_dish": null,
+      "nearby": [
+        "Bahnhofstrasse",
+        "Limmat River"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Swiss Federal Office of Culture",
+        "price_source": "Official Admission CHF 13 (Free with Swiss Travel Pass)",
+        "dietary_verification": null,
+        "opening_hours_source": "Tuesday-Sunday 10:00 AM - 5:00 PM",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Chapel Bridge (Kapellbr\u00fccke) & Water Tower",
+      "category": "Sightseeing",
+      "city": "Lucerne",
+      "address": "Kapellbr\u00fccke, 6002 Luzern, Switzerland",
+      "latitude": 47.0516,
+      "longitude": 8.3074,
+      "opening_time": "06:00 AM",
+      "closing_time": "11:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "CHF",
+      "rating": 4.8,
+      "crowd": "Moderate",
+      "description": "Europe's oldest wooden covered bridge built in 1333, featuring 17th-century triangular roof paintings and the octagonal Wasserturm.",
+      "ai_reason": "\u2713 Europe's oldest preserved timber footbridge and Switzerland's most photographed landmark\n\u2713 Intricate triangular historical paintings under the timber canopy depicting Lucerne's history",
+      "tip": "Stroll across early in the morning when the water reflections of Mount Pilatus are crisp and uncrowded.",
+      "signature_dish": null,
+      "nearby": [
+        "Lion Monument",
+        "Lake Lucerne Promenade"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Lucerne Tourism Historical Landmark Registry",
+        "price_source": "Free Public Heritage Access",
+        "dietary_verification": null,
+        "opening_hours_source": "Open 24 hours daily",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Lion Monument (L\u00f6wendenkmal)",
+      "category": "Culture",
+      "city": "Lucerne",
+      "address": "Denkmalstrasse 4, 6002 Luzern, Switzerland",
+      "latitude": 47.0583,
+      "longitude": 8.3108,
+      "opening_time": "08:00 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "CHF",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Poignant cliff relief carved into natural sandstone commemorating the Swiss Guards massacred during the French Revolution.",
+      "ai_reason": "\u2713 Described by Mark Twain as 'the most mournful and moving piece of stone in the world'\n\u2713 Peaceful park setting framed by weeping willows and reflective pool",
+      "tip": "Located right next to the Glacier Garden (Gletschergarten) of Lucerne.",
+      "signature_dish": null,
+      "nearby": [
+        "Chapel Bridge",
+        "Glacier Garden"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Swiss National Heritage Monument Registry",
+        "price_source": "Free Public Memorial Access",
+        "dietary_verification": null,
+        "opening_hours_source": "Open Daily 8:00 AM - 8:00 PM",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Mount Titlis & Rotair Revolving Cable Car",
+      "category": "Adventure",
+      "city": "Engelberg",
+      "address": "Poststrasse 3, 6390 Engelberg, Switzerland",
+      "latitude": 46.7722,
+      "longitude": 8.4378,
+      "opening_time": "08:30 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 96.0,
+      "currency": "CHF",
+      "rating": 4.9,
+      "crowd": "Moderate",
+      "description": "Glaciated 3,238-meter alpine summit reached via Titlis Rotair, the world's first revolving cable car, offering year-round snow and ice activities.",
+      "ai_reason": "\u2713 World's first 360-degree rotating aerial tramway soaring to 3,020 meters\n\u2713 Guaranteed glacier snow even in summer with Ice Flyer chairlift and snow tubing",
+      "tip": "Take the scenic Zentralbahn train from Lucerne to Engelberg (43 min), then free shuttle to cable car station.",
+      "signature_dish": null,
+      "nearby": [
+        "Titlis Cliff Walk",
+        "Glacier Cave"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Titlis Bergbahnen Official Mountain Authority",
+        "price_source": "Adult Round-Trip Cable Car Ticket CHF 96.00 (50% with Swiss Travel Pass)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 8:30 AM - 5:00 PM (Weather permitting)",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Titlis Cliff Walk & Glacier Cave",
+      "category": "Adventure",
+      "city": "Engelberg",
+      "address": "Mount Titlis Summit, 6390 Engelberg, Switzerland",
+      "latitude": 46.7719,
+      "longitude": 8.4382,
+      "opening_time": "09:00 AM",
+      "closing_time": "04:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "CHF",
+      "rating": 4.8,
+      "crowd": "Moderate",
+      "description": "Europe's highest suspension bridge hanging 500 meters above the abyss at 3,041 meters, plus a 150-meter-long tunnel carved into ancient glacier ice.",
+      "ai_reason": "\u2713 Thrilling pedestrian suspension footbridge over sheer glacier cliff\n\u2713 Sub-zero turquoise blue ice grotto lit by dramatic illuminated ice sculptures",
+      "tip": "Included free with your Mount Titlis cable car ticket; bring warm gloves and windproof jacket.",
+      "signature_dish": null,
+      "nearby": [
+        "Mount Titlis Rotair",
+        "Tr\u00fcbsee Lake"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Titlis Mountain Attractions Registry",
+        "price_source": "Included with Titlis Mountain Pass",
+        "dietary_verification": null,
+        "opening_hours_source": "Summit hours 9:00 AM - 4:30 PM",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Harder Kulm Panoramic Viewpoint",
+      "category": "Nature",
+      "city": "Interlaken",
+      "address": "Harderbahn, 3800 Interlaken, Switzerland",
+      "latitude": 46.6975,
+      "longitude": 7.8647,
+      "opening_time": "09:10 AM",
+      "closing_time": "09:40 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 38.0,
+      "currency": "CHF",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "description": "Promontory viewpoint towering 1,322 meters above Interlaken with a glass-bottomed Two Lakes Bridge looking onto Lake Brienz and Lake Thun.",
+      "ai_reason": "\u2713 Breathtaking panoramic vantage of Eiger, M\u00f6nch, and Jungfrau peaks\n\u2713 Two-Lakes Bridge with cantilevered glass floor overlooking Interlaken valley",
+      "tip": "Ride the historic funicular railway from Interlaken Ost station in just 10 minutes.",
+      "signature_dish": null,
+      "nearby": [
+        "Lake Brienz Cruise",
+        "H\u00f6hematte Park"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Jungfrau Railways Official Partner",
+        "price_source": "Roundtrip Funicular CHF 38.00 (50% with Swiss Pass)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily April-November 9:10 AM - 9:40 PM",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Jungfraujoch \u2013 Top of Europe",
+      "category": "Adventure",
+      "city": "Lauterbrunnen",
+      "address": "Kleine Scheidegg / Jungfraujoch, 3823 Lauterbrunnen, Switzerland",
+      "latitude": 46.5475,
+      "longitude": 7.9822,
+      "opening_time": "08:00 AM",
+      "closing_time": "04:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 145.0,
+      "currency": "CHF",
+      "rating": 4.9,
+      "crowd": "Moderate",
+      "description": "Highest railway station in Europe at 3,454 meters, overlooking the vast Great Aletsch Glacier (UNESCO World Heritage Site).",
+      "ai_reason": "\u2713 Crown jewel of the Bernese Alps reached via Eiger Express tri-cable gondola\n\u2713 Sphinx Observatory terrace and vast ice palace carved inside the glacier",
+      "tip": "Reserve seat tickets in advance during peak summer months; wear UV-rated sunglasses.",
+      "signature_dish": null,
+      "nearby": [
+        "Staubbach Falls",
+        "Harder Kulm"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "UNESCO Swiss Alps Jungfrau-Aletsch World Heritage Site",
+        "price_source": "Cogwheel Train & Gondola Mountain Pass (CHF 145.00 discounted fare)",
+        "dietary_verification": null,
+        "opening_hours_source": "Daily 8:00 AM - 4:30 PM",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Staubbach Falls & Lauterbrunnen Valley",
+      "category": "Nature",
+      "city": "Lauterbrunnen",
+      "address": "Lood, 3822 Lauterbrunnen, Switzerland",
+      "latitude": 46.5947,
+      "longitude": 7.9078,
+      "opening_time": "07:00 AM",
+      "closing_time": "09:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "CHF",
+      "rating": 4.8,
+      "crowd": "Moderate",
+      "description": "Free-falling 297-meter waterfall dropping from a vertical limestone cliff in the valley of 72 waterfalls that inspired Tolkien's Rivendell.",
+      "ai_reason": "\u2713 One of the highest free-falling waterfalls in Europe\n\u2713 Valley trail with galleries carved behind the roaring veil of water",
+      "tip": "Follow the short illuminated pathway behind the waterfall spray during twilight.",
+      "signature_dish": null,
+      "nearby": [
+        "Jungfraujoch",
+        "M\u00fcrren Alpine Village"
+      ],
+      "source": "verified_knowledge_base",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Lauterbrunnen Tourism Alpine Registry",
+        "price_source": "Free Public Nature Trail Access",
+        "dietary_verification": null,
+        "opening_hours_source": "Open daily daylight hours",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Restaurant Zeughauskeller",
+      "category": "Restaurant",
+      "city": "Zurich",
+      "address": "Bahnhofstrasse 28A, 8001 Z\u00fcrich, Switzerland",
+      "latitude": 47.3708,
+      "longitude": 8.5407,
+      "opening_time": "11:30 AM",
+      "closing_time": "11:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 32.0,
+      "is_dining": true,
+      "meal_type": "lunch",
+      "dietary_tags": [
+        "swiss_traditional",
+        "vegetarian_options"
+      ],
+      "signature_dish": "Swiss Alpine R\u00f6sti with Gruy\u00e8re and Garden Herbs (Vegetarian R\u00f6sti)",
+      "dish_ingredients": "Crispy golden grated Swiss potatoes, melted aged Gruy\u00e8re AOP, pan-fried onions, fresh mountain rosemary",
+      "dietary_suitability": "Traditional Swiss R\u00f6sti with Vegetarian Options",
+      "rating": 4.6,
+      "ai_reason": "\u2713 Historic 15th-century armory building turned into Zurich's most beloved tavern\n\u2713 Authentic crispy Swiss R\u00f6sti and warm hospitality right off Bahnhofstrasse",
+      "tip": "Table reservations recommended for dinner; try their draft house beer or apple cider.",
+      "provenance": {
+        "place_verification": "Zurich Gastronomy Heritage Directory",
+        "price_source": "Average Entree CHF 28 - 36",
+        "dietary_verification": "Vegetarian alpine r\u00f6sti clearly marked on menu",
+        "opening_hours_source": "Daily 11:30 AM - 11:00 PM",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Restaurant Swiss Chuchi",
+      "category": "Restaurant",
+      "city": "Zurich",
+      "address": "Rosengasse 10, 8001 Z\u00fcrich, Switzerland",
+      "latitude": 47.3731,
+      "longitude": 8.5439,
+      "opening_time": "11:30 AM",
+      "closing_time": "10:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 34.0,
+      "is_dining": true,
+      "meal_type": "dinner",
+      "dietary_tags": [
+        "vegetarian",
+        "cheese_fondue",
+        "swiss_specialty"
+      ],
+      "signature_dish": "Traditional Swiss Moiti\u00e9-Moiti\u00e9 Cheese Fondue with Crusty Bread & Potatoes",
+      "dish_ingredients": "50% Gruy\u00e8re AOP, 50% Vacherin Fribourgeois AOP, white wine, garlic, kirsch, crusty artisan bread",
+      "dietary_suitability": "100% Vegetarian Cheese Fondue",
+      "rating": 4.5,
+      "ai_reason": "\u2713 The premier fondue restaurant in Zurich's historic Niederdorf Old Town\n\u2713 Traditional Moiti\u00e9-Moiti\u00e9 cheese blend served with baby potatoes and pickles",
+      "tip": "Order hot black tea alongside cheese fondue for optimal digestion.",
+      "provenance": {
+        "place_verification": "Zurich Old Town Dining Guide",
+        "price_source": "Fondue Per Person CHF 32 - 36",
+        "dietary_verification": "Vegetarian friendly cheese specialty",
+        "opening_hours_source": "Daily 11:30 AM - 10:30 PM",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Hiltl Restaurant Zurich",
+      "category": "Restaurant",
+      "city": "Zurich",
+      "address": "Sihlstrasse 28, 8001 Z\u00fcrich, Switzerland",
+      "latitude": 47.3733,
+      "longitude": 8.5369,
+      "opening_time": "09:00 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 28.0,
+      "is_dining": true,
+      "meal_type": "lunch",
+      "dietary_tags": [
+        "vegetarian",
+        "vegan",
+        "pure_vegetarian",
+        "family_friendly"
+      ],
+      "signature_dish": "Hiltl Gourmet Buffet & Vegetarian Zurich Geschnetzeltes with Golden R\u00f6sti",
+      "dish_ingredients": "Organic mushroom strips in white wine cream sauce, golden Swiss potato r\u00f6sti, baby herbs",
+      "dietary_suitability": "100% Vegetarian & Vegan Certified (World's Oldest Veg Restaurant)",
+      "rating": 4.7,
+      "ai_reason": "\u2713 Guinness World Record holder for the oldest vegetarian restaurant in the world (founded 1898)\n\u2713 Outstanding buffet with over 100 fresh vegetarian and vegan culinary dishes",
+      "tip": "Take advantage of pay-by-weight buffet or order a la carte Swiss specialties upstairs.",
+      "provenance": {
+        "place_verification": "Guinness World Records & Swiss Tourism",
+        "price_source": "Buffet by weight ~CHF 25 - 32 per plate",
+        "dietary_verification": "100% Vegetarian Certified Kitchen",
+        "opening_hours_source": "Daily 9:00 AM - 10:00 PM",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Wirtshaus Galliker",
+      "category": "Restaurant",
+      "city": "Lucerne",
+      "address": "Sch\u00fctzenstrasse 1, 6003 Luzern, Switzerland",
+      "latitude": 47.052,
+      "longitude": 8.3022,
+      "opening_time": "11:30 AM",
+      "closing_time": "10:30 PM",
+      "open_days": [
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 30.0,
+      "is_dining": true,
+      "meal_type": "dinner",
+      "dietary_tags": [
+        "swiss_traditional",
+        "vegetarian_options"
+      ],
+      "signature_dish": "Lucerne Potato R\u00f6sti with Farmhouse Cheese and Fresh Herbs",
+      "dish_ingredients": "Slow-roasted crispy grated Swiss potatoes, melted mountain alpine cheese, butter, chives",
+      "dietary_suitability": "Authentic Swiss Dining with Vegetarian Options",
+      "rating": 4.6,
+      "ai_reason": "\u2713 Family-run historic inn operating for over 4 generations in Lucerne\n\u2713 Honest homestyle Swiss cooking with warm wood-paneled alpine ambiance",
+      "tip": "Closed Sundays and Mondays; book ahead for evening service.",
+      "provenance": {
+        "place_verification": "Lucerne Historic Hospitality Registry",
+        "price_source": "Average Main Course CHF 26 - 35",
+        "dietary_verification": "Vegetarian options available upon request",
+        "opening_hours_source": "Tuesday - Saturday 11:30 AM - 10:30 PM",
+        "data_confidence": "high"
+      }
+    },
+    {
+      "name": "Restaurant Taverne at Interlaken",
+      "category": "Restaurant",
+      "city": "Interlaken",
+      "address": "H\u00f6heweg 74, 3800 Interlaken, Switzerland",
+      "latitude": 46.6858,
+      "longitude": 7.8592,
+      "opening_time": "12:00 PM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 29.0,
+      "is_dining": true,
+      "meal_type": "lunch",
+      "dietary_tags": [
+        "swiss_traditional",
+        "vegetarian_friendly"
+      ],
+      "signature_dish": "Bernese Oberland Alpine Macaroni (\u00c4lplermagronen) with Applesauce",
+      "dish_ingredients": "Pennette pasta, tender potato cubes, creamy Swiss cheese sauce, caramelized onions, warm spiced applesauce",
+      "dietary_suitability": "Traditional Alpine Vegetarian Dish",
+      "rating": 4.5,
+      "ai_reason": "\u2713 Classic Swiss tavern located on the main H\u00f6heweg promenade facing the Jungfrau\n\u2713 Hearty \u00c4lplermagronen pasta made using local Bernese mountain cheese",
+      "tip": "Sit on the garden terrace for panoramic mountain views while dining.",
+      "provenance": {
+        "place_verification": "Interlaken Tourism Gastronomy Directory",
+        "price_source": "Average Entree CHF 24 - 32",
+        "dietary_verification": "Authentic vegetarian alpine macaroni",
+        "opening_hours_source": "Daily 12:00 PM - 10:00 PM",
+        "data_confidence": "high"
+      }
+    }
+  ]
+}

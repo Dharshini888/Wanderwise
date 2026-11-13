@@ -27,6 +27,7 @@ from app.services.ai_service import (
 )
 from app.routes.auth import get_current_user, get_current_user_optional
 from app.core.budget_tiers import normalize_budget_tier
+from app.services.budget_allocation_service import BudgetAllocationService
 
 router = APIRouter(prefix="/api/trips", tags=["Smart Trip Planner"])
 
@@ -106,19 +107,34 @@ def resolve_trip_preferences(data: TripCreate, current_user: Optional[User]) -> 
     # 6. Budget Tier: request explicit > user profile > Mid-range
     budget_tier_raw = (
         raw_prefs.get("budget_type")
+        or raw_prefs.get("budget_tier")
+        or raw_prefs.get("comfort_tier")
+        or getattr(data, "comfort_tier", None)
         or raw_prefs.get("preferred_budget")
         or (current_user.preferred_budget if current_user else None)
         or "Mid-range"
     )
     budget_tier = normalize_budget_tier(budget_tier_raw)
 
-    # 7. Interests: request explicit > user profile > sightseeing
-    interests = (
-        data.interests
-        or raw_prefs.get("interests")
-        or (current_user.preferred_activities if current_user else None)
-        or "sightseeing"
-    )
+    # 7. Interests: request explicit > user profile > Sightseeing
+    # Preserve ONLY user selected interests (e.g. Nature, Photography, Culture)
+    # Never auto-inject solo, food, luxury, or unrelated activity categories
+    explicit_interests = None
+    if data.interests is not None and str(data.interests).strip() != "":
+        explicit_interests = data.interests
+    elif raw_prefs.get("interests") is not None and str(raw_prefs.get("interests")).strip() != "":
+        explicit_interests = raw_prefs.get("interests")
+
+    if explicit_interests is not None:
+        if isinstance(explicit_interests, list):
+            cleaned_tags = [str(t).strip() for t in explicit_interests if str(t).strip()]
+        else:
+            cleaned_tags = [t.strip() for t in str(explicit_interests).split(",") if t.strip()]
+        interests = ", ".join(cleaned_tags) if cleaned_tags else "General Exploration"
+    elif current_user and getattr(current_user, "preferred_activities", None):
+        interests = current_user.preferred_activities
+    else:
+        interests = "General Exploration"
 
     # 8. Transportation: preserve explicit selection (e.g. 'Mixed Transport')
     raw_trans = raw_prefs.get("transportation") or data.transportation
@@ -228,8 +244,26 @@ def resolve_trip_preferences(data: TripCreate, current_user: Optional[User]) -> 
 
 
 @router.post("/check-budget")
-def check_budget(destination: str, days: int, budget: float, currency: str = "USD"):
-    return check_budget_alert(destination=destination, days=days, budget=budget, currency=currency)
+def check_budget(
+    destination: str,
+    days: int,
+    budget: float,
+    currency: str = "USD",
+    adults: int = 1,
+    children: int = 0,
+    origin_city: str = "Coimbatore",
+    tier: str = "mid_range"
+):
+    return check_budget_alert(
+        destination=destination,
+        days=days,
+        budget=budget,
+        currency=currency,
+        adults=adults,
+        children=children,
+        origin_city=origin_city,
+        tier=tier
+    )
 
 
 @router.post("/create", status_code=status.HTTP_201_CREATED)
@@ -249,20 +283,54 @@ def create_new_trip(
     data.travel_style = resolved["travel_style"]
     data.interests = resolved["interests"]
     data.trip_preferences = resolved["trip_preferences"]
+    adults = resolved["adults"]
+    children = resolved["children"]
 
-    # Budget alert check unless forced or requested budget-friendly
-    if not data.force_create and not data.is_budget_friendly:
-        alert = check_budget_alert(
-            destination=data.destination,
-            days=days,
-            budget=data.budget,
-            currency=data.currency
-        )
-        if alert.get("has_warning"):
-            return {
-                "budget_alert": alert,
-                "requires_confirmation": True
+    # Central Budget Allocation Engine: Strict Feasibility Validation
+    budget_plan = BudgetAllocationService.calculate_plan(
+        total_budget=data.budget,
+        currency=data.currency,
+        tier=resolved["budget_tier"],
+        destination=data.destination,
+        origin_city=resolved["origin_city"],
+        days=days,
+        adults=adults,
+        children=children,
+        travel_style=resolved.get("travel_style", "family" if children > 0 else "solo"),
+        transport_mode=resolved["transportation"],
+        accommodation_preference=resolved["accommodation_preference"]
+    )
+
+    if not budget_plan["is_feasible"]:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={
+                "error": "BUDGET_INSUFFICIENT",
+                "is_feasible": False,
+                "message": f"Your budget ({resolved['currency']} {data.budget:,.0f}) is insufficient for {days} day(s) in {data.destination} for {adults} adult(s)" + (f" and {children} child(ren)" if children > 0 else "") + f". Minimum estimated cost is {resolved['currency']} {budget_plan['total_estimated_trip_cost']:,.0f}.",
+                "available_budget": data.budget,
+                "minimum_required_budget": budget_plan["total_estimated_trip_cost"],
+                "currency": resolved["currency"],
+                "total_estimated_trip_cost": budget_plan["total_estimated_trip_cost"],
+                "shortfall": budget_plan["shortfall"],
+                "shortfall_pct": budget_plan["shortfall_percentage"],
+                "categories": budget_plan["categories"],
+                "transportation_details": budget_plan.get("transportation_details"),
+                "affordable_alternatives": budget_plan.get("affordable_alternatives", []),
+                "suggestions": [
+                    f"Increase total budget to at least {budget_plan['formatted_total_estimated_cost']}",
+                    f"Reduce trip duration to {budget_plan.get('suggested_duration_days', 2)} days",
+                    "Choose an affordable alternative destination such as " + ", ".join([a["name"] for a in budget_plan.get("affordable_alternatives", [])[:2]])
+                ]
             }
+        )
+
+    # Validate and store canonical financial plan to guarantee consistency across all screens
+    BudgetAllocationService.validate_financial_plan(budget_plan)
+    if not isinstance(resolved["trip_preferences"], dict):
+        resolved["trip_preferences"] = {}
+    resolved["trip_preferences"]["canonical_budget_plan"] = budget_plan
+    resolved["trip_preferences"]["budget_plan"] = budget_plan
 
     data.transportation = resolved["transportation"]
     data.accommodation_preference = resolved["accommodation_preference"]
@@ -430,14 +498,20 @@ def _populate_trip_itinerary_from_ai(db: Session, trip: Trip, ai_data: dict) -> 
         print(f"[Validation Layer Warnings]: {warnings}")
 
     days_data = validated_days or days_data
+    if hasattr(FinalItineraryValidator, "last_interest_coverage_report") and FinalItineraryValidator.last_interest_coverage_report:
+        if not isinstance(trip.trip_preferences, dict):
+            trip.trip_preferences = {}
+        trip.trip_preferences["interest_coverage_report"] = FinalItineraryValidator.last_interest_coverage_report
+        db.flush()
     total_inserted_count = 0
 
-    # Clear unlocked activities across the trip before saving validated itinerary
+    # Clear unlocked & uncompleted activities across the trip before saving validated itinerary
     existing_day_ids = [d.id for d in db.query(ItineraryDay.id).filter(ItineraryDay.trip_id == trip.id).all()]
     if existing_day_ids:
         db.query(ItineraryActivity).filter(
             ItineraryActivity.day_id.in_(existing_day_ids),
-            ItineraryActivity.is_locked == False
+            ItineraryActivity.is_locked == False,
+            ItineraryActivity.is_completed == False
         ).delete(synchronize_session=False)
         db.flush()
 
@@ -447,6 +521,21 @@ def _populate_trip_itinerary_from_ai(db: Session, trip: Trip, ai_data: dict) -> 
         ItineraryDay.day_number > expected_days_count
     ).delete(synchronize_session=False)
     db.flush()
+
+    # Pre-populate trip_seen_poi_names with preserved locked & completed activities
+    from app.services.pricing.canonical_pricing_registry import normalize_place_entity_key
+    trip_seen_poi_names = set()
+    if existing_day_ids:
+        preserved_acts = db.query(ItineraryActivity).filter(
+            ItineraryActivity.day_id.in_(existing_day_ids),
+            (ItineraryActivity.is_locked == True) | (ItineraryActivity.is_completed == True)
+        ).all()
+        for p_act in preserved_acts:
+            p_n = (p_act.place.name if p_act.place else p_act.title) or ""
+            k = normalize_place_entity_key(p_n)
+            if k:
+                trip_seen_poi_names.add(k)
+            trip_seen_poi_names.add(p_n.strip().lower())
 
     for day_info in days_data:
         day_num = day_info.get("day_number", 1)
@@ -484,41 +573,74 @@ def _populate_trip_itinerary_from_ai(db: Session, trip: Trip, ai_data: dict) -> 
 
         acts = day_info.get("activities", [])
         if not acts or len(acts) == 0:
-            # Fallback guarantee: Never persist an empty day
+            # Fallback guarantee: Never persist an empty day and NEVER repeat duplicate attractions
             from app.services.poi_service import fetch_real_pois_for_destination
+            from app.services.route_optimizer import destination_has_rail
             real_pois = fetch_real_pois_for_destination(trip.destination, trip.country)
-            time_slots = [
-                ("09:00", "11:30", "morning", 150),
-                ("12:00", "13:30", "lunch", 90),
-                ("14:30", "17:00", "afternoon", 150),
-                ("18:00", "20:00", "dinner", 120)
-            ]
+            att_pool = [p for p in real_pois if not p.get("is_dining") and p.get("category") not in ["Restaurant", "Cafe", "Dining"]]
+            din_pool = [p for p in real_pois if p.get("is_dining") or p.get("category") in ["Restaurant", "Cafe", "Dining"]]
+
+            avail_att = [p for p in att_pool if p["name"].strip().lower() not in trip_seen_poi_names]
+            avail_din = [p for p in din_pool if p["name"].strip().lower() not in trip_seen_poi_names]
+
             acts = []
-            for slot_idx, (st, et, slot, dur) in enumerate(time_slots):
-                p_idx = ((day_num - 1) * 3 + slot_idx) % len(real_pois) if real_pois else 0
-                poi_item = real_pois[p_idx] if real_pois else {
-                    "name": f"{trip.destination} Discovery Spot {slot_idx+1}",
-                    "category": "Sightseeing",
-                    "latitude": None,
-                    "longitude": None,
-                    "address": trip.destination
-                }
-                is_dining = slot in ["lunch", "dinner"]
+            if avail_att:
+                p1 = avail_att.pop(0)
+                trip_seen_poi_names.add(p1["name"].strip().lower())
                 acts.append({
-                    "start_time": st,
-                    "end_time": et,
-                    "duration_minutes": dur,
-                    "time_slot": slot,
-                    "title": f"Dining at {poi_item['name']}" if is_dining else f"Explore {poi_item['name']}",
-                    "description": poi_item.get("description", f"Experience {poi_item['name']} in {trip.destination}."),
-                    "activity_type": "meal" if is_dining else "attraction",
-                    "place": poi_item,
-                    "ticket_price": 0.0 if is_dining else (float(poi_item["ticket_price"]) if poi_item.get("ticket_price") is not None else None),
-                    "transport_mode": "Public Transit / Walking",
-                    "transport_duration": "15 mins",
-                    "distance": "1.5 km",
-                    "ai_reason": f"✓ Scheduled verified highlight in {trip.destination}",
-                    "confidence_score": 0.98
+                    "start_time": "09:30", "end_time": "12:00", "duration_minutes": 150, "time_slot": "morning",
+                    "title": f"Explore {p1['name']}",
+                    "description": p1.get("description", f"Experience {p1['name']} in {trip.destination}."),
+                    "activity_type": "attraction", "place": p1,
+                    "ticket_price": float(p1["ticket_price"]) if p1.get("ticket_price") is not None else 0.0,
+                    "transport_mode": "Public Transit / Walking" if destination_has_rail(trip.destination) else "Taxi / Road Transport",
+                    "transport_duration": "15 mins", "distance": "1.5 km",
+                    "ai_reason": f"✓ Scheduled verified highlight in {trip.destination}", "confidence_score": 0.98
+                })
+
+            if avail_din:
+                pd = avail_din.pop(0)
+                trip_seen_poi_names.add(pd["name"].strip().lower())
+                acts.append({
+                    "start_time": "12:30", "end_time": "14:00", "duration_minutes": 90, "time_slot": "lunch",
+                    "title": f"Dining at {pd['name']}",
+                    "description": pd.get("description", f"Enjoy authentic dining at {pd['name']} in {trip.destination}."),
+                    "activity_type": "meal", "place": pd, "ticket_price": 0.0, "meal_cost": float(pd.get("meal_cost") or 25.0),
+                    "transport_mode": "Walking", "transport_duration": "10 mins", "distance": "0.5 km",
+                    "ai_reason": f"✓ Verified regional dining at {pd['name']}", "confidence_score": 0.95
+                })
+
+            if avail_att:
+                p2 = avail_att.pop(0)
+                trip_seen_poi_names.add(p2["name"].strip().lower())
+                acts.append({
+                    "start_time": "14:30", "end_time": "17:00", "duration_minutes": 150, "time_slot": "afternoon",
+                    "title": f"Explore {p2['name']}",
+                    "description": p2.get("description", f"Experience {p2['name']} in {trip.destination}."),
+                    "activity_type": "attraction", "place": p2,
+                    "ticket_price": float(p2["ticket_price"]) if p2.get("ticket_price") is not None else 0.0,
+                    "transport_mode": "Public Transit / Walking" if destination_has_rail(trip.destination) else "Taxi / Road Transport",
+                    "transport_duration": "15 mins", "distance": "1.5 km",
+                    "ai_reason": f"✓ Scheduled verified highlight in {trip.destination}", "confidence_score": 0.98
+                })
+
+            # If no unique attractions remain, schedule an honest self-guided exploration block
+            if not acts:
+                acts.append({
+                    "start_time": "10:00", "end_time": "16:00", "duration_minutes": 360, "time_slot": "full_day",
+                    "title": f"Independent Exploration & Leisure in {trip.destination}",
+                    "description": f"Personal discovery and leisurely stroll through {trip.destination}. Explore local neighborhood artisan alleys, cafes, and scenic lookouts at your own pace.",
+                    "activity_type": "area_suggestion",
+                    "is_area_suggestion": True,
+                    "place": {
+                        "name": f"{trip.destination} Leisure & Artisan District",
+                        "category": "Area Suggestion",
+                        "latitude": None, "longitude": None, "address": trip.destination
+                    },
+                    "ticket_price": 0.0,
+                    "transport_mode": "Walking", "transport_duration": "Not available", "distance": "Unavailable",
+                    "ai_reason": f"Honest leisure schedule: All verified destination landmarks have been experienced on prior days.",
+                    "confidence_score": 0.90
                 })
 
         inserted_count = 0
@@ -526,6 +648,7 @@ def _populate_trip_itinerary_from_ai(db: Session, trip: Trip, ai_data: dict) -> 
         for order_idx, act_data in enumerate(acts):
             place_info = act_data.get("place", {}) if isinstance(act_data.get("place"), dict) else {}
             place_name = place_info.get("name") or act_data.get("title") or f"Attraction {order_idx + 1}"
+            trip_seen_poi_names.add(place_name.strip().lower())
             place_cat = place_info.get("category") or "sightseeing"
             place_lat = place_info.get("latitude")
             place_lon = place_info.get("longitude")
@@ -984,6 +1107,44 @@ def generate_trip_itinerary(
     
     trip = _get_user_trip(trip_id, db, current_user)
     days = max(1, (trip.end_date - trip.start_date).days + 1)
+
+    t_prefs = trip.trip_preferences if isinstance(trip.trip_preferences, dict) else {}
+    adults = int(t_prefs.get("adults") or trip.group_size or 1)
+    children = int(t_prefs.get("children") or 0)
+    resolved_travel_style = trip.travel_style or t_prefs.get("travel_style") or ("family" if children > 0 else "solo")
+    budget_plan = BudgetAllocationService.calculate_plan(
+        total_budget=trip.budget,
+        currency=trip.currency or "USD",
+        tier=t_prefs.get("budget_type") or "mid_range",
+        destination=trip.destination,
+        origin_city=trip.origin_city or "Coimbatore",
+        days=days,
+        adults=adults,
+        children=children,
+        travel_style=resolved_travel_style,
+        transport_mode=trip.transportation or "flight",
+        accommodation_preference=trip.accommodation_preference or "hotel"
+    )
+    # Store canonical plan in trip_preferences
+    if not isinstance(trip.trip_preferences, dict):
+        trip.trip_preferences = {}
+    trip.trip_preferences["canonical_budget_plan"] = budget_plan
+    trip.trip_preferences["budget_plan"] = budget_plan
+    db.commit()
+    if not budget_plan["is_feasible"]:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={
+                "error": "BUDGET_INSUFFICIENT",
+                "is_feasible": False,
+                "message": f"Trip budget of {trip.currency} {trip.budget:,.0f} is insufficient for {days} day(s) in {trip.destination}. Minimum required: {trip.currency} {budget_plan['total_estimated_trip_cost']:,.0f}.",
+                "available_budget": trip.budget,
+                "minimum_required_budget": budget_plan["total_estimated_trip_cost"],
+                "shortfall": budget_plan["shortfall"],
+                "categories": budget_plan["categories"],
+                "affordable_alternatives": budget_plan.get("affordable_alternatives", [])
+            }
+        )
     
     ai_data = generate_structured_itinerary(
         destination=trip.destination,
@@ -1042,11 +1203,12 @@ def regenerate_day_endpoint(
     if not it_day:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Day {data.day_number} not found for this trip")
 
-    # Fetch locked activities to preserve
+    # Fetch locked and completed activities to preserve
     locked_acts = db.query(ItineraryActivity).filter(
         ItineraryActivity.day_id == it_day.id,
-        ItineraryActivity.is_locked == True
+        (ItineraryActivity.is_locked == True) | (ItineraryActivity.is_completed == True)
     ).all()
+    locked_ids = {a.id for a in locked_acts}
     locked_payload = [
         {
             "id": a.id,
@@ -1054,42 +1216,61 @@ def regenerate_day_endpoint(
             "start_time": a.start_time,
             "end_time": a.end_time,
             "time_slot": a.time_slot,
-            "is_locked": True
+            "is_locked": True,
+            "place": {"name": a.place.name, "category": a.place.category} if a.place else {"name": a.title}
         }
         for a in locked_acts
     ]
+
+    # Collect POI names from other days to strictly avoid cross-day duplicates
+    other_acts = db.query(ItineraryActivity).join(ItineraryDay).filter(
+        ItineraryDay.trip_id == trip_id,
+        ItineraryDay.day_number != data.day_number
+    ).all()
+    exclude_poi_names = [a.place.name if a.place else a.title for a in other_acts if (a.place and a.place.name) or a.title]
 
     new_acts = regenerate_day_itinerary(
         destination=trip.destination,
         day_number=data.day_number,
         locked_activities=locked_payload,
         notes=data.notes,
+        exclude_poi_names=exclude_poi_names,
         generation_id=generation_id
     )
 
-    # Replace unlocked activities
+    # Delete unlocked and uncompleted activities for this day
     db.query(ItineraryActivity).filter(
         ItineraryActivity.day_id == it_day.id,
-        ItineraryActivity.is_locked == False
-    ).delete()
+        ItineraryActivity.is_locked == False,
+        ItineraryActivity.is_completed == False
+    ).delete(synchronize_session=False)
     db.commit()
 
     inserted_count = 0
     from app.services.route_optimizer import estimate_travel_transition
+    from app.services.pricing.canonical_pricing_registry import CanonicalPricingRegistry
+    
+    pricing_registry = CanonicalPricingRegistry()
     
     # Recalculate schedule sequentially
     current_time_mins = 8 * 60 + 30
     
     for idx, act_data in enumerate(new_acts):
+        # Skip if this is already an existing locked activity in the DB
+        if act_data.get("id") in locked_ids:
+            continue
+            
         p_name = act_data.get("title", f"Attraction {idx+1}")
         
-        place_info = act_data.get("place", {})
-        place_lat = place_info.get("latitude") if isinstance(place_info, dict) else None
-        place_lon = place_info.get("longitude") if isinstance(place_info, dict) else None
+        place_info = act_data.get("place", {}) if isinstance(act_data.get("place"), dict) else {}
+        place_lat = place_info.get("latitude")
+        place_lon = place_info.get("longitude")
+        place_cat = place_info.get("category", "Sightseeing")
         
         place = get_or_create_place(
             db, 
-            name=p_name, 
+            name=place_info.get("name") or p_name, 
+            category=place_cat,
             city=trip.destination, 
             country=trip.country,
             latitude=place_lat,
@@ -1107,21 +1288,21 @@ def regenerate_day_endpoint(
         et_mn = end_time_mins % 60
         end_time_str = f"{et_hr:02d}:{et_mn:02d}"
 
-        t_mode = "Not available"
+        t_mode = "Public Transit / Walking"
         t_dur = "Not available"
         t_dist = "Not available"
         travel_mins = 15
 
         if idx < len(new_acts) - 1:
             next_act = new_acts[idx + 1]
-            next_place_info = next_act.get("place", {})
-            n_lat = next_place_info.get("latitude") if isinstance(next_place_info, dict) else None
-            n_lon = next_place_info.get("longitude") if isinstance(next_place_info, dict) else None
+            next_place_info = next_act.get("place", {}) if isinstance(next_act.get("place"), dict) else {}
+            n_lat = next_place_info.get("latitude")
+            n_lon = next_place_info.get("longitude")
             
             if place_lat and place_lon and n_lat and n_lon:
                 try:
                     trans = estimate_travel_transition(float(place_lat), float(place_lon), float(n_lat), float(n_lon))
-                    t_mode = trans.get("travel_mode", "Walking")
+                    t_mode = trans.get("travel_mode", "Public Transit / Walking")
                     t_dur = trans.get("travel_time", "Not available")
                     t_dist = trans.get("distance", "Not available")
                     import re
@@ -1133,11 +1314,28 @@ def regenerate_day_endpoint(
         
         current_time_mins = end_time_mins + travel_mins + 10
 
+        is_dining = (
+            act_data.get("activity_type") == "meal"
+            or "restaurant" in place_cat.lower()
+            or "cafe" in place_cat.lower()
+            or "dining" in place_cat.lower()
+        )
+        raw_price = 0.0 if is_dining else act_data.get("ticket_price")
+        
+        reg_price_record = pricing_registry.register(
+            place_name=place.name,
+            raw_price=raw_price,
+            currency=trip.currency or "USD",
+            is_dining=is_dining
+        )
+
         act_meta = act_data.get("metadata", {})
         if not isinstance(act_meta, dict):
             act_meta = {}
         if t_dist != "Not available":
             act_meta["distance"] = t_dist
+        act_meta["pricing_details"] = reg_price_record.to_dict()
+        act_meta["price_status"] = reg_price_record.price_status
 
         act = ItineraryActivity(
             day_id=it_day.id,
@@ -1146,15 +1344,15 @@ def regenerate_day_endpoint(
             start_time=start_time_str,
             end_time=end_time_str,
             order_index=idx,
-            title=act_data.get("title", "Regenerated Spot"),
+            title=act_data.get("title", place.name),
             description=act_data.get("description", ""),
             estimated_duration=act_data.get("estimated_duration", f"{dur_mins} mins"),
-            ticket_price=_safe_float(act_data.get("ticket_price"), 0.0),
+            ticket_price=_safe_float(reg_price_record.adult_price, 0.0),
             transport_mode=t_mode,
             transport_duration=t_dur,
             weather_suitability="Not available",
             crowd_level="Not available",
-            ai_reason="Regenerated based on traveler preferences",
+            ai_reason=act_data.get("ai_reason") or "Regenerated based on traveler preferences",
             confidence_score=0.96,
             is_locked=False,
             activity_metadata=act_meta
@@ -1162,7 +1360,8 @@ def regenerate_day_endpoint(
         db.add(act)
         inserted_count += 1
 
-    if inserted_count == 0:
+    total_count = len(locked_acts) + inserted_count
+    if total_count == 0:
         db.rollback()
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Day regeneration failed because no verified activities could be inserted.")
 
@@ -1175,8 +1374,9 @@ def regenerate_day_endpoint(
         "success": True,
         "trip_id": trip.id,
         "generation_id": generation_id,
-        "activities_count": inserted_count,
-        "data": updated_trip_data
+        "activities_count": total_count,
+        "data": updated_trip_data,
+        **updated_trip_data
     }
 
 
@@ -1316,66 +1516,7 @@ def toggle_activity_complete_status(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
-# Note: generate-itinerary endpoint is registered at line 822 as generate_trip_itinerary.
 
-
-@router.post("/{trip_id}/regenerate-day")
-def regenerate_single_day_itinerary(
-    trip_id: int,
-    data: RegenerateDayRequest,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    """Regenerate activities for a single day while leaving other days & locked activities intact."""
-    trip = db.query(Trip).filter(Trip.id == trip_id).first()
-    if not trip:
-        raise HTTPException(status_code=404, detail="Trip not found")
-    if current_user and trip.user_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Not authorized to modify this trip")
-
-    day_num = data.day_number
-    days_count = max(1, (trip.end_date - trip.start_date).days + 1)
-    resolved_currency = trip.currency or (current_user.currency if current_user else None) or "USD"
-    daily_budget = (trip.budget or 1000.0) / days_count
-
-    trip_prefs = dict(trip.trip_preferences or {})
-    resolved_lang = trip_prefs.get("language") or (current_user.languages if current_user else None) or "English"
-    resolved_travel_style = trip.travel_style or trip_prefs.get("travel_style") or (current_user.travel_styles if current_user else None) or "solo"
-    resolved_interests = trip.interests or trip_prefs.get("interests") or (current_user.preferred_activities if current_user else None) or "sightseeing"
-
-    if current_user:
-        if not trip_prefs.get("dietary_preferences") and current_user.dietary_preferences:
-            trip_prefs["dietary_preferences"] = current_user.dietary_preferences
-        if not trip_prefs.get("preferred_climate") and current_user.preferred_climate:
-            trip_prefs["preferred_climate"] = current_user.preferred_climate
-        if not trip_prefs.get("budget_type") and current_user.preferred_budget:
-            trip_prefs["budget_type"] = current_user.preferred_budget
-            trip_prefs["preferred_budget"] = current_user.preferred_budget
-
-    trip_prefs["currency"] = resolved_currency
-    trip_prefs["language"] = resolved_lang
-
-    try:
-        ai_data = generate_structured_itinerary(
-            destination=trip.destination,
-            days=1,
-            budget=daily_budget,
-            interests=resolved_interests,
-            travel_style=resolved_travel_style,
-            group_size=trip.group_size or 1,
-            currency=resolved_currency,
-            trip_preferences=trip_prefs,
-            language=resolved_lang
-        )
-
-        days_data = ai_data.get("days", []) or ai_data.get("itinerary_days", [])
-        if days_data:
-            days_data[0]["day_number"] = day_num
-            _populate_trip_itinerary_from_ai(db, trip, {"days": [days_data[0]]})
-    except Exception as e:
-        print(f"[Regenerate Day Exception]: {e}")
-
-    return enrich_trip_response(trip, db)
 
 
 

@@ -171,7 +171,7 @@ class TripCreate(BaseModel):
     travel_style: Optional[str] = "solo"
     transportation: Optional[str] = "flight"
     accommodation_preference: Optional[str] = "hotel"
-    interests: Optional[str] = "sightseeing, food"
+    interests: Optional[str] = None
     travel_companion: Optional[str] = "solo"
     group_size: int = Field(1, ge=1)
     visibility: Optional[str] = "private"

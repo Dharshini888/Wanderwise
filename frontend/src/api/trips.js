@@ -111,6 +111,11 @@ export const fetchCurrencyRegistry = async () => {
   return res;
 };
 
+export const fetchBudgetAllocation = async (params) => {
+  const res = await api.get('/api/currency/budget-allocation', { params });
+  return res.data;
+};
+
 
 export const reorderActivity = async (tripId, payload) => {
   const res = await api.put(`/api/trips/${tripId}/activities/reorder`, payload);
