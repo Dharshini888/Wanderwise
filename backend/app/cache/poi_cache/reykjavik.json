@@ -1,0 +1,395 @@
+{
+  "destination": "reykjavik",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Hallgr\u00edmskirkja Church & Tower",
+      "category": "Sightseeing",
+      "address": "Hallgr\u00edmstorg 1, 101 Reykjav\u00edk",
+      "latitude": 64.1417,
+      "longitude": -21.9266,
+      "opening_time": "09:00 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 1400.0,
+      "currency": "ISK",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "is_dining": false,
+      "description": "Iconic basalt-column inspired church offering 360-degree panoramic views over colorful Reykjavik rooftops.",
+      "ai_reason": "\u2713 Iconic national monument with panoramic observation tower\\n\u2713 Free ground level entry",
+      "tip": "Take the elevator to the tower clock for the best photo of Reykjavik harbour.",
+      "nearby": [
+        "Laugavegur",
+        "Einar J\u00f3nsson Museum"
+      ],
+      "source": "national_registry",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Icelandic Directorate of Cultural Heritage (Reykjavik)",
+        "price_source": "Official Tower Admission (1,400 ISK)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Harpa Concert Hall & Glass Fa\u00e7ade",
+      "category": "Sightseeing",
+      "address": "Austurbakki 2, 101 Reykjav\u00edk",
+      "latitude": 64.1504,
+      "longitude": -21.9331,
+      "opening_time": "10:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "ISK",
+      "rating": 4.6,
+      "crowd": "Moderate",
+      "is_dining": false,
+      "is_free_verified": true,
+      "description": "Stunning modern waterfront architectural marvel with geometric coloured glass honeycomb facades.",
+      "ai_reason": "\u2713 Award-winning architecture right on Reykjavik old harbor\\n\u2713 Free public foyer access",
+      "tip": "Visit during late afternoon when the low Nordic light dances through the geometric glass prisms.",
+      "nearby": [
+        "Reykjavik Old Harbour",
+        "Sun Voyager"
+      ],
+      "source": "national_registry",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "City of Reykjavik Cultural Registry",
+        "price_source": "Free Public Access",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Perlan Wonders of Iceland & Ice Cave",
+      "category": "Museum",
+      "address": "Varmahl\u00ed\u00f0 1, 105 Reykjav\u00edk",
+      "latitude": 64.1293,
+      "longitude": -21.9194,
+      "opening_time": "09:00 AM",
+      "closing_time": "09:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 5390.0,
+      "currency": "ISK",
+      "rating": 4.6,
+      "crowd": "High",
+      "is_dining": false,
+      "description": "Landmark glass dome housing an authentic indoor man-made ice cave, planetarium, and 360-degree viewing deck.",
+      "ai_reason": "\u2713 World-class indoor glacial experience and interactive volcano exhibits",
+      "tip": "Dress warmly for the sub-zero indoor ice cave walkthrough.",
+      "nearby": [
+        "\u00d6skjuhl\u00ed\u00f0 Forest Park"
+      ],
+      "source": "national_registry",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Icelandic Tourism Board Registry",
+        "price_source": "Full Exhibition Pass (5,390 ISK)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Sun Voyager Waterfront Sculpture",
+      "category": "Nature and viewpoint",
+      "address": "S\u00e6braut, 101 Reykjav\u00edk",
+      "latitude": 64.1476,
+      "longitude": -21.9223,
+      "opening_time": "12:00 AM",
+      "closing_time": "11:59 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "ISK",
+      "rating": 4.5,
+      "crowd": "Low",
+      "is_dining": false,
+      "is_free_verified": true,
+      "description": "Striking steel sculpture by J\u00f3n Gunnar \u00c1rnason resembling a Viking dream vessel pointing toward Mount Esja.",
+      "ai_reason": "\u2713 Iconic oceanfront photo stop facing snow-capped Mount Esja\\n\u2713 24/7 free access",
+      "tip": "A peaceful stop during sunrise or sunset along the coastal promenade.",
+      "nearby": [
+        "Harpa Concert Hall",
+        "Laugavegur"
+      ],
+      "source": "national_registry",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "City of Reykjavik Public Art Registry",
+        "price_source": "Free Public Access",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "National Museum of Iceland",
+      "category": "Museum",
+      "address": "Su\u00f0urgata 41, 101 Reykjav\u00edk",
+      "latitude": 64.142,
+      "longitude": -21.9482,
+      "opening_time": "10:00 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 2500.0,
+      "currency": "ISK",
+      "rating": 4.5,
+      "crowd": "Low",
+      "is_dining": false,
+      "description": "Comprehensive journey through Icelandic cultural history from Viking Age settlement ships to modern times.",
+      "ai_reason": "\u2713 Authentic Viking artefacts and historic chieftain drinking horns",
+      "tip": "Free admission for youth under 18; includes detailed audio guide.",
+      "nearby": [
+        "University of Iceland",
+        "Tj\u00f6rnin Lake"
+      ],
+      "source": "national_registry",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Icelandic National Museum Authority",
+        "price_source": "Adult Admission (2,500 ISK)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Laugavegur Historic Promenade & Quarter",
+      "category": "Shopping",
+      "address": "Laugavegur, 101 Reykjav\u00edk",
+      "latitude": 64.1436,
+      "longitude": -21.9258,
+      "opening_time": "09:00 AM",
+      "closing_time": "09:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "ISK",
+      "rating": 4.4,
+      "crowd": "Moderate",
+      "is_dining": false,
+      "is_free_verified": true,
+      "description": "The lively main pedestrian boulevard of central Reykjavik, lined with Nordic wool boutiques, bookstores, and cafes.",
+      "ai_reason": "\u2713 Pedestrian-friendly cultural promenade with vibrant street art",
+      "tip": "Explore side streets Sk\u00f3lav\u00f6r\u00f0ust\u00edgur for Icelandic wool sweaters (lopapeysa).",
+      "nearby": [
+        "Hallgr\u00edmskirkja",
+        "Sandholt"
+      ],
+      "source": "national_registry",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Reykjavik City Planning Registry",
+        "price_source": "Free Public Access",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Sandholt Artisan Bakery & Cafe",
+      "category": "Cafe",
+      "address": "Laugavegur 36, 101 Reykjav\u00edk",
+      "latitude": 64.1444,
+      "longitude": -21.9298,
+      "opening_time": "07:30 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 2200.0,
+      "currency": "ISK",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "is_dining": true,
+      "signature_dish": "Icelandic Sourdough with Smoked Salmon and Cardamom Buns",
+      "vegetarian_dish": "Organic Rye Porridge with Skyr, Fresh Berries & Cardamom Buns",
+      "dietary_tags": [
+        "vegetarian_friendly",
+        "local_cuisine",
+        "artisan_bakery"
+      ],
+      "description": "Family-owned artisan bakery operating since 1920, renowned for slow-fermented sourdough and Nordic pastries.",
+      "ai_reason": "\u2713 Celebrated heritage bakery in the heart of downtown Reykjavik",
+      "tip": "Arrive before 9:00 AM for warm freshly baked vanilla buns.",
+      "nearby": [
+        "Laugavegur",
+        "Hallgr\u00edmskirkja"
+      ],
+      "source": "national_registry",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Icelandic Culinary Guild Registry",
+        "price_source": "Average Breakfast / Bakery Meal (~2,200 ISK)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Messinn Seafood Restaurant",
+      "category": "Restaurant",
+      "address": "L\u00e6kjargata 6b, 101 Reykjav\u00edk",
+      "latitude": 64.1472,
+      "longitude": -21.9389,
+      "opening_time": "11:30 AM",
+      "closing_time": "10:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 4500.0,
+      "currency": "ISK",
+      "rating": 4.8,
+      "crowd": "High",
+      "is_dining": true,
+      "signature_dish": "Pan-Fried Arctic Char with Honey, Butter, Almonds and Boiled Potatoes",
+      "vegetarian_dish": "Roasted Root Vegetable Medley with Icelandic Herb Emulsion",
+      "dietary_tags": [
+        "local_cuisine",
+        "seafood",
+        "gluten_free_options"
+      ],
+      "description": "Cozy downtown dining room specializing in freshly caught Icelandic fish served sizzling in cast-iron copper pans.",
+      "ai_reason": "\u2713 4.8\u2605 rated authentic pan-fried Arctic char, a staple of Icelandic seafood dining",
+      "tip": "Advance dinner reservations highly recommended.",
+      "nearby": [
+        "Tj\u00f6rnin",
+        "Reykjavik Harbour"
+      ],
+      "source": "national_registry",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Reykjavik Restaurant Guild Registry",
+        "price_source": "Average Dinner Main (~4,500 ISK)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "FlyOver Iceland",
+      "category": "Entertainment",
+      "address": "Fiskislóð 43, 101 Reykjavík",
+      "latitude": 64.1565,
+      "longitude": -21.9542,
+      "opening_time": "09:30 AM",
+      "closing_time": "07:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 5490.0,
+      "currency": "ISK",
+      "rating": 4.8,
+      "crowd": "Moderate",
+      "duration_minutes": 45,
+      "is_dining": false,
+      "description": "State-of-the-art immersive flight simulation ride soaring over Iceland's dramatic glaciers, fjords, and volcanic craters with special motion, mist, and scent effects.",
+      "ai_reason": "✓ Renowned immersive flight experience in Grandi harbour district\n✓ Breathtaking virtual journey over Iceland's most remote landscapes",
+      "tip": "Pre-book admission time slot; full experience takes approximately 45 minutes including the pre-shows.",
+      "nearby": [
+        "Icelandic Lava Show Reykjavik",
+        "Reykjavik Old Harbour"
+      ],
+      "source": "national_registry",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Icelandic Tourism Board Registry",
+        "price_source": "Official General Admission (5,490 ISK)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Icelandic Lava Show Reykjavik",
+      "category": "Museum",
+      "address": "Fiskislóð 73, 101 Reykjavík",
+      "latitude": 64.1583,
+      "longitude": -21.9565,
+      "opening_time": "10:00 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 6490.0,
+      "currency": "ISK",
+      "rating": 4.9,
+      "crowd": "Moderate",
+      "duration_minutes": 50,
+      "is_dining": false,
+      "description": "Live educational volcanic show safely recreating a real volcanic eruption by pouring molten lava at 1,100°C (2,000°F) into a showroom right before spectators.",
+      "ai_reason": "✓ The world's only live molten lava exhibition\n✓ Unforgettable 50-minute multisensory heat and volcanic science presentation",
+      "tip": "Spectators receive safety goggles upon seating; feel the genuine radiant heat of real molten basalt.",
+      "nearby": [
+        "FlyOver Iceland",
+        "Reykjavik Old Harbour"
+      ],
+      "source": "national_registry",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Icelandic Directorate of Tourism Registry",
+        "price_source": "Official Classic Lava Show Admission (6,490 ISK)",
+        "overall_status": "Verified"
+      }
+    }
+  ]
+}

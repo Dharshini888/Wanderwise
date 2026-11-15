@@ -51,8 +51,13 @@ def get_osrm_route(lat1: float, lon1: float, lat2: float, lon2: float, mode: str
     except Exception:
         pass
 
-    # Calibrated fallback respecting realistic urban geometry and transport mode
-    road_dist = round(direct_dist * 1.2, 2) if direct_dist > 0.05 else round(direct_dist, 2)
+    # Calibrated fallback respecting realistic urban/intercity geometry and transport mode
+    if direct_dist > 25.0 and "walk" not in mode_clean:
+        road_dist = round(direct_dist * 1.31, 2)  # Highway/intercity airport corridor factor
+    elif direct_dist > 0.05:
+        road_dist = round(direct_dist * 1.2, 2)
+    else:
+        road_dist = round(direct_dist, 2)
     
     if "walk" in mode_clean:
         # Walking speed ~ 4.5 km/h
@@ -61,8 +66,9 @@ def get_osrm_route(lat1: float, lon1: float, lat2: float, lon2: float, mode: str
         # Transit speed ~ 25 km/h plus 5-min transit buffer
         dur_mins = round(5.0 + (road_dist / 25.0) * 60.0, 1)
     else:
-        # Driving speed ~ 35 km/h in city
-        dur_mins = round(max(3.0, (road_dist / 35.0) * 60.0), 1)
+        # Driving speed: highway ~65 km/h for long corridors, ~35 km/h in city
+        speed_kmh = 65.0 if direct_dist > 25.0 else 35.0
+        dur_mins = round(max(3.0, (road_dist / speed_kmh) * 60.0), 1)
 
     fallback_result = {
         "distance_km": road_dist,

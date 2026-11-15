@@ -403,6 +403,7 @@ LANGUAGE REQUIREMENT & PROPER NOUNS
                 # Pick 1 authentic dining venue if available
                 avail_din = [p for p in c_dining if p["name"].strip().lower() not in used_names]
                 if avail_din:
+                    from app.services.currency_service import CurrencyService
                     p_din = avail_din[0]
                     used_names.add(p_din["name"].strip().lower())
                     din_cost = float(p_din.get("meal_cost") or 25.0)

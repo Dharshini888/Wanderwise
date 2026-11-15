@@ -11,7 +11,7 @@ import {
 } from '@tabler/icons-react';
 import { formatCurrency } from '../../utils/formatters';
 
-const API = 'http://localhost:8000/api';
+import api from '../../api/axios';
 
 export default function ActiveTripWorkspace({ widgetData, onRefresh }) {
   const token = localStorage.getItem('token');
@@ -56,10 +56,10 @@ export default function ActiveTripWorkspace({ widgetData, onRefresh }) {
   const remainingCount = isUpcomingTrip ? totalCount : totalCount - completedCount;
   const progressPct = (!isUpcomingTrip && totalCount > 0) ? Math.round((completedCount / totalCount) * 100) : 0;
 
-  const distanceKm = isUpcomingTrip ? 0 : (widgetData?.today_progress?.distance_travelled_today_km || (completedCount * 1.2).toFixed(1));
-  const walkingMins = isUpcomingTrip ? 0 : (widgetData?.today_progress?.walking_minutes_today || (completedCount * 20));
-  const moneySpent = isUpcomingTrip ? 0 : (widgetData?.today_progress?.money_spent_today || (completedCount * 250));
-  const remainingBudget = widgetData?.today_progress?.remaining_budget || (widgetData?.budget_remaining || 2150);
+  const distanceKm = isUpcomingTrip ? 0 : (widgetData?.today_progress?.distance_travelled_today_km ?? 0.0);
+  const walkingMins = isUpcomingTrip ? 0 : (widgetData?.today_progress?.walking_minutes_today ?? 0);
+  const moneySpent = isUpcomingTrip ? 0 : (widgetData?.today_progress?.money_spent_today ?? 0.0);
+  const remainingBudget = widgetData?.remaining_balance ?? widgetData?.unallocated_balance ?? widgetData?.today_progress?.remaining_budget ?? (widgetData?.budget_remaining ?? (activeTrip.remaining_balance ?? activeTrip.unallocated_balance ?? (activeTrip.budget || 0)));
   const currCode = widgetData?.currency || activeTrip.currency || 'USD';
 
   // Identify Current & Next Activity
@@ -79,24 +79,10 @@ export default function ActiveTripWorkspace({ widgetData, onRefresh }) {
     }));
 
     try {
-      const endpoint = isCurrentlyCompleted ? `/activities/${activityId}/undo` : `/activities/${activityId}/complete`;
-      let res = await fetch(`${API}${endpoint}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      });
-      if (!res.ok) {
-        const fallbackEndpoint = isCurrentlyCompleted ? `/trips/activities/${activityId}/undo` : `/trips/activities/${activityId}/complete`;
-        await fetch(`${API}${fallbackEndpoint}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          }
-        });
-      }
+      const endpoint = isCurrentlyCompleted
+        ? `/api/trips/activities/${activityId}/undo`
+        : `/api/trips/activities/${activityId}/complete`;
+      await api.patch(endpoint);
       if (onRefresh) onRefresh();
     } catch (err) {
       console.error("Failed to toggle completion", err);
@@ -133,7 +119,11 @@ export default function ActiveTripWorkspace({ widgetData, onRefresh }) {
             </h1>
 
             <p className="text-slate-400 text-sm mt-1.5 flex items-center gap-3 flex-wrap">
-              <span className="text-slate-300 font-medium">{activeTrip.destination}, {activeTrip.country || 'India'}</span>
+              <span className="text-slate-300 font-medium">
+                {activeTrip.destination_title || (activeTrip.country && !activeTrip.destination?.toLowerCase().includes(activeTrip.country.toLowerCase())
+                  ? `${activeTrip.destination}, ${activeTrip.country}`
+                  : activeTrip.destination)}
+              </span>
               <span>•</span>
               <span className="text-emerald-400 font-semibold">{activeTrip.travel_style || 'Solo'} Trip</span>
               <span>•</span>

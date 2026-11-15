@@ -135,3 +135,5 @@ $RECYCLE.BIN/
 
 temp/
 frontend/temp/
+tmp/
+frontend/tmp/

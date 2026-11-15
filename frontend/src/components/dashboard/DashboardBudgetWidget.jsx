@@ -28,11 +28,16 @@ export default function DashboardBudgetWidget({ trip }) {
   if (!trip) return null;
 
   const currency = budget?.currency || trip.currency || 'USD';
-  const totalBudget = parseFloat(budget?.total_budget || trip.budget || 0);
+  const totalBudget = parseFloat(budget?.total_budget || trip.original_budget || trip.budget || 0);
   const spent = parseFloat(budget?.spent || 0);
-  const remaining = parseFloat(budget?.remaining || totalBudget);
+  const estTripCost = parseFloat(trip.estimated_total_cost || trip.budget_plan?.total_estimated_trip_cost || 0);
+  const emergencyReserve = parseFloat(trip.contingency_reserve || trip.budget_plan?.emergency_reserve || 0);
+  const unallocatedBalance = parseFloat(trip.unallocated_balance ?? (totalBudget > estTripCost ? totalBudget - estTripCost : 0));
+  const remaining = spent > 0
+    ? Math.max(0, totalBudget - estTripCost - spent)
+    : (trip.remaining_balance ?? (estTripCost > 0 ? unallocatedBalance : parseFloat(budget?.remaining || totalBudget)));
   const health = insights?.health || 'Healthy';
-  const pct = Math.min(100, Math.round(budget?.budget_used_percentage || 0));
+  const pct = Math.min(100, Math.round(budget?.budget_used_percentage || (estTripCost > 0 && totalBudget > 0 ? (estTripCost / totalBudget * 100) : 0)));
 
   const getHealthBadgeClass = () => {
     if (health === 'Healthy') return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300';
@@ -88,15 +93,17 @@ export default function DashboardBudgetWidget({ trip }) {
           </span>
         </div>
 
-        {/* 2. Total Spent */}
+        {/* 2. Total Spent / Estimated Cost */}
         <div className="p-3 rounded-2xl bg-[var(--bg-app)] border border-[var(--border-color)]">
-          <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase block">Total Spent</span>
-          <span className="text-base font-black text-amber-600 dark:text-amber-400 block mt-0.5">
-            {formatCurrency(spent, currency)}
+          <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase block">
+            {spent > 0 ? 'Total Spent' : 'Estimated Cost'}
           </span>
-          {spent === 0 && (
-            <span className="text-[9px] text-[var(--text-muted)] block font-medium">No expenses recorded yet</span>
-          )}
+          <span className="text-base font-black text-amber-600 dark:text-amber-400 block mt-0.5">
+            {formatCurrency(spent > 0 ? spent : estTripCost, currency)}
+          </span>
+          <span className="text-[9px] text-[var(--text-muted)] block font-medium">
+            {spent > 0 ? `${formatCurrency(spent, currency)} recorded` : (emergencyReserve > 0 ? `Reserve: ${formatCurrency(emergencyReserve, currency)}` : 'Planned trip estimate')}
+          </span>
         </div>
 
         {/* 3. Remaining Budget */}
@@ -105,7 +112,9 @@ export default function DashboardBudgetWidget({ trip }) {
           <span className={`text-base font-black block mt-0.5 ${remaining >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
             {formatCurrency(remaining, currency)}
           </span>
-          <span className="text-[9px] text-emerald-500 font-bold block">100% Remaining</span>
+          <span className={`text-[9px] font-bold block ${remaining >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
+            {totalBudget > 0 ? `${Math.round((remaining / totalBudget) * 100)}% Remaining` : '0% Remaining'}
+          </span>
         </div>
 
         {/* 4. Budget Health */}

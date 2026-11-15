@@ -385,16 +385,33 @@ def generate_complete_itinerary(destination: str, days: int, budget: float,
             parts.append(chunk_text)
             current_day = end_chunk + 1
 
-        # PART 3: Return Journey Plan & Overall Budget Calculation
-        ret_cost = int(budget * 0.25)
-        round_transit = int(budget * 0.50)
-        acc_cost = int(budget * 0.25)
-        food_cost = int(budget * 0.15)
-        local_cost = int(budget * 0.05)
-        act_cost = int(budget * 0.05)
-        buf_cost = int(budget * 0.05)
-        grand_total = int(budget * 0.90)
-        rem_budget = int(budget * 0.10)
+        # PART 3: Return Journey Plan & Canonical Overall Budget Calculation
+        try:
+            from app.services.budget_allocation_service import BudgetAllocationService
+            b_plan = BudgetAllocationService.calculate_plan(total_budget=budget, trip_days=days, origin_city=origin, destination=destination, curr=currency)
+            categories_dict = b_plan.get("category_reconciliation", {}).get("categories", {})
+            ret_cost = int(categories_dict.get("return_transport", {}).get("allocated", budget * 0.22))
+            out_cost = int(categories_dict.get("outbound_transport", {}).get("allocated", budget * 0.22))
+            round_transit = ret_cost + out_cost
+            acc_cost = int(categories_dict.get("accommodation", {}).get("allocated", budget * 0.24))
+            food_cost = int(categories_dict.get("food", {}).get("allocated", budget * 0.16))
+            local_cost = int(categories_dict.get("local_transport", {}).get("allocated", budget * 0.05))
+            act_cost = int(categories_dict.get("activities", {}).get("allocated", budget * 0.08))
+            buf_cost = int(categories_dict.get("contingency", {}).get("allocated", budget * 0.03) + categories_dict.get("other_fees", {}).get("allocated", 0))
+            grand_total = int(b_plan.get("total_estimated_trip_cost") or budget)
+            rem_budget = int(budget - grand_total)
+            usage_pct = int(round((grand_total / max(1.0, budget)) * 100))
+        except Exception:
+            ret_cost = int(budget * 0.22)
+            round_transit = int(budget * 0.44)
+            acc_cost = int(budget * 0.24)
+            food_cost = int(budget * 0.16)
+            local_cost = int(budget * 0.05)
+            act_cost = int(budget * 0.08)
+            buf_cost = int(budget * 0.03)
+            grand_total = int(budget)
+            rem_budget = 0
+            usage_pct = 100
 
         p_final_prompt = f"""
         Provide the Return Journey Plan and Overall Budget Summary for {destination} trip ({days} days, budget: {budget} {currency}, origin: {origin}).
@@ -415,7 +432,7 @@ def generate_complete_itinerary(destination: str, days: int, budget: float,
         - ---
         - **Grand Total Estimated Cost**: {currency} {grand_total:,}
         - **Remaining Budget**: {currency} {rem_budget:,}
-        - **Budget Usage**: 90%
+        - **Budget Usage**: {usage_pct}%
 
         ## Smart Packing Recommendations
         - Clothing for local climate, Walking Shoes, Universal Power Adapter, Travel Documents.
@@ -480,13 +497,24 @@ def replan_itinerary(current_itinerary: str, modification_request: str) -> str:
 
 
 def _fallback_itinerary(destination: str, days: int, budget: float, currency: str = "USD", origin_city: str = "Coimbatore") -> str:
-    daily = budget / max(days, 1)
-    trans_cost = budget * 0.20
-    acc_cost = budget * 0.35
-    food_cost = budget * 0.20
-    act_cost = budget * 0.15
-    buf_cost = budget * 0.10
     origin = origin_city if origin_city else "Coimbatore"
+    try:
+        from app.services.budget_allocation_service import BudgetAllocationService
+        b_plan = BudgetAllocationService.calculate_plan(total_budget=budget, trip_days=days, origin_city=origin, destination=destination, curr=currency)
+        categories_dict = b_plan.get("category_reconciliation", {}).get("categories", {})
+        trans_cost = round(categories_dict.get("outbound_transport", {}).get("allocated", 0) + categories_dict.get("return_transport", {}).get("allocated", 0), 2)
+        acc_cost = round(categories_dict.get("accommodation", {}).get("allocated", 0), 2)
+        food_cost = round(categories_dict.get("food", {}).get("allocated", 0), 2)
+        act_cost = round(categories_dict.get("activities", {}).get("allocated", 0), 2)
+        buf_cost = round(categories_dict.get("contingency", {}).get("allocated", 0) + categories_dict.get("other_fees", {}).get("allocated", 0), 2)
+        daily = round(budget / max(days, 1), 2)
+    except Exception:
+        trans_cost = round(budget * 0.44, 2)
+        acc_cost = round(budget * 0.24, 2)
+        food_cost = round(budget * 0.16, 2)
+        act_cost = round(budget * 0.08, 2)
+        buf_cost = round(budget - (trans_cost + acc_cost + food_cost + act_cost), 2)
+        daily = round(budget / max(days, 1), 2)
 
     lines = [f"# 🌍 {days}-Day Complete Travel Planner: {destination}\n"]
     lines.append("## 📋 Trip Overview")
@@ -496,8 +524,8 @@ def _fallback_itinerary(destination: str, days: int, budget: float, currency: st
     lines.append(f"- **Overall AI Match**: 98% | **Trip Difficulty**: Easy | **Avg Walking**: 7 km/day\n")
 
     lines.append(f"## ✈️ Transport from {origin} to {destination}")
-    lines.append(f"- ✈️ **Recommended Flight**: Express Airline (~11 hrs, {currency} {trans_cost*0.8:.0f}) | Bag: 23kg")
-    lines.append(f"- 🚆 **Alternative Option**: Connecting Train / Flight (~14 hrs, {currency} {trans_cost*0.9:.0f})")
+    lines.append(f"- ✈️ **Recommended Flight**: Express Airline (~11 hrs, {currency} {trans_cost*0.5:.0f}) | Bag: 23kg")
+    lines.append(f"- 🚆 **Alternative Option**: Connecting Train / Flight (~14 hrs, {currency} {trans_cost*0.55:.0f})")
     lines.append(f"- 🚕 **Airport Taxi / Metro Cost**: {currency} {trans_cost*0.1:.0f}\n")
 
     lines.append("## 🏨 Hotel Recommendations")
@@ -516,9 +544,8 @@ def _fallback_itinerary(destination: str, days: int, budget: float, currency: st
 
         lines.append(f"🚕 **Transport to Afternoon Attraction**:")
         lines.append(f"   - *Route*: Heritage Landmark → Old Town Square (1.8 km, 15 mins)")
-        lines.append(f"   - *Preferred Transport*: Metro Line 1 ({currency} {trans_cost/days*0.3:.0f}) | Alt: Taxi ({currency} {trans_cost/days*0.8:.0f}) / Walk (Free)")
+        lines.append(f"   - *Preferred Transport*: Metro Line 1 ({currency} {trans_cost/days*0.15:.0f}) | Alt: Taxi ({currency} {trans_cost/days*0.35:.0f}) / Walk (Free)")
         lines.append(f"   - *Google Maps*: [View Map Route](https://www.google.com/maps/search/?api=1&query={urllib.parse.quote('Old Town ' + destination)})")
-
 
         lines.append(f"☀️ **Afternoon**: Historic District & Traditional Market")
         lines.append(f"   - *Hours*: 01:00 PM - 05:00 PM | *Entry*: Free")
@@ -531,15 +558,15 @@ def _fallback_itinerary(destination: str, days: int, budget: float, currency: st
 
     lines.append("## 🔄 Return Journey Plan")
     lines.append(f"- **Route**: {destination} Hotel → Airport → Flight → {origin}")
-    lines.append(f"- **Estimated Return Cost**: {currency} {trans_cost*0.8:.0f}")
-    lines.append(f"- **Total Round-trip Transit Cost**: {currency} {trans_cost*1.6:.0f}\n")
+    lines.append(f"- **Estimated Return Cost**: {currency} {trans_cost*0.5:,.0f}")
+    lines.append(f"- **Total Round-trip Transit Cost**: {currency} {trans_cost:,.0f}\n")
 
     lines.append("## 💵 Overall Budget Calculation")
-    lines.append(f"- ✈️ **Round-trip Flights/Transit**: {currency} {trans_cost*1.6:.0f}")
-    lines.append(f"- 🏨 **Hotels / Accommodation**: {currency} {acc_cost:.0f}")
-    lines.append(f"- 🍲 **Food & Dining**: {currency} {food_cost:.0f}")
-    lines.append(f"- 🎟️ **Activities & Entry Fees**: {currency} {act_cost:.0f}")
-    lines.append(f"- 🛡️ **Emergency Buffer**: {currency} {buf_cost:.0f}")
+    lines.append(f"- ✈️ **Round-trip Flights/Transit**: {currency} {trans_cost:,.0f}")
+    lines.append(f"- 🏨 **Hotels / Accommodation**: {currency} {acc_cost:,.0f}")
+    lines.append(f"- 🍲 **Food & Dining**: {currency} {food_cost:,.0f}")
+    lines.append(f"- 🎟️ **Activities & Entry Fees**: {currency} {act_cost:,.0f}")
+    lines.append(f"- 🛡️ **Emergency Buffer & Fees**: {currency} {buf_cost:,.0f}")
     lines.append(f"---")
     lines.append(f"### 💳 **Grand Total**: {currency} {budget:,.0f} | **Remaining Budget**: {currency} 0")
     return "\n".join(lines)
@@ -1279,6 +1306,9 @@ def regenerate_day_itinerary(destination: str, day_number: int,
             if poi_key not in seen_keys:
                 seen_keys.add(poi_key)
                 is_din = poi.get("is_dining") or any(k in poi.get("category", "").lower() for k in ["restaurant", "cafe", "dining"])
+                from app.services.currency_service import CurrencyService
+                realistic_meal = round(CurrencyService.convert(18.0, "USD", "INR"), 2)
+                meal_val = float(poi.get("meal_cost")) if poi.get("meal_cost") is not None and float(poi.get("meal_cost")) > 0 else realistic_meal
                 final_acts.append({
                     "start_time": "14:00" if len(final_acts) == 1 else "16:30",
                     "end_time": "15:30" if len(final_acts) == 1 else "18:00",
@@ -1288,7 +1318,7 @@ def regenerate_day_itinerary(destination: str, day_number: int,
                     "description": poi.get("description") or f"Experience {poi['name']} in {destination}.",
                     "place": poi,
                     "ticket_price": float(poi.get("ticket_price") or 0.0) if not is_din else 0.0,
-                    "meal_cost": float(poi.get("meal_cost") or 25.0) if is_din else None,
+                    "meal_cost": meal_val if is_din else None,
                     "activity_type": "meal" if is_din else "sightseeing",
                     "transport_mode": "Public Transit / Walking",
                     "ai_reason": f"✓ Fresh verified landmark in {destination}",

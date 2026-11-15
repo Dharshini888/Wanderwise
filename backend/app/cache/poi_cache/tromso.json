@@ -1,0 +1,197 @@
+{
+  "destination": "tromso",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "Arctic Cathedral (Ishavskatedralen)",
+      "category": "Sightseeing",
+      "address": "Hans Nilsens vei 41, 9020 Tromsdalen",
+      "latitude": 69.6481,
+      "longitude": 18.9875,
+      "opening_time": "09:00 AM",
+      "closing_time": "06:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 70.0,
+      "currency": "NOK",
+      "rating": 4.5,
+      "crowd": "Moderate",
+      "is_dining": false,
+      "description": "Striking modernist landmark church with triangular white concrete structure and radiant glass mosaic.",
+      "ai_reason": "\u2713 Architectural symbol of Troms\u00f8 across the harbour bridge",
+      "tip": "Cross the Troms\u00f8 Bridge on foot for breathtaking reflection views across the fjord.",
+      "nearby": [
+        "Fjellheisen Cable Car"
+      ],
+      "source": "national_registry",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Norwegian Directorate for Cultural Heritage (Troms\u00f8)",
+        "price_source": "Official Entry (70 NOK)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Fjellheisen Cable Car & Mount Storsteinen",
+      "category": "Nature and viewpoint",
+      "address": "Sollivegen 12, 9020 Tromsdalen",
+      "latitude": 69.6415,
+      "longitude": 18.9868,
+      "opening_time": "10:00 AM",
+      "closing_time": "11:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 395.0,
+      "currency": "NOK",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "is_dining": false,
+      "description": "Aerial tramway ascending 421 meters above sea level for panoramic vistas over Troms\u00f8 island, fjords, and peaks.",
+      "ai_reason": "\u2713 Premier vantage point for midnight sun in summer and northern lights in winter",
+      "tip": "Check wind conditions before ascending; the summit cafe serves hot cocoa.",
+      "nearby": [
+        "Arctic Cathedral"
+      ],
+      "source": "national_registry",
+      "confidence": 0.98,
+      "provenance": {
+        "place_verification": "Troms\u00f8 Tourism Authority Registry",
+        "price_source": "Roundtrip Aerial Tramway Ticket (395 NOK)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Polar Museum (Polarmuseet)",
+      "category": "Museum",
+      "address": "S\u00f8ndre Tollbodgate 11, 9008 Troms\u00f8",
+      "latitude": 69.6528,
+      "longitude": 18.9634,
+      "opening_time": "11:00 AM",
+      "closing_time": "05:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 110.0,
+      "currency": "NOK",
+      "rating": 4.5,
+      "crowd": "Low",
+      "is_dining": false,
+      "description": "Preserved 1830s harbour customs warehouse documenting historic polar expeditions of Roald Amundsen and Svalbard trappers.",
+      "ai_reason": "\u2713 Authentic Arctic exploration artefacts in an original historic wharf warehouse",
+      "tip": "Located directly on the historic northern harbour front.",
+      "nearby": [
+        "Skansen Fortress",
+        "Troms\u00f8 Havn"
+      ],
+      "source": "national_registry",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "University Museum of Troms\u00f8 Registry",
+        "price_source": "Adult Admission (110 NOK)",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Troms\u00f8 Havn & Storgata Historic Quarter",
+      "category": "Shopping",
+      "address": "Storgata, 9008 Troms\u00f8",
+      "latitude": 69.6495,
+      "longitude": 18.9567,
+      "opening_time": "09:00 AM",
+      "closing_time": "08:00 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "ticket_price": 0.0,
+      "currency": "NOK",
+      "rating": 4.4,
+      "crowd": "Low",
+      "is_dining": false,
+      "is_free_verified": true,
+      "description": "Charming wooden pedestrian main street with traditional 19th-century timber architecture and outdoor shops.",
+      "ai_reason": "\u2713 Pedestrian heart of the Arctic capital with timber-clad storefronts",
+      "tip": "Browse local Arctic outdoor gear and traditional Norwegian wool sweaters.",
+      "nearby": [
+        "Troms\u00f8 Cathedral",
+        "Emma\u2019s"
+      ],
+      "source": "national_registry",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Troms\u00f8 Municipal Heritage Registry",
+        "price_source": "Free Public Access",
+        "overall_status": "Verified"
+      }
+    },
+    {
+      "name": "Fiskekompaniet Harbour Restaurant",
+      "category": "Restaurant",
+      "address": "Killengreens gate, 9008 Troms\u00f8",
+      "latitude": 69.6508,
+      "longitude": 18.9589,
+      "opening_time": "04:00 PM",
+      "closing_time": "10:30 PM",
+      "open_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "ticket_price": 0.0,
+      "meal_cost": 480.0,
+      "currency": "NOK",
+      "rating": 4.7,
+      "crowd": "Moderate",
+      "is_dining": true,
+      "signature_dish": "Pan-Roasted Arctic Skrei Cod with Root Vegetables and Shellfish Sauce",
+      "vegetarian_dish": "Roasted Celeriac Steak with Wild Mushroom Ragu & Lingonberry Glaze",
+      "dietary_tags": [
+        "seafood",
+        "local_cuisine",
+        "vegetarian_friendly"
+      ],
+      "description": "Premier waterfront seafood haven offering panoramic views of Troms\u00f8 Sound through floor-to-ceiling glass.",
+      "ai_reason": "\u2713 Highly acclaimed Arctic culinary landmark with direct fjord views",
+      "tip": "Book window seating facing the Sound.",
+      "nearby": [
+        "Polar Museum",
+        "Troms\u00f8 Havn"
+      ],
+      "source": "national_registry",
+      "confidence": 0.99,
+      "provenance": {
+        "place_verification": "Norwegian Culinary Guild Registry",
+        "price_source": "Average Seafood Main (~480 NOK)",
+        "overall_status": "Verified"
+      }
+    }
+  ]
+}

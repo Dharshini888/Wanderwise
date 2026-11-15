@@ -18,6 +18,17 @@ class MockProvider(BaseAIProvider):
     def generate(self, prompt: str, system_instruction: str = "") -> str:
         prompt_lower = prompt.lower()
 
+        def _enrich_activities_provenance(d_list):
+            for d_item in d_list:
+                for act in d_item.get("activities", []):
+                    prov = act.get("provenance") or act.get("metadata", {}).get("provenance") or {}
+                    if not prov.get("overall_status"):
+                        prov["overall_status"] = "Verified" if prov.get("place_verification") else "Estimated"
+                    act["provenance"] = prov
+                    if "metadata" not in act:
+                        act["metadata"] = {}
+                    act["metadata"]["provenance"] = prov
+
         # 1. Destination Extraction
         dest = "Tokyo"
         dest_match = re.search(r'Destination(?:\s*City/Region)?:\s*([^\n,]+)', prompt, re.IGNORECASE)
@@ -78,12 +89,12 @@ class MockProvider(BaseAIProvider):
             )
 
         # Traveler Details & Composition
-        adults_match = re.search(r"(\d+)\s*Adults?", prompt, re.IGNORECASE)
-        children_match = re.search(r"(\d+)\s*Child(?:ren)?", prompt, re.IGNORECASE)
+        adults_match = re.search(r"(?:(\d+)\s*Adults?|Adults?:\s*(\d+))", prompt, re.IGNORECASE)
+        children_match = re.search(r"(?:(\d+)\s*Child(?:ren)?|Child(?:ren)?:\s*(\d+))", prompt, re.IGNORECASE)
         group_match = re.search(r"Total Group Size:\s*(\d+)", prompt, re.IGNORECASE)
-        children_count = int(children_match.group(1)) if children_match else 0
+        children_count = int(children_match.group(1) or children_match.group(2)) if children_match else 0
         if adults_match:
-            adults_count = int(adults_match.group(1))
+            adults_count = int(adults_match.group(1) or adults_match.group(2))
         elif group_match:
             adults_count = max(1, int(group_match.group(1)) - children_count)
         else:
@@ -93,6 +104,15 @@ class MockProvider(BaseAIProvider):
 
         orig_match = re.search(r"Origin City:\s*([^\n,(]+)", prompt, re.IGNORECASE)
         origin_city = orig_match.group(1).strip() if orig_match else "Coimbatore"
+
+        start_date_match = re.search(r"Start Date:\s*(\d{4}-\d{2}-\d{2})", prompt, re.IGNORECASE)
+        start_dt = None
+        if start_date_match:
+            try:
+                from datetime import datetime
+                start_dt = datetime.strptime(start_date_match.group(1), "%Y-%m-%d").date()
+            except Exception:
+                start_dt = None
 
         wants_gaming = "gaming" in prompt_lower
         gaming_compatibility_note = None
@@ -1287,6 +1307,8 @@ class MockProvider(BaseAIProvider):
                 response_dict["trip"]["compatibility_notes"] = gaming_compatibility_note
                 if days_list and len(days_list) > 0:
                     days_list[0]["theme_note"] += f" | {gaming_compatibility_note}"
+            _enrich_activities_provenance(days_list)
+            _enrich_activities_provenance(days_list)
             return json.dumps(response_dict)
 
         # 7. Curated Real Places for Bolivia Scenario
@@ -2203,60 +2225,99 @@ class MockProvider(BaseAIProvider):
                     "itinerary_days": days_list
                 }
             }
+            _enrich_activities_provenance(days_list)
             return json.dumps(response_dict)
 
         # Standard Fallback for other destinations (e.g. Singapore, Tokyo, Rome, Kyoto, etc.)
+        from app.services.location.location_normalizer import resolve_destination_info
+        from app.services.route_optimizer import destination_has_rail
+        dest_geo = resolve_destination_info(dest, origin_city)
+        dest_lat = dest_geo.get("latitude")
+        dest_lon = dest_geo.get("longitude")
+        has_rail = destination_has_rail(dest)
+
         all_pois = fetch_real_pois_for_destination(dest)
         valid_pois = [p for p in all_pois if is_valid_destination_poi(p, dest)]
-        if not valid_pois:
-            return json.dumps({
-                "trip": {
-                    "destination": dest,
-                    "version": "4.0",
-                    "compatibility_notes": f"No verified attraction records could be discovered for '{dest}'. Please check destination spelling.",
-                    "itinerary_days": []
-                }
-            })
 
-        # Partition into authentic dining and attractions
-        dining_pois = [
-            p for p in valid_pois
-            if p.get("is_dining") or p.get("category") in ["Restaurant", "Cafe", "Food Market"]
-        ]
-        attraction_pois = [
-            p for p in valid_pois
-            if not p.get("is_dining") and p.get("category") not in ["Restaurant", "Cafe", "Food Market"]
-        ]
-        if not attraction_pois:
-            attraction_pois = valid_pois
+        # Partition into authentic dining and attractions strictly to avoid double-dining or restaurants as sights
+        def is_dining_venue(p: Dict[str, Any]) -> bool:
+            p_cat = (p.get("category") or "").lower()
+            p_name = (p.get("name") or "").lower()
+            if p.get("is_dining"):
+                return True
+            if any(k in p_cat for k in ["restaurant", "cafe", "coffee", "bakery", "bar", "bistro", "eatery", "food", "dining", "patisserie", "pub", "brewery", "grill"]):
+                return True
+            if any(w in p_name for w in ["bakery", "cafe", "café", "restaurant", "bistro", "coffee", "roasters", "patisserie", "tavern", "brewery", "grill", "seafood restaurant", "ramen"]):
+                return True
+            return False
+
+        dining_pois = [p for p in valid_pois if is_dining_venue(p)]
+        attraction_pois = [p for p in valid_pois if not is_dining_venue(p)]
+
+        # Personalization: Score and rank attractions by user interests, style, and destination significance
+        from app.services.poi_service import score_and_rank_pois
+        interests_match = re.search(r"Selected Activity Interests:\s*([^\n]+)", prompt, re.IGNORECASE)
+        user_ints = [s.strip() for s in interests_match.group(1).split(",") if s.strip()] if interests_match else None
+        style_match = re.search(r"Travel Style:\s*([^\n(]+)", prompt, re.IGNORECASE)
+        t_style = style_match.group(1).strip() if style_match else "solo"
+        attraction_pois = score_and_rank_pois(
+            attraction_pois,
+            destination=dest,
+            user_interests=user_ints,
+            travel_style=t_style,
+            prioritize_hidden_gems=is_hidden_gems
+        )
 
         days_list = []
         used_poi_names = set()
 
-        def create_dining_activity(day_num: int, act_id: str, slot: str, st: str, et: str, dur: int, anchor_poi: Dict[str, Any], is_veg: bool) -> Optional[Dict[str, Any]]:
-            # Look for an unused curated authentic dining venue
-            matched_dining = None
-            for dp in dining_pois:
-                dp_name = dp["name"].strip().lower()
-                if dp_name not in used_poi_names:
-                    # If vegetarian requested, prefer vegetarian tag or verified vegetarian dish
-                    if is_veg and not (dp.get("is_dining") or "veg" in str(dp.get("dietary_tags", [])).lower() or dp.get("vegetarian_dish")):
-                        continue
-                    matched_dining = dp
-                    used_poi_names.add(dp_name)
-                    break
+        def is_open_on_day(poi: Dict[str, Any], day_n: int) -> bool:
+            if not start_dt:
+                return True
+            try:
+                from datetime import timedelta
+                curr_date = start_dt + timedelta(days=day_n - 1)
+                weekday_name = curr_date.strftime("%A").lower()
+                hours = str(poi.get("opening_hours") or poi.get("provenance", {}).get("opening_hours_source") or "").lower()
+                if f"closed {weekday_name}" in hours or f"closed on {weekday_name}" in hours or f"closed {weekday_name}s" in hours:
+                    return False
+            except Exception:
+                pass
+            return True
 
-            if not matched_dining:
-                for dp in dining_pois:
-                    dp_name = dp["name"].strip().lower()
-                    if dp_name not in used_poi_names:
-                        matched_dining = dp
-                        used_poi_names.add(dp_name)
-                        break
+        def create_dining_activity(day_num: int, act_id: str, slot: str, st: str, et: str, dur: int, anchor_poi: Dict[str, Any], is_veg: bool) -> Optional[Dict[str, Any]]:
+            # Proximity-sorted candidate dining discovery
+            matched_dining = None
+            anchor_lat = float(anchor_poi.get("latitude")) if isinstance(anchor_poi, dict) and anchor_poi.get("latitude") is not None else None
+            anchor_lon = float(anchor_poi.get("longitude")) if isinstance(anchor_poi, dict) and anchor_poi.get("longitude") is not None else None
+
+            from app.services.route_optimizer import haversine_distance_km
+
+            def _dining_distance(dp):
+                dp_lat = dp.get("latitude")
+                dp_lon = dp.get("longitude")
+                if anchor_lat is not None and anchor_lon is not None and dp_lat is not None and dp_lon is not None:
+                    return haversine_distance_km(anchor_lat, anchor_lon, float(dp_lat), float(dp_lon))
+                return 999.0
+
+            avail_dining = [dp for dp in dining_pois if dp["name"].strip().lower() not in used_poi_names and is_open_on_day(dp, day_num)]
+
+            if is_veg:
+                veg_candidates = []
+                for dp in avail_dining:
+                    has_veg = bool("veg" in str(dp.get("dietary_tags", [])).lower() or dp.get("vegetarian_dish") or "vegan" in dp.get("name", "").lower() or "vegetarian" in dp.get("name", "").lower())
+                    has_meat = any(m in f"{dp.get('name', '')} {dp.get('description', '')}".lower() for m in ["pork", "beef", "chicken", "seafood", "fish", "meat", "sushi", "ramen"])
+                    if has_veg and not has_meat:
+                        veg_candidates.append(dp)
+                avail_dining = veg_candidates
+
+            if avail_dining:
+                avail_dining.sort(key=_dining_distance)
+                matched_dining = avail_dining[0]
+                used_poi_names.add(matched_dining["name"].strip().lower())
 
             if not matched_dining:
                 anchor_name = anchor_poi.get("name", dest) if isinstance(anchor_poi, dict) else dest
-                p_name = f"Area Dining Suggestion: Around {anchor_name}"
                 meal_usd = 22.0 if slot == "dinner" else 15.0
                 meal_amt = round(CurrencyService.convert(meal_usd, "USD", curr_code), 2)
                 return {
@@ -2265,77 +2326,56 @@ class MockProvider(BaseAIProvider):
                     "end_time": et,
                     "duration_minutes": dur,
                     "time_slot": slot,
-                    "title": p_name,
-                    "description": f"Area dining suggestion: Explore dining options in the vicinity of {anchor_name}. Note: No verified restaurant found nearby; specific venue unverified at source.",
-                    "activity_type": "area_suggestion",
+                    "title": "Flexible meal break — choose a nearby restaurant",
+                    "description": f"Flexible meal break around {anchor_name}: Select a nearby restaurant or cafe matching your taste and budget.",
+                    "activity_type": "meal",
                     "is_dining": True,
-                    "is_area_suggestion": True,
+                    "is_flexible_meal_break": True,
                     "place": {
-                        "name": f"Dining Area around {anchor_name}",
-                        "category": "Area Suggestion",
-                        "address": f"{dest} (Area suggestion)",
+                        "name": f"Local Restaurant around {anchor_name}",
+                        "category": "Meal Break",
+                        "address": f"{dest} (Area of {anchor_name})",
                         "city": dest,
-                        "latitude": None,
-                        "longitude": None,
+                        "latitude": anchor_lat,
+                        "longitude": anchor_lon,
                         "rating": None,
-                        "rating_source": "Unrated (Area suggestion, not a verified restaurant POI)",
+                        "rating_source": "Unrated (Flexible Meal Break)",
                         "opening_time": None,
                         "closing_time": None
                     },
-                    "cost": {"amount": meal_amt, "currency": curr_code, "symbol": curr_symbol, "estimated": True},
+                    "cost": {"amount": meal_amt, "currency": curr_code, "symbol": curr_symbol, "estimated": True, "cost_type": "meal"},
+                    "ticket_price": 0.0,
                     "meal_cost": meal_amt,
                     "formatted_cost": f"Est. Meal: {curr_symbol}{meal_amt:,.0f}",
-                    "transport_mode": "Self-paced",
-                    "transport_duration": "Flexible",
-                    "distance": "Unavailable",
-                    "ai_reason": f"Area dining suggestion near {anchor_name}. Please choose a local eatery based on preferences.",
+                    "transport_mode": "Walking",
+                    "transport_duration": "5 mins",
+                    "distance": "0.3 km",
+                    "ai_reason": f"Flexible meal break near {anchor_name}. Please choose a local eatery based on personal preferences.",
                     "provenance": {
-                        "place_source": "Area Directory (Not a verified business POI)",
-                        "place_verification": "Area Suggestion (Unverified Restaurant)",
+                        "place_source": "Flexible Meal Break",
+                        "place_verification": "Flexible Meal Break (Unverified Specific Venue)",
                         "place_status": "Unverified",
-                        "coordinates_source": "Unavailable (Area suggestion)",
-                        "coordinates_status": "Unavailable",
-                        "opening_hours_source": "Hours unverified / Tentative",
+                        "coordinates_source": "Anchor POI Geocode" if anchor_lat else "Unavailable",
+                        "coordinates_status": "Estimated" if anchor_lat else "Unavailable",
+                        "opening_hours_source": "Flexible meal schedule",
                         "opening_hours_status": "Unverified",
                         "price_source": f"Local Market Estimate ({curr_symbol}{meal_amt:,.0f})",
                         "price_status": "Estimated",
-                        "rating_source": "Unrated (Not a business POI)",
+                        "rating_source": "Unrated (Flexible Break)",
                         "rating_status": "Unrated",
                         "crowd_source": "Unavailable",
                         "crowd_status": "Unavailable",
-                        "route_source": "Unavailable",
-                        "route_status": "Route Unavailable",
-                        "dining_source": "Area-Based Suggestion (Unverified)",
-                        "dining_status": "Unverified",
-                        "overall_status": "Unavailable",
+                        "route_source": "Walk within dining precinct",
+                        "route_status": "Straight-line estimate",
+                        "dining_source": "Flexible Meal Break",
+                        "dining_status": "Flexible Meal Break",
+                        "overall_status": "Estimated"
                     },
                     "metadata": {
                         "base_city": dest,
                         "overnight_stay": f"{dest} Central Hotel",
                         "is_dining": True,
-                        "is_area_suggestion": True,
-                        "verification_status": "Route Unavailable",
-                        "distance": "Unavailable",
-                        "provenance": {
-                            "place_source": "Area Directory (Not a verified business POI)",
-                            "place_verification": "Area Suggestion (Unverified Restaurant)",
-                            "place_status": "Unverified",
-                            "coordinates_source": "Unavailable (Area suggestion)",
-                            "coordinates_status": "Unavailable",
-                            "opening_hours_source": "Hours unverified / Tentative",
-                            "opening_hours_status": "Unverified",
-                            "price_source": f"Local Market Estimate ({curr_symbol}{meal_amt:,.0f})",
-                            "price_status": "Estimated",
-                            "rating_source": "Unrated (Not a business POI)",
-                            "rating_status": "Unrated",
-                            "crowd_source": "Unavailable",
-                            "crowd_status": "Unavailable",
-                            "route_source": "Unavailable",
-                            "route_status": "Route Unavailable",
-                            "dining_source": "Area-Based Suggestion (Unverified)",
-                            "dining_status": "Unverified",
-                            "overall_status": "Unavailable",
-                        }
+                        "is_flexible_meal_break": True
                     }
                 }
 
@@ -2400,21 +2440,84 @@ class MockProvider(BaseAIProvider):
             acts = []
             if d == 1:
                 # Flexible Arrival Day
-                theme_note = f"Arrival in {dest}: Check-in, settle in, and relaxed orientation. Note: Schedule is flexible depending on arrival timing from {origin_city}."
-                # 1. Arrival Check-in
-                first_lat = attraction_pois[0].get("latitude") if attraction_pois else None
-                first_lon = attraction_pois[0].get("longitude") if attraction_pois else None
+                theme_note = f"Arrival in {dest}: Flight arrival transfer, accommodation check-in, and relaxed orientation. Note: Schedule is flexible depending on arrival timing from {origin_city}."
+                first_lat = (attraction_pois[0].get("latitude") if attraction_pois else None) or dest_lat
+                first_lon = (attraction_pois[0].get("longitude") if attraction_pois else None) or dest_lon
+                
+                from app.services.transit.airport_service import get_primary_gateway_airport
+                gateway_ap = get_primary_gateway_airport(dest, first_lat, first_lon)
+                ap_name = gateway_ap["name"]
+                ap_lat = gateway_ap["latitude"]
+                ap_lon = gateway_ap["longitude"]
+                ap_dist_str = f"{gateway_ap['distance_km']} km"
+                ap_addr = f"{gateway_ap['full_name']}, {dest}"
+                
+                # 1A. Separate Airport Arrival Transfer Activity
                 acts.append({
-                    "id": f"act_mock_d1_01",
-                    "start_time": "14:00",
-                    "end_time": "15:30",
-                    "duration_minutes": 90,
+                    "id": f"act_mock_d1_01a",
+                    "start_time": "12:00",
+                    "end_time": "13:15",
+                    "duration_minutes": 75,
                     "time_slot": "afternoon",
-                    "title": f"Flexible Arrival Window & Accommodation Check-in",
-                    "description": f"Self-paced arrival in {dest}: Check into accommodation, unpack, and coordinate local essentials for your party of {travelers_str}. Adjust timing based on your actual arrival timing.",
+                    "title": f"Airport Arrival & Gateway Transfer from {ap_name}",
+                    "description": f"Flight arrival at {ap_name}. Meet designated driver/shuttle and take direct express transfer to central accommodations in {dest} for {travelers_str}.",
                     "activity_type": "transit",
                     "place": {
-                        "name": f"Accommodation Check-in ({dest})",
+                        "name": ap_name,
+                        "category": "Airport Gateway",
+                        "address": ap_addr,
+                        "city": dest,
+                        "latitude": ap_lat,
+                        "longitude": ap_lon,
+                        "rating": None,
+                        "opening_time": "00:00",
+                        "closing_time": "23:59"
+                    },
+                    "cost": {"amount": 0.0, "currency": curr_code, "symbol": curr_symbol, "estimated": True},
+                    "ticket_price": 0.0,
+                    "formatted_cost": "Transit Included",
+                    "transport_mode": "Airport Shuttle / Express Transit",
+                    "transport_duration": "45 mins",
+                    "distance": ap_dist_str,
+                    "ai_reason": f"✓ Direct commercial airport arrival transfer from {ap_name} to central {dest}\n✓ Coordinated for your party of {travelers_str} ({origin_city} corridor)",
+                    "provenance": {
+                        "place_source": "IATA Commercial Aviation Registry",
+                        "place_verification": f"Official Commercial Serving Gateway ({gateway_ap.get('iata', 'Airport')})",
+                        "place_status": "Verified",
+                        "coordinates_source": "Official Aerodrome Geographic Registry",
+                        "coordinates_status": "Verified",
+                        "opening_hours_source": "24/7 International Flight Operations",
+                        "opening_hours_status": "Verified",
+                        "price_source": "Included in Door-to-Door Outbound Transit Plan",
+                        "price_status": "Verified",
+                        "rating_source": "Unrated (Airport Transfer)",
+                        "rating_status": "Unrated",
+                        "crowd_source": "Unavailable",
+                        "crowd_status": "Unavailable",
+                        "route_source": "Calculated Airport Highway Corridor",
+                        "route_status": "Verified Road Route",
+                        "dining_source": "N/A",
+                        "dining_status": "N/A",
+                        "overall_status": "Verified"
+                    },
+                    "metadata": {
+                        "base_city": dest,
+                        "overnight_stay": f"{dest} Central Accommodation"
+                    }
+                })
+
+                # 1B. Separate Accommodation Check-in Buffer Activity
+                acts.append({
+                    "id": f"act_mock_d1_01b",
+                    "start_time": "13:45",
+                    "end_time": "15:00",
+                    "duration_minutes": 75,
+                    "time_slot": "afternoon",
+                    "title": f"Accommodation Check-in & Refreshment Buffer",
+                    "description": f"Standard hotel check-in at central {dest} accommodation. Unpack, refresh, coordinate room keys, and settle in for your party of {travelers_str}.",
+                    "activity_type": "transit",
+                    "place": {
+                        "name": f"Central {dest} Accommodation",
                         "category": "Hotel",
                         "address": f"{dest} Central District",
                         "city": dest,
@@ -2426,11 +2529,11 @@ class MockProvider(BaseAIProvider):
                     },
                     "cost": {"amount": 0.0, "currency": curr_code, "symbol": curr_symbol, "estimated": True},
                     "ticket_price": 0.0,
-                    "formatted_cost": "Transit Included",
-                    "transport_mode": "Airport / Rail Transfer",
-                    "transport_duration": "35 mins",
-                    "distance": "12.0 km",
-                    "ai_reason": f"✓ Flexible check-in coordination for {travelers_str}\n✓ Adjusts to actual arrival timing from {origin_city}",
+                    "formatted_cost": "Lodging Plan Included",
+                    "transport_mode": "Walking",
+                    "transport_duration": "5 mins",
+                    "distance": "0.2 km",
+                    "ai_reason": f"✓ Flexible check-in buffer for {travelers_str}\n✓ Adjusts to actual arrival timing from {origin_city}",
                     "provenance": {
                         "place_source": "Accommodation Booking / Arrival Window",
                         "place_verification": "Verified Accommodation Corridor",
@@ -2453,31 +2556,11 @@ class MockProvider(BaseAIProvider):
                     },
                     "metadata": {
                         "base_city": dest,
-                        "overnight_stay": f"{dest} Central Accommodation",
-                        "provenance": {
-                            "place_source": "Accommodation Booking / Arrival Window",
-                            "place_verification": "Verified Accommodation Corridor",
-                            "place_status": "Verified",
-                            "coordinates_source": "Destination Central Geocode",
-                            "coordinates_status": "Estimated",
-                            "opening_hours_source": "Standard 14:00 Hotel Check-in Window",
-                            "opening_hours_status": "Verified",
-                            "price_source": "Included in Accommodation & Transit Plan",
-                            "price_status": "Verified",
-                            "rating_source": "Unrated (Accommodation check-in)",
-                            "rating_status": "Unrated",
-                            "crowd_source": "Unavailable",
-                            "crowd_status": "Unavailable",
-                            "route_source": "Estimated Transit Corridor",
-                            "route_status": "Estimated Distance",
-                            "dining_source": "N/A",
-                            "dining_status": "N/A",
-                            "overall_status": "Estimated"
-                        }
+                        "overnight_stay": f"{dest} Central Accommodation"
                     }
                 })
                 # 2. Relaxed Afternoon Walk at first attraction
-                avail_p0 = [p for p in attraction_pois if p["name"].strip().lower() not in used_poi_names]
+                avail_p0 = [p for p in attraction_pois if p["name"].strip().lower() not in used_poi_names and is_open_on_day(p, 1)]
                 p0 = None
                 for cand in avail_p0:
                     cand_name = cand["name"].strip().lower()
@@ -2548,6 +2631,53 @@ class MockProvider(BaseAIProvider):
                             }
                         }
                     })
+                else:
+                    acts.append({
+                        "id": f"act_mock_d1_02",
+                        "start_time": "16:00",
+                        "end_time": "18:00",
+                        "duration_minutes": 120,
+                        "time_slot": "afternoon",
+                        "title": f"Self-Guided {dest} Central District Orientation Walk",
+                        "description": f"Relaxed orientation stroll through the central quarter of {dest}. Get your bearings, discover local streets, and soak in the destination atmosphere.",
+                        "activity_type": "area_suggestion",
+                        "is_area_suggestion": True,
+                        "place": {
+                            "name": f"{dest} Central Promenade",
+                            "category": "Area Suggestion",
+                            "address": f"{dest} Central District",
+                            "city": dest,
+                            "latitude": first_lat,
+                            "longitude": first_lon,
+                            "rating": None
+                        },
+                        "cost": {"amount": 0.0, "currency": curr_code, "symbol": curr_symbol, "estimated": True},
+                        "ticket_price": 0.0,
+                        "formatted_cost": "Free Public Access",
+                        "transport_mode": "Walking",
+                        "transport_duration": "10 mins",
+                        "distance": "0.5 km",
+                        "ai_reason": f"✓ Relaxed self-guided afternoon orientation walk in {dest}",
+                        "provenance": {
+                            "place_source": "Area Exploration Directory",
+                            "place_verification": f"Area Exploration Block ({dest})",
+                            "place_status": "Unverified",
+                            "coordinates_source": "Destination Central Geocode",
+                            "coordinates_status": "Estimated",
+                            "opening_hours_source": "Flexible public access",
+                            "opening_hours_status": "Unverified",
+                            "price_source": "Free Public Access",
+                            "price_status": "Free Entry",
+                            "rating_source": "Unrated (Open exploration block)",
+                            "rating_status": "Unrated",
+                            "overall_status": "Unavailable",
+                        },
+                        "metadata": {
+                            "base_city": dest,
+                            "overnight_stay": f"{dest} Central Hotel",
+                            "is_area_suggestion": True
+                        }
+                    })
 
                 # 3. Evening Welcome Dinner
                 welcome_dinner = create_dining_activity(1, "act_mock_d1_03", "dinner", "19:00", "20:30", 90, p0 or {"latitude": first_lat, "longitude": first_lon}, is_vegetarian)
@@ -2557,9 +2687,15 @@ class MockProvider(BaseAIProvider):
             elif d == total_days:
                 # Departure Day
                 theme_note = f"Departure Day: Souvenir stroll, farewell meal, and scheduled return transfer buffer for {travelers_str}."
-                # 1. Morning Souvenir Stroll
-                avail_last = [p for p in attraction_pois if p["name"].strip().lower() not in used_poi_names]
-                p_last = avail_last[0] if avail_last else None
+                # 1. Morning Souvenir Stroll / Airport-adjacent Attraction (e.g. Jewel Changi Airport)
+                avail_last = [p for p in attraction_pois if p["name"].strip().lower() not in used_poi_names and is_open_on_day(p, d)]
+                airport_cands = [p for p in avail_last if any(k in p["name"].lower() for k in ["jewel", "airport"])]
+                if airport_cands:
+                    p_last = airport_cands[0]
+                else:
+                    p_last = avail_last[0] if avail_last else None
+
+                dur_last = 90
                 if p_last:
                     used_poi_names.add(p_last["name"].strip().lower())
                     raw_tl = p_last.get("ticket_price")
@@ -2579,11 +2715,16 @@ class MockProvider(BaseAIProvider):
                         t_amtl = None
                         fmt_costl = "Price not verified"
 
+                    from app.services.poi_service import get_realistic_activity_duration
+                    dur_last = int(p_last.get("duration_minutes") or get_realistic_activity_duration(p_last["name"], p_last.get("category"), p_last.get("description")))
+                    end_m_last = 9 * 60 + 30 + dur_last
+                    et_last = f"{end_m_last // 60:02d}:{end_m_last % 60:02d}"
+
                     acts.append({
                         "id": f"act_mock_d{d}_01",
                         "start_time": "09:30",
-                        "end_time": "11:30",
-                        "duration_minutes": 120,
+                        "end_time": et_last,
+                        "duration_minutes": dur_last,
                         "time_slot": "morning",
                         "title": p_last["name"],
                         "description": p_last.get("description", f"Final stroll around {p_last['name']}."),
@@ -2600,9 +2741,9 @@ class MockProvider(BaseAIProvider):
                         "cost": {"amount": t_amtl or 0.0, "currency": curr_code, "symbol": curr_symbol, "estimated": True},
                         "ticket_price": t_amtl or 0.0,
                         "formatted_cost": fmt_costl,
-                        "transport_mode": "Walking",
-                        "transport_duration": "10 mins",
-                        "distance": "0.6 km",
+                        "transport_mode": "Public Transit / MRT" if "singapore" in dest.lower() else ("Public Transit / Metro" if has_rail else "Walking"),
+                        "transport_duration": "15 mins",
+                        "distance": "1.2 km",
                         "ai_reason": p_last.get("ai_reason", "✓ Unhurried morning stroll"),
                         "metadata": {
                             "base_city": dest,
@@ -2610,89 +2751,205 @@ class MockProvider(BaseAIProvider):
                             "provenance": p_last.get("provenance") or {"place_verification": "Verified Real Destination Area", "price_source": "Free Access", "overall_status": "Verified"}
                         }
                     })
+                else:
+                    dur_last = 90
+                    acts.append({
+                        "id": f"act_mock_d{d}_01",
+                        "start_time": "09:30",
+                        "end_time": "11:00",
+                        "duration_minutes": 90,
+                        "time_slot": "morning",
+                        "title": f"Self-Guided {dest} Old Town & Souvenir Stroll",
+                        "description": f"Unhurried morning self-guided walk through {dest} old quarter and local handicraft shops for souvenirs.",
+                        "activity_type": "area_suggestion",
+                        "is_area_suggestion": True,
+                        "place": {
+                            "name": f"{dest} Old Town Quarter",
+                            "category": "Area Suggestion",
+                            "address": f"{dest} Old Town",
+                            "city": dest,
+                            "latitude": first_lat,
+                            "longitude": first_lon,
+                            "rating": None
+                        },
+                        "cost": {"amount": 0.0, "currency": curr_code, "symbol": curr_symbol, "estimated": True},
+                        "ticket_price": 0.0,
+                        "formatted_cost": "Free Public Access",
+                        "transport_mode": "Walking",
+                        "transport_duration": "10 mins",
+                        "distance": "0.5 km",
+                        "ai_reason": "✓ Unhurried morning departure walk — no duplicate attractions",
+                        "provenance": {
+                            "place_source": "Area Exploration Directory",
+                            "place_verification": f"Area Exploration Block ({dest})",
+                            "place_status": "Unverified",
+                            "coordinates_source": "Destination Central Geocode",
+                            "coordinates_status": "Estimated",
+                            "opening_hours_source": "Flexible public access",
+                            "opening_hours_status": "Unverified",
+                            "price_source": "Free Public Access",
+                            "price_status": "Free Entry",
+                            "rating_source": "Unrated (Open exploration block)",
+                            "rating_status": "Unrated",
+                            "overall_status": "Unavailable",
+                        },
+                        "metadata": {
+                            "base_city": dest,
+                            "overnight_stay": f"{dest} Central Hotel",
+                            "is_area_suggestion": True
+                        }
+                    })
 
                 # 2. Farewell Lunch
                 last_ref = p_last or {"latitude": first_lat, "longitude": first_lon}
-                farewell_lunch = create_dining_activity(d, f"act_mock_d{d}_02", "lunch", "12:00", "13:30", 90, last_ref, is_vegetarian)
+                fl_start_m = max(12 * 60, 9 * 60 + 30 + dur_last + 15)
+                fl_st = f"{fl_start_m // 60:02d}:{fl_start_m % 60:02d}"
+                fl_dur = 75
+                fl_end_m = fl_start_m + fl_dur
+                fl_et = f"{fl_end_m // 60:02d}:{fl_end_m % 60:02d}"
+
+                farewell_lunch = create_dining_activity(d, f"act_mock_d{d}_02", "lunch", fl_st, fl_et, fl_dur, last_ref, is_vegetarian)
                 if farewell_lunch:
                     acts.append(farewell_lunch)
 
-                # 3. Flexible Departure Window & Return Travel Preparation
+                last_lat = float(last_ref.get("latitude")) if isinstance(last_ref, dict) and last_ref.get("latitude") is not None else dest_lat
+                last_lon = float(last_ref.get("longitude")) if isinstance(last_ref, dict) and last_ref.get("longitude") is not None else dest_lon
+                
+                from app.services.transit.airport_service import get_primary_gateway_airport
+                dep_ap = get_primary_gateway_airport(dest, last_lat, last_lon)
+                dep_ap_name = dep_ap["name"]
+                dep_ap_lat = dep_ap["latitude"]
+                dep_ap_lon = dep_ap["longitude"]
+                dep_ap_dist_str = f"{dep_ap['distance_km']} km"
+                dep_ap_addr = f"{dep_ap['full_name']}, {dest}"
+
+                t_start_m = max(14 * 60 + 30, fl_end_m + 30)
+                t_st = f"{t_start_m // 60:02d}:{t_start_m % 60:02d}"
+                t_dur = 60
+                t_end_m = t_start_m + t_dur
+                t_et = f"{t_end_m // 60:02d}:{t_end_m % 60:02d}"
+
+                # 3A. Separate Airport Departure Transfer Activity
                 acts.append({
-                    "id": f"act_mock_d{d}_03",
-                    "start_time": "14:30",
-                    "end_time": "16:30",
-                    "duration_minutes": 120,
+                    "id": f"act_mock_d{d}_03a",
+                    "start_time": t_st,
+                    "end_time": t_et,
+                    "duration_minutes": t_dur,
                     "time_slot": "afternoon",
-                    "title": "Flexible Departure Window & Return Travel Preparation",
-                    "description": f"Hotel checkout, packing, and flexible travel buffer before heading to your departure station or airport for your party of {travelers_str}. Adjust timing based on your ticketed schedule.",
+                    "title": f"Scheduled Airport Departure Transfer to {dep_ap_name}",
+                    "description": f"Private shuttle / express rail transfer from central accommodation to {dep_ap_name} for return journey to {origin_city}.",
                     "activity_type": "transit",
                     "place": {
-                        "name": f"Departure Preparation & Return Corridor ({dest})",
-                        "category": "Transit Preparation",
-                        "address": f"{dest} (Departure preparation)",
+                        "name": dep_ap_name,
+                        "category": "Transit Gateway",
+                        "address": dep_ap_addr,
                         "city": dest,
-                        "latitude": last_ref.get("latitude") if isinstance(last_ref, dict) else None,
-                        "longitude": last_ref.get("longitude") if isinstance(last_ref, dict) else None,
+                        "latitude": dep_ap_lat,
+                        "longitude": dep_ap_lon,
                         "rating": None,
-                        "opening_time": None,
-                        "closing_time": None
+                        "opening_time": "00:00",
+                        "closing_time": "23:59"
                     },
                     "cost": {"amount": 0.0, "currency": curr_code, "symbol": curr_symbol, "estimated": True},
                     "ticket_price": 0.0,
                     "formatted_cost": "Transit Included",
-                    "transport_mode": "Transit / Taxi Buffer",
+                    "transport_mode": "Airport Shuttle / Express Transit",
                     "transport_duration": "45 mins",
-                    "distance": "15.0 km",
-                    "ai_reason": f"✓ Flexible departure buffer for your party of {travelers_str} ({origin_city} corridor)\n✓ Generous departure window ensuring stress-free return without rushed transfers",
+                    "distance": dep_ap_dist_str,
+                    "ai_reason": f"✓ Direct scheduled commercial transfer to {dep_ap_name}\n✓ Guaranteed timely departure buffer for {origin_city} corridor",
                     "provenance": {
-                        "place_source": "Flexible Return Transit Buffer",
-                        "place_verification": "Return Transit Corridor",
-                        "place_status": "Estimated",
-                        "coordinates_source": "Destination Departure Corridor",
-                        "coordinates_status": "Estimated",
-                        "opening_hours_source": "Flexible departure window (Adjust to ticketed time)",
-                        "opening_hours_status": "Unverified",
+                        "place_source": "IATA Commercial Aviation Registry",
+                        "place_verification": f"Official Commercial Serving Gateway ({dep_ap.get('iata', 'Airport')})",
+                        "place_status": "Verified",
+                        "coordinates_source": "Official Aerodrome Geographic Registry",
+                        "coordinates_status": "Verified",
+                        "opening_hours_source": "24/7 Airport Corridor Transit",
+                        "opening_hours_status": "Verified",
                         "price_source": "Return Transit Allocation",
                         "price_status": "Verified",
-                        "rating_source": "Unrated (Transit preparation)",
+                        "rating_source": "Unrated (Transit)",
                         "rating_status": "Unrated",
                         "crowd_source": "Unavailable",
                         "crowd_status": "Unavailable",
-                        "route_source": "Estimated Return Corridor",
-                        "route_status": "Estimated Distance",
+                        "route_source": "Calculated Airport Highway Corridor",
+                        "route_status": "Verified Road Route",
+                        "dining_source": "N/A",
+                        "dining_status": "N/A",
+                        "overall_status": "Verified"
+                    },
+                    "metadata": {
+                        "base_city": dest,
+                        "overnight_stay": f"{dest} Central Accommodation"
+                    }
+                })
+
+                # 3B. Separate Airport Security, Baggage Drop & Departure Buffer Activity
+                b_st = t_et
+                b_dur = 180
+                b_end_m = t_end_m + b_dur
+                b_et = f"{b_end_m // 60:02d}:{b_end_m % 60:02d}"
+
+                acts.append({
+                    "id": f"act_mock_d{d}_03b",
+                    "start_time": b_st,
+                    "end_time": b_et,
+                    "duration_minutes": b_dur,
+                    "time_slot": "evening",
+                    "title": "Provisional Departure Buffer & Airport Check-in",
+                    "description": f"Mandatory 3-hour international flight departure buffer at {dep_ap_name}: airline ticket counter check-in, checked baggage drop, security screening, customs clearance, and gate boarding for homebound flight to {origin_city}. Note: Timings are provisional and adjust automatically to your confirmed flight schedule.",
+                    "activity_type": "departure_buffer",
+                    "place": {
+                        "name": dep_ap_name,
+                        "category": "Departure Buffer",
+                        "address": dep_ap_addr,
+                        "city": dest,
+                        "latitude": dep_ap_lat,
+                        "longitude": dep_ap_lon,
+                        "rating": None,
+                        "opening_time": "00:00",
+                        "closing_time": "23:59"
+                    },
+                    "cost": {"amount": 0.0, "currency": curr_code, "symbol": curr_symbol, "estimated": True},
+                    "ticket_price": 0.0,
+                    "formatted_cost": "Airport Departure Buffer",
+                    "transport_mode": "Self-paced",
+                    "transport_duration": "10 mins (Terminal Gate Navigation)",
+                    "distance": "0.5 km",
+                    "ai_reason": f"✓ Mandatory 3-hour international flight departure buffer at {dep_ap_name}\n✓ Provisional departure schedule — adjust based on confirmed flight ticket",
+                    "provenance": {
+                        "place_source": "Civil Aviation Departure Security Standard",
+                        "place_verification": f"Official Commercial Serving Gateway ({dep_ap.get('iata', 'Airport')})",
+                        "place_status": "Verified",
+                        "coordinates_source": "Official Aerodrome Geographic Registry",
+                        "coordinates_status": "Verified",
+                        "opening_hours_source": "24/7 International Flight Operations",
+                        "opening_hours_status": "Verified",
+                        "price_source": "Included in Travel Fees & Security Buffer",
+                        "price_status": "Verified",
+                        "rating_source": "Unrated (Airport Departure Buffer)",
+                        "rating_status": "Unrated",
+                        "crowd_source": "Unavailable",
+                        "crowd_status": "Unavailable",
+                        "route_source": "Terminal Concourse Navigation",
+                        "route_status": "Verified Road Route",
                         "dining_source": "N/A",
                         "dining_status": "N/A",
                         "overall_status": "Estimated"
                     },
                     "metadata": {
                         "base_city": dest,
-                        "overnight_stay": f"{dest} Central Accommodation",
-                        "provenance": {
-                            "place_source": "Flexible Return Transit Buffer",
-                            "place_verification": "Return Transit Corridor",
-                            "place_status": "Estimated",
-                            "coordinates_source": "Destination Departure Corridor",
-                            "coordinates_status": "Estimated",
-                            "opening_hours_source": "Flexible departure window (Adjust to ticketed time)",
-                            "opening_hours_status": "Unverified",
-                            "price_source": "Return Transit Allocation",
-                            "price_status": "Verified",
-                            "rating_source": "Unrated (Transit preparation)",
-                            "rating_status": "Unrated",
-                            "crowd_source": "Unavailable",
-                            "crowd_status": "Unavailable",
-                            "route_source": "Estimated Return Corridor",
-                            "route_status": "Estimated Distance",
-                            "dining_source": "N/A",
-                            "dining_status": "N/A",
-                            "overall_status": "Estimated"
-                        }
+                        "overnight_stay": f"{dest} Central Accommodation"
                     }
                 })
             else:
                 # Full Exploration Day
-                avail_p1 = [p for p in attraction_pois if p["name"].strip().lower() not in used_poi_names]
+                avail_p1 = [p for p in attraction_pois if p["name"].strip().lower() not in used_poi_names and is_open_on_day(p, d)]
+                # If trip has multiple days, reserve airport attractions (like Jewel) for departure day
+                if d < total_days:
+                    non_jewel1 = [p for p in avail_p1 if not any(k in p["name"].lower() for k in ["jewel", "airport"])]
+                    if non_jewel1:
+                        avail_p1 = non_jewel1
+
                 p1 = None
                 for cand in avail_p1:
                     if "grand palace" in cand["name"].strip().lower():
@@ -2701,6 +2958,9 @@ class MockProvider(BaseAIProvider):
                 if not p1 and avail_p1:
                     p1 = avail_p1[0]
 
+                t_mode_day = "Public Transit / MRT" if "singapore" in dest.lower() else ("Public Transit / Metro" if has_rail else ("Rental Car / Scenic Drive" if any(k in dest.lower() for k in ["iceland", "reykjavik", "queenstown"]) else "Private Shuttle / Taxi"))
+
+                dur1 = 90
                 if p1:
                     used_poi_names.add(p1["name"].strip().lower())
                     raw_t1 = p1.get("ticket_price")
@@ -2720,11 +2980,18 @@ class MockProvider(BaseAIProvider):
                         t_price1 = None
                         fmt_cost1 = "Price not verified"
 
+                    from app.services.poi_service import get_realistic_activity_duration
+                    dur1 = int(p1.get("duration_minutes") or get_realistic_activity_duration(p1["name"], p1.get("category"), p1.get("description")))
+                    end_m1 = 30 + dur1
+                    end_h1 = 9 + (end_m1 // 60)
+                    end_min1 = end_m1 % 60
+                    et_p1 = f"{end_h1:02d}:{end_min1:02d}"
+
                     acts.append({
                         "id": f"act_mock_d{d}_01",
                         "start_time": "09:30",
-                        "end_time": "12:00",
-                        "duration_minutes": 150,
+                        "end_time": et_p1,
+                        "duration_minutes": dur1,
                         "time_slot": "morning",
                         "title": p1["name"],
                         "description": p1.get("description", f"Visit {p1['name']}."),
@@ -2741,7 +3008,7 @@ class MockProvider(BaseAIProvider):
                         "cost": {"amount": t_price1 or 0.0, "currency": curr_code, "symbol": curr_symbol, "estimated": True},
                         "ticket_price": t_price1 or 0.0,
                         "formatted_cost": fmt_cost1,
-                        "transport_mode": "Public Transit / Metro",
+                        "transport_mode": t_mode_day,
                         "transport_duration": "15 mins",
                         "distance": "2.5 km",
                         "ai_reason": p1.get("ai_reason", f"✓ Highly rated attraction in {dest}"),
@@ -2751,19 +3018,103 @@ class MockProvider(BaseAIProvider):
                             "provenance": p1.get("provenance") or {"place_verification": "Verified Real Destination Attraction", "price_source": "Official Entry" if (raw_t1 and float(raw_t1) > 0) else "Free Access" if (p1.get("is_free_verified") or raw_t1 == 0) else "Unverified", "overall_status": "Verified" if p1.get("provenance") else "Estimated"}
                         }
                     })
+                else:
+                    dur1 = 90
+                    acts.append({
+                        "id": f"act_mock_d{d}_01",
+                        "start_time": "09:30",
+                        "end_time": "11:00",
+                        "duration_minutes": 90,
+                        "time_slot": "morning",
+                        "title": f"Self-Guided {dest} Heritage Quarter & Cultural Stroll",
+                        "description": f"Open exploration of the historic and cultural quarter in {dest}. Unhurried self-guided block allowing flexible discovery without forced duplicate attractions.",
+                        "activity_type": "area_suggestion",
+                        "is_area_suggestion": True,
+                        "place": {
+                            "name": f"{dest} Heritage Quarter",
+                            "category": "Area Suggestion",
+                            "address": f"{dest} Central District",
+                            "city": dest,
+                            "latitude": first_lat,
+                            "longitude": first_lon,
+                            "rating": None
+                        },
+                        "cost": {"amount": 0.0, "currency": curr_code, "symbol": curr_symbol, "estimated": True},
+                        "ticket_price": 0.0,
+                        "formatted_cost": "Free Public Access",
+                        "transport_mode": "Walking",
+                        "transport_duration": "10 mins",
+                        "distance": "0.5 km",
+                        "ai_reason": f"✓ Flexible self-guided exploration block in {dest} — prevents repeated venues",
+                        "provenance": {
+                            "place_source": "Area Exploration Directory",
+                            "place_verification": f"Area Exploration Block ({dest})",
+                            "place_status": "Unverified",
+                            "coordinates_source": "Destination Central Geocode",
+                            "coordinates_status": "Estimated",
+                            "opening_hours_source": "Flexible public access",
+                            "opening_hours_status": "Unverified",
+                            "price_source": "Free Public Access",
+                            "price_status": "Free Entry",
+                            "rating_source": "Unrated (Open exploration block)",
+                            "rating_status": "Unrated",
+                            "overall_status": "Unavailable",
+                        },
+                        "metadata": {
+                            "base_city": dest,
+                            "overnight_stay": f"{dest} Central Hotel",
+                            "is_area_suggestion": True
+                        }
+                    })
 
-                # Lunch
+                # Lunch (starts after p1 + buffer or 12:30)
                 lunch_ref = p1 or {"latitude": first_lat, "longitude": first_lon}
-                lunch_act = create_dining_activity(d, f"act_mock_d{d}_02", "lunch", "12:30", "14:00", 90, lunch_ref, is_vegetarian)
+                p1_end_total_m = 9 * 60 + 30 + dur1
+                lunch_start_m = max(12 * 60 + 30, p1_end_total_m + 15)
+                lunch_st = f"{lunch_start_m // 60:02d}:{lunch_start_m % 60:02d}"
+                lunch_dur = 75
+                lunch_end_m = lunch_start_m + lunch_dur
+                lunch_et = f"{lunch_end_m // 60:02d}:{lunch_end_m % 60:02d}"
+
+                lunch_act = create_dining_activity(d, f"act_mock_d{d}_02", "lunch", lunch_st, lunch_et, lunch_dur, lunch_ref, is_vegetarian)
                 if lunch_act:
                     acts.append(lunch_act)
 
-                # Afternoon Attraction
+                # Afternoon Attraction with Geographic Proximity Clustering
                 avail_p2 = [
                     p for p in attraction_pois
-                    if p["name"].strip().lower() not in used_poi_names and "grand palace" not in p["name"].strip().lower()
+                    if p["name"].strip().lower() not in used_poi_names and "grand palace" not in p["name"].strip().lower() and is_open_on_day(p, d)
                 ]
+                if d < total_days:
+                    non_jewel2 = [p for p in avail_p2 if not any(k in p["name"].lower() for k in ["jewel", "airport"])]
+                    if non_jewel2:
+                        avail_p2 = non_jewel2
+
+                if p1 and p1.get("latitude") and p1.get("longitude") and avail_p2:
+                    from app.services.route_optimizer import haversine_distance_km
+                    p1_lat = float(p1["latitude"])
+                    p1_lon = float(p1["longitude"])
+                    def _dist_from_p1(cand):
+                        c_lat = cand.get("latitude")
+                        c_lon = cand.get("longitude")
+                        if c_lat is not None and c_lon is not None:
+                            return haversine_distance_km(p1_lat, p1_lon, float(c_lat), float(c_lon))
+                        return 999.0
+                    avail_p2.sort(key=_dist_from_p1)
+
                 p2 = avail_p2[0] if avail_p2 else None
+                is_p2_sunset = bool(p2 and ("sunset" in p2["name"].lower() or "sunset" in p2.get("description", "").lower()))
+                from app.services.poi_service import get_realistic_activity_duration
+                dur_p2 = int(p2.get("duration_minutes") or (60 if is_p2_sunset else get_realistic_activity_duration(p2["name"], p2.get("category"), p2.get("description")))) if p2 else 75
+
+                p2_start_m = max(14 * 60 + 45, lunch_end_m + 15)
+                if is_p2_sunset:
+                    p2_start_m = max(17 * 60 + 45, p2_start_m)
+                st_p2 = f"{p2_start_m // 60:02d}:{p2_start_m % 60:02d}"
+                end_m2 = p2_start_m + dur_p2
+                et_p2 = f"{end_m2 // 60:02d}:{end_m2 % 60:02d}"
+                slot_p2 = "sunset" if is_p2_sunset else "afternoon"
+
                 if p2:
                     used_poi_names.add(p2["name"].strip().lower())
                     raw_t2 = p2.get("ticket_price")
@@ -2785,10 +3136,10 @@ class MockProvider(BaseAIProvider):
 
                     acts.append({
                         "id": f"act_mock_d{d}_03",
-                        "start_time": "14:45",
-                        "end_time": "17:15",
-                        "duration_minutes": 150,
-                        "time_slot": "afternoon",
+                        "start_time": st_p2,
+                        "end_time": et_p2,
+                        "duration_minutes": dur_p2,
+                        "time_slot": slot_p2,
                         "title": p2["name"],
                         "description": p2.get("description", f"Visit {p2['name']}."),
                         "activity_type": "attraction",
@@ -2804,7 +3155,7 @@ class MockProvider(BaseAIProvider):
                         "cost": {"amount": t_price2 or 0.0, "currency": curr_code, "symbol": curr_symbol, "estimated": True},
                         "ticket_price": t_price2 or 0.0,
                         "formatted_cost": fmt_cost2,
-                        "transport_mode": "Public Transit / Metro",
+                        "transport_mode": t_mode_day,
                         "transport_duration": "20 mins",
                         "distance": "3.5 km",
                         "ai_reason": p2.get("ai_reason", f"✓ Renowned cultural highlight in {dest}"),
@@ -2814,15 +3165,70 @@ class MockProvider(BaseAIProvider):
                             "provenance": p2.get("provenance") or {"place_verification": "Verified Real Destination Attraction", "price_source": "Official Entry" if (raw_t2 and float(raw_t2) > 0) else "Free Access" if (p2.get("is_free_verified") or raw_t2 == 0) else "Unverified", "overall_status": "Verified" if p2.get("provenance") else "Estimated"}
                         }
                     })
+                else:
+                    acts.append({
+                        "id": f"act_mock_d{d}_03",
+                        "start_time": st_p2,
+                        "end_time": et_p2,
+                        "duration_minutes": dur_p2,
+                        "time_slot": "afternoon",
+                        "title": f"Local Artisan Quarter & Scenic Promenade Walk",
+                        "description": f"Relaxed afternoon self-guided stroll through local handicraft markets, artisan studios, and viewpoints in {dest}.",
+                        "activity_type": "area_suggestion",
+                        "is_area_suggestion": True,
+                        "place": {
+                            "name": f"{dest} Artisan District",
+                            "category": "Area Suggestion",
+                            "address": f"{dest} Artisan District",
+                            "city": dest,
+                            "latitude": first_lat,
+                            "longitude": first_lon,
+                            "rating": None
+                        },
+                        "cost": {"amount": 0.0, "currency": curr_code, "symbol": curr_symbol, "estimated": True},
+                        "ticket_price": 0.0,
+                        "formatted_cost": "Free Public Access",
+                        "transport_mode": "Walking",
+                        "transport_duration": "10 mins",
+                        "distance": "0.6 km",
+                        "ai_reason": f"✓ Relaxed afternoon self-guided exploration block in {dest}",
+                        "provenance": {
+                            "place_source": "Area Exploration Directory",
+                            "place_verification": f"Area Exploration Block ({dest})",
+                            "place_status": "Unverified",
+                            "coordinates_source": "Destination Central Geocode",
+                            "coordinates_status": "Estimated",
+                            "opening_hours_source": "Flexible public access",
+                            "opening_hours_status": "Unverified",
+                            "price_source": "Free Public Access",
+                            "price_status": "Free Entry",
+                            "rating_source": "Unrated (Open exploration block)",
+                            "rating_status": "Unrated",
+                            "overall_status": "Unavailable",
+                        },
+                        "metadata": {
+                            "base_city": dest,
+                            "overnight_stay": f"{dest} Central Hotel",
+                            "is_area_suggestion": True
+                        }
+                    })
 
-                # Sunset / Evening Dining
+                # Sunset / Evening Dining (starts comfortably after p2)
                 dinner_ref = p2 or p1 or {"latitude": first_lat, "longitude": first_lon}
-                dinner_act = create_dining_activity(d, f"act_mock_d{d}_04", "dinner", "18:00", "20:00", 120, dinner_ref, is_vegetarian)
+                dinner_start_m = max(18 * 60, end_m2 + 30)
+                if is_p2_sunset:
+                    dinner_start_m = max(19 * 60 + 45, end_m2 + 15)
+                dinner_st = f"{dinner_start_m // 60:02d}:{dinner_start_m % 60:02d}"
+                dinner_dur = 90 if is_p2_sunset else 120
+                dinner_end_m = dinner_start_m + dinner_dur
+                dinner_et = f"{dinner_end_m // 60:02d}:{dinner_end_m % 60:02d}"
+
+                dinner_act = create_dining_activity(d, f"act_mock_d{d}_04", "dinner", dinner_st, dinner_et, dinner_dur, dinner_ref, is_vegetarian)
                 if dinner_act:
                     acts.append(dinner_act)
 
-                p1_title = p1["name"] if p1 else "Attractions"
-                p2_title = f" and {p2['name']}" if p2 else ""
+                p1_title = p1["name"] if p1 else "Historic Quarter"
+                p2_title = f" and {p2['name']}" if p2 else " and Artisan Districts"
                 theme_note = f"Full day exploration in {dest}: Discover {p1_title}{p2_title}."
 
             days_list.append({
@@ -2834,6 +3240,7 @@ class MockProvider(BaseAIProvider):
                 "activities": acts
             })
 
+        _enrich_activities_provenance(days_list)
         return json.dumps({
             "trip": {
                 "destination": dest,

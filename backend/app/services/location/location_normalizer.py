@@ -413,6 +413,30 @@ GLOBAL_DESTINATION_GAZETTEER: Dict[str, Dict[str, Any]] = {
         "is_long_haul": False,
         "is_regional_international": True,
     },
+    "bali": {
+        "name": "Bali",
+        "country": "Indonesia",
+        "country_code": "ID",
+        "currency": "IDR",
+        "currency_symbol": "Rp",
+        "latitude": -8.4095,
+        "longitude": 115.1889,
+        "region": "Southeast Asia",
+        "is_long_haul": False,
+        "is_regional_international": True,
+    },
+    "indonesia": {
+        "name": "Jakarta",
+        "country": "Indonesia",
+        "country_code": "ID",
+        "currency": "IDR",
+        "currency_symbol": "Rp",
+        "latitude": -6.2088,
+        "longitude": 106.8456,
+        "region": "Southeast Asia",
+        "is_long_haul": False,
+        "is_regional_international": True,
+    },
     "kuala lumpur": {
         "name": "Kuala Lumpur",
         "country": "Malaysia",
@@ -665,6 +689,254 @@ GLOBAL_DESTINATION_GAZETTEER: Dict[str, Dict[str, Any]] = {
         "is_long_haul": True,
         "is_regional_international": False,
     },
+    "nice": {
+        "name": "Nice",
+        "country": "France",
+        "country_code": "FR",
+        "currency": "EUR",
+        "currency_symbol": "€",
+        "latitude": 43.7102,
+        "longitude": 7.2620,
+        "region": "Western Europe",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+    "lyon": {
+        "name": "Lyon",
+        "country": "France",
+        "country_code": "FR",
+        "currency": "EUR",
+        "currency_symbol": "€",
+        "latitude": 45.7640,
+        "longitude": 4.8357,
+        "region": "Western Europe",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+    "osaka": {
+        "name": "Osaka",
+        "country": "Japan",
+        "country_code": "JP",
+        "currency": "JPY",
+        "currency_symbol": "¥",
+        "latitude": 34.6937,
+        "longitude": 135.5023,
+        "region": "East Asia",
+        "is_long_haul": False,
+        "is_regional_international": True,
+    },
+    "edinburgh": {
+        "name": "Edinburgh",
+        "country": "United Kingdom",
+        "country_code": "GB",
+        "currency": "GBP",
+        "currency_symbol": "£",
+        "latitude": 55.9533,
+        "longitude": -3.1883,
+        "region": "Western Europe",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+    "manchester": {
+        "name": "Manchester",
+        "country": "United Kingdom",
+        "country_code": "GB",
+        "currency": "GBP",
+        "currency_symbol": "£",
+        "latitude": 53.4808,
+        "longitude": -2.2426,
+        "region": "Western Europe",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+    "chicago": {
+        "name": "Chicago",
+        "country": "United States",
+        "country_code": "US",
+        "currency": "USD",
+        "currency_symbol": "$",
+        "latitude": 41.8781,
+        "longitude": -87.6298,
+        "region": "North America",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+    "los angeles": {
+        "name": "Los Angeles",
+        "country": "United States",
+        "country_code": "US",
+        "currency": "USD",
+        "currency_symbol": "$",
+        "latitude": 34.0522,
+        "longitude": -118.2437,
+        "region": "North America",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+    "tromso": {
+        "name": "Tromsø",
+        "country": "Norway",
+        "country_code": "NO",
+        "currency": "NOK",
+        "currency_symbol": "kr",
+        "latitude": 69.6492,
+        "longitude": 18.9553,
+        "region": "Northern Europe / Arctic",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+    "tromsø": {
+        "name": "Tromsø",
+        "country": "Norway",
+        "country_code": "NO",
+        "currency": "NOK",
+        "currency_symbol": "kr",
+        "latitude": 69.6492,
+        "longitude": 18.9553,
+        "region": "Northern Europe / Arctic",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+    "cusco": {
+        "name": "Cusco",
+        "country": "Peru",
+        "country_code": "PE",
+        "currency": "PEN",
+        "currency_symbol": "S/",
+        "latitude": -13.5320,
+        "longitude": -71.9675,
+        "region": "South America / Andes",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+    "cuzco": {
+        "name": "Cusco",
+        "country": "Peru",
+        "country_code": "PE",
+        "currency": "PEN",
+        "currency_symbol": "S/",
+        "latitude": -13.5320,
+        "longitude": -71.9675,
+        "region": "South America / Andes",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+    "queenstown": {
+        "name": "Queenstown",
+        "country": "New Zealand",
+        "country_code": "NZ",
+        "currency": "NZD",
+        "currency_symbol": "NZ$",
+        "latitude": -45.0312,
+        "longitude": 168.6626,
+        "region": "Oceania",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+    "barcelona": {
+        "name": "Barcelona",
+        "country": "Spain",
+        "country_code": "ES",
+        "currency": "EUR",
+        "currency_symbol": "€",
+        "latitude": 41.3879,
+        "longitude": 2.1699,
+        "region": "Southern Europe",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+    "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Netherlands",
+        "country_code": "NL",
+        "currency": "EUR",
+        "currency_symbol": "€",
+        "latitude": 52.3676,
+        "longitude": 4.9041,
+        "region": "Western Europe",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+    "sydney": {
+        "name": "Sydney",
+        "country": "Australia",
+        "country_code": "AU",
+        "currency": "AUD",
+        "currency_symbol": "A$",
+        "latitude": -33.8688,
+        "longitude": 151.2093,
+        "region": "Oceania",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+    "new york": {
+        "name": "New York",
+        "country": "United States",
+        "country_code": "US",
+        "currency": "USD",
+        "currency_symbol": "$",
+        "latitude": 40.7128,
+        "longitude": -74.0060,
+        "region": "North America",
+        "is_long_haul": True,
+        "is_regional_international": False,
+    },
+}
+
+COUNTRY_CODE_TO_TIMEZONE: Dict[str, str] = {
+    "JP": "Asia/Tokyo",
+    "TR": "Europe/Istanbul",
+    "ID": "Asia/Makassar",
+    "IS": "Atlantic/Reykjavik",
+    "FR": "Europe/Paris",
+    "SG": "Asia/Singapore",
+    "IN": "Asia/Kolkata",
+    "GB": "Europe/London",
+    "US": "America/New_York",
+    "CA": "America/Toronto",
+    "AU": "Australia/Sydney",
+    "NZ": "Pacific/Auckland",
+    "NO": "Europe/Oslo",
+    "SE": "Europe/Stockholm",
+    "DK": "Europe/Copenhagen",
+    "FI": "Europe/Helsinki",
+    "DE": "Europe/Berlin",
+    "IT": "Europe/Rome",
+    "ES": "Europe/Madrid",
+    "CH": "Europe/Zurich",
+    "AT": "Europe/Vienna",
+    "NL": "Europe/Amsterdam",
+    "BE": "Europe/Brussels",
+    "GR": "Europe/Athens",
+    "PT": "Europe/Lisbon",
+    "IE": "Europe/Dublin",
+    "CZ": "Europe/Prague",
+    "PL": "Europe/Warsaw",
+    "HU": "Europe/Budapest",
+    "PE": "America/Lima",
+    "BO": "America/La_Paz",
+    "BR": "America/Sao_Paulo",
+    "AR": "America/Argentina/Buenos_Aires",
+    "CL": "America/Santiago",
+    "MX": "America/Mexico_City",
+    "EG": "Africa/Cairo",
+    "ZA": "Africa/Johannesburg",
+    "KE": "Africa/Nairobi",
+    "AE": "Asia/Dubai",
+    "SA": "Asia/Riyadh",
+    "QA": "Asia/Qatar",
+    "TH": "Asia/Bangkok",
+    "MY": "Asia/Kuala_Lumpur",
+    "VN": "Asia/Ho_Chi_Minh",
+    "PH": "Asia/Manila",
+    "KR": "Asia/Seoul",
+    "CN": "Asia/Shanghai",
+    "HK": "Asia/Hong_Kong",
+    "TW": "Asia/Taipei",
+    "NP": "Asia/Kathmandu",
+    "LK": "Asia/Colombo",
+    "BT": "Asia/Thimphu",
+    "GE": "Asia/Tbilisi",
 }
 
 DESTINATION_PRICE_INDEX: Dict[str, float] = {
@@ -699,6 +971,7 @@ DESTINATION_PRICE_INDEX: Dict[str, float] = {
     "ZA": 0.80,  # South Africa
     "BR": 0.85,  # Brazil
     "CL": 0.95,  # Chile
+    "PE": 0.65,  # Peru
     "GE": 0.55,  # Georgia
     "BO": 0.50,  # Bolivia
     "VN": 0.48,  # Vietnam
@@ -726,7 +999,7 @@ INDIAN_CITIES = {
 def resolve_destination_info(destination: str, origin: Optional[str] = None) -> Dict[str, Any]:
     """
     Truth-first destination resolver determining country, ISO code, authentic currency,
-    GPS anchor, and truthful route corridor classification without city-specific hacks.
+    GPS anchor, timezone, and truthful route corridor classification without city-specific hacks.
     """
     dest_raw = (destination or "").strip()
     dest_low = dest_raw.lower()
@@ -771,48 +1044,112 @@ def resolve_destination_info(destination: str, origin: Optional[str] = None) -> 
         is_long_haul = gaz_match.get("is_long_haul", False)
         is_regional_international = gaz_match.get("is_regional_international", False)
     else:
-        # Fallback to country mapping or default
+        # Fallback to geocoding or country mapping
+        lat = None
+        lon = None
+        try:
+            from app.services.maps.nominatim_service import geocode_place
+            geo = geocode_place(dest_raw)
+            if geo and geo.get("lat") and geo.get("country_code") != "UNKNOWN":
+                lat = geo.get("lat")
+                lon = geo.get("lon")
+                if not country_code:
+                    country_code = geo.get("country_code")
+                if not country_name and geo.get("display_name"):
+                    country_name = geo["display_name"].split(",")[-1].strip()
+        except Exception:
+            pass
+
         if country_code and country_code in COUNTRY_CODE_TO_CURRENCY:
             currency = COUNTRY_CODE_TO_CURRENCY[country_code]
         else:
             currency = "USD"
         currency_symbol = CURRENCY_SYMBOLS.get(currency, "$")
-        lat = None
-        lon = None
         is_transcontinental = (
             country_code in EUROPEAN_COUNTRY_CODES
             or country_code in ["US", "CA", "MX", "BR", "AR", "CL", "PE", "BO", "AU", "NZ", "ZA", "KE"]
-            or any(term in dest_low for term in ["switzerland", "zurich", "lucerne", "interlaken", "geneva", "europe", "south america", "bolivia", "peru", "chile", "brazil", "argentina", "iceland", "hawaii", "usa", "canada", "australia"])
+            or any(term in dest_low for term in ["switzerland", "zurich", "lucerne", "interlaken", "geneva", "europe", "south america", "bolivia", "peru", "chile", "brazil", "argentina", "iceland", "hawaii", "usa", "canada", "australia", "norway", "tromso", "cusco"])
         )
         is_long_haul = is_transcontinental
         is_regional_international = not is_long_haul and country_code != "IN"
 
-    # Evaluate domestic India route truth
-    is_india_dest = (country_code == "IN") or any(ic in dest_low for ic in INDIAN_CITIES)
-    is_india_origin = any(ic in orig_low for ic in INDIAN_CITIES) or "india" in orig_low
-    is_india_domestic = is_india_dest and is_india_origin
+    # Resolve Origin Country Code & Coordinates
+    orig_gaz_match = None
+    for k, v in GLOBAL_DESTINATION_GAZETTEER.items():
+        if k in orig_low or orig_low in k:
+            orig_gaz_match = v
+            break
 
-    # If it is domestic India, currency is INR
-    if is_india_domestic:
-        currency = "INR"
-        currency_symbol = "₹"
+    orig_country_code = None
+    if orig_gaz_match:
+        orig_country_code = orig_gaz_match.get("country_code")
+    elif any(ic in orig_low for ic in INDIAN_CITIES) or "india" in orig_low:
+        orig_country_code = "IN"
+    else:
+        for cname, ccode in COUNTRY_NAME_TO_CODE.items():
+            if cname in orig_low:
+                orig_country_code = ccode
+                break
+
+    orig_lat = orig_gaz_match.get("latitude") if orig_gaz_match else (11.0168 if "coimbatore" in orig_low else (28.6139 if "delhi" in orig_low else (19.0760 if "mumbai" in orig_low else (13.0827 if "chennai" in orig_low else 11.0168))))
+    orig_lon = orig_gaz_match.get("longitude") if orig_gaz_match else (76.9558 if "coimbatore" in orig_low else (77.2090 if "delhi" in orig_low else (72.8777 if "mumbai" in orig_low else (80.2707 if "chennai" in orig_low else 76.9558))))
+
+    flight_dist_km = None
+    if lat is not None and lon is not None and orig_lat is not None and orig_lon is not None:
+        flight_dist_km = round(_haversine_km(orig_lat, orig_lon, lat, lon), 1)
+
+    # Evaluate domestic route truth
+    is_india_dest = (country_code == "IN") or any(ic in dest_low for ic in INDIAN_CITIES)
+    is_india_origin = (orig_country_code == "IN") or any(ic in orig_low for ic in INDIAN_CITIES) or "india" in orig_low
+    is_india_domestic = is_india_dest and is_india_origin
+    is_domestic = is_india_domestic or bool(country_code and orig_country_code and country_code == orig_country_code)
+    is_international = not is_domestic
+
+    # If domestic, override corridor to domestic
+    if is_domestic:
+        is_long_haul = False
+        is_regional_international = False
         flight_provenance = "Domestic Intercity Transit & Air Corridor Index"
+        if is_india_domestic:
+            currency = "INR"
+            currency_symbol = "₹"
     elif is_long_haul:
-        flight_provenance = f"Transcontinental Long-Haul Route Index ({orig_raw} <-> {dest_raw})"
+        dist_lbl = f", ~{int(round(flight_dist_km))} km" if flight_dist_km else ""
+        flight_provenance = f"Transcontinental Long-Haul Route Index ({orig_raw} <-> {dest_raw}{dist_lbl})"
     elif is_regional_international or country_code != "IN":
         c_label = country_name or dest_raw.title()
-        flight_provenance = f"International Air Route Index ({orig_raw} <-> {c_label})"
+        dist_lbl = f", ~{int(round(flight_dist_km))} km" if flight_dist_km else ""
+        flight_provenance = f"International Air Route Index ({orig_raw} <-> {c_label}{dist_lbl})"
     else:
         flight_provenance = f"IATA Route Benchmark Average ({orig_raw} <-> {dest_raw})"
+
+    # Dynamic Timezone & UTC Offset Resolution
+    timezone_str = COUNTRY_CODE_TO_TIMEZONE.get(country_code, "UTC")
+    if lon is not None:
+        try:
+            offset_hours = int(round(float(lon) / 15.0))
+            utc_offset = f"UTC{'+' if offset_hours >= 0 else ''}{offset_hours}:00"
+        except Exception:
+            utc_offset = "UTC+00:00"
+    else:
+        utc_offset = "UTC+00:00"
 
     return {
         "destination_clean": gaz_match["name"] if gaz_match else dest_raw,
         "country": country_name or ("India" if is_india_dest else "International"),
         "country_code": country_code or ("IN" if is_india_dest else "INTL"),
+        "origin_country_code": orig_country_code or "IN",
         "currency": currency,
         "currency_symbol": currency_symbol,
         "latitude": lat,
         "longitude": lon,
+        "origin_latitude": orig_lat,
+        "origin_longitude": orig_lon,
+        "flight_distance_km": flight_dist_km,
+        "timezone": timezone_str,
+        "utc_offset": utc_offset,
+        "is_domestic": is_domestic,
+        "is_international": is_international,
         "is_india_dest": is_india_dest,
         "is_india_origin": is_india_origin,
         "is_india_domestic": is_india_domestic,

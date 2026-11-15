@@ -167,8 +167,9 @@ class BudgetAllocationService:
         nights = max(1, trip_days - 1)
 
         # Baseline budget amounts based on selected tier strategy percentages
+        is_budget_unrestricted = bool(total_budget is None or float(total_budget) <= 0)
         pcts = strategy["percentages"]
-        raw_budget = float(total_budget) if total_budget and total_budget > 0 else 1000.0
+        raw_budget = float(total_budget) if not is_budget_unrestricted else 1000.0
 
         # Calculate exact monetary amounts from user budget
         outbound_amt = round(raw_budget * (pcts["outbound_transport"] / 100.0), 2)
@@ -197,9 +198,6 @@ class BudgetAllocationService:
             or kwargs.get("room_occupancy") == "family"
         )
         if adults == 1 and children == 0:
-            num_rooms = 1
-        elif adults <= 2 and children <= 1:
-            # 1 family room (accommodating 2 adults + 1 child with rollaway/extra bed)
             num_rooms = 1
         elif (is_family_mode or str(travel_style).lower() == "family") and adults <= 2 and children <= 2:
             num_rooms = 1
@@ -247,10 +245,31 @@ class BudgetAllocationService:
             trans_source = f"IATA Regional International Air Corridor Index ({origin_city} <-> {destination})"
             trans_type = "Regional Flight Benchmark"
         else:
-            # Long-haul / Transcontinental (e.g. India <-> Switzerland / Europe / Americas / Africa / Oceania / Japan)
-            adult_rt_usd = 680.0 if tier_key == "budget" else 850.0 if tier_key == "mid_range" else 1700.0 if tier_key == "luxury" else 3200.0
+            # Long-haul / Transcontinental (calibrated by route distance & destination market index)
+            flight_dist_km = dest_info.get("flight_distance_km")
+            if not flight_dist_km:
+                o_lat = dest_info.get("origin_latitude")
+                o_lon = dest_info.get("origin_longitude")
+                d_lat = dest_info.get("latitude")
+                d_lon = dest_info.get("longitude")
+                if o_lat is not None and d_lat is not None:
+                    from app.services.location.location_normalizer import _haversine_km
+                    flight_dist_km = _haversine_km(o_lat, o_lon, d_lat, d_lon)
+                else:
+                    flight_dist_km = 7500.0
+
+            # Distance-tiered baseline
+            if flight_dist_km > 10000:
+                base_long = 950.0 if tier_key == "budget" else 1250.0 if tier_key == "mid_range" else 2400.0 if tier_key == "luxury" else 4200.0
+            elif flight_dist_km > 7500:
+                base_long = 780.0 if tier_key == "budget" else 980.0 if tier_key == "mid_range" else 1900.0 if tier_key == "luxury" else 3500.0
+            else:
+                base_long = 620.0 if tier_key == "budget" else 780.0 if tier_key == "mid_range" else 1600.0 if tier_key == "luxury" else 3000.0
+
+            market_factor = min(1.35, max(0.9, (cost_multiplier + 1.0) / 2.0))
+            adult_rt_usd = round(base_long * market_factor, 2)
             child_rt_usd = round(adult_rt_usd * 0.75, 2)
-            trans_source = f"IATA Transcontinental Long-Haul Route Benchmark ({origin_city} <-> {destination})"
+            trans_source = f"IATA Distance-Calibrated Route Benchmark ({origin_city} <-> {destination}, ~{int(round(flight_dist_km))} km)"
             trans_type = "International Flight Benchmark"
 
         # Outbound and Return directional split (exactly 50% each)
@@ -368,8 +387,10 @@ class BudgetAllocationService:
         max_cost = round(total_estimated_trip_cost * 1.07, 2)
         is_feasible = raw_budget >= min_cost
         shortfall = max(0.0, round(total_estimated_trip_cost - raw_budget, 2)) if not is_feasible else 0.0
-        remaining_budget = max(0.0, round(raw_budget - total_estimated_trip_cost, 2)) if is_feasible else 0.0
-        surplus_buffer_pct = round((remaining_budget / raw_budget) * 100.0, 1) if raw_budget > 0 else 0.0
+        remaining_budget = round(raw_budget - total_estimated_trip_cost, 2)
+        unallocated_balance = round(raw_budget - total_estimated_trip_cost, 2)
+        surplus_buffer = max(0.0, remaining_budget)
+        surplus_buffer_pct = round((surplus_buffer / raw_budget) * 100.0, 1) if raw_budget > 0 else 0.0
 
         feasibility_status = "Budget Feasible" if is_feasible else "Over Budget"
         feasibility_color = "emerald" if is_feasible else "rose"
@@ -602,46 +623,90 @@ class BudgetAllocationService:
         daily_cost = round(total_estimated_trip_cost / trip_days, 2)
         min_cost = round(total_estimated_trip_cost * 0.94, 2)
         max_cost = round(total_estimated_trip_cost * 1.07, 2)
-        is_feasible = raw_budget >= min_cost
-        shortfall = max(0.0, round(total_estimated_trip_cost - raw_budget, 2)) if not is_feasible else 0.0
-        shortfall_pct = round((shortfall / raw_budget) * 100.0, 1) if (not is_feasible and raw_budget > 0) else 0.0
-
-        # Balanced Category Allocation: Eliminate artificial category ceiling shortfalls when total budget is sufficient
-        if is_feasible and raw_budget >= total_estimated_trip_cost:
-            surplus = round(raw_budget - total_estimated_trip_cost, 2)
+        if is_budget_unrestricted:
+            raw_budget = total_estimated_trip_cost
+            is_feasible = True
+            shortfall = 0.0
+            shortfall_pct = 0.0
             for c in categories:
-                ratio = c["estimated_cost"] / max(1.0, total_estimated_trip_cost)
-                add_share = round(surplus * ratio, 2)
-                c["allocated_amount"] = round(c["estimated_cost"] + add_share, 2)
-                c["amount"] = c["allocated_amount"]
-                c["percentage"] = round((c["allocated_amount"] / max(1.0, raw_budget)) * 100.0, 1)
+                c["allocated_amount"] = c["estimated_cost"]
+                c["amount"] = c["estimated_cost"]
+                c["percentage"] = round((c["estimated_cost"] / max(1.0, total_estimated_trip_cost)) * 100.0, 1)
                 c["formatted"] = format_currency(c["allocated_amount"], curr)
                 c["formatted_allocated"] = format_currency(c["allocated_amount"], curr)
-
-            diff_alloc = round(raw_budget - sum(c["allocated_amount"] for c in categories), 2)
-            if abs(diff_alloc) > 0 and len(categories) > 0:
-                categories[-1]["allocated_amount"] = round(categories[-1]["allocated_amount"] + diff_alloc, 2)
-                categories[-1]["amount"] = categories[-1]["allocated_amount"]
-                categories[-1]["formatted"] = format_currency(categories[-1]["allocated_amount"], curr)
-                categories[-1]["formatted_allocated"] = format_currency(categories[-1]["allocated_amount"], curr)
-
             shortfall_categories = []
         else:
-            shortfall_categories = []
-            for c in categories:
-                diff = round(c["estimated_cost"] - c["allocated_amount"], 2)
-                if diff > 0:
-                    shortfall_categories.append({
-                        "key": c["key"],
-                        "label": c["label"],
-                        "allocated": c["allocated_amount"],
-                        "formatted_allocated": c["formatted_allocated"],
-                        "estimated": c["estimated_cost"],
-                        "formatted_estimated": c["formatted_estimated"],
-                        "shortfall": diff,
-                        "formatted_shortfall": format_currency(diff, curr),
-                        "explanation": f"Estimated {c['label'].lower()} ({c['formatted_estimated']}) exceeds allocated budget ({c['formatted_allocated']}) by {format_currency(diff, curr)}."
-                    })
+            is_feasible = raw_budget >= min_cost
+            shortfall = max(0.0, round(total_estimated_trip_cost - raw_budget, 2)) if not is_feasible else 0.0
+            shortfall_pct = round((shortfall / raw_budget) * 100.0, 1) if (not is_feasible and raw_budget > 0) else 0.0
+
+            # Balanced Category Allocation: Eliminate artificial category ceiling shortfalls when total budget is sufficient
+            if is_feasible and raw_budget >= total_estimated_trip_cost:
+                surplus = round(raw_budget - total_estimated_trip_cost, 2)
+                # Experience categories receive discretionary surplus; emergency contingency & fixed fees remain protected and uninflated
+                surplus_eligible = [c for c in categories if c["key"] not in ["contingency", "other_fees"]]
+                sum_eligible = sum(c["estimated_cost"] for c in surplus_eligible) or 1.0
+
+                for c in categories:
+                    if c["key"] in ["contingency", "other_fees"]:
+                        c["allocated_amount"] = c["estimated_cost"]
+                    else:
+                        ratio = c["estimated_cost"] / sum_eligible
+                        add_share = round(surplus * ratio, 2)
+                        c["allocated_amount"] = round(c["estimated_cost"] + add_share, 2)
+
+                    c["amount"] = c["allocated_amount"]
+                    c["percentage"] = round((c["allocated_amount"] / max(1.0, raw_budget)) * 100.0, 1)
+                    c["formatted"] = format_currency(c["allocated_amount"], curr)
+                    c["formatted_allocated"] = format_currency(c["allocated_amount"], curr)
+
+                # Reconcile any rounding cents to the largest experience category (e.g. accommodation or outbound flight)
+                diff_alloc = round(raw_budget - sum(c["allocated_amount"] for c in categories), 2)
+                if abs(diff_alloc) > 0 and surplus_eligible:
+                    target_c = max(surplus_eligible, key=lambda x: x["allocated_amount"])
+                    target_c["allocated_amount"] = round(target_c["allocated_amount"] + diff_alloc, 2)
+                    target_c["amount"] = target_c["allocated_amount"]
+                    target_c["formatted"] = format_currency(target_c["allocated_amount"], curr)
+                    target_c["formatted_allocated"] = format_currency(target_c["allocated_amount"], curr)
+
+                shortfall_categories = []
+            else:
+                shortfall_categories = []
+                for c in categories:
+                    diff = round(c["estimated_cost"] - c["allocated_amount"], 2)
+                    if diff > 0:
+                        shortfall_categories.append({
+                            "key": c["key"],
+                            "label": c["label"],
+                            "allocated": c["allocated_amount"],
+                            "formatted_allocated": c["formatted_allocated"],
+                            "estimated": c["estimated_cost"],
+                            "formatted_estimated": c["formatted_estimated"],
+                            "shortfall": diff,
+                            "formatted_shortfall": format_currency(diff, curr),
+                            "explanation": f"Estimated {c['label'].lower()} ({c['formatted_estimated']}) exceeds allocated budget ({c['formatted_allocated']}) by {format_currency(diff, curr)}."
+                        })
+
+        # Strict exact budget reconciliation across ALL categories:
+        # Guarantee 1: Every category allocated_amount sums to raw_budget to the exact cent
+        allocated_sum = round(sum(c["allocated_amount"] for c in categories), 2)
+        diff_alloc = round(raw_budget - allocated_sum, 2)
+        if abs(diff_alloc) > 0 and categories:
+            surplus_eligible = [c for c in categories if c["key"] not in ["contingency", "other_fees"]]
+            reconcile_target = max(surplus_eligible or categories, key=lambda x: x["allocated_amount"])
+            reconcile_target["allocated_amount"] = round(reconcile_target["allocated_amount"] + diff_alloc, 2)
+            reconcile_target["amount"] = reconcile_target["allocated_amount"]
+            reconcile_target["formatted"] = format_currency(reconcile_target["allocated_amount"], curr)
+            reconcile_target["formatted_allocated"] = format_currency(reconcile_target["allocated_amount"], curr)
+
+        # Guarantee 2: Every category percentage reflects exact allocated share, strictly summing to 100.0%
+        for c in categories:
+            c["percentage"] = round((c["allocated_amount"] / max(1.0, raw_budget)) * 100.0, 1)
+
+        diff_pct = round(100.0 - sum(c["percentage"] for c in categories), 1)
+        if abs(diff_pct) > 0 and len(categories) > 0:
+            highest_c = max(categories, key=lambda x: x["percentage"])
+            highest_c["percentage"] = round(highest_c["percentage"] + diff_pct, 1)
 
         if "turkey" in dest_clean_l or "istanbul" in dest_clean_l:
             visa_curr = round(60.0 * travellers * rate, 2)
@@ -703,10 +768,19 @@ class BudgetAllocationService:
         }
 
         category_reconciliation = {
+            "total_user_budget": raw_budget,
             "allocated_total": raw_budget,
             "formatted_allocated_total": format_currency(raw_budget, curr),
             "estimated_total": total_estimated_trip_cost,
+            "estimated_expenses": total_estimated_trip_cost,
             "formatted_estimated_total": format_currency(total_estimated_trip_cost, curr),
+            "emergency_reserve": est_contingency,
+            "formatted_emergency_reserve": format_currency(est_contingency, curr),
+            "is_emergency_reserve_protected": True,
+            "unallocated_balance": unallocated_balance,
+            "formatted_unallocated_balance": format_currency(unallocated_balance, curr),
+            "remaining_budget": remaining_budget,
+            "formatted_remaining_budget": format_currency(remaining_budget, curr),
             "variance": round(raw_budget - total_estimated_trip_cost, 2),
             "formatted_variance": format_currency(abs(round(raw_budget - total_estimated_trip_cost, 2)), curr),
             "is_feasible": is_feasible,
@@ -716,9 +790,9 @@ class BudgetAllocationService:
             "shortfall_categories": shortfall_categories,
             "assumptions": assumptions,
             "contingency_explanation": (
-                "Category Emergency Reserve is an expense allocation reserved within the trip estimate to absorb unexpected on-trip costs (minor price surges, local cabs, emergency transit). "
-                "Surplus Buffer is unallocated funds remaining when the user budget exceeds the total estimated trip costs. "
-                "When estimated costs match or exceed the user budget ceiling, the unallocated Surplus Buffer is zero, while the Category Emergency Reserve remains fully funded and protected within the expense plan."
+                "Emergency Reserve is an expense allocation reserved within the trip estimate (5–8% of subtotal) to absorb unexpected on-trip costs (minor price surges, local cabs, emergency transit). "
+                "Unallocated Balance is the remaining surplus (or shortfall) between the total user budget and total estimated trip costs. "
+                "Emergency Reserve is already accounted for within estimated expenses and is never deducted a second time from unallocated funds."
             ),
             "categories": {
                 c["key"]: {
@@ -842,8 +916,14 @@ class BudgetAllocationService:
             "total_estimated_trip_cost": total_estimated_trip_cost,
             "total_estimated_cost": total_estimated_trip_cost,
             "estimated_total_cost": total_estimated_trip_cost,
+            "estimated_expenses": total_estimated_trip_cost,
             "allocated_budget": raw_budget,
             "allocated_total_budget": raw_budget,
+            "emergency_reserve": est_contingency,
+            "formatted_emergency_reserve": format_currency(est_contingency, curr),
+            "is_emergency_reserve_protected": True,
+            "unallocated_balance": unallocated_balance,
+            "formatted_unallocated_balance": format_currency(unallocated_balance, curr),
             "estimated_trip_expenditure": total_estimated_trip_cost,
             "estimated_total_expenditure": total_estimated_trip_cost,
             "category_reconciliation": category_reconciliation,
@@ -888,7 +968,9 @@ class BudgetAllocationService:
             "formatted_shortfall": format_currency(shortfall, curr),
             "shortfall_percentage": shortfall_pct,
             "is_feasible": is_feasible,
-            "feasibility_status": feasibility_status,
+            "is_unrestricted": is_budget_unrestricted,
+            "budget_specified": not is_budget_unrestricted,
+            "feasibility_status": "Unrestricted Budget" if is_budget_unrestricted else feasibility_status,
             "feasibility_color": feasibility_color,
             "feasibility_badge": f"{feasibility_status} (+{format_currency(shortfall, curr)} / +{shortfall_pct}%)" if not is_feasible else "Budget Feasible",
             "feasibility_note": feasibility_note,

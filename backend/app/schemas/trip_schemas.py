@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, model_validator
 from typing import Optional, List, Any, Dict
 from datetime import date, datetime
 from app.core.currencies import CurrencyInfo
@@ -156,7 +156,7 @@ class ActivityReorder(BaseModel):
     new_order_index: int
 
 class TripCreate(BaseModel):
-    user_id: int
+    user_id: Optional[int] = None
     title: Optional[str] = None
     destination: str = Field(..., min_length=2)
     country: Optional[str] = None
@@ -165,15 +165,15 @@ class TripCreate(BaseModel):
     destination_airport: Optional[str] = None
     start_date: date
     end_date: date
-    budget: float = Field(..., gt=0)
+    budget: Optional[float] = Field(None, ge=0)
     currency: Optional[str] = None
     travel_type: Optional[str] = "leisure"
-    travel_style: Optional[str] = "solo"
+    travel_style: Optional[str] = None
     transportation: Optional[str] = "flight"
     accommodation_preference: Optional[str] = "hotel"
     interests: Optional[str] = None
     travel_companion: Optional[str] = "solo"
-    group_size: int = Field(1, ge=1)
+    group_size: Optional[int] = Field(1, ge=1)
     visibility: Optional[str] = "private"
     notes: Optional[str] = None
     color_theme: Optional[str] = "blue"
@@ -181,6 +181,12 @@ class TripCreate(BaseModel):
     force_create: bool = False
     is_budget_friendly: bool = False
     trip_preferences: Optional[Dict[str, Any]] = None
+
+    @model_validator(mode="after")
+    def validate_dates(self):
+        if self.start_date and self.end_date and self.end_date < self.start_date:
+            raise ValueError("Return date cannot be earlier than departure date.")
+        return self
 
 class TripUpdate(BaseModel):
     title: Optional[str] = None
@@ -225,7 +231,7 @@ class TripResponse(BaseModel):
     currency: str = "USD"
     currency_symbol: str = "$"
     travel_type: Optional[str] = "leisure"
-    travel_style: Optional[str] = "solo"
+    travel_style: Optional[str] = None
     transportation: Optional[str] = "flight"
     accommodation_preference: Optional[str] = "hotel"
     interests: Optional[str] = None

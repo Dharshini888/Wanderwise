@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { IconWind, IconDroplet, IconCloudRain } from '@tabler/icons-react';
+import { IconWind, IconDroplet, IconCloudRain, IconCalendarTime, IconShieldCheck } from '@tabler/icons-react';
+import api from '../../api/axios';
 
-const API = 'http://localhost:8000/api';
 const WMO_ICONS = {
   0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️',
   45: '🌫️', 48: '🌫️',
@@ -32,9 +32,9 @@ export default function WeatherWidget({ trip }) {
     }
 
     const dateParam = trip.start_date ? `?date_str=${encodeURIComponent(String(trip.start_date).split('T')[0])}` : '';
-    fetch(`${API}/weather/${encodeURIComponent(dest)}${dateParam}`)
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
+    api.get(`/api/weather/${encodeURIComponent(dest)}${dateParam}`)
+      .then(res => {
+        const data = res.data;
         if (data && data.current) {
           data._ts = Date.now();
           setWeather(data);
@@ -80,10 +80,20 @@ export default function WeatherWidget({ trip }) {
       <div className="flex justify-between items-start">
         <div>
           <h3 className="text-sm font-bold text-[var(--text-muted)] uppercase tracking-wider mb-0.5">
-            {isActive ? 'Live Trip Weather' : 'Current Destination Weather (Today)'}
+            {weather.is_seasonal_estimate || weather.weather_confidence === 'Seasonal Climate Standard'
+              ? 'Seasonal Climate Standard'
+              : (isActive ? 'Live Trip Weather' : 'Current Destination Weather (Today)')}
           </h3>
-          <div className="text-lg font-bold text-[var(--text-primary)] font-heading">{weather.city}, {weather.country}</div>
-          {!isActive && (
+          <div className="text-lg font-bold text-[var(--text-primary)] font-heading">
+            {weather.destination_title || (weather.country && !weather.city?.toLowerCase().includes(weather.country.toLowerCase())
+              ? `${weather.city}, ${weather.country}`
+              : weather.city)}
+          </div>
+          {weather.is_seasonal_estimate ? (
+            <span className="text-[11px] text-sky-400 font-semibold block mt-0.5">
+              Historical climatological benchmark for {tripMonth}. Live atmospheric forecast activates within 14 days of departure.
+            </span>
+          ) : !isActive && (
             <span className="text-[11px] text-amber-500 font-semibold block mt-0.5">
               * Expected weather during your travel in {tripMonth} may differ.
             </span>
@@ -138,5 +148,5 @@ export default function WeatherWidget({ trip }) {
         <span>{weather.timestamp ? `Updated: ${weather.timestamp}` : 'Live Telemetry'}</span>
       </div>
     </div>
-  );;
+  );
 }

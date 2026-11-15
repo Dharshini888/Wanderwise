@@ -18,39 +18,34 @@ from .base import TransitProvider, ProviderStatus, ProviderResult
 logger = logging.getLogger(__name__)
 
 from ...maps.osrm_service import haversine_distance
+from ..airport_service import GLOBAL_AIRPORTS
 
-MAJOR_AIRPORTS = [
-    {"iata": "CJB", "lat": 11.0300, "lon": 77.0434, "name": "Coimbatore International Airport"},
-    {"iata": "CCU", "lat": 22.6520, "lon": 88.4463, "name": "Netaji Subhas Chandra Bose International Airport"},
-    {"iata": "MAA", "lat": 12.9941, "lon": 80.1709, "name": "Chennai International Airport"},
-    {"iata": "DEL", "lat": 28.5562, "lon": 77.1000, "name": "Indira Gandhi International Airport"},
-    {"iata": "BOM", "lat": 19.0896, "lon": 72.8656, "name": "Chhatrapati Shivaji Maharaj International Airport"},
-    {"iata": "BLR", "lat": 13.1989, "lon": 77.7068, "name": "Kempegowda International Airport"},
-    {"iata": "HYD", "lat": 17.2403, "lon": 78.4294, "name": "Rajiv Gandhi International Airport"},
-    {"iata": "LHR", "lat": 51.4700, "lon": -0.4543, "name": "Heathrow Airport"},
-    {"iata": "CDG", "lat": 49.0097, "lon": 2.5479, "name": "Charles de Gaulle Airport"},
-    {"iata": "NRT", "lat": 35.7647, "lon": 140.3863, "name": "Narita International Airport"},
-    {"iata": "HND", "lat": 35.5494, "lon": 139.7798, "name": "Haneda Airport"},
-    {"iata": "ICN", "lat": 37.4602, "lon": 126.4407, "name": "Incheon International Airport"},
-    {"iata": "GMP", "lat": 37.5583, "lon": 126.7906, "name": "Gimpo International Airport"},
-    {"iata": "JFK", "lat": 40.6413, "lon": -73.7781, "name": "John F. Kennedy International Airport"},
-    {"iata": "LAX", "lat": 33.9416, "lon": -118.4085, "name": "Los Angeles International Airport"},
-    {"iata": "DXB", "lat": 25.2532, "lon": 55.3657, "name": "Dubai International Airport"},
-    {"iata": "SIN", "lat": 1.3644, "lon": 103.9915, "name": "Changi Airport"},
-    {"iata": "PNQ", "lat": 18.5822, "lon": 73.9197, "name": "Pune Airport"},
-]
+MAJOR_AIRPORTS = GLOBAL_AIRPORTS
 
-def find_nearest_airport(lat: float, lon: float, max_radius_km: float = 300.0) -> Optional[Dict[str, Any]]:
+def find_nearest_airport(lat: float, lon: float, max_radius_km: float = 300.0, is_international: bool = True) -> Optional[Dict[str, Any]]:
     if lat is None or lon is None:
         return None
     nearest = None
     min_dist = float('inf')
-    for ap in MAJOR_AIRPORTS:
+
+    # If international flight requested, first search among international tier airports
+    candidate_airports = MAJOR_AIRPORTS
+    if is_international:
+        intl_candidates = [ap for ap in MAJOR_AIRPORTS if ap.get("tier") in ["primary_international", "secondary_international"]]
+        if intl_candidates:
+            candidate_airports = intl_candidates
+
+    for ap in candidate_airports:
         dist = haversine_distance(lat, lon, ap["lat"], ap["lon"])
         if dist < min_dist and dist <= max_radius_km:
             min_dist = dist
             nearest = ap.copy()
             nearest["distance_from_point_km"] = round(dist, 2)
+
+    # Fallback to any airport if no international airport was within radius
+    if not nearest and is_international:
+        return find_nearest_airport(lat, lon, max_radius_km=max_radius_km, is_international=False)
+
     return nearest
 
 
@@ -73,8 +68,9 @@ class FlightProvider(TransitProvider):
         amadeus_id = os.getenv("AMADEUS_CLIENT_ID")
         amadeus_secret = os.getenv("AMADEUS_CLIENT_SECRET")
 
-        orig_ap = find_nearest_airport(origin_lat, origin_lon)
-        dest_ap = find_nearest_airport(dest_lat, dest_lon)
+        is_intl = haversine_distance(origin_lat, origin_lon, dest_lat, dest_lon) > 500.0
+        orig_ap = find_nearest_airport(origin_lat, origin_lon, is_international=is_intl)
+        dest_ap = find_nearest_airport(dest_lat, dest_lon, is_international=is_intl)
 
         if not orig_ap or not dest_ap:
             logger.info("[PROVIDER] FlightProvider: No valid airports found near coordinates.")

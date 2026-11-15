@@ -169,6 +169,33 @@ export default function ActivityCard({ activity, tripCurrency = 'USD', onLockTog
               🚌 Intercity Transit
             </span>
           )}
+
+          {/* Commitment Level Badge (Mandatory, Optional, Tentative) */}
+          {(() => {
+            const cLevel = activity.commitment_level || meta.commitment_level;
+            if (cLevel === 'mandatory') {
+              return (
+                <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border border-purple-300 dark:border-purple-800">
+                  Mandatory
+                </span>
+              );
+            }
+            if (cLevel === 'tentative') {
+              return (
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
+                  Tentative
+                </span>
+              );
+            }
+            if (cLevel === 'optional') {
+              return (
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60">
+                  Optional
+                </span>
+              );
+            }
+            return null;
+          })()}
         </div>
 
         {/* Lock & Delete Action Buttons */}
@@ -308,13 +335,27 @@ export default function ActivityCard({ activity, tripCurrency = 'USD', onLockTog
             </div>
 
             <Link
-              to={`/transit?from=${encodeURIComponent(place.name || activity.title)}&to=${encodeURIComponent(activity.next_place_name || 'Destination')}${place.latitude ? `&from_lat=${place.latitude}&from_lon=${place.longitude}` : ''}&auto_route=true`}
+              to={`/transit?from=${encodeURIComponent(place.name || activity.title)}&to=${encodeURIComponent(activity.next_place_name || 'Destination')}${place.latitude ? `&from_lat=${place.latitude}&from_lon=${place.longitude}` : ''}${activity.next_latitude ? `&to_lat=${activity.next_latitude}&to_lon=${activity.next_longitude}` : (activity.metadata?.next_latitude ? `&to_lat=${activity.metadata.next_latitude}&to_lon=${activity.metadata.next_longitude}` : '')}&auto_route=true`}
               className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-extrabold shadow-sm transition-all flex items-center gap-1 shrink-0"
               title="Get Smart Transit route for this transition"
             >
               <IconRoute size={13} />
               <span>Get Route</span>
             </Link>
+
+            {(activity.route_directions_url || activity.metadata?.route_directions_url || (place.latitude && (activity.next_latitude || activity.metadata?.next_latitude))) && (
+              <a
+                href={activity.route_directions_url || activity.metadata?.route_directions_url || `https://www.google.com/maps/dir/?api=1&origin=${place.latitude},${place.longitude}&destination=${activity.next_latitude || activity.metadata?.next_latitude},${activity.next_longitude || activity.metadata?.next_longitude}`}
+                target="_blank"
+                rel="noreferrer"
+                className="px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 dark:hover:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-[11px] font-extrabold border border-blue-200 dark:border-blue-800 transition-all flex items-center gap-1 shrink-0"
+                title="Open turn-by-turn route directions with verified origin and destination coordinates"
+              >
+                <IconMapPin size={13} />
+                <span>Directions</span>
+                <IconExternalLink size={11} />
+              </a>
+            )}
           </div>
         </div>
       ) : (

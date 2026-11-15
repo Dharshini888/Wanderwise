@@ -126,9 +126,16 @@ class PlaceholderValidator:
                 text_to_check = f"{title} {p_name} {desc}"
 
                 # 1. Regex check for numbered placeholders (e.g. Landmark 1, Bistro 2)
-                match = PLACEHOLDER_REGEX.search(text_to_check)
-                if match:
-                    return False, f"PLACEHOLDER_CONTENT_DETECTED: Numbered placeholder '{match.group(0)}' found in Day {d_idx+1} Activity '{title}'"
+                for field_text in (title, p_name, desc):
+                    if not field_text:
+                        continue
+                    match = PLACEHOLDER_REGEX.search(field_text)
+                    if match:
+                        # Exclude cases where digits are followed by '/', '-', or ':' (e.g. dates, ratios like 9/11)
+                        end_idx = match.end()
+                        if end_idx < len(field_text) and field_text[end_idx] in ['/', '-', ':']:
+                            continue
+                        return False, f"PLACEHOLDER_CONTENT_DETECTED: Numbered placeholder '{match.group(0)}' found in Day {d_idx+1} Activity '{title}'"
 
                 # 2. Check exact generic placeholders (where the place or title is just the placeholder)
                 p_lower = p_name.lower().strip()
@@ -138,9 +145,10 @@ class PlaceholderValidator:
                         return False, f"PLACEHOLDER_CONTENT_DETECTED: Generic placeholder '{gen_str}' found in Day {d_idx+1} Activity '{title}'"
 
                 # 3. Check substring placeholders (fabricated filler templates)
-                lower_text = text_to_check.lower()
-                for sub_str in SUBSTRING_PLACEHOLDERS:
-                    if sub_str in lower_text:
-                        return False, f"PLACEHOLDER_CONTENT_DETECTED: Generic placeholder string '{sub_str}' found in Day {d_idx+1} Activity '{title}'"
+                for field_text in (title, p_name, desc):
+                    lower_text = field_text.lower()
+                    for sub_str in SUBSTRING_PLACEHOLDERS:
+                        if sub_str in lower_text:
+                            return False, f"PLACEHOLDER_CONTENT_DETECTED: Generic placeholder string '{sub_str}' found in Day {d_idx+1} Activity '{title}'"
 
         return True, None

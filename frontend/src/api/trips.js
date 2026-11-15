@@ -156,3 +156,22 @@ export const getPaginatedTrips = async (params = {}) => {
   const res = await api.get('/api/trips', { params });
   return res.data;
 };
+
+export const searchLocations = async (query) => {
+  if (!query || query.trim().length === 0) return [];
+  try {
+    const res = await api.get('/api/trips/locations/search', { params: { q: query.trim() } });
+    return res.data || [];
+  } catch (err) {
+    return [];
+  }
+};
+
+export const reverseGeocodeLocation = async (lat, lon) => {
+  try {
+    const res = await api.get('/api/trips/locations/reverse-geocode', { params: { lat, lon } });
+    return res.data;
+  } catch (err) {
+    return { city: 'Current Location', country: '', display_name: 'Current Location' };
+  }
+};

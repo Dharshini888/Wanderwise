@@ -7148,6 +7148,22 @@ WORLD_POI_DATABASE: Dict[str, List[Dict[str, Any]]] = {
 ]
 }
 
+# Dynamically synchronize verified destination POI caches into WORLD_POI_DATABASE
+try:
+    if os.path.exists(CACHE_DIR):
+        for _fname in os.listdir(CACHE_DIR):
+            if _fname.endswith(".json"):
+                _ckey = _fname[:-5].replace(" ", "_").lower()
+                try:
+                    with open(os.path.join(CACHE_DIR, _fname), "r", encoding="utf-8") as _f:
+                        _cdata = json.load(_f)
+                        if isinstance(_cdata, dict) and "pois" in _cdata and len(_cdata["pois"]) > 0:
+                            WORLD_POI_DATABASE[_ckey] = _cdata["pois"]
+                except Exception:
+                    pass
+except Exception:
+    pass
+
 def get_google_maps_search_url(place_name: str, address: Optional[str] = None, city: Optional[str] = None) -> str:
     """Generate clean Google Maps search URL for any place without city duplication or contradictory destinations."""
     clean_place = (place_name or "").strip()
@@ -7228,8 +7244,85 @@ PRIVATE_NON_TOURIST_PATTERNS = [
 FAMOUS_PUBLIC_EXCEPTIONS = {
     'anne frank house', 'casa batllo', 'casa batlló', 'casa mila', 'casa milà', 'white house', 'house of terror',
     'mozart\'s house', 'beethoven house', 'rembrandt house museum', 'goethe house',
-    'blue house', 'mansion house', 'casa vicens'
+    'blue house', 'mansion house', 'casa vicens',
+    'tokyo metropolitan government building', 'tokyo metropolitan government', 'empire state building', 'chrysler building', 'flat iron building',
+    'rockefeller center', 'top of the rock', 'one world trade center', 'grand central terminal', 'summit one vanderbilt', 'big ben',
+    'prague astronomical clock', '9/11 memorial', 'hiroshima peace memorial', 'central park', 'high line', 'brooklyn bridge',
+    'statue of liberty', 'metropolitan museum of art', 'the met', 'moma', 'chelsea market', 'joshua tree national park', 'redwood national park'
 }
+
+OBSCURE_POI_PATTERNS = [
+    # Single trees and isolated botanical specimens (unless botanical garden / arboretum)
+    r'\b(?:the\s+)?[\w\s\'-]+\s+tree\b',
+    r'\btree\s+(?:of|at)\s+[\w\s\'-]+\b',
+    r'\bmemorial\s+tree\b',
+
+    # Sidewalk clocks, curb clocks, public clocks
+    r'\b(?:[\w\'-]+\s+)?(?:sidewalk|street|curb|pedestrian)\s+clock\b',
+    r'\bpublic\s+clock\b',
+
+    # Abandoned transit infrastructure, vents, tubes, pneumatic tubes, utility shafts
+    r'\b(?:site\s+of\s+(?:the\s+)?)?(?:beach\s+)?pneumatic\s+(?:subway|transit|tube)\b',
+    r'\b(?:ventilation|exhaust|utility|cable)\s+(?:shaft|tunnel|vent|duct)\b',
+    r'\b(?:subway|metro)\s+(?:vent|ventilation|grate|shaft)\b',
+    r'\babandoned\s+(?:subway|tunnel|station|track|shaft)\b',
+
+    # Alleys, service lanes, back-alleys without major tourist standing
+    r'\b[\w\'-]+\s+alley\b',
+    r'\b(?:back\s+alley|gangway|service\s+lane|cul-de-sac)\b',
+
+    # Crime sites, execution sites, murder spots without national memorial status
+    r'\b(?:bloody\s+angle|murder\s+(?:site|corner|scene)|execution\s+dock|lynching\s+site)\b',
+
+    # Commercial newspaper offices, corporate headquarters, holding and insurance companies
+    r'^[\"\']?the\s+(?:sun|herald|times|tribune|post|journal|gazette|news)\b',
+    r'\bnewspaper\s+office\b',
+    r'\b(?:insurance|realty|holdings|investment|asset\s+management|advisory|logistics|warehousing|brokerage|underwriters)\s+(?:company|corp|llc|inc|building|office|group)?\b',
+
+    # Standalone berthed vessels without museum designation
+    r'^\s*(?:wavertree|peking|ambrose|tess)\s*$',
+    r'\b(?:cargo\s+ship|scow|lighter|tugboat|barge)\s+wavertree\b',
+
+    # Minor street furniture, utility fixtures, traffic bollards
+    r'\b(?:drinking\s+fountain|fontaine\s+wallace|pillar\s+box|police\s+box|koban|taxi\s+stand|transformer\s+box|smoking\s+area|bike\s+parking|bicycle\s+rack)\b',
+
+    # Minor commemorative plaques and boundary stones
+    r'\b(?:stolperstein|blue\s+plaque|memorial\s+plaque|commemorative\s+plaque|boundary\s+stone|milestone)\b'
+]
+
+def is_obscure_or_inappropriate_attraction(name: str, category: str = "") -> Tuple[bool, str]:
+    """
+    Detect and reject obscure, micro-feature, or inappropriate entries such as single trees,
+    sidewalk clocks, abandoned subway tubes, vents, back-alleys, crime sites, or commercial offices.
+    Preserves established global landmarks via FAMOUS_PUBLIC_EXCEPTIONS.
+    """
+    if not name or not isinstance(name, str):
+        return True, "Invalid venue name"
+
+    n_clean = name.strip().lower()
+    cat_clean = (category or "").strip().lower()
+
+    # Preserve recognized world landmarks
+    if any(ex in n_clean for ex in FAMOUS_PUBLIC_EXCEPTIONS):
+        return False, ""
+
+    # Reject names starting with unmatched quotation marks (e.g., "\"The Sun")
+    if name.strip().startswith(('"', "'", "“", "”")):
+        return True, "Invalid name starting with quotation marks"
+
+    # Reject single-word isolated berthed cargo vessels unless explicitly a museum
+    if n_clean in {"wavertree", "peking", "ambrose"} and "museum" not in cat_clean:
+        return True, "Isolated berthed vessel without verified museum status"
+
+    # Preserve legitimate parks, arboretums, botanical gardens that contain the word 'tree'
+    if any(k in cat_clean for k in ["national park", "botanical garden", "arboretum", "nature reserve"]):
+        return False, ""
+
+    for pat in OBSCURE_POI_PATTERNS:
+        if re.search(pat, n_clean, re.IGNORECASE):
+            return True, f"Obscure venue matches pattern '{pat}'"
+
+    return False, ""
 
 def is_generic_or_ambiguous_poi(name: str) -> Tuple[bool, str]:
     """Detect and reject generic, ambiguous descriptions masquerading as specific named venues."""
@@ -7281,20 +7374,30 @@ def is_valid_destination_poi(
     if is_priv:
         return False
 
+    # Reject obscure micro-features (single trees, sidewalk clocks, subway tunnels/vents, alleys, crime sites, commercial offices)
+    is_obscure, _ = is_obscure_or_inappropriate_attraction(name, category)
+    if is_obscure:
+        return False
+
     dest_clean = destination.strip().lower() if destination else ""
     if dest_clean and name_low == dest_clean:
         return False
 
     banned_substrings = [
-        "shortcut", "'s house", "shit", "fuck", "dance institute", "housing",
+        "shortcut", "'s house", "dance institute", "housing",
         "services", "solution wizard", "scarf of life", "motorbike", "organisation", "organization"
     ]
     if any(sub in name_low for sub in banned_substrings):
         return False
 
-    words = set(name_low.replace("'", " ").replace("-", " ").replace(".", " ").replace(",", " ").split())
-    if any(w in GARBAGE_POI_TERMS for w in words):
+    # Check whole-word profanities (prevents false flags on Takeshita, Shishito, etc.)
+    if re.search(r"\b(shit|fuck|bitch|crap|dick|penis|vagina|porn)\b", name_low):
         return False
+
+    if not any(ex in name_low for ex in FAMOUS_PUBLIC_EXCEPTIONS):
+        words = set(name_low.replace("'", " ").replace("-", " ").replace(".", " ").replace(",", " ").split())
+        if any(w in GARBAGE_POI_TERMS for w in words):
+            return False
 
     # Geographic boundary check against destination anchor if coordinates available
     if dest_lat is not None and dest_lon is not None:
@@ -7309,6 +7412,106 @@ def is_valid_destination_poi(
             except Exception:
                 pass
     return True
+
+def score_and_rank_pois(
+    pois: List[Dict[str, Any]],
+    destination: str = "",
+    user_interests: Optional[List[str]] = None,
+    travel_style: Optional[str] = None,
+    prioritize_hidden_gems: bool = False
+) -> List[Dict[str, Any]]:
+    """
+    Score and rank attractions by destination significance, popularity, rating, and user interests.
+    Guarantees first-time visitors receive iconic landmarks by default, while respecting
+    interests (Architecture, Culture, Sightseeing, Food, Shopping, Nature, Adventure).
+    """
+    if not pois:
+        return []
+
+    interests_normalized = set()
+    if user_interests:
+        if isinstance(user_interests, str):
+            user_interests = [s.strip() for s in user_interests.split(",") if s.strip()]
+        for interest in user_interests:
+            interests_normalized.add(str(interest).lower().strip())
+
+    scored_pois = []
+    for poi in pois:
+        name = (poi.get("name") or "").strip()
+        category = str(poi.get("category", "")).strip().lower()
+        rating = float(poi.get("rating") or 0.0)
+        desc = str(poi.get("description", "")).lower()
+
+        score = 0.0
+
+        # 1. Landmark Significance & Verified Provenance (0 to 40 pts)
+        is_verified = bool(poi.get("provenance") or poi.get("is_verified") or poi.get("source") == "curated_world_database")
+        if is_verified:
+            score += 20.0
+        if rating >= 4.7:
+            score += 20.0
+        elif rating >= 4.4:
+            score += 15.0
+        elif rating >= 4.0:
+            score += 10.0
+        elif rating > 0.0:
+            score += 5.0
+
+        # High-significance venue categories
+        if any(k in category for k in ["unesco", "world heritage", "palace", "castle", "national museum", "cathedral", "iconic landmark", "observation deck"]):
+            score += 15.0
+        elif any(k in category for k in ["museum", "historical site", "religious site", "nature and viewpoint"]):
+            score += 10.0
+
+        # 2. Interest Alignment (0 to 35 pts)
+        if interests_normalized:
+            interest_matched = False
+            for user_int in interests_normalized:
+                if user_int in ["architecture", "buildings"]:
+                    if any(k in category for k in ["architect", "palace", "cathedral", "tower", "bridge", "monument", "historic"]) or any(k in desc for k in ["architect", "skyline", "facade", "gothic", "art deco"]):
+                        score += 30.0
+                        interest_matched = True
+                elif user_int in ["culture", "history", "heritage"]:
+                    if any(k in category for k in ["museum", "historical site", "cultural", "temple", "shrine", "heritage", "palace"]):
+                        score += 30.0
+                        interest_matched = True
+                elif user_int in ["nature", "outdoors", "scenic"]:
+                    if any(k in category for k in ["nature", "viewpoint", "park", "garden", "lake", "waterfall", "beach", "trail", "mountain"]):
+                        score += 30.0
+                        interest_matched = True
+                elif user_int in ["food", "dining", "culinary", "foodie"]:
+                    if poi.get("is_dining") or any(k in category for k in ["food", "market", "restaurant", "cafe", "bazaar"]):
+                        score += 30.0
+                        interest_matched = True
+                elif user_int in ["shopping", "markets"]:
+                    if any(k in category for k in ["shopping", "market", "bazaar", "mall"]):
+                        score += 30.0
+                        interest_matched = True
+                elif user_int in ["adventure", "active"]:
+                    if any(k in category for k in ["adventure", "hiking", "trail", "boat"]):
+                        score += 30.0
+                        interest_matched = True
+
+            if not interest_matched and any(k in category for k in ["sightseeing", "attraction", "park", "square"]):
+                score += 10.0
+        else:
+            # Default sightseeing priority for first-time visitors
+            if any(k in category for k in ["nature and viewpoint", "museum", "historical site", "iconic landmark", "sightseeing"]):
+                score += 15.0
+
+        # 3. Hidden Gems vs Iconic Orientation
+        if prioritize_hidden_gems:
+            if 0 < rating <= 4.4 and not any(k in category for k in ["national museum", "palace"]):
+                score += 20.0
+        else:
+            # Iconic first-time visitor bonus
+            if any(k in name.lower() for k in ["central park", "empire state", "eiffel", "louvre", "senso-ji", "hagia sophia", "colosseum"]):
+                score += 25.0
+
+        scored_pois.append((score, poi))
+
+    scored_pois.sort(key=lambda x: x[0], reverse=True)
+    return [p for _, p in scored_pois]
 
 def fetch_real_pois_from_api(destination: str, country: Optional[str] = None) -> List[Dict[str, Any]]:
     """
@@ -7494,7 +7697,7 @@ def fetch_real_pois_from_api(destination: str, country: Optional[str] = None) ->
             })
 
         if pois:
-            return pois
+            return score_and_rank_pois(pois, destination)
 
     except Exception:
         pass
@@ -7518,13 +7721,7 @@ def fetch_real_pois_for_destination(destination: str, country: Optional[str] = N
     if not dest_clean:
         dest_clean = dest_raw.replace(' ', '_')
 
-    # Check World POI Database first
-    for key, pois in WORLD_POI_DATABASE.items():
-        if key == dest_clean or (len(key) >= 3 and key in dest_clean):
-            save_poi_cache(dest_clean, pois)
-            return pois
-
-    # Check local JSON cache second
+    # Check local JSON cache first
     cache_path = os.path.join(CACHE_DIR, f"{dest_clean.replace(' ', '_')}.json")
     if os.path.exists(cache_path):
         try:
@@ -7551,9 +7748,16 @@ def fetch_real_pois_for_destination(destination: str, country: Optional[str] = N
                             pass
                     clean_pois = [p for p in data["pois"] if is_valid_destination_poi(p, destination, dest_lat=dest_lat, dest_lon=dest_lon, max_radius_km=65.0)]
                     if clean_pois:
-                        return clean_pois
+                        WORLD_POI_DATABASE[dest_clean] = clean_pois
+                        return score_and_rank_pois(clean_pois, destination)
         except Exception:
             pass
+
+    # Check World POI Database second
+    for key, pois in WORLD_POI_DATABASE.items():
+        if key == dest_clean or (len(key) >= 3 and key in dest_clean):
+            save_poi_cache(dest_clean, pois)
+            return pois
 
     # Query Real OpenStreetMap & Wikipedia APIs dynamically for ANY city
     pois = fetch_real_pois_from_api(destination, country)
@@ -7580,14 +7784,45 @@ def save_poi_cache(destination: str, pois: List[Dict[str, Any]]):
 
 def resolve_poi_coordinates(name: str, destination: str = "") -> Optional[Dict[str, Any]]:
     """
-    Fast in-memory coordinate resolution from WORLD_POI_DATABASE and verified destination registries.
-    Returns dict with latitude, longitude, address, category, rating, or city center fallback.
+    Fast in-memory coordinate resolution from verified destination registries and WORLD_POI_DATABASE.
+    Returns dict with latitude, longitude, address, category, rating, or None for unknown venues.
+    Never assigns duplicate fake city-center coordinates to unknown venues.
     """
     if not name:
         return None
+
     name_clean = name.strip().lower()
     dest_clean = destination.strip().lower() if destination else ""
 
+    def _matches_poi_name(cand_name: str, q_name: str) -> bool:
+        c_low = cand_name.strip().lower()
+        q_low = q_name.strip().lower()
+        if c_low in q_low or q_low in c_low:
+            return True
+        c_words = set(re.findall(r'[a-z]{4,}', c_low)) - {"museum", "temple", "shrine", "church", "palace", "tower", "park", "garden", "quarter"}
+        q_words = set(re.findall(r'[a-z]{4,}', q_low)) - {"museum", "temple", "shrine", "church", "palace", "tower", "park", "garden", "quarter"}
+        return bool(c_words and q_words and (c_words & q_words))
+
+    # 1. Search verified destination POIs (e.g. Paris, Tokyo, Istanbul, Bali, etc.)
+    if dest_clean:
+        try:
+            cached_pois = fetch_real_pois_for_destination(dest_clean)
+            for p in cached_pois:
+                p_name = p.get("name", "").strip().lower()
+                if _matches_poi_name(p_name, name_clean):
+                    return {
+                        "name": p.get("name"),
+                        "latitude": p.get("latitude"),
+                        "longitude": p.get("longitude"),
+                        "address": p.get("address"),
+                        "category": p.get("category", "sightseeing"),
+                        "rating": p.get("rating"),
+                        "ticket_price": p.get("ticket_price", 0.0)
+                    }
+        except Exception:
+            pass
+
+    # 2. Search WORLD_POI_DATABASE
     dest_key = DESTINATION_ALIASES.get(dest_clean, dest_clean)
     candidate_lists = []
     if dest_key in WORLD_POI_DATABASE:
@@ -7599,7 +7834,7 @@ def resolve_poi_coordinates(name: str, destination: str = "") -> Optional[Dict[s
     for plist in candidate_lists:
         for p in plist:
             p_name = p.get("name", "").strip().lower()
-            if p_name in name_clean or name_clean in p_name:
+            if _matches_poi_name(p_name, name_clean):
                 return {
                     "name": p.get("name"),
                     "latitude": p.get("latitude"),
@@ -7610,57 +7845,41 @@ def resolve_poi_coordinates(name: str, destination: str = "") -> Optional[Dict[s
                     "ticket_price": p.get("ticket_price", 0.0)
                 }
 
-    # Destination City Center coordinate fallbacks
+    # 3. Only if the venue name itself explicitly requests the city center / downtown
     CITY_CENTERS = {
-        "kuala_lumpur": (3.1579, 101.7116, "Kuala Lumpur City Centre (KLCC), Kuala Lumpur, Malaysia"),
         "kuala lumpur": (3.1579, 101.7116, "Kuala Lumpur City Centre (KLCC), Kuala Lumpur, Malaysia"),
-        "malaysia": (3.1579, 101.7116, "Kuala Lumpur City Centre (KLCC), Kuala Lumpur, Malaysia"),
         "bangkok": (13.7563, 100.5018, "Bangkok City Center, Phra Nakhon, Bangkok, Thailand"),
         "agra": (27.1767, 78.0081, "Agra City Center, Uttar Pradesh, India"),
         "coimbatore": (11.0168, 76.9558, "Coimbatore, Tamil Nadu, India"),
         "delhi": (28.6139, 77.2090, "New Delhi, India"),
         "mumbai": (19.0760, 72.8777, "Mumbai, Maharashtra, India"),
-        "bolivia": (-16.5000, -68.1500, "La Paz, Bolivia"),
         "rome": (41.9028, 12.4964, "Rome, Italy"),
         "paris": (48.8566, 2.3522, "Paris, France"),
         "singapore": (1.3521, 103.8198, "Singapore Downtown, Singapore"),
         "tokyo": (35.6762, 139.6503, "Tokyo, Japan"),
         "london": (51.5074, -0.1278, "London, United Kingdom"),
     }
-    for c_key, c_val in CITY_CENTERS.items():
-        if c_key in dest_clean or c_key in name_clean:
-            return {
-                "name": name,
-                "latitude": c_val[0],
-                "longitude": c_val[1],
-                "address": c_val[2],
-                "category": "sightseeing",
-                "rating": None,
-                "ticket_price": None
-            }
-
-    # Global Gazetteer Fallback
-    try:
-        from app.services.location.location_normalizer import GLOBAL_DESTINATION_GAZETTEER
-        for g_key, g_val in GLOBAL_DESTINATION_GAZETTEER.items():
-            if g_key in dest_clean or g_key in name_clean:
+    if any(k in name_clean for k in ["city center", "city centre", "downtown"]) or name_clean == dest_clean:
+        for c_key, c_val in CITY_CENTERS.items():
+            if c_key in dest_clean or c_key in name_clean:
                 return {
                     "name": name,
-                    "latitude": g_val["latitude"],
-                    "longitude": g_val["longitude"],
-                    "address": f"{g_val['name']}, {g_val['country']}",
+                    "latitude": c_val[0],
+                    "longitude": c_val[1],
+                    "address": c_val[2],
                     "category": "sightseeing",
                     "rating": None,
                     "ticket_price": None
                 }
-    except Exception:
-        pass
 
-    # Dynamic Global Geocode Fallback (Nominatim / Photon)
+    # 4. Dynamic Global Geocode Fallback (Nominatim / Photon)
     try:
         from .maps.nominatim_service import geocode_place
         geo = geocode_place(f"{name}, {destination}" if destination else name)
         if geo and geo.get("lat") is not None and geo.get("lon") is not None:
+            # Reject static city-center fallbacks: an unknown venue must not receive the generic city center
+            if geo.get("source") in ["Static Pre-seeded Fallback", "Static Fallback", "Gazetteer Fallback"]:
+                return None
             return {
                 "name": name,
                 "latitude": float(geo["lat"]),
@@ -7674,3 +7893,87 @@ def resolve_poi_coordinates(name: str, destination: str = "") -> Optional[Dict[s
         pass
 
     return None
+
+
+def get_realistic_activity_duration(name: str, category: Optional[str] = None, description: Optional[str] = None) -> int:
+    """
+    Returns realistic, experience-calibrated activity duration in minutes (from 30 to 240 mins).
+    Accounts for attraction type, physical scale, multiple pavilions, queues, and visitor walking time.
+    """
+    n_low = (name or "").lower()
+    c_low = (category or "").lower()
+    d_low = (description or "").lower()
+    full_text = f"{n_low} {c_low} {d_low}"
+
+    # 1. Sprawling theme parks, major resort islands, wildlife reserves (3 to 4 hours)
+    if any(k in full_text for k in ["sentosa", "universal studios", "disneyland", "disney world", "resorts world", "night safari", "safari park", "zoological", "zoo"]):
+        return 180
+    if any(k in full_text for k in ["amusement park", "theme park", "water park", "adventure park"]):
+        return 180
+
+    # 2. Multi-conservatory mega-horticultural biodomes (e.g. Gardens by the Bay: Cloud Forest + Flower Dome + Supertree Grove)
+    if any(k in full_text for k in ["gardens by the bay", "kew gardens", "eden project"]):
+        return 180
+
+    # 3. Sprawling national / UNESCO botanical gardens & extensive heritage landscapes
+    if any(k in full_text for k in ["botanic gardens", "botanical garden", "national park"]):
+        return 120
+
+    # 4. Comprehensive mega-museums & flagship historical institutions (2 to 2.5 hours)
+    if any(k in n_low for k in ["louvre", "vatican", "metropolitan museum", "british museum", "hermitage", "rijksmuseum", "prado"]):
+        return 120
+    if "national museum of singapore" in n_low:
+        return 105
+
+    # 5. Major lifestyle hubs & terminal architectural attractions
+    if any(k in full_text for k in ["jewel changi", "rain vortex"]):
+        return 90
+
+    # 6. Beaches, bays, and coastal leisure recreation
+    if any(k in full_text for k in ["beach", "siloso", "bondi", "copacabana", "seaside promenade"]):
+        return 90
+
+    # Specific named experiences
+    if "flyover" in n_low:
+        return 45
+    if "lava show" in n_low or "lavashow" in n_low:
+        return 50
+    if "eiffel" in n_low:
+        return 75
+    if any(k in full_text for k in ["flyer", "giant wheel", "london eye", "ferris wheel"]):
+        return 60
+    if "skytree" in n_low or "shibuya sky" in n_low or "observation deck" in full_text or "skypark" in n_low:
+        return 60
+
+    # Dining
+    if any(k in full_text for k in ["bakery", "cafe", "coffee", "pastry", "breakfast", "tea", "espresso"]):
+        return 45
+    if any(k in full_text for k in ["quick bite", "street food", "snack"]):
+        return 30
+    if any(k in full_text for k in ["restaurant", "dinner", "lunch", "bistro", "ramen", "tavern", "seafood"]):
+        return 60
+
+    # Sights & Activities by category
+    if any(k in full_text for k in ["sculpture", "statue", "monument", "memorial", "fountain"]):
+        return 30
+    if any(k in full_text for k in ["viewpoint", "view", "bridge", "merlion", "lookout"]):
+        return 45
+    if any(k in full_text for k in ["church", "cathedral", "temple", "shrine", "mosque", "basilica"]):
+        return 45
+    if any(k in full_text for k in ["cultural district", "historic district", "market", "bazaar", "shopping", "mall", "shophouse"]):
+        return 60
+    if any(k in full_text for k in ["park", "garden", "plaza", "square", "promenade", "quay"]):
+        return 60
+    if any(k in full_text for k in ["museum", "gallery", "exhibition", "heritage centre"]):
+        return 90
+    if any(k in full_text for k in ["palace", "castle", "fort", "citadel", "ruins"]):
+        return 90
+    if any(k in full_text for k in ["boat", "cruise", "ferry", "gondola"]):
+        return 60
+    if any(k in full_text for k in ["thermal bath", "hot spring", "spa", "lagoon", "blue lagoon"]):
+        return 120
+    if any(k in full_text for k in ["hike", "trek", "glacier", "rafting", "kayak"]):
+        return 150
+
+    return 60
+

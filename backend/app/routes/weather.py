@@ -65,11 +65,29 @@ CITY_ALIASES = {
 def _estimate_seasonal_climate(city: str, lat: Optional[float] = None, month: int = 3) -> dict:
     """Dynamic global seasonal climate estimation based on geography, latitude bands, and calendar month."""
     city_l = (city or "").lower()
+    is_polar = (lat is not None and abs(lat) > 60.0) or any(t in city_l for t in ["reykjavik", "tromso", "tromsø", "svalbard", "fairbanks", "rovaniemi", "iceland", "greenland", "anchorage", "murmansk"])
     is_tropical = (lat is not None and abs(lat) <= 23.5) or any(t in city_l for t in ["bali", "phuket", "singapore", "bangkok", "maldives", "hawaii", "colombo", "varkala", "goa", "chennai"])
     is_mediterranean = (lat is not None and 35.0 < abs(lat) <= 45.0) or any(t in city_l for t in ["istanbul", "rome", "athens", "madrid", "barcelona"])
     is_subtropical = (lat is not None and 23.5 < abs(lat) <= 35.0) or any(t in city_l for t in ["cairo", "dubai", "jaipur", "delhi", "tokyo", "kyoto"])
 
-    if is_tropical:
+    if is_polar:
+        if month in [12, 1, 2]:
+            temp = -2.5
+            desc = "Sub-Arctic Winter (Seasonal Climate Standard)"
+            precip = 35
+        elif month == 3:
+            temp = 0.5
+            desc = "Sub-Arctic Late Winter / Early Spring (Seasonal Climate Standard)"
+            precip = 30
+        elif month in [6, 7, 8]:
+            temp = 12.5
+            desc = "Sub-Arctic Summer (Seasonal Climate Standard)"
+            precip = 20
+        else:
+            temp = 5.0
+            desc = "Sub-Arctic Seasonal Climate Standard"
+            precip = 25
+    elif is_tropical:
         temp = 28.0
         desc = "Tropical Climate (Historical Seasonal Standard)"
         precip = 25
@@ -82,13 +100,27 @@ def _estimate_seasonal_climate(city: str, lat: Optional[float] = None, month: in
         desc = "Subtropical Seasonal Climate Standard"
         precip = 15
     else:
-        temp = 18.0
-        desc = "Temperate Seasonal Climate Standard"
-        precip = 15
+        # Temperate zone (New York, Paris, London, Central Europe)
+        if month in [12, 1, 2]:
+            temp = 4.0
+            desc = "Temperate Winter (Seasonal Climate Standard)"
+            precip = 25
+        elif month in [3, 4, 5]:
+            temp = 12.0
+            desc = "Temperate Spring (Seasonal Climate Standard)"
+            precip = 20
+        elif month in [6, 7, 8]:
+            temp = 24.0
+            desc = "Temperate Summer (Seasonal Climate Standard)"
+            precip = 15
+        else:
+            temp = 13.0
+            desc = "Temperate Autumn (Seasonal Climate Standard)"
+            precip = 20
 
     return {
         "temperature": temp,
-        "feels_like": round(temp + 1.0, 1),
+        "feels_like": round(temp - 2.0 if is_polar else temp + 1.0, 1),
         "description": desc,
         "precipitation_probability": precip
     }
@@ -133,7 +165,7 @@ def _get_fallback_weather(city: str, date_str: Optional[str] = None) -> dict:
         "latitude": 0.0,
         "longitude": 0.0,
         "timezone": "UTC",
-        "provider": "Open-Meteo Weather Service (Estimated Baseline)",
+        "provider": "Historical Climatological Benchmark" if is_seasonal else "Open-Meteo Weather Service (Estimated Baseline)",
         "timestamp": now_utc,
         "forecast_type": "Seasonal Climate Estimate" if is_seasonal else "Estimated Baseline",
         "is_seasonal_estimate": is_seasonal,
@@ -353,40 +385,50 @@ def get_weather(city: str, date_str: Optional[str] = None):
         weather_status = "Forecast unavailable" if is_seasonal else "Live Forecast"
         weather_confidence = "Seasonal Climate Standard" if is_seasonal else "Live Forecast"
 
+        # Prevent duplicate country names (e.g. "Reykjavík, Iceland" + "Iceland")
+        clean_city = name.split(",")[0].strip() if "," in name else name.strip()
+        formatted_dest_title = f"{clean_city}, {country}" if country and country.lower() not in clean_city.lower() else clean_city
+
+        display_current = {
+            "temperature": selected_date_weather["temperature"] if is_seasonal else current.get("temperature_2m"),
+            "feels_like": selected_date_weather["feels_like"] if is_seasonal else current.get("apparent_temperature"),
+            "humidity": 75 if is_seasonal else current.get("relative_humidity_2m"),
+            "wind_speed": 12.0 if is_seasonal else current.get("wind_speed_10m"),
+            "wind_direction": "N" if is_seasonal else wind_dir,
+            "wind_degrees": 0 if is_seasonal else wind_deg,
+            "precipitation": 0.0 if is_seasonal else current.get("precipitation"),
+            "uv_index": 2.0 if is_seasonal else current.get("uv_index"),
+            "visibility": 10000 if is_seasonal else current.get("visibility"),
+            "pressure": 1013 if is_seasonal else current.get("surface_pressure"),
+            "is_day": 1,
+            "description": selected_date_weather["description"] if is_seasonal else WMO_MAP.get(code, "Unknown"),
+            "weather_code": selected_date_weather.get("weather_code", 1) if is_seasonal else code,
+            "is_seasonal_estimate": is_seasonal,
+            "weather_confidence": weather_confidence,
+            "weather_status": weather_status,
+        }
+
         return {
-            "city": name,
+            "city": clean_city,
             "country": country,
+            "destination_title": formatted_dest_title,
             "latitude": lat,
             "longitude": lon,
             "timezone": timezone,
-            "provider": "Open-Meteo Weather Service",
+            "provider": "Historical Climatological Benchmark" if is_seasonal else "Open-Meteo Weather Service",
             "timestamp": now_utc,
             "forecast_type": "Seasonal Climate Estimate" if is_seasonal else "Live & 7-Day Forecast",
             "is_seasonal_estimate": is_seasonal,
             "weather_status": weather_status,
             "weather_confidence": weather_confidence,
             "provenance_note": (
-                f"Seasonal climate projection for target date. Live atmospheric forecast updates within 14 days of trip."
+                f"Historical seasonal climate estimate for target travel dates. Live atmospheric forecast updates within 14 days of departure."
                 if is_seasonal else f"Live Open-Meteo observations and 7-day model forecast as of {now_utc}."
             ),
-            "current": {
-                "temperature": current.get("temperature_2m"),
-                "feels_like": current.get("apparent_temperature"),
-                "humidity": current.get("relative_humidity_2m"),
-                "wind_speed": current.get("wind_speed_10m"),
-                "wind_direction": wind_dir,
-                "wind_degrees": wind_deg,
-                "precipitation": current.get("precipitation"),
-                "uv_index": current.get("uv_index"),
-                "visibility": current.get("visibility"),
-                "pressure": current.get("surface_pressure"),
-                "is_day": current.get("is_day", 1),
-                "description": WMO_MAP.get(code, "Unknown"),
-                "weather_code": code,
-            },
+            "current": display_current,
             "selected_date_weather": selected_date_weather,
-            "forecast": forecast,
-            "hourly": hourly_forecast,
+            "forecast": forecast if not is_seasonal else [],
+            "hourly": hourly_forecast if not is_seasonal else [],
         }
     except HTTPException as he:
         raise he

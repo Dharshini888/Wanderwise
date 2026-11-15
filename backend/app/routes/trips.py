@@ -193,6 +193,27 @@ def resolve_trip_preferences(data: TripCreate, current_user: Optional[User]) -> 
         "child_ages": child_ages
     }
 
+    # Travel style intelligence:
+    # 1. If children > 0 or "family" in interests, infer "family"
+    # 2. If explicit style was provided and not default solo, honor it
+    # 3. Else infer by traveler party size: 1 -> solo, 2 -> couple, 3+ -> friends
+    interests_str = str(interests or "").lower()
+    raw_travel_style = raw_prefs.get("travel_style") or data.travel_style
+    if children > 0 or "family" in interests_str:
+        travel_style = "family"
+    elif raw_travel_style and raw_travel_style not in ["solo", ""]:
+        travel_style = raw_travel_style
+    elif total_travelers == 2:
+        travel_style = "couple"
+    elif total_travelers > 2:
+        travel_style = "friends"
+    elif raw_travel_style:
+        travel_style = raw_travel_style
+    elif current_user and current_user.travel_styles:
+        travel_style = current_user.travel_styles.split(",")[0].strip()
+    else:
+        travel_style = "solo"
+
     # Ensure raw_prefs holds all resolved fields with canonical traveler representation
     raw_prefs["currency"] = currency
     raw_prefs["travel_style"] = travel_style
@@ -243,6 +264,122 @@ def resolve_trip_preferences(data: TripCreate, current_user: Optional[User]) -> 
     }
 
 
+@router.get("/locations/search")
+def search_locations(q: str = Query(..., min_length=1)):
+    """Search for matching worldwide cities/destinations for autocomplete."""
+    from app.services.location.location_normalizer import GLOBAL_DESTINATION_GAZETTEER
+    from app.services.maps.nominatim_service import STATIC_COORDS, geocode_place
+    q_low = q.strip().lower()
+    results = []
+    seen = set()
+
+    for k, v in GLOBAL_DESTINATION_GAZETTEER.items():
+        if q_low in k or q_low in v.get("name", "").lower() or q_low in v.get("country", "").lower():
+            name = v.get("name", k.title())
+            country = v.get("country", "")
+            key = f"{name.lower()}_{country.lower()}"
+            if key not in seen:
+                seen.add(key)
+                results.append({
+                    "name": name,
+                    "country": country,
+                    "display_name": f"{name}, {country}" if country else name,
+                    "currency": v.get("currency", "USD"),
+                    "latitude": v.get("latitude"),
+                    "longitude": v.get("longitude")
+                })
+
+    for k, v in STATIC_COORDS.items():
+        disp = v.get("display_name", k.title())
+        if q_low in k or q_low in disp.lower():
+            parts = [p.strip() for p in disp.split(",")]
+            city = parts[0]
+            country = parts[-1] if len(parts) > 1 else ""
+            key = f"{city.lower()}_{country.lower()}"
+            if key not in seen:
+                seen.add(key)
+                results.append({
+                    "name": city,
+                    "country": country,
+                    "display_name": disp,
+                    "currency": "USD",
+                    "latitude": v.get("lat"),
+                    "longitude": v.get("lon")
+                })
+
+    if not results and len(q_low) >= 3:
+        try:
+            geo = geocode_place(q)
+            if geo and geo.get("lat") and geo.get("source") != "Default Search Fallback":
+                disp = geo.get("display_name", q.title())
+                parts = [p.strip() for p in disp.split(",")]
+                city = parts[0]
+                country = parts[-1] if len(parts) > 1 else ""
+                results.append({
+                    "name": city,
+                    "country": country,
+                    "display_name": disp,
+                    "currency": "USD",
+                    "latitude": geo.get("lat"),
+                    "longitude": geo.get("lon")
+                })
+        except Exception:
+            pass
+
+    return results[:8]
+
+
+@router.get("/locations/reverse-geocode")
+def reverse_geocode_location(lat: float = Query(...), lon: float = Query(...)):
+    """Reverse geocode coordinates to city and country for current location button."""
+    from app.services.maps.nominatim_service import reverse_geocode
+    from app.services.location.location_normalizer import _haversine_km, GLOBAL_DESTINATION_GAZETTEER
+    try:
+        rev = reverse_geocode(lat, lon)
+        if rev and rev.get("display_name"):
+            disp = rev.get("display_name")
+            parts = [p.strip() for p in disp.split(",")]
+            city = parts[0]
+            country = parts[-1] if len(parts) > 1 else ""
+            return {
+                "city": city,
+                "country": country,
+                "display_name": f"{city}, {country}" if country else city,
+                "latitude": lat,
+                "longitude": lon
+            }
+    except Exception:
+        pass
+
+    closest = None
+    min_dist = float("inf")
+    for k, v in GLOBAL_DESTINATION_GAZETTEER.items():
+        v_lat = v.get("latitude")
+        v_lon = v.get("longitude")
+        if v_lat and v_lon:
+            d = _haversine_km(lat, lon, v_lat, v_lon)
+            if d < min_dist:
+                min_dist = d
+                closest = v
+
+    if closest and min_dist <= 150.0:
+        return {
+            "city": closest.get("name"),
+            "country": closest.get("country"),
+            "display_name": f"{closest.get('name')}, {closest.get('country')}",
+            "latitude": lat,
+            "longitude": lon
+        }
+
+    return {
+        "city": "Current Location",
+        "country": "",
+        "display_name": "Current Location",
+        "latitude": lat,
+        "longitude": lon
+    }
+
+
 @router.post("/check-budget")
 def check_budget(
     destination: str,
@@ -286,9 +423,17 @@ def create_new_trip(
     adults = resolved["adults"]
     children = resolved["children"]
 
+    if not data.country:
+        from app.services.location.location_normalizer import resolve_destination_info
+        dest_info = resolve_destination_info(data.destination, resolved["origin_city"])
+        if dest_info.get("country"):
+            data.country = dest_info["country"]
+
+    is_unrestricted_budget = data.budget is None or float(data.budget) <= 0
+
     # Central Budget Allocation Engine: Strict Feasibility Validation
     budget_plan = BudgetAllocationService.calculate_plan(
-        total_budget=data.budget,
+        total_budget=data.budget if not is_unrestricted_budget else None,
         currency=data.currency,
         tier=resolved["budget_tier"],
         destination=data.destination,
@@ -301,7 +446,7 @@ def create_new_trip(
         accommodation_preference=resolved["accommodation_preference"]
     )
 
-    if not budget_plan["is_feasible"]:
+    if not is_unrestricted_budget and not budget_plan["is_feasible"]:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail={
@@ -331,6 +476,11 @@ def create_new_trip(
         resolved["trip_preferences"] = {}
     resolved["trip_preferences"]["canonical_budget_plan"] = budget_plan
     resolved["trip_preferences"]["budget_plan"] = budget_plan
+    resolved["trip_preferences"]["is_budget_unrestricted"] = is_unrestricted_budget
+    resolved["trip_preferences"]["budget_specified"] = not is_unrestricted_budget
+
+    if is_unrestricted_budget:
+        data.budget = budget_plan["total_estimated_trip_cost"]
 
     data.transportation = resolved["transportation"]
     data.accommodation_preference = resolved["accommodation_preference"]
@@ -409,6 +559,17 @@ def create_new_trip(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=f"Failed to generate verified itinerary activities for {trip.destination}: {gen_error}. Your trip details and preferences are preserved (Trip ID: {trip.id}). Please retry itinerary generation."
         )
+
+    from app.ai.validators.final_itinerary_validator import FinalItineraryValidator
+    cov_rep = getattr(FinalItineraryValidator, "last_interest_coverage_report", None)
+    if cov_rep:
+        from sqlalchemy.orm.attributes import flag_modified
+        new_prefs = dict(trip.trip_preferences or {})
+        new_prefs["interest_coverage_report"] = cov_rep
+        trip.trip_preferences = new_prefs
+        flag_modified(trip, "trip_preferences")
+        db.commit()
+        db.refresh(trip)
 
     return enrich_trip_response(trip, db)
 
@@ -499,9 +660,11 @@ def _populate_trip_itinerary_from_ai(db: Session, trip: Trip, ai_data: dict) -> 
 
     days_data = validated_days or days_data
     if hasattr(FinalItineraryValidator, "last_interest_coverage_report") and FinalItineraryValidator.last_interest_coverage_report:
-        if not isinstance(trip.trip_preferences, dict):
-            trip.trip_preferences = {}
-        trip.trip_preferences["interest_coverage_report"] = FinalItineraryValidator.last_interest_coverage_report
+        from sqlalchemy.orm.attributes import flag_modified
+        new_prefs = dict(trip.trip_preferences or {})
+        new_prefs["interest_coverage_report"] = FinalItineraryValidator.last_interest_coverage_report
+        trip.trip_preferences = new_prefs
+        flag_modified(trip, "trip_preferences")
         db.flush()
     total_inserted_count = 0
 
@@ -1258,7 +1421,31 @@ def regenerate_day_endpoint(
     for idx, act_data in enumerate(new_acts):
         # Skip if this is already an existing locked activity in the DB
         if act_data.get("id") in locked_ids:
+            locked_match = next((a for a in locked_acts if a.id == act_data["id"]), None)
+            if locked_match and locked_match.end_time:
+                try:
+                    parts = locked_match.end_time.split(":")
+                    l_et_mins = int(parts[0]) * 60 + int(parts[1])
+                    current_time_mins = max(current_time_mins, l_et_mins + 20)
+                except Exception:
+                    pass
             continue
+
+        dur_mins = act_data.get("duration_minutes") or 90
+
+        # Prevent collision with any preserved locked activity on this day
+        for l_act in locked_acts:
+            if l_act.start_time:
+                try:
+                    l_st_parts = l_act.start_time.split(":")
+                    l_st_mins = int(l_st_parts[0]) * 60 + int(l_st_parts[1])
+                    l_et_parts = (l_act.end_time or "18:00").split(":")
+                    l_et_mins = int(l_et_parts[0]) * 60 + int(l_et_parts[1])
+                    # If current time falls within locked activity or starts too close before it to fit
+                    if (current_time_mins < l_st_mins and (current_time_mins + dur_mins) > (l_st_mins - 15)) or (l_st_mins <= current_time_mins < l_et_mins + 15):
+                        current_time_mins = l_et_mins + 20
+                except Exception:
+                    pass
             
         p_name = act_data.get("title", f"Attraction {idx+1}")
         
@@ -1364,6 +1551,26 @@ def regenerate_day_endpoint(
     if total_count == 0:
         db.rollback()
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Day regeneration failed because no verified activities could be inserted.")
+
+    db.flush()
+
+    # Re-order all activities (locked + newly inserted) chronologically with contiguous order_index
+    all_day_acts = db.query(ItineraryActivity).filter(
+        ItineraryActivity.day_id == it_day.id
+    ).all()
+
+    def _parse_start_mins(a):
+        if not a.start_time:
+            return 9999
+        try:
+            p = a.start_time.split(":")
+            return int(p[0]) * 60 + int(p[1])
+        except Exception:
+            return 9999
+
+    all_day_acts.sort(key=_parse_start_mins)
+    for sorted_idx, a in enumerate(all_day_acts, start=1):
+        a.order_index = sorted_idx
 
     db.commit()
     db.refresh(it_day)

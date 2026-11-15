@@ -408,11 +408,18 @@ export default function TripDetails() {
               {/* Bottom-Up Estimation, Buffer & Provenance */}
               <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/10 text-[11px] text-[var(--text-muted)]">
                 <div className="flex items-center gap-3 flex-wrap">
-                  {(trip.budget_plan.remaining_surplus_buffer !== undefined || trip.budget_plan.remaining_budget !== undefined) && (
+                  {trip.budget_plan.emergency_reserve !== undefined && (
                     <span>
-                      Surplus Buffer: <strong className="text-emerald-400 font-extrabold">
-                        {trip.budget_plan.formatted_remaining_surplus || trip.budget_plan.formatted_remaining_budget || `${trip.currency_symbol || '₹'} ${trip.budget_plan.remaining_surplus_buffer ?? trip.budget_plan.remaining_budget}`}
-                      </strong> ({trip.budget_plan.surplus_buffer_percentage}% reserve)
+                      Emergency Reserve: <strong className="text-purple-400 font-extrabold">
+                        {trip.budget_plan.formatted_emergency_reserve || `${trip.currency_symbol || '₹'} ${Number(trip.budget_plan.emergency_reserve).toLocaleString()}`}
+                      </strong> (Protected)
+                    </span>
+                  )}
+                  {trip.budget_plan.unallocated_balance !== undefined && (
+                    <span>
+                      Unallocated Balance: <strong className={`font-extrabold ${trip.budget_plan.unallocated_balance >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                        {trip.budget_plan.formatted_unallocated_balance || `${trip.currency_symbol || '₹'} ${Number(trip.budget_plan.unallocated_balance).toLocaleString()}`}
+                      </strong>
                     </span>
                   )}
                   {trip.budget_plan.uncertainty_range && (

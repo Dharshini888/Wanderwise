@@ -31,7 +31,13 @@ STATIC_COORDS = {
     "istanbul": {"lat": 41.0082, "lon": 28.9784, "display_name": "Istanbul, Turkey", "country_code": "TR"},
     "cairo": {"lat": 30.0444, "lon": 31.2357, "display_name": "Cairo, Egypt", "country_code": "EG"},
     "bern": {"lat": 46.9480, "lon": 7.4474, "display_name": "Bern, Switzerland", "country_code": "CH"},
-    "zermatt": {"lat": 45.9763, "lon": 7.7491, "display_name": "Zermatt, Switzerland", "country_code": "CH"}
+    "zermatt": {"lat": 45.9763, "lon": 7.7491, "display_name": "Zermatt, Switzerland", "country_code": "CH"},
+    "reykjavik": {"lat": 64.1466, "lon": -21.9426, "display_name": "Reykjavík, Iceland", "country_code": "IS"},
+    "tromso": {"lat": 69.6492, "lon": 18.9553, "display_name": "Tromsø, Norway", "country_code": "NO"},
+    "tromsø": {"lat": 69.6492, "lon": 18.9553, "display_name": "Tromsø, Norway", "country_code": "NO"},
+    "cusco": {"lat": -13.5320, "lon": -71.9675, "display_name": "Cusco, Peru", "country_code": "PE"},
+    "cuzco": {"lat": -13.5320, "lon": -71.9675, "display_name": "Cusco, Peru", "country_code": "PE"},
+    "queenstown": {"lat": -45.0312, "lon": 168.6626, "display_name": "Queenstown, New Zealand", "country_code": "NZ"}
 }
 
 def reverse_geocode(lat: float, lon: float) -> Optional[Dict[str, Any]]:

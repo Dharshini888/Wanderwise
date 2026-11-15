@@ -1,40 +1,131 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { IconX, IconSparkles, IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
-import { fetchCurrencyRegistry, checkDuplicateTrip } from '../../../api/trips';
+import {
+  IconX,
+  IconSparkles,
+  IconPlaneDeparture,
+  IconMapPin,
+  IconCalendar,
+  IconUsers,
+  IconCoin,
+  IconCurrentLocation,
+  IconLoader2,
+  IconPlus,
+  IconMinus,
+  IconCheck,
+} from '@tabler/icons-react';
+import { fetchCurrencyRegistry, checkDuplicateTrip, searchLocations, reverseGeocodeLocation } from '../../../api/trips';
 import { useAuth } from '../../../context/AuthContext';
 
-import DestinationStep from './steps/DestinationStep';
-import DateStep from './steps/DateStep';
-import TravelersStep from './steps/TravelersStep';
-import BudgetStep from './steps/BudgetStep';
-import InterestsStep from './steps/InterestsStep';
-import FoodStep from './steps/FoodStep';
-import AccommodationStep from './steps/AccommodationStep';
-import TransportStep from './steps/TransportStep';
-import PaceStep from './steps/PaceStep';
-import AccessibilityStep from './steps/AccessibilityStep';
-import AiPreferencesStep from './steps/AiPreferencesStep';
-import DailyRoutineStep from './steps/DailyRoutineStep';
-import WeatherStep from './steps/WeatherStep';
-import ReviewStep from './steps/ReviewStep';
+const PREFERENCE_OPTIONS = [
+  { id: 'Adventure', label: 'Adventure', emoji: '🏔️', desc: 'Trekking, outdoor sports & thrills' },
+  { id: 'Culture and History', label: 'Culture & History', emoji: '🏛️', desc: 'Museums, heritage sites & temples' },
+  { id: 'Nature', label: 'Nature', emoji: '🌿', desc: 'Parks, viewpoints & landscapes' },
+  { id: 'Food', label: 'Food', emoji: '🍲', desc: 'Local cuisine, street food & dining' },
+  { id: 'Shopping', label: 'Shopping', emoji: '🛍️', desc: 'Local bazaars, markets & craft hubs' },
+  { id: 'Relaxation', label: 'Relaxation', emoji: '🧘', desc: 'Scenic walks, cafes & leisure' },
+  { id: 'Family Activities', label: 'Family Activities', emoji: '👨‍👩‍👧', desc: 'Child-friendly spots & theme parks' },
+];
 
-export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
-  const [step, setStep] = useState(1);
+const DEFAULT_CURRENCIES = [
+  { code: 'USD', symbol: '$', name: 'US Dollar' },
+  { code: 'EUR', symbol: '€', name: 'Euro' },
+  { code: 'INR', symbol: '₹', name: 'Indian Rupee' },
+  { code: 'GBP', symbol: '£', name: 'British Pound' },
+  { code: 'JPY', symbol: '¥', name: 'Japanese Yen' },
+  { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
+  { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
+  { code: 'SGD', symbol: 'S$', name: 'Singapore Dollar' },
+  { code: 'AED', symbol: 'د.إ', name: 'UAE Dirham' },
+  { code: 'CHF', symbol: 'CHF', name: 'Swiss Franc' },
+];
+
+export default function WizardModal({
+  userId,
+  isOpen = true,
+  onClose,
+  onSuccess,
+  destination = '',
+  initialDestination = '',
+}) {
+  const { user } = useAuth();
+
+  const [form, setForm] = useState({
+    origin_city: 'Coimbatore',
+    destination: destination || initialDestination || '',
+    country: '',
+    start_date: '',
+    end_date: '',
+    adults: 1,
+    children: 0,
+    budget: '',
+    currency: 'USD',
+    interests: [],
+  });
+
+  const [currencyList, setCurrencyList] = useState(DEFAULT_CURRENCIES);
   const [submitting, setSubmitting] = useState(false);
   const [generationStage, setGenerationStage] = useState(0);
-  const [currencyList, setCurrencyList] = useState([]);
-  const [isBudgetFeasible, setIsBudgetFeasible] = useState(true);
-  const [feasibilityData, setFeasibilityData] = useState(null);
+
+  // Autocomplete & GPS States
+  const [originSuggestions, setOriginSuggestions] = useState([]);
+  const [destSuggestions, setDestSuggestions] = useState([]);
+  const [showOriginDropdown, setShowOriginDropdown] = useState(false);
+  const [showDestDropdown, setShowDestDropdown] = useState(false);
+  const [gpsLoading, setGpsLoading] = useState(false);
+  const [gpsSuccess, setGpsSuccess] = useState(false);
+
+  const originInputRef = useRef(null);
+  const destInputRef = useRef(null);
 
   const GENERATION_STAGES = [
     { title: 'Personalizing Itinerary Plan', desc: 'Resolving travel style, group dynamics & pace preferences...' },
     { title: 'Curating Real Places & Heritage Sites', desc: 'Selecting verified attractions, UNESCO landmarks & viewpoints...' },
-    { title: 'Matching Dining & Dietary Criteria', desc: 'Verifying restaurants, street food & vegetarian-friendly venues...' },
-    { title: 'Calculating Route & Door-to-Door Budget', desc: 'Estimating intercity transport, lodging & category allocations...' },
+    { title: 'Matching Dining & Dietary Criteria', desc: 'Verifying authentic restaurants & local culinary traditions...' },
+    { title: 'Calculating Routes & Door-to-Door Budget', desc: 'Estimating intercity transport, lodging & category allocations...' },
     { title: 'Finalizing & Saving Trip', desc: 'Persisting your complete day-by-day structured itinerary...' },
   ];
 
+  // Sync initial destination if passed externally
+  useEffect(() => {
+    const targetDest = destination || initialDestination;
+    if (targetDest && (!form.destination || form.destination !== targetDest)) {
+      setForm((prev) => ({ ...prev, destination: targetDest }));
+    }
+  }, [destination, initialDestination]);
+
+  // Initial load: currencies & user profile defaults
+  useEffect(() => {
+    if (isOpen) {
+      fetchCurrencyRegistry()
+        .then((res) => {
+          if (Array.isArray(res.data) && res.data.length > 0) {
+            setCurrencyList(res.data);
+          }
+        })
+        .catch(() => {});
+
+      if (user) {
+        setForm((prev) => ({
+          ...prev,
+          currency: user.currency || prev.currency || 'USD',
+          origin_city: user.city || user.origin_city || prev.origin_city || 'Coimbatore',
+        }));
+      }
+    }
+  }, [isOpen, user]);
+
+  // Prevent background scrolling while modal is open
+  useEffect(() => {
+    if (!isOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [isOpen]);
+
+  // Stage animation while submitting
   useEffect(() => {
     let interval;
     if (submitting) {
@@ -48,190 +139,188 @@ export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
     return () => clearInterval(interval);
   }, [submitting]);
 
-  const [form, setForm] = useState({
-    destination: '',
-    country: '',
-    origin_city: 'Coimbatore',
-    origin_airport: '',
-    destination_airport: '',
-    visa_status: 'No Visa Needed',
-    start_date: '',
-    end_date: '',
-    flexible_dates: 'Fixed Dates',
-    travel_type: 'leisure',
-    travel_style: 'solo',
-    adults: 1,
-    children: 0,
-    seniors: 0,
-    pets: 0,
-    budget: '1500',
-    currency: 'USD',
-    budget_type: 'Mid-range',
-    interests: '',
-    food_preferences: 'Street Food, Local Delicacies',
-    food_allergies: '',
-    accommodation_preference: 'hotel',
-    transportation: 'flight',
-    activity_pace: 'balanced',
-    accessibility: '',
-    ai_preferences: 'avoid_crowds,hidden_gems',
-    wake_up_time: '08:00',
-    sleep_time: '22:30',
-    lunch_time: '13:00',
-    dinner_time: '19:30',
-    preferred_sunset_spot: 'sunset',
-    weather_preference: 'mix',
-  });
-
-  const { user } = useAuth();
-
+  // Autocomplete debounce for Starting Location
   useEffect(() => {
-    if (isOpen) {
-      fetchCurrencyRegistry()
-        .then((res) => {
-          if (Array.isArray(res.data)) {
-            setCurrencyList(res.data);
-          }
-        })
-        .catch(() => {});
-
-      if (user) {
-        setForm((prev) => ({
-          ...prev,
-          currency: user.currency || prev.currency || 'USD',
-          budget_type: user.preferred_budget || prev.budget_type || 'mid_range',
-          travel_style: user.travel_styles ? user.travel_styles.split(',')[0].trim().toLowerCase() : prev.travel_style,
-          interests: prev.interests || '',
-          food_preferences: user.dietary_preferences || prev.food_preferences,
-          weather_preference: user.preferred_climate || prev.weather_preference,
-        }));
-      }
+    const val = form.origin_city.trim();
+    if (!val || val.length < 2) {
+      setOriginSuggestions([]);
+      return;
     }
-  }, [isOpen, user]);
+    const timer = setTimeout(async () => {
+      const results = await searchLocations(val);
+      setOriginSuggestions(results);
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [form.origin_city]);
 
+  // Autocomplete debounce for Destination
   useEffect(() => {
-    if (!isOpen) return;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [isOpen]);
+    const val = form.destination.trim();
+    if (!val || val.length < 2) {
+      setDestSuggestions([]);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      const results = await searchLocations(val);
+      setDestSuggestions(results);
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [form.destination]);
 
   if (!isOpen) return null;
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const todayStr = new Date().toISOString().split('T')[0];
 
-  const handleToggleInterest = (tag) => {
-    let list = form.interests ? form.interests.split(',').map((s) => s.trim()).filter(Boolean) : [];
-    if (list.includes(tag)) {
-      list = list.filter((t) => t !== tag);
+  // Calculate Duration
+  let durationDays = 0;
+  let durationNights = 0;
+  let isDateRangeValid = true;
+
+  if (form.start_date && form.end_date) {
+    const start = new Date(form.start_date);
+    const end = new Date(form.end_date);
+    if (end >= start) {
+      const diffMs = end.getTime() - start.getTime();
+      durationDays = Math.round(diffMs / (1000 * 60 * 60 * 24)) + 1;
+      durationNights = Math.max(0, durationDays - 1);
     } else {
-      list.push(tag);
+      isDateRangeValid = false;
     }
-    setForm({ ...form, interests: list.join(', ') });
+  }
+
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser.');
+      return;
+    }
+    setGpsLoading(true);
+    setGpsSuccess(false);
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          const loc = await reverseGeocodeLocation(lat, lon);
+          if (loc && loc.city && loc.city !== 'Current Location') {
+            setForm((prev) => ({
+              ...prev,
+              origin_city: loc.city,
+            }));
+            setGpsSuccess(true);
+          } else if (loc && loc.display_name) {
+            setForm((prev) => ({
+              ...prev,
+              origin_city: loc.display_name.split(',')[0].trim(),
+            }));
+            setGpsSuccess(true);
+          } else {
+            setForm((prev) => ({ ...prev, origin_city: 'Current Location' }));
+            setGpsSuccess(true);
+          }
+        } catch (_) {
+          alert('Could not determine city name from GPS coordinates.');
+        } finally {
+          setGpsLoading(false);
+          setTimeout(() => setGpsSuccess(false), 3000);
+        }
+      },
+      (err) => {
+        setGpsLoading(false);
+        alert(err.code === 1 ? 'Location permission was denied. Please enter your city manually.' : 'Unable to acquire GPS location.');
+      },
+      { timeout: 8000 }
+    );
   };
 
-  const handleToggleFood = (food) => {
-    let list = form.food_preferences ? form.food_preferences.split(',').map((s) => s.trim()).filter(Boolean) : [];
-    if (list.includes(food)) {
-      list = list.filter((f) => f !== food);
-    } else {
-      list.push(food);
-    }
-    setForm({ ...form, food_preferences: list.join(', ') });
+  const handleTogglePreference = (prefId) => {
+    setForm((prev) => {
+      const exists = prev.interests.includes(prefId);
+      const nextInterests = exists
+        ? prev.interests.filter((i) => i !== prefId)
+        : [...prev.interests, prefId];
+      return { ...prev, interests: nextInterests };
+    });
   };
 
-  const handleToggleAccess = (acc) => {
-    let list = form.accessibility ? form.accessibility.split(',').map((s) => s.trim()).filter(Boolean) : [];
-    if (list.includes(acc)) {
-      list = list.filter((a) => a !== acc);
-    } else {
-      list.push(acc);
-    }
-    setForm({ ...form, accessibility: list.join(', ') });
-  };
+  const isFormValid =
+    form.destination.trim().length >= 2 &&
+    form.start_date &&
+    form.end_date &&
+    isDateRangeValid &&
+    durationDays > 0;
 
-  const handleToggleAiPref = (prefId) => {
-    let list = form.ai_preferences ? form.ai_preferences.split(',').map((s) => s.trim()).filter(Boolean) : [];
-    if (list.includes(prefId)) {
-      list = list.filter((p) => p !== prefId);
-    } else {
-      list.push(prefId);
-    }
-    setForm({ ...form, ai_preferences: list.join(', ') });
-  };
+  const handleSubmit = async (e) => {
+    if (e) e.preventDefault();
+    if (!isFormValid || submitting) return;
 
-  const validateCurrentStep = () => {
-    if (step === 1) return form.destination.trim().length >= 2;
-    if (step === 2) {
-      if (!form.start_date || !form.end_date) return false;
-      return new Date(form.end_date) >= new Date(form.start_date);
-    }
-    if (step === 4) return parseFloat(form.budget) > 0;
-    return true;
-  };
-
-  const handleSubmit = async () => {
-    if (submitting) return;
     setSubmitting(true);
     try {
+      const interestsStr = form.interests.join(', ');
+      const totalAdults = parseInt(form.adults || 1);
+      const totalChildren = parseInt(form.children || 0);
+      const totalGroup = Math.max(1, totalAdults + totalChildren);
+      const isFamily = totalChildren > 0 || form.interests.includes('Family Activities');
+      const travelStyle = isFamily ? 'family' : totalGroup > 1 ? 'friends' : 'solo';
+      const parsedBudget = form.budget && parseFloat(form.budget) > 0 ? parseFloat(form.budget) : null;
+
       const tripPreferencesObj = {
-        destination: form.destination,
-        country: form.country,
-        origin_city: form.origin_city,
-        origin_airport: form.origin_airport,
-        destination_airport: form.destination_airport,
-        visa_status: form.visa_status,
+        destination: form.destination.trim(),
+        country: form.country || '',
+        origin_city: form.origin_city.trim() || 'Coimbatore',
         start_date: form.start_date,
         end_date: form.end_date,
-        flexible_dates: form.flexible_dates,
-        travel_type: form.travel_type,
-        travel_style: form.travel_style,
-        budget: form.budget,
-        currency: form.currency,
-        budget_type: form.budget_type,
-        interests: form.interests,
-        accommodation_preference: form.accommodation_preference,
-        transportation: form.transportation,
-        activity_pace: form.activity_pace,
+        travel_style: travelStyle,
+        budget: parsedBudget,
+        currency: form.currency || 'USD',
+        budget_type: parsedBudget ? 'Mid-range' : 'Unrestricted',
+        interests: interestsStr || 'General Exploration',
+        accommodation_preference: 'hotel',
+        transportation: 'Mixed Transport',
+        activity_pace: 'balanced',
         travelers: {
-          adults: form.adults,
-          children: form.children,
-          seniors: form.seniors,
-          pets: form.pets,
+          adults: totalAdults,
+          children: totalChildren,
+          total: totalGroup,
         },
         food: {
-          preferences: form.food_preferences,
-          allergies: form.food_allergies,
+          preferences: 'No Preference',
         },
-        accessibility: form.accessibility,
-        ai: form.ai_preferences,
         daily_routine: {
-          wake_up_time: form.wake_up_time,
-          sleep_time: form.sleep_time,
-          lunch_time: form.lunch_time,
-          dinner_time: form.dinner_time,
-          preferred_viewpoint: form.preferred_sunset_spot,
+          wake_up_time: '08:00',
+          sleep_time: '22:30',
+          lunch_time: '13:00',
+          dinner_time: '19:30',
+          preferred_viewpoint: 'sunset',
         },
-        weather: form.weather_preference,
       };
 
       const payload = {
-        ...form,
+        destination: form.destination.trim(),
+        country: form.country || '',
+        origin_city: form.origin_city.trim() || 'Coimbatore',
+        start_date: form.start_date,
+        end_date: form.end_date,
         user_id: Number(userId),
-        budget: parseFloat(form.budget),
-        group_size: parseInt(form.adults) + parseInt(form.children) + parseInt(form.seniors),
+        budget: parsedBudget,
+        currency: form.currency || 'USD',
+        travel_style: travelStyle,
+        group_size: totalGroup,
+        interests: interestsStr,
+        transportation: 'Mixed Transport',
+        accommodation_preference: 'hotel',
         trip_preferences: tripPreferencesObj,
         force_create: true,
       };
 
+      // Duplicate trip warning check
       try {
-        const dupCheck = await checkDuplicateTrip(form.destination, form.start_date);
+        const dupCheck = await checkDuplicateTrip(form.destination.trim(), form.start_date);
         if (dupCheck && dupCheck.has_duplicate) {
-          if (!window.confirm(dupCheck.message || 'You already have a trip to this destination around this time. Continue anyway?')) {
+          const proceed = window.confirm(
+            dupCheck.message || `You already have a trip scheduled for ${form.destination} around this date. Continue creating anyway?`
+          );
+          if (!proceed) {
             setSubmitting(false);
             return;
           }
@@ -243,38 +332,19 @@ export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
     } catch (err) {
       console.error('[WizardModal] Generation error:', err);
       const errDetail = err?.response?.data?.detail;
-      const errMsg = typeof errDetail === 'object'
-        ? (errDetail.message || JSON.stringify(errDetail))
-        : (errDetail || err?.message || 'Failed to generate itinerary. Please try again.');
+      const errMsg =
+        typeof errDetail === 'object'
+          ? errDetail.message || JSON.stringify(errDetail)
+          : errDetail || err?.message || 'Failed to generate itinerary. Please try again.';
       alert(`Itinerary generation notice: ${errMsg}`);
     } finally {
       setSubmitting(false);
     }
   };
 
-  const renderStepTitle = () => {
-    const titles = [
-      '1. Destination & Origin',
-      '2. Trip Dates & Duration',
-      '3. Travelers & Group Style',
-      '4. Budget & Currency',
-      '5. Activity Interests & Tags',
-      '6. Dining & Dietary Preferences',
-      '7. Accommodation Preference',
-      '8. Primary Transportation Mode',
-      '9. Daily Activity Pace',
-      '10. Accessibility & Comfort',
-      '11. AI Recommendation Directives',
-      '12. Daily Routine & Schedule',
-      '13. Weather & Climate Preferences',
-      '14. Review & AI Itinerary Generation',
-    ];
-    return titles[step - 1];
-  };
-
   return createPortal(
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/65 backdrop-blur-md p-4 sm:p-6 overflow-hidden">
-      <div className="bg-white dark:bg-gray-800 rounded-3xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden relative">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/65 backdrop-blur-md p-3 sm:p-6 overflow-hidden animate-fadeIn">
+      <div className="bg-white dark:bg-gray-800 rounded-3xl max-w-xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden relative">
         {/* Active Generation Loading Overlay */}
         {submitting && (
           <div className="absolute inset-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md z-50 flex flex-col items-center justify-center p-6 text-center space-y-5 animate-fadeIn">
@@ -295,7 +365,6 @@ export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
                 {GENERATION_STAGES[generationStage]?.desc || 'Validating routes, verified places, and budget allocation...'}
               </p>
             </div>
-            {/* Visual Step Indicator Dots */}
             <div className="flex items-center gap-1.5 pt-1">
               {GENERATION_STAGES.map((_, sIdx) => (
                 <div
@@ -312,100 +381,397 @@ export default function WizardModal({ userId, isOpen, onClose, onSuccess }) {
             </div>
           </div>
         )}
-        {/* Header & Progress Bar */}
-        <div className="p-6 pb-4 shrink-0 border-b border-gray-100 dark:border-gray-700/80 space-y-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <span className="text-[11px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-                Step {step} of 14
-              </span>
-              <h2 className="text-lg font-extrabold font-heading text-gray-900 dark:text-white">
-                {renderStepTitle()}
-              </h2>
+
+        {/* Modal Header */}
+        <div className="p-5 sm:p-6 pb-4 shrink-0 border-b border-gray-100 dark:border-gray-700/80 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+              <IconSparkles size={20} />
             </div>
-            <button onClick={onClose} className="p-2 rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
-              <IconX size={20} />
-            </button>
+            <div>
+              <h2 className="text-lg font-extrabold font-heading text-gray-900 dark:text-white leading-tight">
+                Plan a New Trip
+              </h2>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Enter your trip essentials and let WanderWise AI curate your itinerary.
+              </p>
+            </div>
           </div>
-
-          <div className="w-full bg-gray-100 dark:bg-gray-700 h-1.5 rounded-full overflow-hidden">
-            <div
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 h-full transition-all duration-300"
-              style={{ width: `${(step / 14) * 100}%` }}
-            />
-          </div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+          >
+            <IconX size={20} />
+          </button>
         </div>
 
-        {/* Step Body - Scrollable Container */}
-        <div className="p-6 py-4 overflow-y-auto flex-1 min-h-0 custom-scrollbar">
-          {step === 1 && <DestinationStep form={form} onChange={handleChange} />}
-          {step === 2 && <DateStep form={form} onChange={handleChange} />}
-          {step === 3 && <TravelersStep form={form} onChange={handleChange} />}
-          {step === 4 && <BudgetStep form={form} onChange={handleChange} currencyList={currencyList} />}
-          {step === 5 && <InterestsStep form={form} onToggleInterest={handleToggleInterest} />}
-          {step === 6 && <FoodStep form={form} onChange={handleChange} onToggleFood={handleToggleFood} />}
-          {step === 7 && <AccommodationStep form={form} onChange={handleChange} />}
-          {step === 8 && <TransportStep form={form} onChange={handleChange} />}
-          {step === 9 && <PaceStep form={form} onChange={handleChange} />}
-          {step === 10 && <AccessibilityStep form={form} onToggleAccess={handleToggleAccess} />}
-          {step === 11 && <AiPreferencesStep form={form} onToggleAiPref={handleToggleAiPref} />}
-          {step === 12 && <DailyRoutineStep form={form} onChange={handleChange} />}
-          {step === 13 && <WeatherStep form={form} onChange={handleChange} />}
-          {step === 14 && (
-            <ReviewStep
-              form={form}
-              onNavigateStep={(targetStep) => setStep(targetStep)}
-              onFeasibilityChange={(feasible, data) => {
-                setIsBudgetFeasible(feasible);
-                setFeasibilityData(data);
-              }}
-              onSelectAlternative={(altName) => {
-                setForm((prev) => ({ ...prev, destination: altName }));
-              }}
-            />
-          )}
-        </div>
+        {/* Form Body - Scrollable Container */}
+        <form onSubmit={handleSubmit} className="p-5 sm:p-6 overflow-y-auto flex-1 space-y-6 custom-scrollbar">
+          {/* 1. WHERE ARE YOU GOING? */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                1. Where are you going?
+              </span>
+            </div>
 
-        {/* Footer Navigation */}
-        <div className="p-6 pt-4 shrink-0 border-t border-gray-100 dark:border-gray-700/80 bg-white dark:bg-gray-800 flex items-center justify-between">
-          {step > 1 ? (
-            <button
-              type="button"
-              onClick={() => setStep(step - 1)}
-              className="px-4 py-2.5 rounded-xl text-xs font-bold bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 flex items-center gap-1"
-            >
-              <IconChevronLeft size={16} /> Back
-            </button>
-          ) : <div />}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              {/* Starting Location */}
+              <div className="relative">
+                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                  Starting Location
+                </label>
+                <div className="relative flex items-center">
+                  <div className="absolute left-3 text-gray-400 pointer-events-none">
+                    <IconPlaneDeparture size={16} />
+                  </div>
+                  <input
+                    ref={originInputRef}
+                    type="text"
+                    name="origin_city"
+                    value={form.origin_city}
+                    onChange={(e) => {
+                      setForm({ ...form, origin_city: e.target.value });
+                      setShowOriginDropdown(true);
+                    }}
+                    onFocus={() => setShowOriginDropdown(true)}
+                    placeholder="e.g. London, Chennai, New York"
+                    className="w-full pl-9 pr-9 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-xs font-semibold text-gray-800 dark:text-gray-100 placeholder-gray-400 transition"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleUseCurrentLocation}
+                    title="Use my current GPS location"
+                    disabled={gpsLoading}
+                    className={`absolute right-2 p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition ${
+                      gpsSuccess ? 'text-emerald-500' : ''
+                    }`}
+                  >
+                    {gpsLoading ? (
+                      <IconLoader2 size={16} className="animate-spin text-blue-600" />
+                    ) : gpsSuccess ? (
+                      <IconCheck size={16} className="text-emerald-500" />
+                    ) : (
+                      <IconCurrentLocation size={16} />
+                    )}
+                  </button>
+                </div>
 
-          {step < 14 ? (
-            <button
-              type="button"
-              disabled={!validateCurrentStep()}
-              onClick={() => setStep(step + 1)}
-              className="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 flex items-center gap-1 shadow-md"
-            >
-              Next Step <IconChevronRight size={16} />
-            </button>
-          ) : !isBudgetFeasible ? (
-            <button
-              type="button"
-              disabled={true}
-              title={feasibilityData?.shortfall ? `Budget shortfall: ${feasibilityData.formatted_shortfall}` : 'Budget is insufficient for this destination'}
-              className="px-6 py-2.5 rounded-xl text-xs font-extrabold bg-gray-400 dark:bg-gray-600 text-white cursor-not-allowed shadow flex items-center gap-2 opacity-80"
-            >
-              <IconSparkles size={18} /> Budget Insufficient — Adjust Parameters
-            </button>
-          ) : (
-            <button
-              type="button"
-              disabled={submitting}
-              onClick={handleSubmit}
-              className="px-6 py-2.5 rounded-xl text-xs font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-lg flex items-center gap-2 disabled:opacity-50"
-            >
-              <IconSparkles size={18} /> {submitting ? 'Generating AI Itinerary...' : 'Generate Personalized Itinerary'}
-            </button>
-          )}
+                {/* Autocomplete Dropdown */}
+                {showOriginDropdown && originSuggestions.length > 0 && (
+                  <div className="absolute z-30 left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl overflow-hidden max-h-48 overflow-y-auto">
+                    {originSuggestions.map((item, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => {
+                          setForm({ ...form, origin_city: item.name });
+                          setShowOriginDropdown(false);
+                        }}
+                        className="w-full text-left px-3.5 py-2 text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-700 dark:text-gray-200 flex items-center justify-between border-b border-gray-50 dark:border-gray-700/50 last:border-0"
+                      >
+                        <span className="font-semibold">{item.name}</span>
+                        <span className="text-[11px] text-gray-400">{item.country}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Destination */}
+              <div className="relative">
+                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                  Destination <span className="text-red-500">*</span>
+                </label>
+                <div className="relative flex items-center">
+                  <div className="absolute left-3 text-gray-400 pointer-events-none">
+                    <IconMapPin size={16} />
+                  </div>
+                  <input
+                    ref={destInputRef}
+                    type="text"
+                    name="destination"
+                    required
+                    value={form.destination}
+                    onChange={(e) => {
+                      setForm({ ...form, destination: e.target.value });
+                      setShowDestDropdown(true);
+                    }}
+                    onFocus={() => setShowDestDropdown(true)}
+                    placeholder="e.g. Tokyo, Paris, Bali, Kyoto"
+                    className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-xs font-semibold text-gray-800 dark:text-gray-100 placeholder-gray-400 transition"
+                  />
+                </div>
+
+                {/* Autocomplete Dropdown */}
+                {showDestDropdown && destSuggestions.length > 0 && (
+                  <div className="absolute z-30 left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl overflow-hidden max-h-48 overflow-y-auto">
+                    {destSuggestions.map((item, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => {
+                          setForm((prev) => ({
+                            ...prev,
+                            destination: item.name,
+                            country: item.country || prev.country,
+                            currency: item.currency || prev.currency,
+                          }));
+                          setShowDestDropdown(false);
+                        }}
+                        className="w-full text-left px-3.5 py-2 text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-700 dark:text-gray-200 flex items-center justify-between border-b border-gray-50 dark:border-gray-700/50 last:border-0"
+                      >
+                        <span className="font-semibold">{item.name}</span>
+                        <span className="text-[11px] text-gray-400">{item.country}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* 2. WHEN ARE YOU TRAVELLING? */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                2. When are you travelling?
+              </span>
+              {durationDays > 0 && isDateRangeValid && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                  ✨ {durationDays} {durationDays === 1 ? 'Day Trip' : `Days / ${durationNights} Night${durationNights === 1 ? '' : 's'}`}
+                </span>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                  Departure Date <span className="text-red-500">*</span>
+                </label>
+                <div className="relative flex items-center">
+                  <div className="absolute left-3 text-gray-400 pointer-events-none">
+                    <IconCalendar size={16} />
+                  </div>
+                  <input
+                    type="date"
+                    required
+                    min={todayStr}
+                    value={form.start_date}
+                    onChange={(e) => {
+                      const newStart = e.target.value;
+                      let newEnd = form.end_date;
+                      if (newEnd && new Date(newEnd) < new Date(newStart)) {
+                        newEnd = newStart;
+                      }
+                      setForm({ ...form, start_date: newStart, end_date: newEnd });
+                    }}
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-xs font-semibold text-gray-800 dark:text-gray-100 transition"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                  Return Date <span className="text-red-500">*</span>
+                </label>
+                <div className="relative flex items-center">
+                  <div className="absolute left-3 text-gray-400 pointer-events-none">
+                    <IconCalendar size={16} />
+                  </div>
+                  <input
+                    type="date"
+                    required
+                    min={form.start_date || todayStr}
+                    value={form.end_date}
+                    onChange={(e) => setForm({ ...form, end_date: e.target.value })}
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-xs font-semibold text-gray-800 dark:text-gray-100 transition"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {!isDateRangeValid && (
+              <p className="text-[11px] font-semibold text-red-600 dark:text-red-400">
+                Return date cannot be earlier than departure date.
+              </p>
+            )}
+          </div>
+
+          {/* 3. WHO'S TRAVELLING? */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                3. Who's travelling?
+              </span>
+              <span className="text-xs font-bold text-gray-600 dark:text-gray-300">
+                {parseInt(form.adults || 1) + parseInt(form.children || 0)} Traveller{parseInt(form.adults || 1) + parseInt(form.children || 0) > 1 ? 's' : ''}
+                {parseInt(form.children || 0) > 0 ? ` (${form.adults} Adults, ${form.children} Child${form.children > 1 ? 'ren' : ''})` : ''}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3.5 p-3.5 rounded-2xl bg-gray-50/70 dark:bg-gray-900/40 border border-gray-200/80 dark:border-gray-700/80">
+              {/* Adults Counter */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="block text-xs font-bold text-gray-800 dark:text-gray-200">Adults</span>
+                  <span className="block text-[10px] text-gray-400">Age 13+</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, adults: Math.max(1, parseInt(form.adults || 1) - 1) })}
+                    disabled={parseInt(form.adults || 1) <= 1}
+                    className="w-7 h-7 rounded-lg border border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-30 disabled:pointer-events-none transition"
+                  >
+                    <IconMinus size={14} />
+                  </button>
+                  <span className="w-5 text-center text-xs font-bold text-gray-900 dark:text-white">
+                    {form.adults}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, adults: Math.min(15, parseInt(form.adults || 1) + 1) })}
+                    className="w-7 h-7 rounded-lg border border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                  >
+                    <IconPlus size={14} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Children Counter */}
+              <div className="flex items-center justify-between border-l border-gray-200 dark:border-gray-700 pl-3.5">
+                <div>
+                  <span className="block text-xs font-bold text-gray-800 dark:text-gray-200">Children</span>
+                  <span className="block text-[10px] text-gray-400">Age 0–12</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, children: Math.max(0, parseInt(form.children || 0) - 1) })}
+                    disabled={parseInt(form.children || 0) <= 0}
+                    className="w-7 h-7 rounded-lg border border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-30 disabled:pointer-events-none transition"
+                  >
+                    <IconMinus size={14} />
+                  </button>
+                  <span className="w-5 text-center text-xs font-bold text-gray-900 dark:text-white">
+                    {form.children}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, children: Math.min(10, parseInt(form.children || 0) + 1) })}
+                    className="w-7 h-7 rounded-lg border border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                  >
+                    <IconPlus size={14} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 4. WHAT'S YOUR BUDGET? (OPTIONAL) */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                4. What's your budget? <span className="text-gray-400 font-normal lowercase">(optional)</span>
+              </span>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3">
+              <div className="col-span-2 relative">
+                <div className="relative flex items-center">
+                  <div className="absolute left-3 text-gray-400 pointer-events-none">
+                    <IconCoin size={16} />
+                  </div>
+                  <input
+                    type="number"
+                    min="0"
+                    step="100"
+                    name="budget"
+                    value={form.budget}
+                    onChange={(e) => setForm({ ...form, budget: e.target.value })}
+                    placeholder="e.g. 50,000 (Optional)"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-xs font-semibold text-gray-800 dark:text-gray-100 placeholder-gray-400 transition"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <select
+                  name="currency"
+                  value={form.currency}
+                  onChange={(e) => setForm({ ...form, currency: e.target.value })}
+                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 text-xs font-bold text-gray-800 dark:text-gray-100 transition"
+                >
+                  {currencyList.map((curr) => (
+                    <option key={curr.code} value={curr.code}>
+                      {curr.code} ({curr.symbol || curr.code})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <p className="text-[11px] text-gray-400 dark:text-gray-500">
+              Leave blank to generate an AI-estimated itinerary without budget restrictions.
+            </p>
+          </div>
+
+          {/* 5. WHAT DO YOU ENJOY? (OPTIONAL) */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                5. What do you enjoy? <span className="text-gray-400 font-normal lowercase">(optional)</span>
+              </span>
+              <span className="text-[10px] text-gray-400">
+                {form.interests.length > 0 ? `${form.interests.length} selected` : 'None selected'}
+              </span>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {PREFERENCE_OPTIONS.map((item) => {
+                const isSelected = form.interests.includes(item.id);
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => handleTogglePreference(item.id)}
+                    className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 border ${
+                      isSelected
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/25 scale-[1.02]'
+                        : 'bg-gray-50/80 dark:bg-gray-900/40 text-gray-700 dark:text-gray-300 border-gray-200/90 dark:border-gray-700/80 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    <span>{item.emoji}</span>
+                    <span>{item.label}</span>
+                    {isSelected && <IconCheck size={13} className="ml-0.5 text-white" />}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </form>
+
+        {/* Modal Footer Action */}
+        <div className="p-5 sm:p-6 pt-3 shrink-0 border-t border-gray-100 dark:border-gray-700/80 bg-gray-50/50 dark:bg-gray-800/80">
+          <button
+            type="button"
+            disabled={!isFormValid || submitting}
+            onClick={handleSubmit}
+            className="w-full py-3 px-5 rounded-2xl text-xs font-extrabold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 shadow-lg shadow-blue-500/20 disabled:opacity-40 disabled:pointer-events-none transition flex items-center justify-center gap-2"
+          >
+            {submitting ? (
+              <>
+                <IconLoader2 size={18} className="animate-spin" />
+                <span>Curating Your Personalized Itinerary...</span>
+              </>
+            ) : (
+              <>
+                <IconSparkles size={18} />
+                <span>Generate My Trip</span>
+              </>
+            )}
+          </button>
         </div>
       </div>
     </div>,

@@ -99,8 +99,10 @@ def canonicalize_place_category(category: str, is_dining: bool = False, title: s
 
     if is_dining or any(k in cat_l for k in ["restaurant", "cafe", "dining", "bistro", "bakery", "food"]):
         return "Dining"
-    if "hotel" in cat_l or "hotel" in name_l:
+    if "hotel" in cat_l or "hotel" in name_l or "check-in" in title_l:
         return "Hotel"
+    if any(k in combined for k in ["transit", "airport", "transfer", "shuttle", "station"]):
+        return "Transit"
     if "area suggestion" in cat_l or "area suggestion" in title_l or "exploration & leisure" in title_l:
         return "Area Suggestion"
     if any(k in combined for k in ["beach", "coast", "cove", "bay", "shore", "snorkeling"]):
@@ -297,6 +299,8 @@ class FinalItineraryValidator:
                 if not has_rail and t_mode and any(k in str(t_mode).lower() for k in ["metro", "subway", "train", "tram", "rail", "mrt", "tube"]):
                     act["transport_mode"] = "Taxi / Road Transport"
 
+                from app.services.pricing.canonical_pricing_registry import normalize_place_entity_key
+
                 # Check Duplicate Venue Across Entire Trip (both attractions and dining venues deduplicated globally)
                 entity_key = normalize_place_entity_key(p_name)
                 if not entity_key:
@@ -312,13 +316,22 @@ class FinalItineraryValidator:
                         try:
                             f_plat, f_plon = float(p_lat), float(p_lon)
                             is_dup_coord = False
+                            p_key = normalize_place_entity_key(p_name)
                             for prev_name, prev_lat_c, prev_lon_c in seen_coords_trip:
                                 coord_dist = haversine_distance_km(f_plat, f_plon, prev_lat_c, prev_lon_c)
+                                prev_key = normalize_place_entity_key(prev_name)
                                 name_tokens = set(re.findall(r'\b\w{3,}\b', p_name.lower()))
                                 prev_tokens = set(re.findall(r'\b\w{3,}\b', prev_name.lower()))
                                 has_word_overlap = bool(name_tokens & prev_tokens)
-                                if (coord_dist < 0.25 and (has_word_overlap or abs(f_plat - prev_lat_c) < 0.0001)) or (abs(f_plat - prev_lat_c) < 0.00005 and abs(f_plon - prev_lon_c) < 0.00005):
-                                    issues.append(f"Day {day_num}: Venue '{p_name}' is duplicate / co-located with '{prev_name}' ({round(coord_dist, 2)} km) — pruned")
+                                
+                                # Genuine duplicate: exact same venue entity
+                                if p_key and p_key == prev_key:
+                                    issues.append(f"Day {day_num}: Venue '{p_name}' is duplicate of '{prev_name}' — pruned")
+                                    is_dup_coord = True
+                                    break
+                                # Unrelated venues sharing identical coordinates without common complex name
+                                elif coord_dist < 0.05 and not has_word_overlap:
+                                    issues.append(f"Day {day_num}: Unrelated venue '{p_name}' shares identical coordinates with '{prev_name}' ({round(coord_dist, 2)} km) — pruned")
                                     is_dup_coord = True
                                     break
                             if is_dup_coord:
@@ -550,33 +563,71 @@ class FinalItineraryValidator:
                     overall_status = "Unavailable"
                     src_str = "Area Directory"
                 elif p_lat and p_lon and (p_lat != 0.0 or p_lon != 0.0):
-                    pv_str = "Verified Coordinates Only (Access Unverified)"
+                    pv_str = "Coordinates Verified (Hours & Access Unverified)"
                     overall_status = "Estimated"
                     src_str = "Geocoded Coordinates / OpenStreetMap"
+                    if not has_curated_registry:
+                        hours_status = "Hours unverified / Tentative schedule"
+                        public_access_status = "Public Access Unverified"
                 else:
                     pv_str = "Area Directory"
                     overall_status = "Estimated"
                     src_str = "Market-Calibrated Estimate"
 
-                id_status = "Unavailable" if is_area_sugg else ("Verified Place" if (has_curated_registry and not is_dining) else ("Verified Dining" if (p_lat and p_lon and is_dining) else "Estimated"))
-                loc_status = "Verified Destination" if (p_lat and p_lon and not is_area_sugg) else ("Unavailable" if is_area_sugg else "Estimated Location")
-                coord_status = "Exact Coordinates" if (p_lat and p_lon and not is_area_sugg) else ("Unavailable" if is_area_sugg else "Approximate")
-                rt_status = act.get("route_status") or ("Verified Road Route" if has_curated_registry else ("Straight-line estimate" if (p_lat and p_lon) else "Route unavailable"))
+                is_flexible_meal = bool(act.get("is_flexible_meal_break") or "flexible meal" in title.lower())
+                
+                # Decoupled Granular Transparency Statuses
+                attraction_id_status = "Verified Attraction" if (has_curated_registry and not is_dining and not is_area_sugg) else ("Estimated Attraction" if (not is_dining and not is_area_sugg) else "N/A")
+                business_id_status = "Verified Business" if (has_curated_registry and is_dining and not is_flexible_meal) else ("Estimated Business" if (is_dining and not is_flexible_meal) else "N/A")
+                gps_coord_status = "Verified GPS Coordinates" if (p_lat and p_lon and not is_area_sugg and not is_flexible_meal) else ("Estimated Coordinates" if (p_lat and p_lon) else "Unavailable")
+                
+                has_official_hours = bool(raw_prov.get("opening_hours_source") and any(w in str(raw_prov.get("opening_hours_source")).lower() for w in ["official", "schedule", "nparks", "nhb", "museum", "registry"]))
+                open_hours_status = "Verified Opening Hours" if (has_official_hours and not is_area_sugg and not is_flexible_meal) else "Unverified Opening Hours"
+                
+                has_official_price = bool(raw_prov.get("price_source") and any(w in str(raw_prov.get("price_source")).lower() for w in ["official", "ticket", "monorail", "admission", "sgd", "inr", "usd", "eur"]))
+                if is_dining or is_flexible_meal:
+                    price_stat = "Estimated Meal Cost" if act.get("meal_cost") else "Estimated Price"
+                elif has_official_price and (act.get("ticket_price") or 0.0) > 0:
+                    price_stat = "Verified Ticket Price"
+                elif act.get("ticket_price") == 0.0 or raw_prov.get("price_status") == "Free Entry":
+                    price_stat = "Free Entry Verified"
+                else:
+                    price_stat = "Estimated Price"
+                
+                rt_status = act.get("route_status") or raw_prov.get("route_status")
+                if not rt_status or rt_status == "Verified Road Route" and not has_curated_registry:
+                    rt_status = "Straight-line estimate" if (p_lat and p_lon) else "Route unavailable"
+                
+                if is_area_sugg or is_flexible_meal:
+                    overall_status = "Estimated"
+                elif has_curated_registry and p_lat and p_lon:
+                    overall_status = "Verified"
+                else:
+                    overall_status = "Estimated"
+                
+                id_status = "Unavailable" if is_area_sugg else ("Verified Place" if (has_curated_registry and not is_dining) else ("Verified Dining" if (p_lat and p_lon and is_dining and not is_flexible_meal) else "Estimated"))
+                loc_status = "Verified Destination" if (p_lat and p_lon and not is_area_sugg and not is_flexible_meal) else ("Unavailable" if is_area_sugg else "Estimated Location")
+                coord_status = "Exact Coordinates" if (p_lat and p_lon and not is_area_sugg and not is_flexible_meal) else ("Unavailable" if is_area_sugg else "Approximate")
                 last_verified_ts = raw_prov.get("last_verified") or "2026-11-10T00:00:00Z"
 
                 provenance = {
                     **raw_prov,
+                    "attraction_identity_status": attraction_id_status,
+                    "business_identity_status": business_id_status,
+                    "gps_coordinates_status": gps_coord_status,
+                    "opening_hours_status": open_hours_status,
+                    "ticket_price_status": price_stat,
                     "identity_status": raw_prov.get("identity_status") or id_status,
                     "public_accessibility": public_access_status,
                     "location_status": raw_prov.get("location_status") or loc_status,
                     "coordinate_status": raw_prov.get("coordinate_status") or coord_status,
-                    "hours_status": raw_prov.get("hours_status") or hours_status,
-                    "price_status": raw_prov.get("price_status") or field_price_status,
-                    "route_status": raw_prov.get("route_status") or rt_status,
+                    "hours_status": open_hours_status,
+                    "price_status": price_stat,
+                    "route_status": rt_status,
                     "rating_status": raw_prov.get("rating_status") or rating_status,
                     "last_verified": last_verified_ts,
                     "place_verification": pv_str,
-                    "coordinates_status": coords_status,
+                    "coordinates_status": gps_coord_status,
                     "schedule_status": schedule_status,
                     "opening_hours_source": raw_prov.get("opening_hours_source") or hours_status,
                     "price_source": raw_prov.get("price_source") or field_price_status,
@@ -817,11 +868,11 @@ class FinalItineraryValidator:
                     }
                 })
 
-            # Sequential Non-overlapping Time Scheduling & Duration Alignment
+            # Sequential Non-overlapping Time Scheduling, Diurnal Alignment & Buffer Protection
             if cleaned_acts:
                 from app.services.route_optimizer import optimize_daily_route, estimate_travel_transition
 
-                # Geographically sequence daily stops using Nearest-Neighbor to prevent cross-city backtracking
+                # 1. Geographically sequence daily stops using Nearest-Neighbor to prevent cross-city backtracking
                 if len(cleaned_acts) > 1:
                     has_dinner_end = (cleaned_acts[-1].get("activity_type") == "meal" or "dinner" in cleaned_acts[-1].get("title", "").lower())
                     if has_dinner_end and len(cleaned_acts) > 2:
@@ -831,7 +882,36 @@ class FinalItineraryValidator:
                     else:
                         cleaned_acts = optimize_daily_route(cleaned_acts)
 
-                # Compute leg transitions and enforce walking for short distances (<= 1.5 km)
+                # 2. Diurnal priority sorting (stable) to enforce temporal logic (Breakfast -> Sightseeing -> Lunch -> Afternoon -> Sunset -> Dinner)
+                def _act_time_priority(item: Dict[str, Any]) -> int:
+                    t = f"{item.get('title', '')} {item.get('description', '')}".lower()
+                    cat = str((item.get('place') or {}).get('category') or '').lower()
+                    if "sunrise" in t or "dawn" in t:
+                        return 0
+                    if "breakfast" in t or ("morning" in t and any(w in t for w in ["coffee", "bakery", "cafe", "pastry"])):
+                        return 1
+                    if "lunch" in t or ("midday" in t and ("restaurant" in cat or "dining" in cat or item.get("activity_type") == "meal")):
+                        return 3
+                    if "sunset" in t or "golden hour" in t:
+                        return 5
+                    if "dinner" in t or "night market" in t or (("restaurant" in cat or "dining" in cat) and item.get("activity_type") == "meal"):
+                        return 6
+                    return 2
+
+                cleaned_acts = sorted(cleaned_acts, key=_act_time_priority)
+
+                # 3. Check operating days and closing schedules
+                day_name = expected_day_date.strftime("%A")
+                for act in cleaned_acts:
+                    prov_d = act.get("provenance") or {}
+                    hrs_text = str(prov_d.get("opening_hours_source") or act.get("opening_hours_source") or "")
+                    if hrs_text:
+                        closed_pattern = rf"\bclosed\s+{day_name.lower()}s?\b"
+                        if re.search(closed_pattern, hrs_text, re.IGNORECASE):
+                            issues.append(f"Day {day_num} ({day_name}): Venue '{act.get('title')}' is typically closed on {day_name}s ({hrs_text})")
+                            act["ai_reason"] = f"⚠️ Operating advisory: Scheduled venue reports closed on {day_name}s ({hrs_text}); exterior viewing and grounds exploration recommended."
+
+                # 4. Compute leg transitions and enforce walking for short distances (<= 1.5 km)
                 for leg_i in range(len(cleaned_acts) - 1):
                     cur_a = cleaned_acts[leg_i]
                     nxt_a = cleaned_acts[leg_i + 1]
@@ -890,21 +970,53 @@ class FinalItineraryValidator:
                         else:
                             act_dur = 75
 
-                    # Anchor sunset and dinner activities (non-departure days)
-                    if "sunset" in c_title and day_num != expected_days:
+                    # Anchor diurnal activities (sunrise, breakfast, lunch, sunset, dinner)
+                    if "sunrise" in c_title and cur_time < 7 * 60:
+                        cur_time = 6 * 60 + 30
+                    elif "breakfast" in c_title and cur_time < 8 * 60 + 30:
+                        cur_time = 8 * 60 + 30
+                    elif "lunch" in c_title and cur_time < 12 * 60:
+                        cur_time = 12 * 60
+                    elif "sunset" in c_title and day_num != expected_days:
                         if cur_time < 17 * 60 + 45:
                             cur_time = 17 * 60 + 45
                     elif ("dinner" in c_title or (c_is_din and c_i == len(cleaned_acts) - 1)) and day_num != expected_days:
                         if cur_time < 19 * 60:
                             cur_time = 19 * 60
 
+                    # On final day, cap duration so activities conclude by 15:00 to protect 3.5h airport departure buffer
+                    if expected_days > 1 and day_num == expected_days:
+                        max_allowed_dur = max(45, (15 * 60) - cur_time)
+                        act_dur = min(act_dur, max_allowed_dur)
+
                     c_act["start_time"] = _mins_to_time(cur_time)
                     c_act["end_time"] = _mins_to_time(cur_time + act_dur)
                     c_act["duration_minutes"] = act_dur
                     c_act["order_index"] = c_i
 
-                    # Add 25-30 min buffer for transition between stops
-                    cur_time += act_dur + 30
+                    # Commitment Level Classification (mandatory, optional, tentative)
+                    ticket_val = float(c_act.get("ticket_price") or 0.0)
+                    is_must_see = (ticket_val > 0 and not c_is_din) or any(w in c_cat for w in ["unesco", "heritage", "palace", "museum", "cathedral", "castle"])
+                    is_tent = c_act.get("is_area_suggestion") or (c_act.get("coordinate_status") == "Unavailable") or ("unverified" in str(c_act.get("hours_status", "")).lower())
+
+                    if is_tent:
+                        c_level = "tentative"
+                    elif is_must_see:
+                        c_level = "mandatory"
+                    else:
+                        c_level = "optional"
+
+                    c_act["commitment_level"] = c_level
+                    if not isinstance(c_act.get("metadata"), dict):
+                        c_act["metadata"] = {}
+                    c_act["metadata"]["commitment_level"] = c_level
+
+                    # Add realistic transit buffer (at least 20 min) between consecutive stops to guarantee zero overlap
+                    trans_dur_str = c_act.get("transport_duration") or "20 min"
+                    m_td = re.search(r'(\d+)', str(trans_dur_str))
+                    transit_mins = int(m_td.group(1)) if m_td else 20
+                    transit_buffer = max(20, min(60, transit_mins + 5))
+                    cur_time += act_dur + transit_buffer
 
                 # Final Day departure buffer note
                 if expected_days > 1 and day_num == expected_days:
@@ -1010,7 +1122,9 @@ class FinalItineraryValidator:
             i_low = interest.lower().strip()
             matched = False
 
-            if any(k in i_low for k in ["histor", "cultur", "heritage", "monument", "temple", "mosque", "palace"]):
+            if any(k in i_low for k in ["general exploration", "exploration", "sightseeing", "general"]):
+                matched = True
+            elif any(k in i_low for k in ["histor", "cultur", "heritage", "monument", "temple", "mosque", "palace"]):
                 matched = any(any(k in txt for k in ["history", "historic", "heritage", "palace", "mosque", "church", "cathedral", "monument", "castle", "ruins", "ancient", "museum"]) for txt in venue_texts)
             elif any(k in i_low for k in ["street food", "food", "dining", "culinary", "gastronomy"]):
                 matched = any(any(k in txt for k in ["street food", "dining", "restaurant", "cafe", "bazaar", "baklava", "kebab", "sandwich", "market", "food", "meal", "tasting"]) for txt in venue_texts)
@@ -1020,6 +1134,12 @@ class FinalItineraryValidator:
                 matched = any(any(k in txt for k in ["shopping", "bazaar", "market", "craft", "bazaar", "souvenir", "mall", "avenue", "boutique"]) for txt in venue_texts)
             elif any(k in i_low for k in ["nature", "outdoor", "park", "garden", "hiking", "trek"]):
                 matched = any(any(k in txt for k in ["nature", "park", "garden", "arboretum", "forest", "hill", "trail", "lake", "waterfall", "outdoor", "botanical"]) for txt in venue_texts)
+            elif any(k in i_low for k in ["adventure", "thrill", "safari"]):
+                matched = any(any(k in txt for k in ["adventure", "outdoor", "park", "tour", "explore", "trail", "safari", "activity", "walk"]) for txt in venue_texts)
+            elif any(k in i_low for k in ["relax", "wellness", "spa", "leisure", "beach"]):
+                matched = any(any(k in txt for k in ["relax", "beach", "spa", "park", "garden", "resort", "walk", "promenade", "leisure", "waterfront"]) for txt in venue_texts)
+            elif any(k in i_low for k in ["family"]):
+                matched = any(any(k in txt for k in ["family", "park", "museum", "aquarium", "zoo", "garden", "walk", "historic", "palace", "sightseeing"]) for txt in venue_texts)
             else:
                 tokens = [t for t in re.findall(r'\b\w{3,}\b', i_low) if t not in ["and", "the", "for", "with"]]
                 matched = any(any(tok in txt for tok in tokens) for txt in venue_texts) if tokens else True

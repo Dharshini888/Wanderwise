@@ -201,6 +201,7 @@ def resolve_and_enrich_itinerary_routes(db: Session, trip: Trip, serialized_days
                         leg_dist = osrm_res.get("distance_km", 0.0)
                         leg_dur = osrm_res.get("duration_minutes", 0.0)
                         leg_geo = osrm_res.get("geometry", [])
+                        osrm_source = osrm_res.get("source", "")
                     else:
                         trans = estimate_travel_transition(c_lat, c_lon, n_lat, n_lon, destination=trip.destination)
                         leg_dist = trans.get("distance_km", 0.0)
@@ -208,12 +209,15 @@ def resolve_and_enrich_itinerary_routes(db: Session, trip: Trip, serialized_days
                         m = re.search(r'(\d+)', trans.get("travel_time", "15"))
                         leg_dur = float(m.group(1)) if m else 15.0
                         leg_geo = []
+                        osrm_source = "Straight-line estimate"
 
                     existing_mode = curr_act.get("transport_mode")
+                    is_mrt_city = "singapore" in (trip.destination or "").lower()
+                    default_transit = "Public Transit / MRT" if is_mrt_city else "Public Transit / Metro"
                     if existing_mode and existing_mode not in ["Not available", "walking", "Walking", "driving", "Driving"]:
                         mode = existing_mode
                     else:
-                        mode = "Walking" if leg_dist <= 1.2 else ("Taxi / Rideshare" if not has_rail else "Driving")
+                        mode = "Walking" if leg_dist <= 1.2 else (default_transit if has_rail else "Taxi / Rideshare")
 
                     # Strict non-rail sanitization: destinations without rail never recommend train/metro/subway
                     if not has_rail and any(k in (mode or "").lower() for k in ["train", "metro", "subway", "tram", "rail", "mrt", "tube"]):
@@ -231,12 +235,23 @@ def resolve_and_enrich_itinerary_routes(db: Session, trip: Trip, serialized_days
                     
                     c_area = curr_act.get("is_area_suggestion") or "area suggestion" in (curr_act.get("title") or "").lower()
                     n_area = next_act.get("is_area_suggestion") or "area suggestion" in (next_act.get("title") or "").lower()
+                    from app.services.route_optimizer import is_water_crossing
+                    is_water, water_label = is_water_crossing(c_lat, c_lon, n_lat, n_lon, trip.destination)
+
                     if c_area or n_area:
                         dist_str = "Unavailable"
                         dur_str = "Not available"
                         mode = "Not available"
                         status_str = "Route Unavailable"
                         field_route_status = "Route unavailable"
+                    elif is_water:
+                        mode = "Ferry / Fast Boat Transfer"
+                        dist_str = f"~{leg_dist} km (Water Crossing)"
+                        ferry_mins = int(max(45, leg_dist * 2.8))
+                        dur_str = f"~{ferry_mins} min (Ferry Schedule)"
+                        status_str = "Water / Ferry Crossing Needed"
+                        field_route_status = "Water / Ferry Crossing Needed"
+                        leg_dur = float(ferry_mins)
                     elif leg_dist > 65.0:
                         # Implausible distance for local schedule (e.g. coordinates from another country/region)
                         dist_str = "Route Unavailable (Implausible distance)"
@@ -244,18 +259,18 @@ def resolve_and_enrich_itinerary_routes(db: Session, trip: Trip, serialized_days
                         mode = "Route Unavailable"
                         status_str = "Route Unavailable"
                         field_route_status = "Route unavailable"
-                    elif leg_geo and len(leg_geo) > 0:
-                        # Genuine provider route calculated (OSRM/Transit)
+                    elif leg_geo and len(leg_geo) > 2 and osrm_source == "Live (OSRM)":
+                        # Genuine live provider route calculated (OSRM)
                         dist_str = f"{leg_dist} km"
                         dur_str = f"{int(round(leg_dur))} min" if leg_dur >= 1 else "< 1 min"
                         status_str = "Route Calculated"
                         field_route_status = "Verified Road Route"
                     elif leg_dist > 0.05:
-                        # Straight-line distance estimate fallback (No live routing provider)
-                        dist_str = f"~{leg_dist} km (Straight-line est.)"
+                        # Calibrated routing estimate or straight-line distance fallback
+                        dist_str = f"~{leg_dist} km (Estimated corridor)"
                         dur_str = f"~{int(round(leg_dur))} min (Est.)"
                         status_str = "Estimated Distance"
-                        field_route_status = "Straight-line Estimate"
+                        field_route_status = "Estimated Route Corridor"
                     elif (abs(c_lat - n_lat) < 0.0001 and abs(c_lon - n_lon) < 0.0001):
                         c_name = (curr_p.get("name") or "").strip().lower()
                         n_name = (next_p.get("name") or "").strip().lower()
@@ -283,9 +298,16 @@ def resolve_and_enrich_itinerary_routes(db: Session, trip: Trip, serialized_days
                     curr_act["transport_mode"] = mode
                     curr_act["transport_duration"] = dur_str
                     curr_act["route_status"] = field_route_status
+                    curr_act["next_latitude"] = n_lat
+                    curr_act["next_longitude"] = n_lon
                     if not isinstance(curr_act.get("metadata"), dict):
                         curr_act["metadata"] = {}
                     curr_act["metadata"]["distance"] = dist_str
+                    curr_act["metadata"]["next_latitude"] = n_lat
+                    curr_act["metadata"]["next_longitude"] = n_lon
+                    if c_lat is not None and c_lon is not None and n_lat is not None and n_lon is not None:
+                        curr_act["route_directions_url"] = f"https://www.google.com/maps/dir/?api=1&origin={c_lat},{c_lon}&destination={n_lat},{n_lon}"
+                        curr_act["metadata"]["route_directions_url"] = curr_act["route_directions_url"]
                     if leg_geo:
                         curr_act["metadata"]["geometry"] = leg_geo
                     curr_act["metadata"]["verification_status"] = status_str
@@ -307,15 +329,29 @@ def resolve_and_enrich_itinerary_routes(db: Session, trip: Trip, serialized_days
                     curr_act["route_status"] = "Route unavailable"
                     if not isinstance(curr_act.get("metadata"), dict):
                         curr_act["metadata"] = {}
-                    curr_act["metadata"]["distance"] = "Unavailable"
-                    curr_act["metadata"]["verification_status"] = "Route Unavailable"
-                    curr_act["metadata"]["route_status"] = "Route unavailable"
+                    curr_meta = curr_act["metadata"]
+                    preset_d = curr_meta.get("preset_distance") or (curr_meta.get("distance") if curr_meta.get("distance") not in ["Unavailable", "Route Unavailable"] else None)
+                    if preset_d:
+                        curr_meta["distance"] = preset_d
+                        curr_act["transport_duration"] = "15 min"
+                        curr_act["route_status"] = "Estimated Distance"
+                        curr_meta["verification_status"] = "Estimated Distance"
+                        curr_meta["route_status"] = "Estimated Distance"
+                    else:
+                        curr_meta["distance"] = "Unavailable"
+                        curr_meta["verification_status"] = "Route Unavailable"
+                        curr_meta["route_status"] = "Route unavailable"
                     prov = curr_act.get("provenance")
                     if isinstance(prov, dict):
-                        prov["route_status"] = "Route unavailable"
+                        prov["route_status"] = curr_meta["route_status"]
+
+        has_unavail = any(act.get("metadata", {}).get("verification_status") == "Route Unavailable" for act in day.get("activities", [])[:-1]) if len(day.get("activities", [])) > 1 else False
+        has_ferry = any(act.get("metadata", {}).get("verification_status") == "Water / Ferry Crossing Needed" for act in day.get("activities", []))
 
         if any(act.get("metadata", {}).get("verification_status") == "Route Calculated" for act in day.get("activities", [])):
             route_status = "Route Calculated"
+        elif has_ferry:
+            route_status = "Water / Ferry Crossing Needed"
         elif any(act.get("metadata", {}).get("verification_status") == "Estimated Distance" for act in day.get("activities", [])):
             route_status = "Estimated Routes"
         elif any(act.get("metadata", {}).get("verification_status") == "Co-located Venue" for act in day.get("activities", [])):
@@ -327,9 +363,11 @@ def resolve_and_enrich_itinerary_routes(db: Session, trip: Trip, serialized_days
 
         day["route_summary"] = {
             "stops_count": len(day_stops),
-            "total_distance_km": round(total_dist_km, 1),
-            "total_duration_minutes": total_dur_mins,
+            "total_distance_km": round(total_dist_km, 1) if route_status != "Route Unavailable" else 0.0,
+            "total_duration_minutes": total_dur_mins if route_status != "Route Unavailable" else 0,
             "verification_status": route_status,
+            "has_unavailable_segments": has_unavail,
+            "has_ferry_crossing": has_ferry,
             "route_geometry": merged_geometry,
             "stops": day_stops,
         }
@@ -404,14 +442,14 @@ def enrich_trip_response(trip: Trip, db: Session, fetch_live_network: bool = Fal
     weather_summary = None
     if trip_status == "Active" or (trip_status == "Upcoming" and 0 <= days_to_start <= 7):
         try:
-            from app.routes.weather import get_weather
-            w_data = get_weather(trip.destination)
-            curr = w_data.get("current", {})
-            desc = curr.get("description", "Sunny")
-            temp = curr.get("temperature", 31.0)
+            from app.services.weather.openmeteo_service import get_openmeteo_weather
+            target_d = str(trip.start_date) if trip.start_date else None
+            w_data = get_openmeteo_weather(None, None, trip.destination or "", target_date=target_d)
+            desc = w_data.get("condition", "Seasonal Climate Standard")
+            temp = w_data.get("temp_c", 15.0)
             weather_summary = f"{desc} • {int(round(temp))}°C"
         except Exception:
-            weather_summary = "Sunny • 30°C"
+            weather_summary = "Seasonal Climate Standard"
 
     # 5. Next Activity & Quick Insights
     next_activity = None
@@ -466,7 +504,9 @@ def enrich_trip_response(trip: Trip, db: Session, fetch_live_network: bool = Fal
                     "timezone": getattr(act.place, "timezone", None)
                 }
 
-            act_meta = getattr(act, "activity_metadata", None) or {}
+            act_meta = dict(getattr(act, "activity_metadata", None) or {})
+            if "distance" in act_meta and act_meta["distance"]:
+                act_meta["preset_distance"] = act_meta["distance"]
             p_cat = (place_dict.get("category", "") if place_dict else "").lower()
             is_dining = (
                 act_meta.get("activity_type") == "meal"
@@ -498,15 +538,16 @@ def enrich_trip_response(trip: Trip, db: Session, fetch_live_network: bool = Fal
 
             has_valid_coords = bool(place_dict and place_dict.get("latitude") is not None and place_dict.get("longitude") is not None)
             is_area = bool(act_meta.get("is_area_suggestion") or "area suggestion" in (act.title or "").lower())
+            is_dining_area = any(w in (act.title or "").lower() for w in ["food court", "street food", "dining district", "culinary area", "food street", "food market", "dining area", "hawker center", "hawker centre"])
             
             # 8 Explicit Field-Level Verification Statuses
-            id_status = "Unavailable" if is_area else ("Verified Place" if (has_valid_coords and not is_dining) else ("Verified Dining" if (has_valid_coords and is_dining) else "Estimated"))
+            id_status = "Unavailable" if is_area else ("Dining Area" if is_dining_area else ("Verified Place" if (has_valid_coords and not is_dining) else ("Verified Dining" if (has_valid_coords and is_dining) else "Estimated")))
             loc_status = "Verified Destination" if has_valid_coords else "Estimated Location"
             coord_status = "Exact Coordinates" if has_valid_coords else ("Unavailable" if is_area else "Approximate")
             
             has_hours = bool(place_dict and place_dict.get("opening_time"))
             hours_status = "Opening hours unavailable (Tentative schedule)" if not has_hours else "Verified Registry Hours"
-            if is_area:
+            if is_area or is_dining_area:
                 hours_status = "Hours unverified / Tentative"
 
             if cost_amt > 0.0:
@@ -538,6 +579,9 @@ def enrich_trip_response(trip: Trip, db: Session, fetch_live_network: bool = Fal
             if has_curated_registry:
                 pv_resolved = raw_prov["place_verification"]
                 source_resolved = raw_prov.get("source") or "Verified POI Database"
+            elif is_dining_area:
+                pv_resolved = "Dining Area (Unverified Individual Establishments)"
+                source_resolved = "Regional Culinary Directory"
             elif is_area:
                 pv_resolved = "Area Directory"
                 source_resolved = "Area Directory"
@@ -548,7 +592,10 @@ def enrich_trip_response(trip: Trip, db: Session, fetch_live_network: bool = Fal
                 pv_resolved = "Destination Directory"
                 source_resolved = "Destination Directory"
 
-            public_access = raw_prov.get("public_accessibility") or act_meta.get("public_accessibility") or ("Public Access Verified" if (has_valid_coords and not is_area) else "Public Access Unverified")
+            public_access = raw_prov.get("public_accessibility") or act_meta.get("public_accessibility") or (
+                "Public Dining Area (Menu & seating unverified)" if is_dining_area
+                else ("Public Access Verified" if (has_valid_coords and not is_area) else "Public Access Unverified")
+            )
 
             prov_dict = {
                 **raw_prov,
@@ -692,6 +739,29 @@ def enrich_trip_response(trip: Trip, db: Session, fetch_live_network: bool = Fal
         except Exception:
             pass
 
+    if isinstance(budget_plan, dict):
+        # Update accounting model fields with live recorded expenses
+        budget_plan["recorded_expenses"] = budget_spent
+        budget_plan["formatted_recorded_expenses"] = format_currency(budget_spent, curr_code)
+        budget_plan["remaining_actual_balance"] = round((budget_val or 0.0) - budget_spent, 2)
+        budget_plan["formatted_remaining_actual_balance"] = format_currency(round((budget_val or 0.0) - budget_spent, 2), curr_code)
+        budget_plan["remaining_planned_balance"] = round((budget_val or 0.0) - float(budget_plan.get("total_estimated_trip_cost") or 0.0), 2)
+        budget_plan["formatted_remaining_planned_balance"] = format_currency(round((budget_val or 0.0) - float(budget_plan.get("total_estimated_trip_cost") or 0.0), 2), curr_code)
+
+        if isinstance(budget_plan.get("category_reconciliation"), dict):
+            cat_rec = budget_plan["category_reconciliation"]
+            cat_rec["recorded_expenses"] = budget_spent
+            cat_rec["formatted_recorded_expenses"] = format_currency(budget_spent, curr_code)
+            cat_rec["remaining_actual_balance"] = round((budget_val or 0.0) - budget_spent, 2)
+            cat_rec["formatted_remaining_actual_balance"] = format_currency(round((budget_val or 0.0) - budget_spent, 2), curr_code)
+            cat_rec["remaining_planned_balance"] = round((budget_val or 0.0) - float(budget_plan.get("total_estimated_trip_cost") or 0.0), 2)
+            cat_rec["formatted_remaining_planned_balance"] = format_currency(round((budget_val or 0.0) - float(budget_plan.get("total_estimated_trip_cost") or 0.0), 2), curr_code)
+            cat_rec["accounting_model"] = (
+                "Canonical Accounting Model: Remaining Planned Budget = Total Budget - Total Estimated Trip Cost; "
+                "Remaining Cash Balance = Total Budget - Recorded Expenses. "
+                "Emergency Reserve is an expense allocation accounted for once within total estimated trip cost and is never double-counted."
+            )
+
     # Truthful destination compatibility notes (e.g. Beaches in landlocked destinations like Bolivia)
     interests_list = []
     if trip.interests:
@@ -708,18 +778,34 @@ def enrich_trip_response(trip: Trip, db: Session, fetch_live_network: bool = Fal
             'message': 'Bolivia is a landlocked nation without ocean coastlines. In place of ocean beaches, your itinerary features the scenic high-altitude white-sand lakefront beaches of Copacabana on Lake Titicaca.'
         })
 
+    bp_dict = budget_plan if isinstance(budget_plan, dict) else {}
+    est_cost_enrich = float(bp_dict.get("total_estimated_trip_cost") or 0.0)
+    emerg_res_enrich = float(bp_dict.get("emergency_reserve") or bp_dict.get("contingency_estimate") or 0.0)
+    unalloc_enrich = float(bp_dict.get("unallocated_balance") if bp_dict.get("unallocated_balance") is not None else round((budget_val or 0.0) - est_cost_enrich, 2))
+    planned_rem_enrich = round(max(0.0, (budget_val or 0.0) - est_cost_enrich - budget_spent), 2) if est_cost_enrich > 0 else budget_remaining
+
+    dest_str = trip.destination or ""
+    clean_city_enrich = dest_str.split(",")[0].strip() if "," in dest_str else dest_str.strip()
+    formatted_dest_enrich = f"{clean_city_enrich}, {trip.country}" if trip.country and trip.country.lower() not in clean_city_enrich.lower() else clean_city_enrich
+
     return {
         "id": trip.id,
         "user_id": trip.user_id,
         "title": trip.title or f"Trip to {trip.destination}",
         "destination": trip.destination,
         "country": trip.country,
+        "destination_title": formatted_dest_enrich,
         "origin_city": trip.origin_city,
         "origin_airport": trip.origin_airport,
         "destination_airport": trip.destination_airport,
         "start_date": trip.start_date.isoformat() if hasattr(trip.start_date, "isoformat") else str(trip.start_date),
         "end_date": trip.end_date.isoformat() if hasattr(trip.end_date, "isoformat") else str(trip.end_date),
         "budget": budget_val if budget_val is not None else trip.budget,
+        "original_budget": budget_val if budget_val is not None else float(budget_dec),
+        "estimated_total_cost": est_cost_enrich,
+        "contingency_reserve": emerg_res_enrich,
+        "unallocated_balance": unalloc_enrich,
+        "remaining_balance": planned_rem_enrich,
         "currency": curr_code,
         "currency_symbol": curr_symbol,
         "travel_type": trip.travel_type,
@@ -742,7 +828,7 @@ def enrich_trip_response(trip: Trip, db: Session, fetch_live_network: bool = Fal
         "activities_total": activities_total,
         "activities_completed": activities_completed,
         "budget_spent": budget_spent,
-        "budget_remaining": budget_remaining,
+        "budget_remaining": planned_rem_enrich,
         "budget_usage_percentage": budget_usage_percentage,
         "budget_health": budget_health,
         "trip_progress": trip_progress,
@@ -766,9 +852,15 @@ def enrich_trip_response(trip: Trip, db: Session, fetch_live_network: bool = Fal
         "budget_per_person": metrics["budget_per_person"],
         "total_budget_remaining": metrics["total_budget_remaining"],
         "budget_plan": budget_plan,
+        "canonical_budget_plan": budget_plan,
         "compatibility_notes": compatibility_notes,
-        "interest_coverage_report": prefs.get("interest_coverage_report") if isinstance(prefs, dict) else None,
-        "itinerary_days": serialized_days
+        "interest_coverage_report": (
+            prefs.get("interest_coverage_report")
+            if (isinstance(prefs, dict) and prefs.get("interest_coverage_report"))
+            else getattr(__import__("app.ai.validators.final_itinerary_validator", fromlist=["FinalItineraryValidator"]).FinalItineraryValidator, "last_interest_coverage_report", None)
+        ),
+        "itinerary_days": serialized_days,
+        "days": serialized_days
     }
 
 
@@ -1127,7 +1219,41 @@ def update_trip(db: Session, trip: Trip, data: TripUpdate) -> Trip:
                 trip.status = "Completed"
             else:
                 trip.status = "In Progress"
-                
+
+    # Synchronize budget entity and canonical financial plan if budget or currency modified
+    updated_fields = data.model_dump(exclude_unset=True)
+    if "budget" in updated_fields or "currency" in updated_fields:
+        try:
+            from app.services.expense_service import sync_budget_metrics
+            sync_budget_metrics(db, trip.id)
+        except Exception:
+            pass
+
+        try:
+            from app.services.budget_allocation_service import BudgetAllocationService
+            b_val = float(to_decimal(trip.budget)) if trip.budget is not None else 1000.0
+            prefs = trip.trip_preferences if isinstance(trip.trip_preferences, dict) else {}
+            t_dict = prefs.get('travelers') if isinstance(prefs.get('travelers'), dict) else {}
+            dur_days = max(1, (trip.end_date - trip.start_date).days + 1) if (trip.start_date and trip.end_date) else 1
+            new_plan = BudgetAllocationService.calculate_plan(
+                total_budget=b_val,
+                currency=trip.currency or "USD",
+                tier=prefs.get('comfort_tier') or 'mid_range',
+                destination=trip.destination or '',
+                origin_city=trip.origin_city or 'Coimbatore',
+                days=dur_days,
+                adults=int(prefs.get('adults') or t_dict.get('adults') or trip.group_size or 1),
+                children=int(prefs.get('children') or t_dict.get('children') or 0),
+                travel_style=trip.travel_style or 'solo',
+                transport_mode=trip.transportation or 'Mixed Transport',
+                accommodation_preference=trip.accommodation_preference or 'hotel'
+            )
+            if isinstance(trip.trip_preferences, dict):
+                trip.trip_preferences["budget_plan"] = new_plan
+                trip.trip_preferences["canonical_budget_plan"] = new_plan
+        except Exception:
+            pass
+
     db.commit()
     db.refresh(trip)
     return trip
@@ -1328,6 +1454,7 @@ def get_dashboard_widgets(db: Session, user_id: int) -> Dict[str, Any]:
 
     active_trip = None
     upcoming_trips = []
+    completed_trips = []
 
     for t in all_trips:
         if t.start_date and t.end_date:
@@ -1335,15 +1462,21 @@ def get_dashboard_widgets(db: Session, user_id: int) -> Dict[str, Any]:
                 active_trip = t
             elif t.start_date > today:
                 upcoming_trips.append(t)
+            else:
+                completed_trips.append(t)
 
     upcoming_trips.sort(key=lambda x: x.start_date)
+    completed_trips.sort(key=lambda x: x.end_date, reverse=True)
 
-    target_trip = active_trip or (upcoming_trips[0] if upcoming_trips else None)
+    target_trip = active_trip or (upcoming_trips[0] if upcoming_trips else (completed_trips[0] if completed_trips else None))
     has_active_trip = bool(active_trip is not None)
+    is_upcoming_trip = bool(not has_active_trip and upcoming_trips and target_trip == upcoming_trips[0])
+    is_completed_trip = bool(not has_active_trip and not upcoming_trips and completed_trips and target_trip == completed_trips[0])
 
     active_trip_resp = None
     days_to_next_flight = None
     today_serialized_activities = []
+    day1_preview = []
     completed_count = 0
     remaining_count = 0
     current_activity = None
@@ -1366,38 +1499,80 @@ def get_dashboard_widgets(db: Session, user_id: int) -> Dict[str, Any]:
     weather_summary = {}
     smart_recommendation = {}
 
+    target_trip_budget = 0.0
+    target_trip_spent = 0.0
+    target_trip_remaining = 0.0
+    target_trip_est_cost = 0.0
+    target_trip_emergency_reserve = 0.0
+    target_trip_unallocated_balance = 0.0
+
     if target_trip:
         active_trip_resp = enrich_trip_response(target_trip, db)
 
         # Dynamic Current Trip Day calculation using RuleRecommendationService
         trip_day_info = RuleRecommendationService.calculate_trip_day(target_trip.start_date, target_trip.end_date, today)
 
+        if has_active_trip:
+            trip_day_info["status"] = "Ongoing"
+        elif is_upcoming_trip:
+            trip_day_info["status"] = "Upcoming"
+        elif is_completed_trip:
+            trip_day_info["status"] = "Completed"
+
         if target_trip.start_date > today:
             days_to_next_flight = (target_trip.start_date - today).days
         else:
             days_to_next_flight = 0
 
-        # Fetch weather for destination
+        # Trip-specific budget calculation
+        target_trip_budget = float(to_decimal(target_trip.budget)) if target_trip.budget is not None else 0.0
+        try:
+            trip_exps = db.query(Expense).filter(Expense.trip_id == target_trip.id).all()
+            target_trip_spent = sum((float(to_decimal(e.amount)) for e in trip_exps), 0.0)
+        except Exception:
+            target_trip_spent = 0.0
+        b_plan = active_trip_resp.get("budget_plan") if isinstance(active_trip_resp.get("budget_plan"), dict) else {}
+        target_trip_est_cost = float(b_plan.get("total_estimated_trip_cost") or 0.0)
+        target_trip_emergency_reserve = float(b_plan.get("emergency_reserve") or b_plan.get("contingency_estimate") or 0.0)
+        target_trip_unallocated_balance = float(b_plan.get("unallocated_balance") if b_plan.get("unallocated_balance") is not None else round(target_trip_budget - target_trip_est_cost, 2))
+        target_trip_remaining = round(max(0.0, target_trip_budget - target_trip_est_cost - target_trip_spent), 2) if target_trip_est_cost > 0 else round(target_trip_budget - target_trip_spent, 2)
+
+        # Fetch weather for destination (provide travel date for seasonal climate standard when >14 days)
         try:
             from app.routes.weather import get_weather
-            weather_data = get_weather(target_trip.destination)
+            t_date_param = str(target_trip.start_date) if target_trip.start_date else None
+            weather_data = get_weather(target_trip.destination, date_str=t_date_param)
         except Exception:
             weather_data = {}
 
-        # Find today's day from enriched trip response (first look for exact date match)
+        is_live_horizon = bool(has_active_trip or (target_trip and target_trip.start_date and (target_trip.start_date - today).days <= 14))
+        if isinstance(weather_data, dict):
+            weather_data["is_live_forecast_window"] = is_live_horizon
+            weather_data["horizon_type"] = "live_trip_forecast" if is_live_horizon else "current_conditions"
+            if not is_live_horizon:
+                weather_data["horizon_note"] = "* Live forecast is limited to 14 days. Showing current destination conditions; seasonal norms apply for scheduled dates."
+
         itinerary_days = active_trip_resp.get("itinerary_days", []) or []
         today_str = today.isoformat()
 
+        # Day 1 preview for upcoming or completed trips
+        if itinerary_days:
+            first_day_acts = itinerary_days[0].get("activities", []) or []
+            day1_preview = first_day_acts[:3]
+
+        # ONLY schedule today's live activities if the trip is literally active/ongoing
         target_day = None
-        for day in itinerary_days:
-            if day.get("date") == today_str:
-                target_day = day
-                break
+        if has_active_trip:
+            for day in itinerary_days:
+                if day.get("date") == today_str:
+                    target_day = day
+                    break
 
-        if not target_day and itinerary_days:
-            target_day = itinerary_days[0]
+            if not target_day and itinerary_days:
+                cur_day_idx = max(0, min(len(itinerary_days) - 1, trip_day_info.get("current_trip_day", 1) - 1))
+                target_day = itinerary_days[cur_day_idx]
 
-        if target_day:
+        if target_day and has_active_trip:
             raw_activities = target_day.get("activities", []) or []
 
             # Enrich activities with dynamic status, weather & crowd badges
@@ -1421,7 +1596,21 @@ def get_dashboard_widgets(db: Session, user_id: int) -> Dict[str, Any]:
                 w_badge = RuleRecommendationService.get_weather_badge(act.get("title", ""), cat, act.get("weather_suitability", ""), weather_data, st)
                 c_badge = RuleRecommendationService.get_crowd_badge(act.get("place", {}).get("rating", 4.8) if act.get("place") else 4.8, st, act.get("order_index", idx + 1))
 
-                dist_km = round(0.6 + (idx * 0.5), 1)
+                # Real distance extraction from route metadata
+                dist_km = 0.0
+                dist_str = (
+                    act.get("metadata", {}).get("distance")
+                    or act.get("metadata", {}).get("preset_distance")
+                    or act.get("distance")
+                    or ""
+                )
+                import re
+                m_dist = re.search(r"([\d\.]+)\s*km", str(dist_str))
+                if m_dist:
+                    try:
+                        dist_km = float(m_dist.group(1))
+                    except Exception:
+                        dist_km = 0.0
                 walk_mins = int(act.get("duration_minutes", 90))
 
                 enriched_act = {
@@ -1497,7 +1686,9 @@ def get_dashboard_widgets(db: Session, user_id: int) -> Dict[str, Any]:
     return {
         "version": "1.0",
         "has_active_trip": has_active_trip,
+        "is_active_today": has_active_trip,
         "active_trip": active_trip_resp,
+        "hero_trip": active_trip_resp,
         "trip_status": trip_day_info["status"],
         "current_trip_day": trip_day_info["current_trip_day"],
         "total_days": trip_day_info["total_days"],
@@ -1507,12 +1698,22 @@ def get_dashboard_widgets(db: Session, user_id: int) -> Dict[str, Any]:
         "current_day_name": now_dt.strftime("%A"),
         "upcoming_trips_count": len(upcoming_trips),
         "days_to_next_flight": days_to_next_flight,
-        "budget_remaining": budget_remaining,
-        "total_budget": total_budget,
+        "budget_remaining": target_trip_remaining if target_trip else budget_remaining,
+        "total_budget": target_trip_budget if target_trip else total_budget,
+        "target_trip_budget": target_trip_budget,
+        "target_trip_spent": target_trip_spent,
+        "target_trip_est_cost": target_trip_est_cost,
+        "target_trip_remaining": target_trip_remaining,
+        "original_budget": target_trip_budget if target_trip else total_budget,
+        "estimated_total_cost": target_trip_est_cost,
+        "contingency_reserve": target_trip_emergency_reserve,
+        "unallocated_balance": target_trip_unallocated_balance,
+        "remaining_balance": target_trip_remaining if target_trip else budget_remaining,
         "currency": target_trip.currency if target_trip else user_currency,
         "trip_progress": active_trip_resp.get("trip_progress", 0.0) if active_trip_resp else 0.0,
         "today_plan": today_serialized_activities,
         "today_activities": today_serialized_activities,
+        "day1_preview": day1_preview,
         "completed_count": completed_count,
         "remaining_count": remaining_count,
         "total_count": total_count,
@@ -1522,6 +1723,7 @@ def get_dashboard_widgets(db: Session, user_id: int) -> Dict[str, Any]:
         "countdown": countdown_to_next_activity,
         "countdown_to_next_activity": countdown_to_next_activity,
         "today_progress": {
+            "is_active_today": has_active_trip,
             "completed_count": completed_count,
             "remaining_count": remaining_count,
             "total_count": total_count,
@@ -1529,7 +1731,7 @@ def get_dashboard_widgets(db: Session, user_id: int) -> Dict[str, Any]:
             "distance_travelled_today_km": round(distance_travelled_today_km, 1),
             "walking_minutes_today": walking_minutes_today,
             "money_spent_today": round(money_spent_today, 2),
-            "remaining_budget": budget_remaining
+            "remaining_budget": target_trip_remaining if target_trip else budget_remaining
         },
         "weather": weather_data,
         "weather_summary": weather_summary,
@@ -1540,6 +1742,7 @@ def get_dashboard_widgets(db: Session, user_id: int) -> Dict[str, Any]:
         ],
         "trip": active_trip_resp,
         "today": {
+            "is_active_today": has_active_trip,
             "activities": today_serialized_activities,
             "completed": completed_count,
             "remaining": remaining_count,
@@ -1549,7 +1752,18 @@ def get_dashboard_widgets(db: Session, user_id: int) -> Dict[str, Any]:
             "walking_mins": walking_minutes_today,
             "money_spent": round(money_spent_today, 2)
         },
-        "budget": {"total": total_budget, "remaining": budget_remaining, "expenses": total_expenses},
+        "budget": {
+            "total": total_budget,
+            "remaining": budget_remaining,
+            "expenses": total_expenses,
+            "target_trip_budget": target_trip_budget,
+            "target_trip_remaining": target_trip_remaining,
+            "target_trip_spent": target_trip_spent,
+            "target_trip_estimated_cost": target_trip_est_cost if target_trip else 0.0,
+            "emergency_reserve": target_trip_emergency_reserve if target_trip else 0.0,
+            "unallocated_balance": target_trip_unallocated_balance if target_trip else 0.0,
+            "is_emergency_reserve_protected": True
+        },
         "suggestions": rule_suggestions
     }
 
@@ -1604,9 +1818,48 @@ def get_today_itinerary(trip_id: int, db: Session, user_id: Optional[int] = None
     now_dt = datetime.now()
     now_time_str = now_dt.strftime("%H:%M")
 
-    # Weather
-    weather_summary = "Clear Sky 26°C"
-    weather_info = {"temperature": 26, "condition": weather_summary}
+    # Fix: Ensure target_date matches the displayed day of the trip (e.g. Nov 6 for Day 1 of upcoming Nov 6-10 trip)
+    target_date = getattr(day, 'date', None) if day else None
+    if not target_date:
+        target_date = start_date if is_upcoming_trip else today
+    if isinstance(target_date, str):
+        try:
+            target_date = datetime.strptime(target_date, '%Y-%m-%d').date()
+        except Exception:
+            target_date = today
+
+    date_iso = target_date.strftime('%Y-%m-%d') if hasattr(target_date, 'strftime') else str(target_date)
+    date_formatted = target_date.strftime('%d %B %Y') if hasattr(target_date, 'strftime') else str(target_date)
+
+    # Weather: dynamic live weather or historical seasonal climate standard
+    weather_summary = "Seasonal Climate Standard"
+    weather_info = {
+        "temperature": 15.0,
+        "condition": weather_summary,
+        "description": weather_summary,
+        "weather_confidence": "Seasonal Climate Standard",
+        "weather_status": "Live Forecast" if (not is_upcoming_trip or (start_date and (start_date - today).days <= 14)) else "Forecast unavailable",
+        "is_seasonal_estimate": bool(is_upcoming_trip and start_date and (start_date - today).days > 14)
+    }
+    try:
+        from app.routes.weather import get_weather
+        w_res = get_weather(city=trip.destination, date_str=date_iso)
+        if isinstance(w_res, dict):
+            curr_w = w_res.get("current") or {}
+            w_temp = curr_w.get("temperature", 15.0)
+            w_desc = curr_w.get("description", "Seasonal Climate")
+            weather_summary = f"{w_desc} • {w_temp}°C"
+            weather_info = {
+                "temperature": w_temp,
+                "condition": weather_summary,
+                "description": w_desc,
+                "weather_confidence": w_res.get("weather_confidence", "Seasonal Climate Standard"),
+                "weather_status": w_res.get("weather_status", "Forecast unavailable"),
+                "is_seasonal_estimate": w_res.get("is_seasonal_estimate", False),
+                "provenance_note": w_res.get("provenance_note")
+            }
+    except Exception:
+        pass
 
     raw_activities = []
     if day:
@@ -1701,19 +1954,6 @@ def get_today_itinerary(trip_id: int, db: Session, user_id: Optional[int] = None
 
     formatted_start = trip.start_date.strftime("%d %b %Y") if trip.start_date else "the start date"
 
-    # Fix: Ensure date matches the displayed day of the trip (e.g. Nov 6 for Day 1 of upcoming Nov 6-10 trip)
-    target_date = getattr(day, 'date', None) if day else None
-    if not target_date:
-        target_date = start_date if is_upcoming_trip else today
-    if isinstance(target_date, str):
-        try:
-            target_date = datetime.strptime(target_date, '%Y-%m-%d').date()
-        except Exception:
-            target_date = today
-
-    date_iso = target_date.strftime('%Y-%m-%d') if hasattr(target_date, 'strftime') else str(target_date)
-    date_formatted = target_date.strftime('%d %B %Y') if hasattr(target_date, 'strftime') else str(target_date)
-
     # Sum actual consecutive coordinate distances for aggregate daily distance
     stops_with_coords = [
         a for a in processed_activities
@@ -1753,10 +1993,14 @@ def get_today_itinerary(trip_id: int, db: Session, user_id: Optional[int] = None
         route_geometry = []
         verification_status = "No Geographic Stops"
 
+    clean_dest = trip.destination.split(",")[0].strip() if "," in (trip.destination or "") else (trip.destination or "").strip()
+    formatted_dest_title = f"{clean_dest}, {trip.country}" if trip.country and trip.country.lower() not in clean_dest.lower() else clean_dest
+
     return {
         "trip_id": trip.id,
         "destination": trip.destination,
         "country": trip.country,
+        "destination_title": formatted_dest_title,
         "trip_status": status_label,
         "is_upcoming_trip": is_upcoming_trip,
         "upcoming_notice": f"Your trip begins on {formatted_start}. Your itinerary is ready and will become active on the start date." if is_upcoming_trip else None,
@@ -1767,8 +2011,13 @@ def get_today_itinerary(trip_id: int, db: Session, user_id: Optional[int] = None
         "total_days": total_days,
         "day_title": day.title if day else f"Day {current_day} Exploration",
         "weather": {
-            "temperature": weather_info.get("temperature", 26),
-            "condition": weather_summary
+            "temperature": weather_info.get("temperature", 15.0),
+            "condition": weather_summary,
+            "description": weather_info.get("description", weather_summary),
+            "weather_confidence": weather_info.get("weather_confidence", "Seasonal Climate Standard"),
+            "weather_status": weather_info.get("weather_status", "Forecast unavailable"),
+            "is_seasonal_estimate": weather_info.get("is_seasonal_estimate", False),
+            "provenance_note": weather_info.get("provenance_note")
         },
         "smart_recommendation": smart_rec,
         "route_summary": {
