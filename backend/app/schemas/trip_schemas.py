@@ -215,6 +215,14 @@ class TripUpdate(BaseModel):
     is_archived: Optional[bool] = None
     trip_preferences: Optional[Dict[str, Any]] = None
 
+    @model_validator(mode="after")
+    def validate_trip_update(self):
+        if self.start_date and self.end_date and self.end_date < self.start_date:
+            raise ValueError("Return date cannot be earlier than departure date.")
+        if self.budget is not None and self.budget < 0:
+            raise ValueError("Budget cannot be negative.")
+        return self
+
 class TripResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int

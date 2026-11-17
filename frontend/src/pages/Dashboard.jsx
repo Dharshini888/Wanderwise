@@ -153,7 +153,7 @@ export default function Dashboard() {
               ✈️ WanderWise Command Center
             </span>
             <span className="text-xs text-[var(--text-muted)] font-medium hidden sm:inline">
-              • IEEE NMIC-2026 Ready
+              • Smart AI Travel Companion
             </span>
           </div>
 
@@ -455,18 +455,18 @@ export default function Dashboard() {
                   <span>AI Travel Assistant Summary</span>
                 </h4>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-500 border border-blue-500/20">
-                  IEEE NMIC-2026
+                  Verified Engine
                 </span>
               </div>
 
               <p className="text-xs text-[var(--text-secondary)] mt-2 leading-relaxed">
                 {heroTrip ? (
                   <span>
-                    Your travel profile is currently optimized for <strong className="text-[var(--text-primary)]">{heroTrip.destination}</strong>. All POIs are validated with physical coordinates, door-to-door transit modes are classified with 3-state provenance, and canonical budget tracking is active.
+                    Your travel profile is currently optimized for <strong className="text-[var(--text-primary)]">{heroTrip.destination}</strong>. All POIs are validated with physical coordinates, door-to-door transit routes include verified travel buffers, and budget tracking is active.
                   </span>
                 ) : (
                   <span>
-                    WanderWise uses deterministic constraint satisfaction and LLM personalizers to generate temporally viable itineraries with verified coordinates worldwide.
+                    WanderWise crafts realistic, conflict-free travel itineraries with verified landmarks, accurate transit times, and smart budget tracking worldwide.
                   </span>
                 )}
               </p>

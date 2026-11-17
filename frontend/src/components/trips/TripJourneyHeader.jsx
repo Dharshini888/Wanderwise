@@ -3,7 +3,7 @@ import {
   IconCompass, IconMapPin, IconCalendar, IconSun,
   IconWallet, IconSparkles, IconChevronDown
 } from '@tabler/icons-react';
-import { formatCurrency } from '../../utils/formatters';
+import { formatCurrency, formatDestinationWithCountry } from '../../utils/formatters';
 
 export default function TripJourneyHeader({ todayData, trip, onResumeClick }) {
   if (!todayData) return null;
@@ -50,7 +50,7 @@ export default function TripJourneyHeader({ todayData, trip, onResumeClick }) {
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-extrabold font-heading text-[var(--text-primary)] tracking-tight">
-            {todayData.destination}{todayData.country ? `, ${todayData.country}` : ''}
+            {todayData.destination_title || formatDestinationWithCountry(todayData.destination, todayData.country)}
           </h1>
 
           <div className="flex flex-wrap items-center gap-3 text-xs text-[var(--text-secondary)] font-medium">

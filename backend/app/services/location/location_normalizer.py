@@ -1006,18 +1006,13 @@ def resolve_destination_info(destination: str, origin: Optional[str] = None) -> 
     orig_raw = (origin or "Coimbatore").strip()
     orig_low = orig_raw.lower()
 
-    # 1. Match against Global Destination Gazetteer
-    gaz_match = None
-    for k, v in GLOBAL_DESTINATION_GAZETTEER.items():
-        if k in dest_low or dest_low in k:
-            gaz_match = v
-            break
-
-    # 2. Extract country name if in string, e.g. "Tbilisi, Georgia"
+    # 1. Extract country name if in string, e.g. "Tbilisi, Georgia" or "Santiago, Spain"
     country_name = None
     country_code = None
+    city_part = dest_raw
     if "," in dest_raw:
         parts = [p.strip() for p in dest_raw.split(",")]
+        city_part = parts[0]
         for p in parts[1:]:
             p_low = p.lower()
             if p_low in COUNTRY_NAME_TO_CODE:
@@ -1027,10 +1022,21 @@ def resolve_destination_info(destination: str, origin: Optional[str] = None) -> 
 
     if not country_code:
         for cname, ccode in COUNTRY_NAME_TO_CODE.items():
-            if cname in dest_low:
+            if cname in dest_low and dest_low != cname:
                 country_name = cname.title()
                 country_code = ccode
                 break
+
+    # 2. Match against Global Destination Gazetteer
+    gaz_match = None
+    city_low = city_part.lower()
+    for k, v in GLOBAL_DESTINATION_GAZETTEER.items():
+        if k == city_low or k == dest_low or k in dest_low or city_low in k:
+            # If user explicitly specified a country code, ensure gazetteer matches that country!
+            if country_code and v.get("country_code") and v.get("country_code") != country_code:
+                continue
+            gaz_match = v
+            break
 
     if gaz_match:
         if not country_name:
@@ -1091,8 +1097,34 @@ def resolve_destination_info(destination: str, origin: Optional[str] = None) -> 
                 orig_country_code = ccode
                 break
 
-    orig_lat = orig_gaz_match.get("latitude") if orig_gaz_match else (11.0168 if "coimbatore" in orig_low else (28.6139 if "delhi" in orig_low else (19.0760 if "mumbai" in orig_low else (13.0827 if "chennai" in orig_low else 11.0168))))
-    orig_lon = orig_gaz_match.get("longitude") if orig_gaz_match else (76.9558 if "coimbatore" in orig_low else (77.2090 if "delhi" in orig_low else (72.8777 if "mumbai" in orig_low else (80.2707 if "chennai" in orig_low else 76.9558))))
+    orig_lat = orig_gaz_match.get("latitude") if orig_gaz_match else None
+    orig_lon = orig_gaz_match.get("longitude") if orig_gaz_match else None
+
+    # If origin is not in gazetteer, attempt truthful dynamic geocoding
+    if orig_lat is None or orig_lon is None:
+        try:
+            from app.services.maps.nominatim_service import geocode_place
+            orig_geo = geocode_place(orig_raw)
+            if orig_geo and orig_geo.get("lat") and orig_geo.get("country_code") != "UNKNOWN":
+                orig_lat = orig_geo.get("lat")
+                orig_lon = orig_geo.get("lon")
+                if not orig_country_code:
+                    orig_country_code = orig_geo.get("country_code")
+        except Exception:
+            pass
+
+    # If still unresolved, check static Indian city defaults or fallback
+    if orig_lat is None or orig_lon is None:
+        if "delhi" in orig_low:
+            orig_lat, orig_lon = 28.6139, 77.2090
+        elif "mumbai" in orig_low:
+            orig_lat, orig_lon = 19.0760, 72.8777
+        elif "chennai" in orig_low:
+            orig_lat, orig_lon = 13.0827, 80.2707
+        elif "coimbatore" in orig_low:
+            orig_lat, orig_lon = 11.0168, 76.9558
+        else:
+            orig_lat, orig_lon = 11.0168, 76.9558
 
     flight_dist_km = None
     if lat is not None and lon is not None and orig_lat is not None and orig_lon is not None:
@@ -1113,15 +1145,28 @@ def resolve_destination_info(destination: str, origin: Optional[str] = None) -> 
         if is_india_domestic:
             currency = "INR"
             currency_symbol = "₹"
-    elif is_long_haul:
-        dist_lbl = f", ~{int(round(flight_dist_km))} km" if flight_dist_km else ""
-        flight_provenance = f"Transcontinental Long-Haul Route Index ({orig_raw} <-> {dest_raw}{dist_lbl})"
-    elif is_regional_international or country_code != "IN":
-        c_label = country_name or dest_raw.title()
-        dist_lbl = f", ~{int(round(flight_dist_km))} km" if flight_dist_km else ""
-        flight_provenance = f"International Air Route Index ({orig_raw} <-> {c_label}{dist_lbl})"
+        elif country_code in COUNTRY_CODE_TO_CURRENCY:
+            currency = COUNTRY_CODE_TO_CURRENCY[country_code]
+            currency_symbol = CURRENCY_SYMBOLS.get(currency, "$")
     else:
-        flight_provenance = f"IATA Route Benchmark Average ({orig_raw} <-> {dest_raw})"
+        # Distance-driven international corridor classification
+        if flight_dist_km is not None:
+            if flight_dist_km >= 4000.0:
+                is_long_haul = True
+                is_regional_international = False
+            else:
+                is_long_haul = False
+                is_regional_international = True
+
+        if is_long_haul:
+            dist_lbl = f", ~{int(round(flight_dist_km))} km" if flight_dist_km else ""
+            flight_provenance = f"Transcontinental Long-Haul Route Index ({orig_raw} <-> {dest_raw}{dist_lbl})"
+        elif is_regional_international or country_code != "IN":
+            c_label = country_name or dest_raw.title()
+            dist_lbl = f", ~{int(round(flight_dist_km))} km" if flight_dist_km else ""
+            flight_provenance = f"International Air Route Index ({orig_raw} <-> {c_label}{dist_lbl})"
+        else:
+            flight_provenance = f"IATA Route Benchmark Average ({orig_raw} <-> {dest_raw})"
 
     # Dynamic Timezone & UTC Offset Resolution
     timezone_str = COUNTRY_CODE_TO_TIMEZONE.get(country_code, "UTC")
@@ -1134,10 +1179,13 @@ def resolve_destination_info(destination: str, origin: Optional[str] = None) -> 
     else:
         utc_offset = "UTC+00:00"
 
+    clean_dest_name = gaz_match["name"] if gaz_match else city_part.strip()
+
     return {
-        "destination_clean": gaz_match["name"] if gaz_match else dest_raw,
+        "destination_clean": clean_dest_name,
         "country": country_name or ("India" if is_india_dest else "International"),
         "country_code": country_code or ("IN" if is_india_dest else "INTL"),
+        "origin_city": orig_raw,
         "origin_country_code": orig_country_code or "IN",
         "currency": currency,
         "currency_symbol": currency_symbol,

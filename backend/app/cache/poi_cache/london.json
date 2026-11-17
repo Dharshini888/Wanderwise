@@ -1,0 +1,248 @@
+{
+  "destination": "london",
+  "version": "3.0",
+  "pois": [
+    {
+      "name": "British Museum",
+      "category": "Museum",
+      "city": "London",
+      "address": "Great Russell St, London WC1B 3DG, UK",
+      "latitude": 51.5194,
+      "longitude": -0.127,
+      "opening_time": "10:00 AM",
+      "closing_time": "05:00 PM",
+      "ticket_price": 0.0,
+      "currency": "GBP",
+      "rating": 4.8,
+      "description": "World-famous national museum dedicated to human history, art and culture, housing the Rosetta Stone and Parthenon Sculptures.",
+      "provenance": {
+        "place_verification": "UK National Museum Registry",
+        "price_status": "Free Public Access",
+        "source": "British Museum Trust",
+        "confidence": 0.99
+      }
+    },
+    {
+      "name": "Tower of London",
+      "category": "Historical Landmark",
+      "city": "London",
+      "address": "London EC3N 4AB, UK",
+      "latitude": 51.5081,
+      "longitude": -0.0759,
+      "opening_time": "09:00 AM",
+      "closing_time": "05:30 PM",
+      "ticket_price": 34.0,
+      "currency": "GBP",
+      "rating": 4.7,
+      "description": "Historic royal fortress on the River Thames housing the Crown Jewels and Yeoman Warders.",
+      "provenance": {
+        "place_verification": "Historic Royal Palaces Registry",
+        "price_status": "Official Entry Registry",
+        "source": "Historic Royal Palaces",
+        "confidence": 0.99
+      }
+    },
+    {
+      "name": "Westminster Abbey",
+      "category": "Historical Landmark",
+      "city": "London",
+      "address": "Dean's Yard, London SW1P 3PA, UK",
+      "latitude": 51.4994,
+      "longitude": -0.1273,
+      "opening_time": "09:30 AM",
+      "closing_time": "03:30 PM",
+      "ticket_price": 29.0,
+      "currency": "GBP",
+      "rating": 4.7,
+      "description": "Gothic coronation church and UNESCO World Heritage site with centuries of royal history.",
+      "provenance": {
+        "place_verification": "UNESCO World Heritage & Church Registry",
+        "price_status": "Official Entry Registry",
+        "source": "Dean and Chapter of Westminster",
+        "confidence": 0.99
+      }
+    },
+    {
+      "name": "London Eye",
+      "category": "Observation Wheel",
+      "city": "London",
+      "address": "Riverside Bldg, County Hall, London SE1 7PB, UK",
+      "latitude": 51.5033,
+      "longitude": -0.1195,
+      "opening_time": "10:00 AM",
+      "closing_time": "06:00 PM",
+      "ticket_price": 38.0,
+      "currency": "GBP",
+      "rating": 4.5,
+      "description": "Iconic riverside cantilevered observation wheel offering 360-degree panoramic views of London.",
+      "provenance": {
+        "place_verification": "UK Tourism Authority",
+        "price_status": "Official Entry Registry",
+        "source": "Merlin Entertainments",
+        "confidence": 0.99
+      }
+    },
+    {
+      "name": "Buckingham Palace",
+      "category": "Palace",
+      "city": "London",
+      "address": "London SW1A 1AA, UK",
+      "latitude": 51.5014,
+      "longitude": -0.1419,
+      "opening_time": "09:30 AM",
+      "closing_time": "06:30 PM",
+      "ticket_price": 32.0,
+      "currency": "GBP",
+      "rating": 4.6,
+      "description": "Official London administrative headquarters of the British monarch, known for the Changing of the Guard.",
+      "provenance": {
+        "place_verification": "Royal Collection Trust Registry",
+        "price_status": "Official Entry Registry",
+        "source": "Royal Collection Trust",
+        "confidence": 0.99
+      }
+    },
+    {
+      "name": "St. Paul's Cathedral",
+      "category": "Historical Landmark",
+      "city": "London",
+      "address": "St. Paul's Churchyard, London EC4M 8AD, UK",
+      "latitude": 51.5138,
+      "longitude": -0.0984,
+      "opening_time": "08:30 AM",
+      "closing_time": "04:30 PM",
+      "ticket_price": 25.0,
+      "currency": "GBP",
+      "rating": 4.7,
+      "description": "Sir Christopher Wren's masterpiece cathedral featuring the famous Whispering Gallery and crypt.",
+      "provenance": {
+        "place_verification": "Diocese of London Heritage Registry",
+        "price_status": "Official Entry Registry",
+        "source": "St Paul's Chapter",
+        "confidence": 0.99
+      }
+    },
+    {
+      "name": "Natural History Museum London",
+      "category": "Museum",
+      "city": "London",
+      "address": "Cromwell Rd, South Kensington, London SW7 5BD, UK",
+      "latitude": 51.4967,
+      "longitude": -0.1764,
+      "opening_time": "10:00 AM",
+      "closing_time": "05:50 PM",
+      "ticket_price": 0.0,
+      "currency": "GBP",
+      "rating": 4.8,
+      "description": "National museum of natural history featuring vast dinosaur displays, earth hall, and Victorian architecture.",
+      "provenance": {
+        "place_verification": "UK National Museum Registry",
+        "price_status": "Free Public Access",
+        "source": "Natural History Museum Trust",
+        "confidence": 0.99
+      }
+    },
+    {
+      "name": "Tate Modern",
+      "category": "Art Gallery",
+      "city": "London",
+      "address": "Bankside, London SE1 9TG, UK",
+      "latitude": 51.5076,
+      "longitude": -0.0994,
+      "opening_time": "10:00 AM",
+      "closing_time": "06:00 PM",
+      "ticket_price": 0.0,
+      "currency": "GBP",
+      "rating": 4.7,
+      "description": "Britain's national gallery of international modern and contemporary art in the converted Bankside Power Station.",
+      "provenance": {
+        "place_verification": "Tate Gallery National Collection",
+        "price_status": "Free Public Access",
+        "source": "Tate Trustees",
+        "confidence": 0.99
+      }
+    },
+    {
+      "name": "Tower Bridge Exhibition",
+      "category": "Sightseeing",
+      "city": "London",
+      "address": "Tower Bridge Rd, London SE1 2UP, UK",
+      "latitude": 51.5055,
+      "longitude": -0.0754,
+      "opening_time": "09:30 AM",
+      "closing_time": "06:00 PM",
+      "ticket_price": 13.4,
+      "currency": "GBP",
+      "rating": 4.7,
+      "description": "High-level glass walkways and historic Victorian engine rooms inside London's most iconic bridge.",
+      "provenance": {
+        "place_verification": "City of London Corporation",
+        "price_status": "Official Entry Registry",
+        "source": "Bridge House Estates",
+        "confidence": 0.99
+      }
+    },
+    {
+      "name": "Borough Market",
+      "category": "Market & Food",
+      "city": "London",
+      "address": "8 Southwark St, London SE1 1TL, UK",
+      "latitude": 51.5055,
+      "longitude": -0.0907,
+      "opening_time": "10:00 AM",
+      "closing_time": "05:00 PM",
+      "ticket_price": 0.0,
+      "currency": "GBP",
+      "rating": 4.7,
+      "description": "Historic London food and produce market with artisan breads, British cheeses, and street food stalls.",
+      "provenance": {
+        "place_verification": "Borough Market Trust Registry",
+        "price_status": "Free Public Access",
+        "source": "Trustees of Borough Market",
+        "confidence": 0.99
+      }
+    },
+    {
+      "name": "Hyde Park & Kensington Gardens",
+      "category": "Park",
+      "city": "London",
+      "address": "Hyde Park, London W2 2UH, UK",
+      "latitude": 51.5073,
+      "longitude": -0.1696,
+      "opening_time": "05:00 AM",
+      "closing_time": "11:59 PM",
+      "ticket_price": 0.0,
+      "currency": "GBP",
+      "rating": 4.7,
+      "description": "Expansive Royal Park featuring the Serpentine Lake, Diana Memorial Fountain, and Italian Gardens.",
+      "provenance": {
+        "place_verification": "Royal Parks UK",
+        "price_status": "Free Public Access",
+        "source": "The Royal Parks",
+        "confidence": 0.99
+      }
+    },
+    {
+      "name": "Dishoom Covent Garden",
+      "category": "Dining",
+      "city": "London",
+      "address": "12 Upper St Martin's Ln, London WC2H 9FB, UK",
+      "latitude": 51.5126,
+      "longitude": -0.1265,
+      "opening_time": "08:00 AM",
+      "closing_time": "11:00 PM",
+      "ticket_price": 0.0,
+      "currency": "GBP",
+      "rating": 4.6,
+      "is_dining": true,
+      "meal_cost": 28.0,
+      "description": "Celebrated Bombay cafe serving signature black daal, roomali rotis, and classic grills in Covent Garden.",
+      "provenance": {
+        "place_verification": "Licensed Restaurant UK Registry",
+        "price_status": "A la carte dining",
+        "source": "Food Standards Agency",
+        "confidence": 0.98
+      }
+    }
+  ]
+}

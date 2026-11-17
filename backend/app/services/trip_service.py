@@ -592,14 +592,16 @@ def enrich_trip_response(trip: Trip, db: Session, fetch_live_network: bool = Fal
                 pv_resolved = "Destination Directory"
                 source_resolved = "Destination Directory"
 
+            from app.services.poi_service import assess_venue_verification
+            venue_ver = assess_venue_verification(place_dict, destination=trip.destination or "", provenance=raw_prov)
             public_access = raw_prov.get("public_accessibility") or act_meta.get("public_accessibility") or (
                 "Public Dining Area (Menu & seating unverified)" if is_dining_area
-                else ("Public Access Verified" if (has_valid_coords and not is_area) else "Public Access Unverified")
+                else venue_ver.get("access_status", "Public Access Unverified")
             )
 
             prov_dict = {
                 **raw_prov,
-                "identity_status": raw_prov.get("identity_status") or id_status,
+                "identity_status": raw_prov.get("identity_status") or venue_ver["identity_status"],
                 "public_accessibility": public_access,
                 "location_status": raw_prov.get("location_status") or loc_status,
                 "coordinate_status": raw_prov.get("coordinate_status") or coord_status,
@@ -607,6 +609,12 @@ def enrich_trip_response(trip: Trip, db: Session, fetch_live_network: bool = Fal
                 "price_status": raw_prov.get("price_status") or price_status,
                 "route_status": raw_prov.get("route_status") or route_status,
                 "rating_status": raw_prov.get("rating_status") or rating_status,
+                "place_identity_verified": venue_ver["place_identity_verified"],
+                "geographic_coordinates_verified": venue_ver["geographic_coordinates_verified"],
+                "visitor_access_verified": venue_ver["visitor_access_verified"],
+                "opening_hours_verified": venue_ver["opening_hours_verified"],
+                "ticket_pricing_verified": venue_ver["ticket_pricing_verified"],
+                "verification_disclosure": venue_ver["verification_disclosure"],
                 "last_verified": last_verified,
                 "place_verification": pv_resolved,
                 "status": id_status,
@@ -654,6 +662,12 @@ def enrich_trip_response(trip: Trip, db: Session, fetch_live_network: bool = Fal
                 "route_status": prov_dict["route_status"],
                 "rating_status": prov_dict["rating_status"],
                 "last_verified": prov_dict["last_verified"],
+                "place_identity_verified": venue_ver["place_identity_verified"],
+                "geographic_coordinates_verified": venue_ver["geographic_coordinates_verified"],
+                "visitor_access_verified": venue_ver["visitor_access_verified"],
+                "opening_hours_verified": venue_ver["opening_hours_verified"],
+                "ticket_pricing_verified": venue_ver["ticket_pricing_verified"],
+                "verification_disclosure": venue_ver["verification_disclosure"],
                 "provenance": prov_dict,
                 "metadata": act_meta
             })
@@ -836,6 +850,7 @@ def enrich_trip_response(trip: Trip, db: Session, fetch_live_network: bool = Fal
         "weather_summary": weather_summary,
         "next_activity": next_activity,
         "quick_insights": quick_insights,
+        "door_to_door_stages": (budget_plan.get("door_to_door_stages") if isinstance(budget_plan, dict) else None),
         "last_opened_at": trip.last_opened_at.isoformat() if (hasattr(trip, "last_opened_at") and trip.last_opened_at) else None,
         "is_favorite": trip.is_favorite,
         "is_archived": trip.is_archived,

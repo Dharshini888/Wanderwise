@@ -35,12 +35,25 @@ class BusinessValidator:
                 except Exception:
                     pass
 
-                # 3. Duplicate POI check across days
+                # 3. Duplicate POI & Compound Section check across days
                 place_obj = act.get("place") if isinstance(act.get("place"), dict) else {}
-                p_name = str(place_obj.get("name") or act.get("title") or "").strip().lower()
+                p_name = str(place_obj.get("name") or act.get("title") or "").strip()
+                p_name_l = p_name.lower()
+
+                # Airport & arrival/departure transport hubs are allowed on arrival/departure days
+                is_transit_hub = any(k in p_name_l for k in ["airport", "railway station", "train station", "bus terminal", "ferry terminal", "transit hub"])
+                if is_transit_hub and (d_idx == 0 or d_idx == len(days) - 1):
+                    continue
+
                 if p_name and len(p_name) > 3:
-                    if p_name in seen_places:
-                        return False, f"DUPLICATE_POI_DETECTED: '{p_name.title()}' is scheduled multiple times in the itinerary"
-                    seen_places.add(p_name)
+                    if p_name_l in seen_places:
+                        return False, f"DUPLICATE_POI_DETECTED: '{p_name}' is scheduled multiple times in the itinerary"
+
+                    from app.services.poi_service import is_compound_sub_section_of
+                    is_sub, parent_name, matched_ex = is_compound_sub_section_of(p_name, seen_places)
+                    if is_sub:
+                        return False, f"COMPOUND_LANDMARK_DUPLICATE: '{p_name}' is a sub-section of already scheduled '{matched_ex}' ({parent_name})"
+
+                    seen_places.add(p_name_l)
 
         return True, None

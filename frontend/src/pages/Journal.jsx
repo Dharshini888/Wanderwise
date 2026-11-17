@@ -8,8 +8,9 @@ import {
   IconBuilding
 } from '@tabler/icons-react';
 import InteractiveTransitMap from '../components/transit/InteractiveTransitMap';
+import { API_URL } from '../api/axios';
 
-const API = 'http://localhost:8000/api';
+const API = API_URL;
 
 export default function Journal() {
   const { tripId: paramTripId } = useParams();

@@ -57,12 +57,39 @@ const CITY_CENTERS = {
   coimbatore: [11.0168, 76.9558],
   delhi: [28.6139, 77.2090],
   mumbai: [19.0760, 72.8777],
+  jaipur: [26.9124, 75.7873],
+  chennai: [13.0827, 80.2707],
+  bangalore: [12.9716, 77.5946],
+  bengaluru: [12.9716, 77.5946],
+  hyderabad: [17.3850, 78.4867],
+  kolkata: [22.5726, 88.3639],
   bolivia: [-16.5000, -68.1500],
   rome: [41.9028, 12.4964],
   paris: [48.8566, 2.3522],
   london: [51.5074, -0.1278],
   tokyo: [35.6762, 139.6503],
   singapore: [1.3521, 103.8198],
+  istanbul: [41.0082, 28.9784],
+  'new york': [40.7128, -74.0060],
+  'los angeles': [34.0522, -118.2437],
+  'san francisco': [37.7749, -122.4194],
+  sydney: [-33.8688, 151.2093],
+  dubai: [25.2048, 55.2708],
+  cairo: [30.0444, 31.2357],
+  'cape town': [-33.9249, 18.4241],
+  berlin: [52.5200, 13.4050],
+  amsterdam: [52.3676, 4.9041],
+  barcelona: [41.3851, 2.1734],
+  madrid: [40.4168, -3.7038],
+  vienna: [48.2082, 16.3738],
+  prague: [50.0755, 14.4378],
+  seoul: [37.5665, 126.9780],
+  'hong kong': [22.3193, 114.1694],
+  bali: [-8.4095, 115.1889],
+  toronto: [43.6532, -79.3832],
+  vancouver: [49.2827, -123.1207],
+  'rio de janeiro': [-22.9068, -43.1729],
+  'buenos aires': [-34.6037, -58.3816],
 };
 
 export default function TripItineraryMap({
@@ -76,7 +103,7 @@ export default function TripItineraryMap({
   height = '320px',
 }) {
   const destLower = (destination || '').toLowerCase();
-  const defaultCityCoord = Object.entries(CITY_CENTERS).find(([k]) => destLower.includes(k))?.[1] || [41.6938, 44.8015];
+  const defaultCityCoord = Object.entries(CITY_CENTERS).find(([k]) => destLower.includes(k))?.[1] || [20.0, 0.0];
 
   // Resolve valid stops with coordinates truthfully; never fabricate coordinates with offsets
   const validStops = useMemo(() => {
@@ -85,7 +112,9 @@ export default function TripItineraryMap({
 
   const center = useMemo(() => {
     if (validStops.length > 0) {
-      return [validStops[0].latitude, validStops[0].longitude];
+      const avgLat = validStops.reduce((sum, s) => sum + Number(s.latitude), 0) / validStops.length;
+      const avgLon = validStops.reduce((sum, s) => sum + Number(s.longitude), 0) / validStops.length;
+      return [avgLat, avgLon];
     }
     return defaultCityCoord;
   }, [validStops, defaultCityCoord]);

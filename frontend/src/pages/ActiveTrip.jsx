@@ -12,7 +12,7 @@ import {
 } from '../components/transit/TransitComponentsV6';
 import { IconSparkles, IconCalendar, IconInfoCircle } from '@tabler/icons-react';
 
-const API = 'http://localhost:8000/api';
+import api from '../api/axios';
 
 export default function ActiveTrip() {
   const { tripId } = useParams();
@@ -39,9 +39,9 @@ export default function ActiveTrip() {
 
       if (tripId) {
         try {
-          const tRes = await fetch(`${API}/trips/${tripId}`);
-          if (tRes.ok) {
-            tripObj = await tRes.json();
+          const tRes = await api.get(`/api/trips/${tripId}`);
+          if (tRes.data) {
+            tripObj = tRes.data;
             setTripInfo(tripObj);
             destination = tripObj.destination || destination;
             origin = tripObj.origin_city || origin;
@@ -66,14 +66,11 @@ export default function ActiveTrip() {
          budget = location.state.budget || budget;
       }
       
-      const res = await fetch(`${API}/transit/route`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ origin, destination, preferred_mode, budget, date: "Tomorrow" })
+      const res = await api.post('/api/transit/route', {
+        origin, destination, preferred_mode, budget, date: "Tomorrow"
       });
       
-      const data = await res.json();
-      setRouteData(data);
+      setRouteData(res.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -83,9 +80,9 @@ export default function ActiveTrip() {
 
   if (loading || !routeData) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen text-purple-400">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-purple-400">
         <IconSparkles size={48} className="animate-pulse mb-4" />
-        <p className="font-bold">Loading WanderWise v6.0 AI Travel Platform...</p>
+        <p className="font-bold text-sm">Loading Live Trip & Transit Experience...</p>
       </div>
     );
   }

@@ -32,16 +32,17 @@ from app.services.budget_allocation_service import BudgetAllocationService
 router = APIRouter(prefix="/api/trips", tags=["Smart Trip Planner"])
 
 
-def _get_user_trip(trip_id: int, db: Session, current_user: Optional[User] = None) -> Trip:
+def _get_user_trip(trip_id: int, db: Session, current_user: Optional[User] = None, enforce_owner: bool = False) -> Trip:
     """Helper to verify trip existence and user isolation."""
-    query = db.query(Trip).filter(Trip.id == trip_id)
-    if current_user:
-        user_trip = query.filter(Trip.user_id == current_user.id).first()
-        if user_trip:
-            return user_trip
     trip = db.query(Trip).filter(Trip.id == trip_id).first()
     if not trip:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Trip not found")
+    if current_user and trip.user_id is not None and trip.user_id != current_user.id:
+        if enforce_owner:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access forbidden: you do not have permission to modify this trip"
+            )
     return trip
 
 
@@ -54,7 +55,7 @@ def _get_user_activity(activity_id: int, db: Session, current_user: Optional[Use
         day = db.query(ItineraryDay).filter(ItineraryDay.id == act.day_id).first()
         if not day:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Activity not found")
-        _get_user_trip(day.trip_id, db, current_user)
+        _get_user_trip(day.trip_id, db, current_user, enforce_owner=True)
     return act
 
 
@@ -423,11 +424,10 @@ def create_new_trip(
     adults = resolved["adults"]
     children = resolved["children"]
 
-    if not data.country:
-        from app.services.location.location_normalizer import resolve_destination_info
-        dest_info = resolve_destination_info(data.destination, resolved["origin_city"])
-        if dest_info.get("country"):
-            data.country = dest_info["country"]
+    from app.services.location.location_normalizer import resolve_destination_info
+    dest_info = resolve_destination_info(data.destination, resolved["origin_city"])
+    if not data.country and dest_info.get("country"):
+        data.country = dest_info["country"]
 
     is_unrestricted_budget = data.budget is None or float(data.budget) <= 0
 
@@ -1087,7 +1087,7 @@ def update_existing_trip(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    trip = _get_user_trip(trip_id, db, current_user)
+    trip = _get_user_trip(trip_id, db, current_user, enforce_owner=True)
     updated = update_trip(db, trip, data)
     return enrich_trip_response(updated, db)
 
@@ -1099,7 +1099,7 @@ def delete_existing_trip(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    trip = _get_user_trip(trip_id, db, current_user)
+    trip = _get_user_trip(trip_id, db, current_user, enforce_owner=True)
     db.delete(trip)
     db.commit()
     return {"message": "Trip deleted successfully"}
@@ -1241,22 +1241,35 @@ def undo_activity_endpoint(
 
 
 @router.post("/{trip_id}/share")
-
 def share_trip_endpoint(
     trip_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    import os
     trip = _get_user_trip(trip_id, db, current_user)
     if not trip.share_token:
         import secrets
         trip.share_token = secrets.token_urlsafe(12)
         db.commit()
         db.refresh(trip)
+    frontend_base = os.getenv("FRONTEND_URL", "http://localhost:5173").rstrip("/")
     return {
         "share_token": trip.share_token,
-        "share_url": f"http://localhost:5173/trips/share/{trip.share_token}"
+        "share_url": f"{frontend_base}/trips/share/{trip.share_token}"
     }
+
+
+@router.get("/share/{share_token}")
+def get_shared_trip_endpoint(
+    share_token: str,
+    db: Session = Depends(get_db)
+):
+    """Retrieve public trip details by secure share token."""
+    trip = db.query(Trip).filter(Trip.share_token == share_token).first()
+    if not trip:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Shared trip not found or link has expired")
+    return enrich_trip_response(trip, db, fetch_live_network=False)
 
 
 @router.post("/{trip_id}/generate-itinerary")

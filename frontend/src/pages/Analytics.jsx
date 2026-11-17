@@ -13,8 +13,8 @@ import {
 } from '@tabler/icons-react';
 import { calculateTripDuration } from '../utils/date_helpers';
 import { getStoredUserId } from '../utils/formatters';
+import api from '../api/axios';
 
-const API = 'http://localhost:8000/api';
 const PIE_COLORS = ['#185FA5', '#0891b2', '#059669', '#d97706', '#7c3aed', '#db2777'];
 
 const CustomTooltip = ({ active, payload, label }) => {
@@ -42,9 +42,11 @@ export default function Analytics() {
 
   useEffect(() => {
     if (!userId || userId === 'undefined' || String(userId) === 'undefined') { setLoading(false); return; }
-    fetch(`${API}/trips/user/${userId}`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(r => r.json()).then(setTrips).catch(() => {}).finally(() => setLoading(false));
-  }, [userId, token]);
+    api.get(`/api/trips/user/${userId}`)
+      .then(res => setTrips(Array.isArray(res.data) ? res.data : []))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [userId]);
 
   const getDays = (t) => calculateTripDuration(t.start_date, t.end_date);
   const totalTrips  = trips.length;

@@ -19,7 +19,9 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
-const API = 'http://localhost:8000/api';
+import { API_URL } from '../api/axios';
+
+const API = API_URL;
 
 const DEFAULT_CHECKLIST = [
   { text: 'Passport & National ID', cat: 'documents', done: false },

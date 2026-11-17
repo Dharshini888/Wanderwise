@@ -71,6 +71,11 @@ export const shareTrip = async (tripId) => {
   return res.data;
 };
 
+export const getSharedTrip = async (shareToken) => {
+  const res = await api.get(`/api/trips/share/${shareToken}`);
+  return res.data;
+};
+
 export const generateItinerary = async (tripId) => {
   const res = await api.post(`/api/trips/${tripId}/generate-itinerary`);
   return res.data;

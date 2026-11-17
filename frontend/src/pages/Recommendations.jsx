@@ -17,8 +17,9 @@ import {
   IconBook,
   IconRotateCcw
 } from '@tabler/icons-react';
+import { API_URL } from '../api/axios';
 
-const API = 'http://localhost:8000/api';
+const API = API_URL;
 
 const CATEGORIES = [
   "All",

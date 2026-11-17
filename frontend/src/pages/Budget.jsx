@@ -3,8 +3,7 @@ import { useSearchParams, useNavigate, useParams } from 'react-router-dom';
 import ExpenseDashboard from './ExpenseDashboard';
 import { IconReceipt, IconWallet, IconMapPin } from '@tabler/icons-react';
 import { getStoredUserId } from '../utils/formatters';
-
-const API = 'http://localhost:8000/api';
+import api from '../api/axios';
 
 export default function Budget() {
   const { tripId: paramTripId } = useParams();
@@ -20,9 +19,9 @@ export default function Budget() {
 
   useEffect(() => {
     if (!userId || userId === 'undefined' || String(userId) === 'undefined') { setLoading(false); return; }
-    fetch(`${API}/trips/user/${userId}`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(r => r.json())
-      .then(data => {
+    api.get(`/api/trips/user/${userId}`)
+      .then(res => {
+        const data = res.data;
         if (Array.isArray(data) && data.length > 0) {
           setTrips(data);
           if (!selectedTrip) {
@@ -32,7 +31,7 @@ export default function Budget() {
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [userId, token]);
+  }, [userId]);
 
   if (loading) {
     return (

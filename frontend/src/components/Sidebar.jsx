@@ -59,7 +59,7 @@ const NAV_GROUPS = [
   {
     title: 'MEMORIES',
     links: [
-      { path: '/journal/1', label: 'Journal', icon: IconBook },
+      { path: '/journal', label: 'Journal', icon: IconBook },
       { path: '/wishlist', label: 'Wishlist', icon: IconHeart },
     ]
   },

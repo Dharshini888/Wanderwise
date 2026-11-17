@@ -18,8 +18,9 @@ import {
   NearbyTab,
   AIRouteGuidanceCard
 } from '../components/transit/TransitComponentsV6';
+import { API_URL } from '../api/axios';
 
-const API = 'http://localhost:8000/api';
+const API = API_URL;
 const STRATEGIES = ['fastest', 'cheapest', 'safest', 'greenest', 'least walking', 'fewest transfers', 'best overall'];
 
 export default function Transit() {

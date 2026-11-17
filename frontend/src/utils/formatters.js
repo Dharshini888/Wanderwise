@@ -50,6 +50,19 @@ export function getStoredUserId() {
 }
 
 
+export function formatDestinationWithCountry(destination, country) {
+  if (!destination) return country || '';
+  const d = String(destination).trim();
+  if (!country) return d;
+  const c = String(country).trim();
+  const dLower = d.toLowerCase();
+  const cLower = c.toLowerCase();
+  if (dLower === cLower || dLower.endsWith(`, ${cLower}`) || dLower.endsWith(` ${cLower}`)) {
+    return d;
+  }
+  return `${d}, ${c}`;
+}
+
 export function formatTripDate(dateInput, formatType = 'medium') {
   if (!dateInput) return '';
   try {

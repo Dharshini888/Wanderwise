@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+export const API_URL = `${API_BASE_URL}/api`;
+
 const api = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: API_BASE_URL,
 });
 
 const isValidToken = (t) => Boolean(t && t !== 'null' && t !== 'undefined' && typeof t === 'string' && t.trim() !== '');
@@ -68,7 +71,7 @@ api.interceptors.response.use(
       }
 
       try {
-        const res = await axios.post('http://localhost:8000/api/auth/refresh', {
+        const res = await axios.post(`${API_URL}/auth/refresh`, {
           refresh_token: refreshToken,
         });
 

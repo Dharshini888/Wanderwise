@@ -24,7 +24,9 @@ import {
   IconChartPie
 } from '@tabler/icons-react';
 
-const API = 'http://localhost:8000/api';
+import { API_URL } from '../api/axios';
+
+const API = API_URL;
 
 // Comprehensive World Currency Dataset (150+ Countries)
 const WORLD_CURRENCIES = [

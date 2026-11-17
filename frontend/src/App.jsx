@@ -69,6 +69,7 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/verify-email" element={<EmailVerification />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/trips/share/:token" element={<TripDetails isSharedView={true} />} />
 
           {/* Protected Routes inside Layout */}
           <Route element={<ProtectedRoute />}>

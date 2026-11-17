@@ -22,7 +22,7 @@ import TripItineraryMap from '../components/trips/TripItineraryMap';
 import { formatTripDate } from '../utils/formatters';
 
 import {
-  getTripDetails, getTodayTripDetails, toggleFavoriteTrip, archiveTrip, restoreTrip,
+  getTripDetails, getTodayTripDetails, getSharedTrip, toggleFavoriteTrip, archiveTrip, restoreTrip,
   deleteTrip, duplicateTrip, shareTrip, generateItinerary,
   regenerateDay, toggleActivityLock, deleteActivity, addCustomActivity
 } from '../api/trips';
@@ -67,10 +67,12 @@ function TripChecklistSummary({ tripId }) {
   );
 }
 
-export default function TripDetails() {
-  const { tripId } = useParams();
+export default function TripDetails({ isSharedView = false }) {
+  const { tripId, token } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const isShared = isSharedView || Boolean(token) || location.pathname.startsWith('/trips/share/');
 
   const initialTrip = location.state?.initialTrip || null;
   const [trip, setTrip] = useState(initialTrip);
@@ -84,17 +86,24 @@ export default function TripDetails() {
   const loadTripData = async () => {
     const startTime = performance.now();
     try {
-      const data = await getTripDetails(tripId);
+      let data;
+      if (isShared && token) {
+        data = await getSharedTrip(token);
+      } else {
+        data = await getTripDetails(tripId);
+      }
       setTrip(data);
       setLoading(false); // Priority 1 rendering unblocked
-      console.log(`[TripDetails] Core trip details loaded for Trip ${tripId} in ${Math.round(performance.now() - startTime)}ms`);
+      console.log(`[TripDetails] Core trip details loaded for Trip ${tripId || token} in ${Math.round(performance.now() - startTime)}ms`);
 
       // Asynchronously load today's execution itinerary without blocking core page
-      getTodayTripDetails(tripId)
-        .then((todayJson) => {
-          if (todayJson) setTodayData(todayJson);
-        })
-        .catch(() => {});
+      if (!isShared && tripId) {
+        getTodayTripDetails(tripId)
+          .then((todayJson) => {
+            if (todayJson) setTodayData(todayJson);
+          })
+          .catch(() => {});
+      }
     } catch (_) {
       setLoading(false);
     }
@@ -102,7 +111,7 @@ export default function TripDetails() {
 
   useEffect(() => {
     loadTripData();
-  }, [tripId]);
+  }, [tripId, token]);
 
   const handleToggleComplete = async (activityId) => {
     try {
@@ -218,7 +227,7 @@ export default function TripDetails() {
           </button>
           <Link
             to={`/trips/${tripId}/live`}
-            state={{ origin: "Home City", destination: trip.destination, budget: trip.budget_limit || 50000 }}
+            state={{ origin: trip.origin_city || "Origin City", destination: trip.destination, budget: trip.budget || 50000 }}
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-extrabold shadow-sm transition-all"
           >
             <IconMap size={16} /> Start Trip Session

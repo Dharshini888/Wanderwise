@@ -260,7 +260,7 @@ export default function TodayOverviewWidget({
   if (isUpcoming && heroTrip) {
     const readinessItems = [
       { label: 'AI Itinerary', status: 'Ready', score: '100%', detail: 'Day-by-day attraction schedule verified', icon: <IconCalendarEvent size={18} className="text-emerald-500" /> },
-      { label: 'Maps & Transit', status: 'Ready', score: '100%', detail: 'OSRM road transit & 3-state provenance', icon: <IconMap size={18} className="text-emerald-500" /> },
+      { label: 'Maps & Transit', status: 'Ready', score: '100%', detail: 'Road routing & transit verification', icon: <IconMap size={18} className="text-emerald-500" /> },
       { label: 'Budget Allocation', status: 'Healthy', score: '100%', detail: `Canonical budget set to ${formatCurrency(heroTrip.budget || 0, heroTrip.currency)}`, icon: <IconWallet size={18} className="text-blue-500" /> },
       { label: 'Packing Checklist', status: 'Pending Review', score: 'Review', detail: 'Weather-adaptive packing checklist ready', icon: <IconBackpack size={18} className="text-amber-500" /> },
     ];

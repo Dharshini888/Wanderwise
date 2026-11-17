@@ -20,6 +20,50 @@ from app.utils.currency_formatter import format_currency
 from app.services.location.location_normalizer import resolve_destination_info
 
 
+COUNTRY_VISA_RULES: Dict[str, Dict[str, Any]] = {
+    "TR": {
+        "name": "Turkey",
+        "visa_usd": 60.0,
+        "baggage_usd": 25.0,
+        "insurance_usd": 15.0,
+        "label": "Visa, Baggage & Insurance",
+        "notes_template": "Turkey entry: Official electronic visa (e-Visa / Gateway) for Indian passport holders at ~$60 USD (~5,000 INR) per person (${visa_total} for {travellers} travellers), plus checked baggage and travel insurance.",
+    },
+    "NP": {
+        "name": "Nepal",
+        "visa_usd": 0.0,
+        "baggage_usd": 5.0,
+        "insurance_usd": 5.0,
+        "label": "Travel Insurance & Border Processing",
+        "notes_template": "India-Nepal / Bhutan bilateral treaty: Visa-free entry for Indian passport holders. Allowance covers travel insurance and border processing.",
+    },
+    "BT": {
+        "name": "Bhutan",
+        "visa_usd": 0.0,
+        "baggage_usd": 5.0,
+        "insurance_usd": 5.0,
+        "label": "Travel Insurance & Border Processing",
+        "notes_template": "India-Nepal / Bhutan bilateral treaty: Visa-free entry for Indian passport holders. Allowance covers travel insurance and border processing.",
+    },
+    "ID": {
+        "name": "Indonesia",
+        "visa_usd": 35.0,
+        "baggage_usd": 15.0,
+        "insurance_usd": 10.0,
+        "label": "Visa, Baggage & Insurance",
+        "notes_template": "Indonesia entry: Official Visa on Arrival (VoA / e-VoA) at $35 USD (~500,000 IDR) per person (${visa_total} for {travellers} travellers), plus airline checked baggage and travel medical insurance.",
+    },
+    "SG": {
+        "name": "Singapore",
+        "visa_usd": 30.0,
+        "baggage_usd": 20.0,
+        "insurance_usd": 15.0,
+        "label": "Visa, Baggage & Insurance",
+        "notes_template": "Singapore entry: Official electronic visa / entry approval (~30 SGD) per person (${visa_total} for {travellers} travellers), plus checked baggage and travel medical insurance.",
+    },
+}
+
+
 TIER_STRATEGIES = {
     "budget": {
         "key": "budget",
@@ -330,34 +374,19 @@ class BudgetAllocationService:
         total_act_usd = (adults * act_adult_usd + children * act_child_usd) * trip_days
         est_activities = round(total_act_usd * rate, 2)
 
-        # 6. Visa, Baggage & Insurance
-        dest_clean_l = (destination or "").lower()
+        # 6. Visa, Baggage & Insurance (Country-code & route driven)
+        country_visa = COUNTRY_VISA_RULES.get(dest_country_code)
         if is_domestic:
             fees_usd = 2.0 * travellers
             fees_label = "Baggage & Travel Insurance"
             fees_notes = f"Domestic travel ({dest_info.get('country', 'Domestic')}): No visa required. Allowance covers travel insurance, railway booking charges, and baggage for {travellers} traveller(s)."
-        elif "turkey" in dest_clean_l or "istanbul" in dest_clean_l:
-            # Turkey official eVisa / Gateway visa for Indian passport holders ~$60 USD (~5,000 INR) per person
-            visa_per_person_usd = 60.0
-            visa_total_usd = visa_per_person_usd * travellers
-            baggage_usd = 25.0 * travellers
-            insurance_usd = 15.0 * travellers
+        elif country_visa:
+            visa_total_usd = country_visa["visa_usd"] * travellers
+            baggage_usd = country_visa["baggage_usd"] * travellers
+            insurance_usd = country_visa["insurance_usd"] * travellers
             fees_usd = visa_total_usd + baggage_usd + insurance_usd
-            fees_label = "Visa, Baggage & Insurance"
-            fees_notes = f"Turkey entry: Official electronic visa (e-Visa / Gateway) for Indian passport holders at ~$60 USD (~5,000 INR) per person (${int(visa_total_usd)} for {travellers} travellers), plus checked baggage and travel insurance."
-        elif "nepal" in dest_clean_l or "bhutan" in dest_clean_l:
-            fees_usd = 10.0 * travellers
-            fees_label = "Travel Insurance & Border Processing"
-            fees_notes = f"India-Nepal / Bhutan bilateral treaty: Visa-free entry for Indian passport holders. Allowance covers travel insurance and border processing."
-        elif "indonesia" in dest_clean_l or "bali" in dest_clean_l:
-            # Indonesia Visa on Arrival (VoA) / e-VoA: $35 USD (~500,000 IDR) per person
-            visa_per_person_usd = 35.0
-            visa_total_usd = visa_per_person_usd * travellers
-            baggage_usd = 15.0 * travellers
-            insurance_usd = 10.0 * travellers
-            fees_usd = visa_total_usd + baggage_usd + insurance_usd
-            fees_label = "Visa, Baggage & Insurance"
-            fees_notes = f"Indonesia entry: Official Visa on Arrival (VoA / e-VoA) at $35 USD (~500,000 IDR) per person (${int(visa_total_usd)} for {travellers} travellers), plus airline checked baggage and travel medical insurance."
+            fees_label = country_visa["label"]
+            fees_notes = country_visa["notes_template"].format(visa_total=int(visa_total_usd), travellers=travellers)
         elif is_long_haul:
             adult_fee_usd = 130.0
             child_fee_usd = 75.0
@@ -702,16 +731,28 @@ class BudgetAllocationService:
         # Guarantee 2: Every category percentage reflects exact allocated share, strictly summing to 100.0%
         for c in categories:
             c["percentage"] = round((c["allocated_amount"] / max(1.0, raw_budget)) * 100.0, 1)
+            # Add explicit per-person and group amounts for every category (Requirement F)
+            c["group_allocated"] = c["allocated_amount"]
+            c["group_estimated"] = c["estimated_cost"]
+            c["per_person_allocated"] = round(c["allocated_amount"] / max(1, travellers), 2)
+            c["formatted_per_person_allocated"] = format_currency(c["per_person_allocated"], curr)
+            c["per_person_estimated"] = round(c["estimated_cost"] / max(1, travellers), 2)
+            c["formatted_per_person_estimated"] = format_currency(c["per_person_estimated"], curr)
+            if c["key"] in ["outbound_transport", "return_transport"]:
+                c["is_live_booking"] = False
+                c["booking_status"] = "Benchmark Market Estimate (Not confirmed reservation)"
+                c["pricing_disclaimer"] = "Illustrative corridor benchmark; not a live confirmed airline/rail booking."
 
         diff_pct = round(100.0 - sum(c["percentage"] for c in categories), 1)
         if abs(diff_pct) > 0 and len(categories) > 0:
             highest_c = max(categories, key=lambda x: x["percentage"])
             highest_c["percentage"] = round(highest_c["percentage"] + diff_pct, 1)
 
-        if "turkey" in dest_clean_l or "istanbul" in dest_clean_l:
-            visa_curr = round(60.0 * travellers * rate, 2)
-            bag_curr = round(25.0 * travellers * rate, 2)
-            ins_curr = round(15.0 * travellers * rate, 2)
+        country_visa = COUNTRY_VISA_RULES.get(dest_country_code)
+        if country_visa:
+            visa_curr = round(country_visa["visa_usd"] * travellers * rate, 2)
+            bag_curr = round(country_visa["baggage_usd"] * travellers * rate, 2)
+            ins_curr = round(country_visa["insurance_usd"] * travellers * rate, 2)
             fees_breakdown = {
                 "visa_eta": visa_curr,
                 "travel_insurance": ins_curr,
@@ -720,21 +761,7 @@ class BudgetAllocationService:
                 "notes": fees_notes,
                 "formatted_visa_eta": format_currency(visa_curr, curr),
                 "formatted_travel_insurance": format_currency(ins_curr, curr),
-                "formatted_checked_baggage": format_currency(bag_curr, curr)
-            }
-        elif "indonesia" in dest_clean_l or "bali" in dest_clean_l:
-            visa_curr = round(35.0 * travellers * rate, 2)
-            bag_curr = round(15.0 * travellers * rate, 2)
-            ins_curr = round(10.0 * travellers * rate, 2)
-            fees_breakdown = {
-                "visa_eta": visa_curr,
-                "travel_insurance": ins_curr,
-                "checked_baggage": bag_curr,
-                "total": est_fees,
-                "notes": fees_notes,
-                "formatted_visa_eta": format_currency(visa_curr, curr),
-                "formatted_travel_insurance": format_currency(ins_curr, curr),
-                "formatted_checked_baggage": format_currency(bag_curr, curr)
+                "formatted_checked_baggage": format_currency(bag_curr, curr),
             }
         else:
             fees_breakdown = {
@@ -890,6 +917,83 @@ class BudgetAllocationService:
             )
         }
 
+        # 8-Stage Door-to-Door Travel Stages (Requirement D)
+        door_to_door_stages = [
+            {
+                "stage_number": 1,
+                "stage_name": "Origin to Departure Terminal",
+                "description": f"Ground transit from home/residence in {origin_city or 'origin'} to departure station/airport.",
+                "mode": "City Metro / Taxi Transfer",
+                "estimated_duration": "45–60 min",
+                "category": "departure_access",
+                "pricing_basis": "Local transit allowance"
+            },
+            {
+                "stage_number": 2,
+                "stage_name": "Outbound Corridor Journey",
+                "description": f"Outbound intercity journey from {origin_city or 'origin'} to {destination or 'destination'} via {corridor_transport_mode}.",
+                "mode": corridor_transport_mode,
+                "estimated_cost": est_outbound,
+                "formatted_cost": format_currency(est_outbound, curr),
+                "is_estimate": True,
+                "pricing_type": "Market Benchmark",
+                "booking_status": "Illustrative Estimate (Not confirmed reservation)",
+                "category": "outbound_corridor"
+            },
+            {
+                "stage_number": 3,
+                "stage_name": "Arrival Terminal to Accommodation",
+                "description": f"Arrival transfer from {destination or 'destination'} arrival airport/station to central accommodation area.",
+                "mode": "Airport Express / Scheduled Transfer",
+                "estimated_duration": "30–50 min",
+                "category": "arrival_transfer"
+            },
+            {
+                "stage_number": 4,
+                "stage_name": "Daily Local Destination Transportation",
+                "description": f"Intra-city transit ({local_transit_preference}) connecting accommodation, attractions, and dining across {trip_days} days.",
+                "mode": local_transit_preference,
+                "estimated_cost": est_transit,
+                "formatted_cost": format_currency(est_transit, curr),
+                "category": "local_transit"
+            },
+            {
+                "stage_number": 5,
+                "stage_name": "Intercity or Regional Day-Trip Transit",
+                "description": f"Regional connections and day-trip excursions outside central {destination or 'destination'} (where scheduled).",
+                "mode": "Regional Rail / Coach / Boat",
+                "category": "intercity_excursions"
+            },
+            {
+                "stage_number": 6,
+                "stage_name": "Accommodation to Departure Airport/Station",
+                "description": f"Final day accommodation checkout and dedicated transfer to departure airport with 3.5-hour international buffer.",
+                "mode": "Airport Express / Scheduled Departure Transfer",
+                "estimated_duration": "45–60 min",
+                "category": "departure_transfer"
+            },
+            {
+                "stage_number": 7,
+                "stage_name": "Return Corridor Journey",
+                "description": f"Return intercity journey from {destination or 'destination'} to {origin_city or 'origin'} via {corridor_transport_mode}.",
+                "mode": corridor_transport_mode,
+                "estimated_cost": est_return,
+                "formatted_cost": format_currency(est_return, curr),
+                "is_estimate": True,
+                "pricing_type": "Market Benchmark",
+                "booking_status": "Illustrative Estimate (Not confirmed reservation)",
+                "category": "return_corridor"
+            },
+            {
+                "stage_number": 8,
+                "stage_name": "Arrival Terminal to Home",
+                "description": f"Final ground transit from arrival station/airport in {origin_city or 'origin'} back to residence.",
+                "mode": "City Metro / Taxi Transfer",
+                "estimated_duration": "45–60 min",
+                "category": "home_return"
+            }
+        ]
+
         # Dynamic, destination-independent currency resolution from Gazetteer and ISO registry
         dest_curr = dest_info["currency"]
         dest_symbol = dest_info["currency_symbol"]
@@ -984,9 +1088,13 @@ class BudgetAllocationService:
                 "max": max_cost,
                 "min_cost": min_cost,
                 "max_cost": max_cost,
-                "formatted_range": f"{format_currency(min_cost, curr)} – {format_currency(max_cost, curr)}"
+                "percentage_down": -6.0,
+                "percentage_up": 7.0,
+                "formatted_range": f"{format_currency(min_cost, curr)} – {format_currency(max_cost, curr)}",
+                "explanation": "Cost range reflects seasonal variation: off-peak travel typically achieves ~6% savings, while peak season departures and high-demand dates increase corridor and lodging costs by up to ~7%."
             },
             "formatted_uncertainty_range": f"{format_currency(min_cost, curr)} – {format_currency(max_cost, curr)}",
+            "door_to_door_stages": door_to_door_stages,
             "cost_provenance": cost_provenance,
             "provenance_summary": "Estimated Regional Market Benchmarks (Subject to seasonal variation)",
             "surplus_buffer_percentage": surplus_buffer_pct,

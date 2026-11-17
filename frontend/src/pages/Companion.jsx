@@ -15,8 +15,7 @@ import {
 } from '@tabler/icons-react';
 import { calculateTripDuration } from '../utils/date_helpers';
 import { getStoredUserId } from '../utils/formatters';
-
-const API = 'http://localhost:8000/api';
+import api from '../api/axios';
 
 export default function Companion() {
   const [trips, setTrips] = useState([]);
@@ -24,16 +23,15 @@ export default function Companion() {
   const [loading, setLoading] = useState(true);
   const [replanText, setReplanText] = useState('');
   const [replanning, setReplanning] = useState(false);
-  const token = localStorage.getItem('token');
 
   const userId = getStoredUserId();
 
   const fetchTrips = async () => {
     if (!userId || userId === 'undefined' || String(userId) === 'undefined') { setLoading(false); return; }
     try {
-      const res = await fetch(`${API}/trips/user/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
-      if (res.ok) {
-        const data = await res.json();
+      const res = await api.get(`/api/trips/user/${userId}`);
+      if (res.data) {
+        const data = Array.isArray(res.data) ? res.data : [];
         setTrips(data);
         if (data.length > 0) setSelectedTrip(data[0]);
       }
@@ -41,19 +39,17 @@ export default function Companion() {
     setLoading(false);
   };
 
-  useEffect(() => { fetchTrips(); }, [userId, token]);
+  useEffect(() => { fetchTrips(); }, [userId]);
 
   const handleReplan = async () => {
     if (!replanText.trim() || !selectedTrip) return;
     setReplanning(true);
     try {
-      const res = await fetch(`${API}/trips/${selectedTrip.id}/replan`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ modification_request: replanText }),
+      const res = await api.post(`/api/trips/${selectedTrip.id}/replan`, {
+        modification_request: replanText,
       });
-      if (res.ok) {
-        const updatedTrip = await res.json();
+      if (res.data) {
+        const updatedTrip = res.data;
         setSelectedTrip(updatedTrip);
         setTrips(trips.map(t => t.id === updatedTrip.id ? updatedTrip : t));
         setReplanText('');

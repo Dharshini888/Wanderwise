@@ -23,6 +23,7 @@ import {
   IconAlertTriangle,
   IconRefresh,
 } from '@tabler/icons-react';
+import { formatDestinationWithCountry } from '../utils/formatters';
 
 export default function LocalTravelGuide() {
   const { user } = useAuth();
@@ -260,7 +261,7 @@ export default function LocalTravelGuide() {
             </div>
 
             <h2 className="text-2xl font-extrabold text-[var(--text-primary)] font-heading tracking-tight">
-              {guideData.destination}
+              {formatDestinationWithCountry(guideData.destination, guideData.country)}
             </h2>
 
             <div className="flex items-center gap-4 text-xs font-semibold text-[var(--text-secondary)] flex-wrap">

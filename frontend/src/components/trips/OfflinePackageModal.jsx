@@ -8,8 +8,10 @@ import {
   IconMapPin,
   IconShield,
   IconBackpack,
-  IconRoute
+  IconRoute,
+  IconFileDownload,
 } from '@tabler/icons-react';
+import { formatDestinationWithCountry } from '../../utils/formatters';
 
 export default function OfflinePackageModal({ trip, isOpen, onClose }) {
   const [isCached, setIsCached] = useState(false);
@@ -35,27 +37,55 @@ export default function OfflinePackageModal({ trip, isOpen, onClose }) {
 
   if (!isOpen || !trip) return null;
 
+  const getEmergencyPolice = () => {
+    const c = (trip?.country || '').toLowerCase();
+    if (c.includes('japan')) return '110';
+    if (c.includes('united kingdom') || c.includes('uk')) return '999';
+    if (c.includes('singapore')) return '999';
+    if (c.includes('india')) return '112 / 100';
+    if (c.includes('united states') || c.includes('usa')) return '911';
+    return '112 / 911';
+  };
+
+  const getEmergencyMedical = () => {
+    const c = (trip?.country || '').toLowerCase();
+    if (c.includes('japan')) return '119';
+    if (c.includes('united kingdom') || c.includes('uk')) return '999 / 111';
+    if (c.includes('singapore')) return '995';
+    if (c.includes('india')) return '108 / 112';
+    if (c.includes('united states') || c.includes('usa')) return '911';
+    return '112 / 911';
+  };
+
+  const buildOfflinePackage = () => ({
+    trip_id: trip.id,
+    title: trip.title || trip.destination,
+    destination: trip.destination,
+    country: trip.country || '',
+    display_location: formatDestinationWithCountry(trip.destination, trip.country),
+    origin_city: trip.origin_city || '',
+    start_date: trip.start_date,
+    end_date: trip.end_date,
+    budget: trip.budget,
+    currency: trip.currency || 'USD',
+    days: trip.days || trip.itinerary || [],
+    itinerary: trip.itinerary || trip.days || [],
+    transit: trip.transit_summary || null,
+    budget_plan: trip.budget_plan || null,
+    emergency_contacts: [
+      { label: 'Local Police', number: getEmergencyPolice() },
+      { label: 'Ambulance / Medical Emergency', number: getEmergencyMedical() },
+      { label: 'WanderWise Global Advisory', number: '+1-800-WW-SAFETY' },
+    ],
+    checklist: trip.checklist || ['Passport & Travel ID', 'Travel Insurance Policy', 'Lodging Confirmations', 'Transit & Flight Tickets'],
+    packing_list: trip.packing_list || ['Universal Power Adapter', 'Prescription Medications', 'Comfortable Footwear', 'Emergency Offline Cash'],
+    cached_at: new Date().toLocaleString(),
+  });
+
   const handleDownload = () => {
     setDownloading(true);
     setTimeout(() => {
-      const packageData = {
-        trip_id: trip.id,
-        title: trip.title || trip.destination,
-        destination: trip.destination,
-        start_date: trip.start_date,
-        end_date: trip.end_date,
-        budget: trip.budget,
-        itinerary: trip.itinerary || [],
-        transit: trip.transit_summary || null,
-        emergency_contacts: [
-          { label: 'Local Police', number: '112 / 999 / 911' },
-          { label: 'Ambulance / Medical', number: '112 / 999 / 911' },
-          { label: 'Embassy Advisory', number: '+1-800-WW-SAFETY' },
-        ],
-        checklist: ['Passport', 'Insurance Copy', 'Hotel Booking', 'Flight Ticket'],
-        packing_list: ['Universal Adapter', 'Prescription Meds', 'Comfortable Shoes'],
-        cached_at: new Date().toLocaleString(),
-      };
+      const packageData = buildOfflinePackage();
 
       try {
         localStorage.setItem(storageKey, JSON.stringify(packageData));
@@ -66,7 +96,20 @@ export default function OfflinePackageModal({ trip, isOpen, onClose }) {
       } finally {
         setDownloading(false);
       }
-    }, 1200);
+    }, 800);
+  };
+
+  const handleExportJson = () => {
+    const packageData = buildOfflinePackage();
+    const blob = new Blob([JSON.stringify(packageData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `wanderwise_trip_${trip.id || 'export'}_offline_package.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const handleClearCache = () => {
@@ -140,32 +183,42 @@ export default function OfflinePackageModal({ trip, isOpen, onClose }) {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-3 pt-2">
-          {!isCached ? (
-            <button
-              onClick={handleDownload}
-              disabled={downloading}
-              className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-xs shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-            >
-              {downloading ? 'Caching Trip Data…' : <><IconDownload size={18} /> Download Trip for Offline Use</>}
-            </button>
-          ) : (
-            <>
+        <div className="flex flex-col gap-2 pt-2">
+          <div className="flex items-center gap-3">
+            {!isCached ? (
               <button
                 onClick={handleDownload}
                 disabled={downloading}
-                className="flex-1 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-xs shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
               >
-                <IconDownload size={18} /> Update Offline Cache
+                {downloading ? 'Caching Trip Data…' : <><IconDownload size={18} /> Download Trip for Offline Use</>}
               </button>
-              <button
-                onClick={handleClearCache}
-                className="py-3 px-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800/40 hover:bg-rose-100 font-bold text-xs transition-all cursor-pointer"
-              >
-                Clear
-              </button>
-            </>
-          )}
+            ) : (
+              <>
+                <button
+                  onClick={handleDownload}
+                  disabled={downloading}
+                  className="flex-1 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <IconDownload size={18} /> Update Offline Cache
+                </button>
+                <button
+                  onClick={handleClearCache}
+                  className="py-3 px-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800/40 hover:bg-rose-100 font-bold text-xs transition-all cursor-pointer"
+                >
+                  Clear
+                </button>
+              </>
+            )}
+          </div>
+          <button
+            onClick={handleExportJson}
+            className="w-full py-2.5 px-4 rounded-xl bg-[var(--bg-app)] hover:bg-[var(--border-color)] text-[var(--text-primary)] border border-[var(--border-color)] font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+            title="Download full JSON file for offline inspection or backup"
+          >
+            <IconFileDownload size={16} className="text-blue-500" />
+            Export Offline Package (.json)
+          </button>
         </div>
       </div>
     </div>

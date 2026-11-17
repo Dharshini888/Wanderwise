@@ -5,6 +5,7 @@ import {
   IconNotes, IconClock, IconShieldCheck, IconExternalLink, IconLock
 } from '@tabler/icons-react';
 import { downloadDocumentFile } from '../../api/documents';
+import { API_URL } from '../../api/axios';
 
 import { IconRefresh, IconEye, IconEyeOff, IconWand } from '@tabler/icons-react';
 
@@ -25,7 +26,7 @@ export default function DocumentPreviewModal({ isOpen, onClose, document: doc, o
 
       const fetchBlobUrl = async () => {
         try {
-          const res = await fetch(`http://localhost:8000/api/documents/${doc.id}/download?disposition=inline`, {
+          const res = await fetch(`${API_URL}/documents/${doc.id}/download?disposition=inline`, {
             headers: token ? { Authorization: `Bearer ${token}` } : {}
           });
           if (res.ok) {

@@ -11,6 +11,8 @@ import {
   IconDownload,
 } from '@tabler/icons-react';
 
+import { API_BASE_URL, API_URL } from '../api/axios';
+
 export default function HealthAndDocs() {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,7 +20,7 @@ export default function HealthAndDocs() {
   const fileInputRef = useRef(null);
   
   const token = localStorage.getItem('token');
-  const API = 'http://localhost:8000/api';
+  const API = API_URL;
 
   const fetchDocuments = async () => {
     try {
@@ -94,7 +96,7 @@ export default function HealthAndDocs() {
 
   const handleDownload = async (doc) => {
     try {
-      const res = await fetch(`http://localhost:8000${doc.url}`, {
+      const res = await fetch(`${API_BASE_URL}${doc.url}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (!res.ok) throw new Error("Failed to download");

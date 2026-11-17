@@ -30,8 +30,8 @@ export default function QuickAccessModules({ heroTrip, widgetData }) {
     {
       id: 'transit',
       title: 'Maps & Transit',
-      description: 'OSRM road transit & 3-state provenance classification',
-      badge: '3-State Provenance',
+      description: 'OSRM road transit & multi-modal directions',
+      badge: 'Smart Routes',
       badgeClass: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25',
       icon: <IconMap size={20} />,
       colorClass: 'bg-emerald-600 text-white shadow-emerald-500/20',
@@ -86,7 +86,7 @@ export default function QuickAccessModules({ heroTrip, widgetData }) {
           Quick Access Modules
         </h3>
         <span className="text-[11px] font-semibold text-[var(--text-muted)]">
-          Core Research Capabilities (IEEE NMIC-2026)
+          Smart Travel Planning Tools
         </span>
       </div>
 

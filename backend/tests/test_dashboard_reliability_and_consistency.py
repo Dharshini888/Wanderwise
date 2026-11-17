@@ -54,8 +54,8 @@ def db_session():
 @pytest.fixture
 def test_user(db_session: Session) -> User:
     user = User(
-        email="researcher@ieee.org",
-        name="Dr. Alan Touring",
+        email="traveler@wanderwise.com",
+        name="Alex Traveler",
         password="mockhash123",
         currency="USD"
     )

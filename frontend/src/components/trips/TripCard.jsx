@@ -6,7 +6,7 @@ import {
   IconWallet, IconWalk, IconChecklist, IconBook, IconMap, IconSparkles
 } from '@tabler/icons-react';
 import TripStatusBadge from './TripStatusBadge';
-import { formatCurrency, formatTripDate } from '../../utils/formatters';
+import { formatCurrency, formatTripDate, formatDestinationWithCountry } from '../../utils/formatters';
 import { touchTrip } from '../../api/trips';
 
 const DEFAULT_FALLBACK_IMG = 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1000&q=80';
@@ -134,7 +134,7 @@ const TripCard = React.memo(({ trip, onFavorite, onArchive, onDuplicate, onDelet
           <div className="flex items-center justify-between text-[10px] text-gray-200 mt-0.5">
             <span className="flex items-center gap-1 font-medium truncate">
               <IconMapPin size={11} className="text-blue-300 shrink-0" />
-              {trip.destination}{trip.country ? `, ${trip.country}` : ''}
+              {trip.destination_title || formatDestinationWithCountry(trip.destination, trip.country)}
             </span>
             <span className="flex items-center gap-1 text-gray-300 font-medium shrink-0">
               <IconCalendar size={11} className="text-indigo-300" />

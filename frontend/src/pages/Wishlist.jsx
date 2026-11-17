@@ -9,7 +9,7 @@ import {
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { formatCurrency } from '../utils/formatters';
+import { formatCurrency, formatDestinationWithCountry } from '../utils/formatters';
 
 // Fix default leaflet marker icons
 delete L.Icon.Default.prototype._getIconUrl;
@@ -19,7 +19,9 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
-const API = 'http://localhost:8000/api';
+import { API_URL } from '../api/axios';
+
+const API = API_URL;
 
 const TRAVEL_STYLES = [
   'All Styles', 'Adventure', 'Luxury', 'Family', 'Solo', 'Couple',
@@ -578,7 +580,7 @@ export default function Wishlist() {
                 <IconX size={18} />
               </button>
               <div className="absolute bottom-4 left-6 right-6">
-                <h2 className="text-2xl font-black font-heading text-white">📍 {detailItem.destination}, {detailItem.country}</h2>
+                <h2 className="text-2xl font-black font-heading text-white">📍 {formatDestinationWithCountry(detailItem.destination, detailItem.country)}</h2>
                 <p className="text-xs text-blue-300 font-semibold mt-1">AI Match: {detailItem.ai_match_score}% • {detailItem.travel_style}</p>
               </div>
             </div>
