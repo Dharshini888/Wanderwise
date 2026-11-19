@@ -88,13 +88,18 @@ function LegRow({ leg, connection }) {
         </span>
         <span className="text-lg">{icon}</span>
         <div>
-          <span className="font-semibold text-[var(--text-primary)]">{leg.from_stop || leg.from || 'Origin'}</span>
+          <span className="font-semibold text-[var(--text-primary)]">{leg.from_stop || leg.from_name || leg.from || 'Origin'}</span>
+          {leg.flight_number && (
+            <span className="ml-2 text-[10px] text-sky-500 font-bold">
+              ✈️ {leg.flight_number} {leg.airline || leg.airline_name ? `· ${leg.airline || leg.airline_name}` : ''}
+            </span>
+          )}
           {leg.train_number && (
             <span className="ml-2 text-[10px] text-purple-500 font-bold">
               {leg.train_number} {leg.train_name ? `· ${leg.train_name}` : ''}
             </span>
           )}
-          {leg.route_number && !leg.train_number && (
+          {leg.route_number && !leg.train_number && !leg.flight_number && (
             <span className="ml-2 text-[10px] text-blue-500 font-bold">#{leg.route_number}</span>
           )}
         </div>
@@ -107,11 +112,11 @@ function LegRow({ leg, connection }) {
         <div className="flex flex-col justify-center pl-1 text-[10px] text-[var(--text-muted)] space-y-0.5">
           <span>{leg.mode} · {leg.duration_min ? `${Math.round(leg.duration_min)} min` : ''} {leg.distance_km ? `(${leg.distance_km} km)` : ''}</span>
           <span className={
-            ['Provider Verified','Schedule Verified','VERIFIED'].includes(leg.verification_status)
+            ['Provider Verified','Schedule Verified','VERIFIED','PROVIDER_VERIFIED','SCHEDULE_VERIFIED'].includes(leg.verification_status)
               ? 'text-emerald-500 font-bold'
               : 'text-amber-500'
           }>
-            {['Provider Verified','Schedule Verified','VERIFIED'].includes(leg.verification_status)
+            {['Provider Verified','Schedule Verified','VERIFIED','PROVIDER_VERIFIED','SCHEDULE_VERIFIED'].includes(leg.verification_status)
               ? '🟢 ' : '⚠️ '}
             {leg.verification_status || 'Estimated'}
           </span>
@@ -125,7 +130,7 @@ function LegRow({ leg, connection }) {
           {leg.is_overnight && <span className="text-[9px] ml-0.5 text-orange-500">+1</span>}
         </span>
         <div className="text-lg opacity-30">·</div>
-        <span className="font-semibold text-[var(--text-primary)]">{leg.to_stop || leg.to || 'Destination'}</span>
+        <span className="font-semibold text-[var(--text-primary)]">{leg.to_stop || leg.to_name || leg.to || 'Destination'}</span>
       </div>
 
       {/* Connection gap to next leg */}
@@ -149,7 +154,7 @@ export default function JourneyCard({
   const legs = journey.legs || [];
   const connections = journey.connections || [];
 
-  const verifiedStatuses = ['Provider Verified', 'Schedule Verified', 'VERIFIED', 'Partially Verified'];
+  const verifiedStatuses = ['Provider Verified', 'Schedule Verified', 'VERIFIED', 'Partially Verified', 'PROVIDER_VERIFIED', 'SCHEDULE_VERIFIED'];
 
   const tags = [];
   if (isBestOverall) tags.push({ label: '⭐ Best Overall', cls: 'bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30' });
@@ -160,7 +165,8 @@ export default function JourneyCard({
   if (isFewestTransfers) tags.push({ label: '🔀 Fewest Transfers', cls: 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30' });
 
   const totalDur = journey.total_duration_min ?? journey.duration_min;
-  const durH = totalDur != null ? `${Math.floor(totalDur / 60)}h ${Math.floor(totalDur % 60)}m` : null;
+  const safeDur = totalDur != null ? Math.max(0, Number(totalDur)) : null;
+  const durH = safeDur != null ? `${Math.floor(safeDur / 60)}h ${Math.floor(safeDur % 60)}m` : null;
 
   // Mode summary for collapsed view
   const modeSummary = legs.map(l => modeIcon(l.mode)).join(' → ');
@@ -193,21 +199,47 @@ export default function JourneyCard({
         {/* Top summary row */}
         <div className="flex items-center justify-between mb-3">
           <div>
-            <div className="text-base font-bold text-[var(--text-primary)]">
-              {durH ? durH : 'Duration unavailable'}
+            <div className="text-base font-bold text-[var(--text-primary)] flex items-center flex-wrap gap-1.5">
+              <span>{durH ? durH : 'Duration unavailable'}</span>
+              {journey.flight_duration_display && (
+                <span className="text-xs font-semibold text-sky-600 dark:text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded-full border border-sky-500/20">
+                  ✈️ In-air: {journey.flight_duration_display}
+                </span>
+              )}
             </div>
-            {(journey.door_to_door_departure_display || journey.departure_time_display) && (
+            {(journey.departure_time_display || journey.door_to_door_departure_display) && (
               <div className="text-xs font-semibold text-purple-600 dark:text-purple-400">
-                {journey.door_to_door_departure_display || journey.departure_time_display} → {journey.door_to_door_arrival_display || journey.arrival_time_display || '—'}
+                {journey.departure_time_display || journey.door_to_door_departure_display} → {journey.arrival_time_display || journey.door_to_door_arrival_display || '—'}
+              </div>
+            )}
+            {journey.departure_date_display && (
+              <div className="text-[10px] text-[var(--text-muted)] font-medium mt-0.5">
+                📅 {journey.departure_date_display}
+                {journey.arrival_date_display && journey.arrival_date_display !== journey.departure_date_display && (
+                  <span> → {journey.arrival_date_display}</span>
+                )}
+              </div>
+            )}
+            {journey.door_to_door_departure_display && journey.departure_time_display && journey.door_to_door_departure_display !== journey.departure_time_display && (
+              <div className="text-[10px] text-blue-500 font-medium mt-0.5">
+                🚶 Leave origin by {journey.door_to_door_departure_display}
               </div>
             )}
           </div>
           <div className="flex items-center gap-2 text-xs">
-            {journey.catchable === false ? (
-              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30">
-                ⚠️ Cannot Catch
+            {journey.catchability_status === 'ALREADY_DEPARTED' ? (
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-gray-500/20 text-gray-600 dark:text-gray-400 border border-gray-500/30">
+                ⏸️ Missed departure
               </span>
-            ) : journey.catchable === true && journey.provider !== 'OSRM' ? (
+            ) : (journey.catchability_status === 'CANNOT_CATCH' || journey.catchable === false) ? (
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30">
+                ⚠️ Cannot catch
+              </span>
+            ) : journey.catchability_status === 'AVAILABLE_LATER' && journey.provider !== 'OSRM' && (journey.mode || '').toLowerCase() !== 'driving' ? (
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30">
+                🕒 Available later
+              </span>
+            ) : (journey.catchability_status === 'CATCHABLE' && journey.provider !== 'OSRM' && (journey.mode || '').toLowerCase() !== 'driving') ? (
               <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
                 ✅ Catchable
               </span>
@@ -232,8 +264,12 @@ export default function JourneyCard({
         {/* Catchability explanation notice */}
         {journey.why_catchable && (
           <div className={`text-[11px] p-2 rounded-xl mb-3 border font-medium ${
-            journey.catchable === false
+            journey.catchability_status === 'ALREADY_DEPARTED'
+              ? 'bg-gray-500/10 border-gray-500/30 text-gray-600 dark:text-gray-400'
+              : (journey.catchability_status === 'CANNOT_CATCH' || journey.catchable === false)
               ? 'bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-300'
+              : journey.catchability_status === 'AVAILABLE_LATER'
+              ? 'bg-blue-500/10 border-blue-500/30 text-blue-700 dark:text-blue-300'
               : 'bg-purple-500/10 border-purple-500/20 text-purple-700 dark:text-purple-300'
           }`}>
             💡 {journey.why_catchable}
@@ -246,8 +282,12 @@ export default function JourneyCard({
           {journey.total_transfers != null && (
             <span>{journey.total_transfers === 0 ? 'Direct' : `${journey.total_transfers} transfer${journey.total_transfers > 1 ? 's' : ''}`}</span>
           )}
-          {journey.fare != null && (
-            <span className="font-bold text-emerald-500">₹{journey.fare}</span>
+          {journey.fare != null ? (
+            <span className="font-bold text-emerald-500">
+              {journey.fare_currency || '₹'}{journey.fare}
+            </span>
+          ) : (
+            <span className="text-[10px] text-[var(--text-muted)]">Fare unavailable</span>
           )}
           {journey.duration_breakdown?.access_min > 0 && (
             <span className="text-[10px] font-mono opacity-80">

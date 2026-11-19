@@ -21,6 +21,9 @@ class ProviderStatus(str, Enum):
     PROVIDER_ERROR = "PROVIDER_ERROR"
     PROVIDER_CONTRACT_UNVERIFIED = "PROVIDER_CONTRACT_UNVERIFIED"
     INVALID_REQUEST = "INVALID_REQUEST"
+    RATE_LIMITED = "RATE_LIMITED"
+    AUTH_FAILED = "AUTH_FAILED"
+    TIMEOUT = "TIMEOUT"
 
 
 class ProviderResult(BaseModel):
@@ -29,6 +32,11 @@ class ProviderResult(BaseModel):
     itineraries: List[Dict[str, Any]] = []
     error: Optional[str] = None
     note: Optional[str] = None
+    category: Optional[str] = None
+    http_status: Optional[int] = None
+    rate_limit_info: Optional[Dict[str, Any]] = None
+    latency_ms: Optional[float] = None
+    data_timestamp: Optional[str] = None
 
 
 class TransitProvider:

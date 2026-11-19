@@ -1,0 +1,176 @@
+<USER_REQUEST>
+# WANDERWISE V12.2 — TRAIN DATA VALIDATION & TRUTH-FIRST AUDIT
+
+Act as a senior backend engineer and multimodal transportation data auditor.
+
+## Primary Objective
+
+Investigate the origin, authenticity, and verification status of the train journey options displayed by WanderWise.
+
+**CRITICAL RULE: DO NOT DELETE, DISABLE, FILTER OUT, OR MODIFY ANY EXISTING TRAIN DATA DURING THIS INVESTIGATION.**
+
+If the train schedules are genuine and supported by reliable sources, preserve them and identify their actual data providers.
+
+Do not assume that a train result is fake simply because RailRadar or Transitous reports no verified itinerary.
+
+## 1. Investigate the train results
+
+Reproduce and trace these test routes:
+
+- Chennai → Coimbatore
+- Madurai → Chennai
+- Salem Junction → KSR Bengaluru City
+
+Investigate the displayed train departure and arrival times, journey durations, station names, and explanations.
+
+Trace every field back to its original source.
+
+## 2. Identify the actual data source
+
+Search the entire project for:
+
+- Hardcoded train schedules
+- Static JSON files
+- Database train records
+- Redis and in-memory caches
+- Browser/local storage
+- Previously fetched API responses
+- Railway API integrations
+- Transitous/MOTIS responses
+- RailRadar responses
+- Third-party railway data providers
+- AI-generated or fallback transport options
+- Demo and mock datasets
+
+For each train result, identify:
+
+1. Source provider or dataset.
+2. Original API endpoint or database table.
+3. Original train number and train name, if available.
+4. Scheduled departure and arrival.
+5. Source timestamp or last-updated time.
+6. Cache status and cache expiration, if applicable.
+7. Verification evidence.
+8. Whether the data is current, historical, stale, or unknown.
+
+Do not invent missing information.
+
+## 3. Validate timetable authenticity
+
+Where possible, cross-check train schedules against authoritative railway sources.
+
+Check:
+
+- Train number and name.
+- Origin and destination stations.
+- Operating days.
+- Scheduled departure and arrival.
+- Overnight date rollover.
+- Intermediate stops.
+- Current timetable validity.
+
+If reliable verification is unavailable, retain the result but label it accurately as unverified.
+
+Never turn an unverified schedule into a verified itinerary through AI inference.
+
+## 4. Investigate the inconsistencies
+
+Specifically investigate these observed issues:
+
+- Different train cards showing identical departure times.
+- Train card times disagreeing with explanatory text.
+- Incorrect waiting-time calculations.
+- Incorrect station access/departure recommendations.
+- Unverified train cards being labelled "Catchable".
+- Provider status showing no verified itinerary while train cards are displayed.
+
+Determine whether these are actual source-data inconsistencies or frontend formatting/calculation errors.
+
+## 5. Investigate Leave Now
+
+The application repeatedly uses 3:00 PM even when the actual local time is later.
+
+Trace the departure-time flow.
+
+Expected behaviour:
+
+- Leave Now must use the current local time.
+- Set Departure Time must use the user's selected time.
+- Past departure times must not be presented as upcoming journeys.
+- Timezone conversion must be handled correctly.
+- Train timetable times must remain distinct from the user's requested departure time.
+
+## 6. Correct provider provenance
+
+Ensure each transport option identifies its actual source.
+
+Important distinctions:
+
+- OSRM provides road-network routing, not train schedules.
+- Transitous/MOTIS provides public transport routing where supported.
+- RailRadar results must reflect actual provider responses.
+- Cached railway data must identify its original provider and retrieval timestamp.
+- AI-generated suggestions must never be represented as verified services.
+
+Do not label OSRM as a timetable or schedule provider.
+
+## 7. Preserve genuine train data
+
+Apply this decision policy:
+
+- Genuine and verified train data: KEEP.
+- Genuine but stale train data: KEEP, clearly mark as stale and show its timestamp.
+- Genuine data with unavailable live verification: KEEP, clearly mark verification limitations.
+- Unverified data with unknown origin: KEEP during investigation, but do not claim it is a confirmed service.
+- Demonstrably fabricated or synthetic demo data: Identify it and request approval before removing or replacing it.
+
+Do not silently remove any existing train records.
+
+## 8. Deliver an investigation report first
+
+Before changing code, provide:
+
+1. Complete train-data source map.
+2. Exact files and functions responsible.
+3. Provider/API evidence.
+4. Cache investigation findings.
+5. Train authenticity assessment for all three test routes.
+6. Explanation of the time inconsistencies.
+7. Root causes ranked by confidence.
+8. Recommended corrections.
+9. Files that would need modification.
+
+## 9. Implementation restrictions
+
+This is initially a READ-ONLY investigation.
+
+Do not:
+
+- Modify backend or frontend code.
+- Delete existing train data.
+- Clear caches.
+- Change API integrations.
+- Replace train results with mock data.
+- Hide train options to make the UI appear correct.
+
+Wait for approval before implementing corrections.
+
+## Final success criteria
+
+WanderWise must preserve every genuine train result while accurately distinguishing verified, cached, stale, and unverified information.
+
+**Truth > Completeness. Genuine data must never be discarded merely because one provider is unavailable.**
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-11-18T19:47:49+05:30.
+
+The user's current state is as follows:
+Active Document: e:\WanderWise\backend\.env (LANGUAGE_UNSPECIFIED)
+Cursor is on line: 9
+Other open documents:
+- e:\WanderWise\backend\scripts\verify_nearby.py (LANGUAGE_UNSPECIFIED)
+- e:\WanderWise\backend\scripts\verify_nearby_places.py (LANGUAGE_UNSPECIFIED)
+- e:\WanderWise\backend\app\services\places\overpass_service.py (LANGUAGE_UNSPECIFIED)
+- e:\WanderWise\backend\scripts\test_overpass.py (LANGUAGE_UNSPECIFIED)
+- e:\WanderWise\backend\scripts\verify_v12_3.py (LANGUAGE_UNSPECIFIED)
+</ADDITIONAL_METADATA>

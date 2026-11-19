@@ -5,13 +5,60 @@ from ..cache.transit_cache import TransitCache
 
 STATIC_COORDS = {
     "kovaipudhur": {"lat": 10.9575, "lon": 76.9298, "display_name": "Kovaipudhur, Coimbatore, Tamil Nadu, India", "country_code": "IN"},
+    "coimbatore junction": {"lat": 11.0017, "lon": 76.9629, "display_name": "Coimbatore Junction, Tamil Nadu, India", "country_code": "IN"},
+    "coimbatore jn": {"lat": 11.0017, "lon": 76.9629, "display_name": "Coimbatore Junction, Tamil Nadu, India", "country_code": "IN"},
+    "cbe": {"lat": 11.0017, "lon": 76.9629, "display_name": "Coimbatore Junction, Tamil Nadu, India", "country_code": "IN"},
     "coimbatore": {"lat": 11.0168, "lon": 76.9558, "display_name": "Coimbatore, Tamil Nadu, India", "country_code": "IN"},
+    "karur": {"lat": 10.9601, "lon": 78.0766, "display_name": "Karur, Tamil Nadu, India", "country_code": "IN"},
     "erode": {"lat": 11.3410, "lon": 77.7172, "display_name": "Erode, Tamil Nadu, India", "country_code": "IN"},
+    "erode junction": {"lat": 11.3400, "lon": 77.7289, "display_name": "Erode Junction, Tamil Nadu, India", "country_code": "IN"},
+    "erode jn": {"lat": 11.3400, "lon": 77.7289, "display_name": "Erode Junction, Tamil Nadu, India", "country_code": "IN"},
+    "ed": {"lat": 11.3400, "lon": 77.7289, "display_name": "Erode Junction, Tamil Nadu, India", "country_code": "IN"},
+    "chennai central": {"lat": 13.0827, "lon": 80.2757, "display_name": "Chennai Central, Tamil Nadu, India", "country_code": "IN"},
+    "chennai egmore": {"lat": 13.0782, "lon": 80.2612, "display_name": "Chennai Egmore, Tamil Nadu, India", "country_code": "IN"},
+    "mas": {"lat": 13.0827, "lon": 80.2757, "display_name": "Chennai Central, Tamil Nadu, India", "country_code": "IN"},
+    "ms": {"lat": 13.0782, "lon": 80.2612, "display_name": "Chennai Egmore, Tamil Nadu, India", "country_code": "IN"},
     "chennai": {"lat": 13.0827, "lon": 80.2707, "display_name": "Chennai, Tamil Nadu, India", "country_code": "IN"},
     "bangalore": {"lat": 12.9716, "lon": 77.5946, "display_name": "Bengaluru, Karnataka, India", "country_code": "IN"},
+    "bengaluru": {"lat": 12.9716, "lon": 77.5946, "display_name": "Bengaluru, Karnataka, India", "country_code": "IN"},
+    "sbc": {"lat": 12.9781, "lon": 77.5697, "display_name": "KSR Bengaluru, Karnataka, India", "country_code": "IN"},
+    "ksr bengaluru": {"lat": 12.9781, "lon": 77.5697, "display_name": "KSR Bengaluru, Karnataka, India", "country_code": "IN"},
+    "ksr bengaluru city": {"lat": 12.9781, "lon": 77.5697, "display_name": "KSR Bengaluru City, Karnataka, India", "country_code": "IN"},
+    "bangalore city": {"lat": 12.9781, "lon": 77.5697, "display_name": "KSR Bengaluru, Karnataka, India", "country_code": "IN"},
+    "pune": {"lat": 18.5204, "lon": 73.8567, "display_name": "Pune, Maharashtra, India", "country_code": "IN"},
+    "pune junction": {"lat": 18.5284, "lon": 73.8739, "display_name": "Pune Junction, Maharashtra, India", "country_code": "IN"},
+    "pune jn": {"lat": 18.5284, "lon": 73.8739, "display_name": "Pune Junction, Maharashtra, India", "country_code": "IN"},
+    "madurai": {"lat": 9.9252, "lon": 78.1198, "display_name": "Madurai, Tamil Nadu, India", "country_code": "IN"},
+    "madurai junction": {"lat": 9.9195, "lon": 78.1193, "display_name": "Madurai Junction, Tamil Nadu, India", "country_code": "IN"},
+    "madurai jn": {"lat": 9.9195, "lon": 78.1193, "display_name": "Madurai Junction, Tamil Nadu, India", "country_code": "IN"},
+    "mdu": {"lat": 9.9195, "lon": 78.1193, "display_name": "Madurai Junction, Tamil Nadu, India", "country_code": "IN"},
+    "salem": {"lat": 11.6643, "lon": 78.1460, "display_name": "Salem, Tamil Nadu, India", "country_code": "IN"},
+    "salem junction": {"lat": 11.6643, "lon": 78.1189, "display_name": "Salem Junction, Tamil Nadu, India", "country_code": "IN"},
+    "salem jn": {"lat": 11.6643, "lon": 78.1189, "display_name": "Salem Junction, Tamil Nadu, India", "country_code": "IN"},
+    "sa": {"lat": 11.6643, "lon": 78.1189, "display_name": "Salem Junction, Tamil Nadu, India", "country_code": "IN"},
+    "mysuru": {"lat": 12.2958, "lon": 76.6394, "display_name": "Mysuru, Karnataka, India", "country_code": "IN"},
+    "mysore": {"lat": 12.2958, "lon": 76.6394, "display_name": "Mysuru, Karnataka, India", "country_code": "IN"},
+    "mysuru junction": {"lat": 12.3164, "lon": 76.6453, "display_name": "Mysuru Junction, Karnataka, India", "country_code": "IN"},
+    "mysore junction": {"lat": 12.3164, "lon": 76.6453, "display_name": "Mysuru Junction, Karnataka, India", "country_code": "IN"},
+    "tiruppur": {"lat": 11.1085, "lon": 77.3411, "display_name": "Tiruppur, Tamil Nadu, India", "country_code": "IN"},
+    "katpadi": {"lat": 12.9698, "lon": 79.1368, "display_name": "Katpadi Junction, Tamil Nadu, India", "country_code": "IN"},
+    "jolarpettai": {"lat": 12.5564, "lon": 78.5775, "display_name": "Jolarpettai Junction, Tamil Nadu, India", "country_code": "IN"},
+    "trichy": {"lat": 10.7905, "lon": 78.6924, "display_name": "Tiruchirappalli, Tamil Nadu, India", "country_code": "IN"},
+    "tiruchirappalli": {"lat": 10.7905, "lon": 78.6924, "display_name": "Tiruchirappalli, Tamil Nadu, India", "country_code": "IN"},
+    "mumbai": {"lat": 19.0760, "lon": 72.8777, "display_name": "Mumbai, Maharashtra, India", "country_code": "IN"},
+    "mumbai central": {"lat": 18.9696, "lon": 72.8193, "display_name": "Mumbai Central, Maharashtra, India", "country_code": "IN"},
+    "mumbai csmt": {"lat": 18.9400, "lon": 72.8353, "display_name": "Chhatrapati Shivaji Maharaj Terminus, Mumbai, India", "country_code": "IN"},
+    "csmt": {"lat": 18.9400, "lon": 72.8353, "display_name": "Chhatrapati Shivaji Maharaj Terminus, Mumbai, India", "country_code": "IN"},
     "delhi": {"lat": 28.6139, "lon": 77.2090, "display_name": "New Delhi, Delhi, India", "country_code": "IN"},
     "goa": {"lat": 15.2993, "lon": 74.1240, "display_name": "Goa, India", "country_code": "IN"},
-    "mumbai": {"lat": 19.0760, "lon": 72.8777, "display_name": "Mumbai, Maharashtra, India", "country_code": "IN"},
+    "kyoto station": {"lat": 34.9858, "lon": 135.7588, "display_name": "Kyoto Station, Kyoto, Japan", "country_code": "JP"},
+    "kiyomizu-dera": {"lat": 34.9949, "lon": 135.7850, "display_name": "Kiyomizu-dera, Kyoto, Japan", "country_code": "JP"},
+    "fushimi inari": {"lat": 34.9671, "lon": 135.7727, "display_name": "Fushimi Inari-taisha, Kyoto, Japan", "country_code": "JP"},
+    "kyoto": {"lat": 35.0116, "lon": 135.7681, "display_name": "Kyoto, Japan", "country_code": "JP"},
+    "kansai international airport": {"lat": 34.4347, "lon": 135.2442, "display_name": "Kansai International Airport, Osaka, Japan", "country_code": "JP"},
+    "kansai airport": {"lat": 34.4347, "lon": 135.2442, "display_name": "Kansai International Airport, Osaka, Japan", "country_code": "JP"},
+    "kansai": {"lat": 34.4347, "lon": 135.2442, "display_name": "Kansai International Airport, Osaka, Japan", "country_code": "JP"},
+    "osaka": {"lat": 34.6937, "lon": 135.5023, "display_name": "Osaka, Japan", "country_code": "JP"},
     "tokyo": {"lat": 35.6762, "lon": 139.6503, "display_name": "Tokyo, Japan", "country_code": "JP"},
     "seoul": {"lat": 37.5665, "lon": 126.9780, "display_name": "Seoul, South Korea", "country_code": "KR"},
     "paris": {"lat": 48.8566, "lon": 2.3522, "display_name": "Paris, Île-de-France, France", "country_code": "FR"},
@@ -75,7 +122,7 @@ def reverse_geocode(lat: float, lon: float) -> Optional[Dict[str, Any]]:
 
 def geocode_place(place_name: str) -> Dict[str, Any]:
     """
-    Geocodes a place name using Nominatim -> Photon -> Cache -> Static Fallback.
+    Geocodes a place name using Cache -> Static Hubs -> Nominatim -> Photon -> Fallback.
     Returns: {"lat": float, "lon": float, "display_name": str, "country_code": str, "source": str}
     """
     clean_name = place_name.strip().lower()
@@ -84,6 +131,19 @@ def geocode_place(place_name: str) -> Dict[str, Any]:
     cached = TransitCache.get(cache_key)
     if cached:
         return cached
+
+    # Pre-check exact match in STATIC_COORDS for fast and reliable resolution of known hubs
+    if clean_name in STATIC_COORDS:
+        static_val = STATIC_COORDS[clean_name]
+        res = {
+            "lat": static_val["lat"],
+            "lon": static_val["lon"],
+            "display_name": static_val["display_name"],
+            "country_code": static_val["country_code"],
+            "source": "Static Pre-seeded Fallback"
+        }
+        TransitCache.set(cache_key, res)
+        return res
 
     # 1. Nominatim
     try:

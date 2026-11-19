@@ -18,6 +18,9 @@ def get_osrm_route(lat1: float, lon1: float, lat2: float, lon2: float, mode: str
     or falls back to calibrated mode-aware routing estimate.
     Returns: {"distance_km": float, "duration_minutes": float, "geometry": list, "source": str}
     """
+    if lat1 is None or lon1 is None or lat2 is None or lon2 is None:
+        return None
+
     mode_clean = str(mode or "driving").lower()
     osrm_profile = "walking" if "walk" in mode_clean else "driving"
     cache_key = f"osrm_{osrm_profile}_{lat1:.4f}_{lon1:.4f}_{lat2:.4f}_{lon2:.4f}"
@@ -50,6 +53,10 @@ def get_osrm_route(lat1: float, lon1: float, lat2: float, lon2: float, mode: str
                 return result
     except Exception:
         pass
+
+    # Reject impossible road routes across oceans or disconnected continents
+    if direct_dist > 800.0 or ("walk" in mode_clean and direct_dist > 50.0):
+        return None
 
     # Calibrated fallback respecting realistic urban/intercity geometry and transport mode
     if direct_dist > 25.0 and "walk" not in mode_clean:

@@ -14,6 +14,7 @@ from typing import Dict, Any, List, Optional
 
 from .journey_models import Journey, JourneyLeg, ConnectionStatus
 from .connection_engine import compute_connections, has_impossible_connection
+from .station_normalizer import normalize_station_name, normalize_mode_name, get_mode_icon
 
 logger = logging.getLogger(__name__)
 
@@ -22,22 +23,7 @@ VERIFIED_STATUSES = {"Provider Verified", "Schedule Verified", "VERIFIED"}
 
 
 def _map_mode_to_icon(mode: str) -> str:
-    m = (mode or "").lower()
-    if "train" in m or "rail" in m:
-        return "🚆"
-    if "bus" in m:
-        return "🚌"
-    if "walk" in m:
-        return "🚶"
-    if "metro" in m or "subway" in m:
-        return "🚇"
-    if "flight" in m or "air" in m:
-        return "✈️"
-    if "road" in m or "car" in m or "driv" in m:
-        return "🚗"
-    if "ferry" in m:
-        return "⛴️"
-    return "🚌"
+    return get_mode_icon(mode)
 
 
 def _overall_verification(legs: List[JourneyLeg]) -> str:
@@ -68,25 +54,37 @@ def _build_legs_from_route(route: Dict[str, Any]) -> List[JourneyLeg]:
     if raw_legs:
         legs = []
         for i, raw in enumerate(raw_legs):
+            leg_mode = normalize_mode_name(raw.get("mode") or route.get("mode", "Transit"))
+            f_stop = normalize_station_name(raw.get("from_name") or raw.get("from_stop") or (raw.get("boarding_stop", {}).get("name") if isinstance(raw.get("boarding_stop"), dict) else None))
+            t_stop = normalize_station_name(raw.get("to_name") or raw.get("to_stop") or (raw.get("alighting_stop", {}).get("name") if isinstance(raw.get("alighting_stop"), dict) else None))
+            b_point = normalize_station_name(raw.get("boarding_stop", {}).get("name")) if isinstance(raw.get("boarding_stop"), dict) else None
+            a_point = normalize_station_name(raw.get("alighting_stop", {}).get("name")) if isinstance(raw.get("alighting_stop"), dict) else None
+            dur = raw.get("duration_minutes") or raw.get("duration_min")
+            if dur is not None:
+                try:
+                    dur = max(0.0, float(dur))
+                except (ValueError, TypeError):
+                    dur = None
+
             leg = JourneyLeg(
                 sequence=i,
-                mode=raw.get("mode") or route.get("mode", "Transit"),
+                mode=leg_mode,
                 provider=raw.get("provider") or provider,
-                from_stop=raw.get("from_name") or raw.get("from_stop") or raw.get("boarding_stop", {}).get("name"),
-                to_stop=raw.get("to_name") or raw.get("to_stop") or raw.get("alighting_stop", {}).get("name"),
+                from_stop=f_stop,
+                to_stop=t_stop,
                 departure_time=raw.get("departure_time"),
                 arrival_time=raw.get("arrival_time"),
                 departure_time_display=raw.get("departure_time_display"),
                 arrival_time_display=raw.get("arrival_time_display"),
-                duration_min=raw.get("duration_minutes") or raw.get("duration_min"),
+                duration_min=dur,
                 distance_km=raw.get("distance_km"),
                 route_number=raw.get("route_number") or raw.get("route_short_name"),
                 route_name=raw.get("route_name") or raw.get("route_long_name"),
                 train_number=raw.get("train_number"),
                 train_name=raw.get("train_name"),
-                boarding_point=raw.get("boarding_stop", {}).get("name") if isinstance(raw.get("boarding_stop"), dict) else None,
-                alighting_point=raw.get("alighting_stop", {}).get("name") if isinstance(raw.get("alighting_stop"), dict) else None,
-                intermediate_stops=raw.get("intermediate_stops") or [],
+                boarding_point=b_point,
+                alighting_point=a_point,
+                intermediate_stops=[normalize_station_name(s) if isinstance(s, str) else s for s in (raw.get("intermediate_stops") or [])],
                 verification_status=raw.get("verification_status") or verification,
                 source=raw.get("source") or provider,
                 geometry=raw.get("geometry") or [],
@@ -95,26 +93,35 @@ def _build_legs_from_route(route: Dict[str, Any]) -> List[JourneyLeg]:
         return legs
 
     # Single-leg route — wrap entire route as one leg
-    mode = route.get("mode", "Transit")
+    mode = normalize_mode_name(route.get("mode", "Transit"))
     # For train routes, mode may be "Train"
     if route.get("train_number"):
         mode = "Train"
+
+    f_stop = normalize_station_name(route.get("departure_station") or route.get("origin"))
+    t_stop = normalize_station_name(route.get("arrival_station") or route.get("destination"))
+    dur = route.get("duration_min")
+    if dur is not None:
+        try:
+            dur = max(0.0, float(dur))
+        except (ValueError, TypeError):
+            dur = None
 
     single = JourneyLeg(
         sequence=0,
         mode=mode,
         provider=provider,
-        from_stop=route.get("departure_station") or route.get("origin"),
-        to_stop=route.get("arrival_station") or route.get("destination"),
+        from_stop=f_stop,
+        to_stop=t_stop,
         departure_time=route.get("departure_time"),
         arrival_time=route.get("arrival_time"),
         departure_time_display=route.get("departure_time_display"),
         arrival_time_display=route.get("arrival_time_display"),
-        duration_min=route.get("duration_min"),
+        duration_min=dur,
         distance_km=route.get("distance_km"),
         train_number=route.get("train_number"),
         train_name=route.get("train_name"),
-        intermediate_stops=route.get("intermediate_stops") or [],
+        intermediate_stops=[normalize_station_name(s) if isinstance(s, str) else s for s in (route.get("intermediate_stops") or [])],
         verification_status=verification,
         source=provider,
         geometry=route.get("geometry") or [],
@@ -123,8 +130,8 @@ def _build_legs_from_route(route: Dict[str, Any]) -> List[JourneyLeg]:
         platform=route.get("platform"),
         live_status=route.get("live_status"),
         delay_min=route.get("delay_min"),
-        current_station=route.get("current_station"),
-        next_station=route.get("next_station"),
+        current_station=normalize_station_name(route.get("current_station")),
+        next_station=normalize_station_name(route.get("next_station")),
     )
     return [single]
 
@@ -176,18 +183,25 @@ def build_journey_from_route(route: Dict[str, Any]) -> Optional[Journey]:
             if route.get("is_overnight"):
                 tags.append("Overnight Journey")
 
+        total_dur = route.get("duration_min")
+        if total_dur is not None:
+            try:
+                total_dur = max(0.0, float(total_dur))
+            except (ValueError, TypeError):
+                total_dur = None
+
         journey = Journey(
             journey_id=route.get("route_id") or f"journey_{uuid.uuid4().hex[:8]}",
             route_id=route.get("route_id"),
-            origin=route.get("origin", ""),
-            destination=route.get("destination", ""),
+            origin=normalize_station_name(route.get("origin", "")),
+            destination=normalize_station_name(route.get("destination", "")),
             legs=legs,
             connections=connections,
             departure_time=route.get("departure_time"),
             arrival_time=route.get("arrival_time"),
             departure_time_display=route.get("departure_time_display"),
             arrival_time_display=route.get("arrival_time_display"),
-            total_duration_min=route.get("duration_min"),
+            total_duration_min=total_dur,
             total_waiting_time_min=total_waiting if total_waiting > 0 else None,
             total_walking_distance_m=total_walking,
             total_transfers=total_transfers,
@@ -200,21 +214,21 @@ def build_journey_from_route(route: Dict[str, Any]) -> Optional[Journey]:
             is_overnight=route.get("is_overnight", False),
             # backward-compat flat fields
             provider=route.get("provider"),
-            mode=route.get("mode"),
+            mode=normalize_mode_name(route.get("mode", "Transit")),
             distance_km=route.get("distance_km"),
             distance_source=route.get("distance_source"),
             duration_source=route.get("duration_source"),
             train_number=route.get("train_number"),
             train_name=route.get("train_name"),
-            departure_station=route.get("departure_station"),
-            arrival_station=route.get("arrival_station"),
+            departure_station=normalize_station_name(route.get("departure_station")),
+            arrival_station=normalize_station_name(route.get("arrival_station")),
             operating_days=route.get("operating_days") or [],
-            intermediate_stops=route.get("intermediate_stops") or [],
+            intermediate_stops=[normalize_station_name(s) if isinstance(s, str) else s for s in (route.get("intermediate_stops") or [])],
             platform=route.get("platform"),
             live_status=route.get("live_status"),
             delay_min=route.get("delay_min"),
-            current_station=route.get("current_station"),
-            next_station=route.get("next_station"),
+            current_station=normalize_station_name(route.get("current_station")),
+            next_station=normalize_station_name(route.get("next_station")),
             is_long_distance_fallback=route.get("is_long_distance_fallback", False),
         )
         return journey

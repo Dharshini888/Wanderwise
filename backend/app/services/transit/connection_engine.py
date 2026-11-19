@@ -1,4 +1,4 @@
-﻿"""
+"""
 connection_engine.py -- WanderWise Multimodal Connection Validator
 
 Computes transfer safety between consecutive journey legs.
@@ -65,6 +65,12 @@ def compute_connections(legs: List[Dict[str, Any]]) -> Tuple[List[JourneyConnect
         next_dep = _parse_iso(next_dep_str)
 
         if prev_arr and next_dep:
+            # Harmonize timezone awareness to avoid subtraction TypeError
+            if prev_arr.tzinfo is not None and next_dep.tzinfo is None:
+                next_dep = next_dep.replace(tzinfo=prev_arr.tzinfo)
+            elif prev_arr.tzinfo is None and next_dep.tzinfo is not None:
+                prev_arr = prev_arr.replace(tzinfo=next_dep.tzinfo)
+
             diff_sec = (next_dep - prev_arr).total_seconds()
             transfer_min = diff_sec / 60.0
         else:

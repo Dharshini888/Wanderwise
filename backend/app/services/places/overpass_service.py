@@ -130,7 +130,7 @@ def get_nearby_boarding_infrastructure(
         return cached
 
     query = f"""
-    [out:json][timeout:4];
+    [out:json][timeout:2];
     (
       node(around:{radius_m},{lat},{lon})["highway"~"bus_stop|bus_station"];
       way(around:{radius_m},{lat},{lon})["highway"~"bus_stop|bus_station"];
@@ -142,9 +142,9 @@ def get_nearby_boarding_infrastructure(
     out center 20;
     """
 
-    for server in OVERPASS_SERVERS:
+    for server in OVERPASS_SERVERS[:1]:
         try:
-            resp = requests.post(server, data={"data": query}, headers=HEADERS, timeout=6.0)
+            resp = requests.post(server, data={"data": query}, headers=HEADERS, timeout=1.5)
             if resp.status_code == 200:
                 data = resp.json()
                 elements = data.get("elements", [])
@@ -274,7 +274,7 @@ def get_overpass_nearby(lat: Optional[float], lon: Optional[float], radius_m: in
         return cached
 
     query = f"""
-    [out:json][timeout:4];
+    [out:json][timeout:2];
     (
       node(around:{radius_m},{lat},{lon})["amenity"~"hospital|police|pharmacy|atm|fuel|restaurant|bank|taxi"];
       way(around:{radius_m},{lat},{lon})["amenity"~"hospital|police|pharmacy|atm|fuel|restaurant|bank|taxi"];
@@ -282,9 +282,9 @@ def get_overpass_nearby(lat: Optional[float], lon: Optional[float], radius_m: in
     out center 20;
     """
 
-    for server in OVERPASS_SERVERS:
+    for server in OVERPASS_SERVERS[:1]:
         try:
-            resp = requests.post(server, data={"data": query}, headers=HEADERS, timeout=6.0)
+            resp = requests.post(server, data={"data": query}, headers=HEADERS, timeout=1.5)
             if resp.status_code == 200:
                 data = resp.json()
                 elements = data.get("elements", [])

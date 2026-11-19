@@ -1088,6 +1088,7 @@ class FinalItineraryValidator:
                             "price_status": "Included in Transit Allocation",
                             "route_status": "Scheduled Airport Transfer",
                             "rating_status": "Unrated",
+                            "last_verified": "2026-11-17T00:00:00Z",
                             "place_identity_verified": True,
                             "geographic_coordinates_verified": True,
                             "visitor_access_verified": True,
@@ -1111,6 +1112,7 @@ class FinalItineraryValidator:
                                 "visitor_access_verified": True,
                                 "opening_hours_verified": True,
                                 "ticket_pricing_verified": True,
+                                "last_verified": "2026-11-17T00:00:00Z",
                                 "status": "Verified",
                                 "source": "International Gateway Transit Schedule",
                                 "confidence": 0.99

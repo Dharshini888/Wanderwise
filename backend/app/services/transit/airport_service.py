@@ -20,9 +20,11 @@ GLOBAL_AIRPORTS: List[Dict[str, Any]] = [
     {"iata": "CDG", "icao": "LFPG", "name": "Paris Charles de Gaulle Airport", "city": "Paris", "country": "France", "lat": 49.0097, "lon": 2.5479, "tier": "primary_international"},
     {"iata": "ORY", "icao": "LFPO", "name": "Paris Orly Airport", "city": "Paris", "country": "France", "lat": 48.7262, "lon": 2.3652, "tier": "secondary_international"},
 
-    # Tokyo Greater Area
+    # Tokyo & Kansai / Osaka Gateways
     {"iata": "HND", "icao": "RJTT", "name": "Tokyo Haneda Airport", "city": "Tokyo", "country": "Japan", "lat": 35.5494, "lon": 139.7798, "tier": "primary_international"},
     {"iata": "NRT", "icao": "RJAA", "name": "Narita International Airport", "city": "Tokyo", "country": "Japan", "lat": 35.7647, "lon": 140.3863, "tier": "primary_international"},
+    {"iata": "KIX", "icao": "RJBB", "name": "Kansai International Airport", "city": "Osaka", "country": "Japan", "lat": 34.4347, "lon": 135.2442, "tier": "primary_international"},
+    {"iata": "ITM", "icao": "RJOO", "name": "Osaka International Airport (Itami)", "city": "Osaka", "country": "Japan", "lat": 34.7855, "lon": 135.4382, "tier": "secondary_international"},
 
     # Istanbul Gateways
     {"iata": "IST", "icao": "LTFM", "name": "Istanbul Airport", "city": "Istanbul", "country": "Turkey", "lat": 41.2753, "lon": 28.7519, "tier": "primary_international"},
@@ -111,16 +113,27 @@ GLOBAL_AIRPORTS: List[Dict[str, Any]] = [
     {"iata": "GOX", "icao": "VOGA", "name": "Manohar International Airport", "city": "Goa", "country": "India", "lat": 15.7667, "lon": 73.8667, "tier": "primary_international"},
     {"iata": "JAI", "icao": "VIJP", "name": "Jaipur International Airport", "city": "Jaipur", "country": "India", "lat": 26.8242, "lon": 75.8122, "tier": "primary_international"},
     {"iata": "AGR", "icao": "VIAG", "name": "Agra Airport", "city": "Agra", "country": "India", "lat": 27.1558, "lon": 77.9609, "tier": "domestic"},
-    {"iata": "PNQ", "icao": "VAPO", "name": "Pune Airport", "city": "Pune", "country": "India", "lat": 18.5822, "lon": 73.9197, "tier": "domestic_customs"}
+    {"iata": "PNQ", "icao": "VAPO", "name": "Pune Airport", "city": "Pune", "country": "India", "lat": 18.5822, "lon": 73.9197, "tier": "domestic_customs"},
+
+    # Germany Gateways
+    {"iata": "BER", "icao": "EDDB", "name": "Berlin Brandenburg Airport", "city": "Berlin", "country": "Germany", "lat": 52.3667, "lon": 13.5033, "tier": "primary_international", "timezone": "Europe/Berlin"},
+    {"iata": "MUC", "icao": "EDDM", "name": "Munich Airport", "city": "Munich", "country": "Germany", "lat": 48.3537, "lon": 11.7860, "tier": "primary_international", "timezone": "Europe/Berlin"},
+    {"iata": "FRA", "icao": "EDDF", "name": "Frankfurt Airport", "city": "Frankfurt", "country": "Germany", "lat": 50.0379, "lon": 8.5622, "tier": "primary_international", "timezone": "Europe/Berlin"}
 ]
 
 # Destination aliases to airport resolution mappings
 DESTINATION_AIRPORT_MAP: Dict[str, List[str]] = {
+    "berlin": ["BER"],
+    "munich": ["MUC"],
+    "frankfurt": ["FRA"],
     "new_york": ["JFK", "LGA", "EWR"],
     "nyc": ["JFK", "LGA", "EWR"],
     "manhattan": ["JFK", "LGA", "EWR"],
     "paris": ["CDG", "ORY"],
     "tokyo": ["HND", "NRT"],
+    "kansai": ["KIX", "ITM"],
+    "osaka": ["KIX", "ITM"],
+    "kyoto": ["KIX", "ITM"],
     "istanbul": ["IST", "SAW"],
     "turkey": ["IST", "SAW"],
     "bali": ["DPS"],
@@ -178,6 +191,55 @@ DESTINATION_AIRPORT_MAP: Dict[str, List[str]] = {
 }
 
 AIRPORTS_BY_IATA = {ap["iata"]: ap for ap in GLOBAL_AIRPORTS}
+
+def get_airport_by_iata(iata_code: Optional[str]) -> Optional[Dict[str, Any]]:
+    """Returns canonical airport dict for given 3-letter IATA code, if registered."""
+    if not iata_code:
+        return None
+    code = str(iata_code).strip().upper()
+    return AIRPORTS_BY_IATA.get(code)
+
+
+COUNTRY_TIMEZONE_MAP = {
+    "India": "Asia/Kolkata",
+    "Japan": "Asia/Tokyo",
+    "United Kingdom": "Europe/London",
+    "France": "Europe/Paris",
+    "Germany": "Europe/Berlin",
+    "USA": "America/New_York",
+    "Singapore": "Asia/Singapore",
+    "United Arab Emirates": "Asia/Dubai",
+    "Thailand": "Asia/Bangkok",
+    "Indonesia": "Asia/Makassar",
+    "Iceland": "Atlantic/Reykjavik",
+    "Peru": "America/Lima",
+    "Georgia": "Asia/Tbilisi",
+    "Italy": "Europe/Rome",
+    "Malaysia": "Asia/Kuala_Lumpur",
+    "New Zealand": "Pacific/Auckland",
+    "Egypt": "Africa/Cairo",
+    "Norway": "Europe/Oslo",
+    "Switzerland": "Europe/Zurich",
+    "Australia": "Australia/Sydney",
+    "South Korea": "Asia/Seoul",
+}
+
+
+def get_airport_timezone(airport_data: Optional[Dict[str, Any]]) -> str:
+    """Returns the authentic local IANA timezone name for a given airport dict."""
+    if not airport_data:
+        return "UTC"
+    if airport_data.get("timezone"):
+        return airport_data["timezone"]
+    iata = (airport_data.get("iata") or "").upper()
+    if iata in ("LAX", "SFO"):
+        return "America/Los_Angeles"
+    elif iata == "HNL":
+        return "Pacific/Honolulu"
+    elif iata in ("JFK", "LGA", "EWR"):
+        return "America/New_York"
+    country = airport_data.get("country")
+    return COUNTRY_TIMEZONE_MAP.get(country, "UTC")
 
 def resolve_serving_airports(destination: str, lat: Optional[float] = None, lon: Optional[float] = None, is_international: bool = True) -> List[Dict[str, Any]]:
     """

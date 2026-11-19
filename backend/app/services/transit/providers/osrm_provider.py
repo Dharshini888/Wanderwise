@@ -11,7 +11,7 @@ Road alternatives are returned in a separate 'road_alternative' payload.
 
 import logging
 from typing import Dict, Any, Optional
-from app.services.maps.osrm_service import get_osrm_route
+from ...maps.osrm_service import get_osrm_route
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,11 @@ class OSRMRoadProvider:
         Calculates exact walking route geometry, distance, and duration
         from start coordinates to target coordinates using OSRM foot routing.
         """
-        route = get_osrm_route(from_lat, from_lon, to_lat, to_lon)
+        from ..station_normalizer import normalize_station_name
+        fn_en = normalize_station_name(from_name)
+        tn_en = normalize_station_name(to_name)
+
+        route = get_osrm_route(from_lat, from_lon, to_lat, to_lon, mode="walking")
         if not route:
             from math import radians, cos, sin, asin, sqrt
             dlat = radians(to_lat - from_lat)
@@ -44,9 +48,9 @@ class OSRMRoadProvider:
             dur_mins = max(1, int(dist_m / 80)) # ~80m per min walk speed
             return {
                 "type": "WALK",
-                "mode": "WALK",
-                "from_loc": {"name": from_name, "lat": from_lat, "lon": from_lon},
-                "to_loc": {"name": to_name, "lat": to_lat, "lon": to_lon},
+                "mode": "Walk",
+                "from_loc": {"name": fn_en, "lat": from_lat, "lon": from_lon},
+                "to_loc": {"name": tn_en, "lat": to_lat, "lon": to_lon},
                 "distance_m": dist_m,
                 "duration_minutes": dur_mins,
                 "provenance": "OSRM (Estimated Foot)",
@@ -54,9 +58,9 @@ class OSRMRoadProvider:
 
         return {
             "type": "WALK",
-            "mode": "WALK",
-            "from_loc": {"name": from_name, "lat": from_lat, "lon": from_lon},
-            "to_loc": {"name": to_name, "lat": to_lat, "lon": to_lon},
+            "mode": "Walk",
+            "from_loc": {"name": fn_en, "lat": from_lat, "lon": from_lon},
+            "to_loc": {"name": tn_en, "lat": to_lat, "lon": to_lon},
             "distance_m": route.get("distance_m", int(route["distance_km"] * 1000)),
             "duration_minutes": route["duration_minutes"],
             "geometry": route.get("geometry", []),
@@ -71,25 +75,35 @@ class OSRMRoadProvider:
         dest_name: str,
         dest_lat: float,
         dest_lon: float,
-    ) -> Dict[str, Any]:
+    ) -> Optional[Dict[str, Any]]:
         """
         Calculates driving road alternative using OSRM car routing.
         Returned ONLY under 'road_alternative' key when public transit is unavailable.
+        Returns None if road route is geographically impossible or unavailable.
         """
         route = get_osrm_route(origin_lat, origin_lon, dest_lat, dest_lon)
-        dist_km = route["distance_km"] if route else 0.0
-        dur_mins = route["duration_minutes"] if route else 0
+        if not route or not route.get("distance_km") or route["distance_km"] <= 0:
+            return None
+
+        from ..station_normalizer import normalize_station_name
+        orig_en = normalize_station_name(origin_name)
+        dest_en = normalize_station_name(dest_name)
+
+        dist_km = route["distance_km"]
+        dur_mins = route["duration_minutes"]
         dur_str = f"{int(dur_mins // 60)}h {int(dur_mins % 60)}m" if dur_mins >= 60 else f"{int(dur_mins)}m"
 
         return {
             "type": "ROAD_ALTERNATIVE",
-            "mode": "DRIVING",
+            "mode": "Driving",
             "provider": "OSRM",
-            "origin": {"name": origin_name, "lat": origin_lat, "lon": origin_lon},
-            "destination": {"name": dest_name, "lat": dest_lat, "lon": dest_lon},
+            "origin": {"name": orig_en, "lat": origin_lat, "lon": origin_lon},
+            "destination": {"name": dest_en, "lat": dest_lat, "lon": dest_lon},
             "distance_km": dist_km,
             "duration_minutes": dur_mins,
+            "duration_min": dur_mins,
             "duration_display": dur_str,
-            "geometry": route.get("geometry", []) if route else [],
-            "note": "Road driving route calculated via OSRM. Public transit schedule unavailable.",
+            "verification_status": "Route Calculated",
+            "geometry": route.get("geometry", []),
+            "note": "Road driving route calculated via OSRM verified road network.",
         }

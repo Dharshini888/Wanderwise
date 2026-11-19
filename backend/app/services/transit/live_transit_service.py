@@ -90,6 +90,8 @@ class LiveTransitService:
                             })
                         result = {
                             "status": "live",
+                            "state": "LIVE_TRACKING_AVAILABLE" if veh_pos else "NO_ACTIVE_VEHICLES_DETECTED",
+                            "live_tracking_state": "LIVE_TRACKING_AVAILABLE" if veh_pos else "NO_ACTIVE_VEHICLES_DETECTED",
                             "provider": "RailRadar Live API",
                             "last_updated": rr_live.get("last_updated"),
                             "vehicle_positions": veh_pos,
@@ -102,18 +104,24 @@ class LiveTransitService:
                                 "platform": rr_live.get("platform"),
                             }],
                             "service_alerts": [],
-                            "note": f"Live train status active via RailRadar (Delay: +{rr_live.get('delay_min', 0)} min).",
+                            "note": f"Live train status active via RailRadar (Delay: +{rr_live.get('delay_min', 0)} min)." if veh_pos else "Schedule verified via RailRadar. No active GPS vehicles detected.",
                         }
                         break
 
         # 3. Fallback if no provider returns live data
         if not result:
             has_driving_only = bool(routes and all(r.get("provider") == "OSRM" or (r.get("mode") or "").lower() in ("road", "driving") for r in routes))
+            has_scheduled_transit = bool(routes and any(r.get("provider") in ("RailRadar", "GTFS", "Transitous", "GTFSLocal") for r in routes))
             if has_driving_only:
-                note = "Live traffic/tracking data unavailable — This route is calculated from road-network data."
+                state = "LIVE_TRAFFIC_UNAVAILABLE"
+                note = "Live traffic unavailable — Route is calculated from road-network data."
+            elif has_scheduled_transit:
+                state = "SCHEDULE_DATA_ONLY"
+                note = "Schedule data only — Timetable is verified, but active live vehicle tracking is unavailable."
             else:
-                note = "Live transit tracking unavailable — Schedule information is available, but realtime vehicle tracking is unavailable."
-            result = cls._build_unavailable_response(note)
+                state = "LIVE_TRACKING_UNAVAILABLE"
+                note = "Live transit tracking unavailable — No active vehicle telemetry detected."
+            result = cls._build_unavailable_response(note, state=state)
 
         cls._cache[cache_key] = {"timestamp": now, "data": result}
         return result
@@ -415,9 +423,11 @@ class LiveTransitService:
         }
 
     @classmethod
-    def _build_unavailable_response(cls, note: str) -> Dict[str, Any]:
+    def _build_unavailable_response(cls, note: str, state: str = "LIVE_TRACKING_UNAVAILABLE") -> Dict[str, Any]:
         return {
             "status": "unavailable",
+            "state": state,
+            "live_tracking_state": state,
             "provider": "None",
             "last_updated": None,
             "vehicle_positions": [],

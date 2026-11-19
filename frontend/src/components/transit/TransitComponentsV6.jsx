@@ -21,6 +21,17 @@ export function formatTransitTime(value, displayValue) {
   }
 }
 
+/**
+ * Safe duration formatter ensuring non-negative values.
+ */
+export function formatDurationMinutes(mins) {
+  if (mins == null || isNaN(mins)) return 'Calculating...';
+  const safe = Math.max(0, Math.round(Number(mins)));
+  const h = Math.floor(safe / 60);
+  const m = safe % 60;
+  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+}
+
 export function ModeIcon({ mode, size = 18 }) {
   const m = (mode || '').toLowerCase();
   if (m.includes('walk')) return <IconWalk size={size} />;
@@ -109,14 +120,12 @@ export function OverviewTab({ routeData, activeRoute }) {
         <h3 className="text-sm font-bold mb-4">Route Quality</h3>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <div className="text-[10px] uppercase text-[var(--text-muted)] font-bold mb-1">Fastest</div>
+            <div className="text-[10px] uppercase text-[var(--text-muted)] font-bold mb-1">Duration</div>
             <div className="text-xs font-bold text-[var(--text-primary)]">
               {(() => {
                 const dur = activeRoute?.duration_min ?? activeRoute?.duration_minutes ?? activeRoute?.total_duration_min;
                 if (dur != null) {
-                  const h = Math.floor(dur / 60);
-                  const m = Math.floor(dur % 60);
-                  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+                  return formatDurationMinutes(dur);
                 }
                 return activeRoute?.duration_display || 'Calculating...';
               })()}
@@ -241,7 +250,7 @@ export function TimelineTab({ activeRoute }) {
           Door-to-Door Journey Timeline
         </div>
         <div className="text-xs font-bold text-purple-600 dark:text-purple-400">
-          {activeRoute.total_duration_min ? `${Math.floor(activeRoute.total_duration_min / 60)}h ${Math.floor(activeRoute.total_duration_min % 60)}m total` : ''}
+          {activeRoute.total_duration_min != null ? `${formatDurationMinutes(activeRoute.total_duration_min)} total` : ''}
         </div>
       </div>
 
@@ -385,10 +394,10 @@ export function RoutesTab({ routeOptions, selectedRouteId, onSelect }) {
                 <ModeIcon mode={route.mode} size={14} /> {route.mode}
               </td>
               <td className="p-3 text-[var(--text-secondary)]">{route.provider}</td>
-              <td className="p-3 text-right font-bold">{route.duration_min}m</td>
+              <td className="p-3 text-right font-bold">{formatDurationMinutes(route.duration_min)}</td>
               <td className="p-3 text-right">{route.distance_km} km</td>
               <td className="p-3 text-right">{route.transfers !== null ? route.transfers : '—'}</td>
-              <td className="p-3 text-right text-emerald-500 font-bold">{route.fare ? `₹${route.fare}` : 'Unavailable'}</td>
+              <td className="p-3 text-right text-emerald-500 font-bold">{route.fare != null ? `${route.fare_currency || '₹'}${route.fare}` : 'Unavailable'}</td>
               <td className="p-3 text-center">
                 <RealtimeStatus
                   verification={route.verification || route.verification_status}
@@ -435,13 +444,13 @@ export function StrategyTab({ routeData }) {
       <h3 className="text-sm font-bold text-[var(--text-primary)]">Route Comparison</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {renderCard('Fastest', routeData?.fastest_route,
-          routeData?.fastest_route?.duration_min
-            ? `${Math.floor(routeData.fastest_route.duration_min / 60)}h ${Math.floor(routeData.fastest_route.duration_min % 60)}m`
+          routeData?.fastest_route?.duration_min != null
+            ? formatDurationMinutes(routeData.fastest_route.duration_min)
             : 'Duration unavailable', '⚡')}
 
         {renderCard('Cheapest', routeData?.cheapest_route,
-          routeData?.cheapest_route?.fare
-            ? `₹${routeData.cheapest_route.fare}`
+          routeData?.cheapest_route?.fare != null
+            ? `${routeData.cheapest_route.fare_currency || '₹'}${routeData.cheapest_route.fare}`
             : 'Cannot determine — fare unavailable for all routes', '💰')}
 
         {renderCard('Least Walking', routeData?.least_walking_route,
@@ -530,7 +539,7 @@ export function BudgetAnalyticsTab({ activeRoute }) {
           </div>
           <div className="text-right">
             <div className="font-bold text-lg text-[var(--text-primary)]">
-              {activeRoute?.fare ? `₹${activeRoute.fare}` : 'Unavailable'}
+              {activeRoute?.fare != null ? `${activeRoute.fare_currency || '₹'}${activeRoute.fare}` : 'Unavailable'}
             </div>
             <div className="text-[10px] font-bold text-emerald-500">
               {activeRoute?.fare_source}
@@ -551,7 +560,7 @@ export function BudgetAnalyticsTab({ activeRoute }) {
         <div className="flex justify-between items-center pt-2">
           <div className="font-black text-sm">Total verified transport cost</div>
           <div className="font-black text-xl text-emerald-600">
-            {activeRoute?.fare ? `₹${activeRoute.fare}` : 'Unavailable'}
+            {activeRoute?.fare != null ? `${activeRoute.fare_currency || '₹'}${activeRoute.fare}` : 'Unavailable'}
           </div>
         </div>
       </div>

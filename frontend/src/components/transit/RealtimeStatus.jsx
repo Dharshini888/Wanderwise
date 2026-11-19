@@ -15,10 +15,16 @@ import { IconShieldCheck, IconAlertTriangle, IconClock, IconRefresh, IconInfoCir
  */
 
 export default function RealtimeStatus({ verification, realtime, provider, lastUpdated, ageSeconds, showDetails = false }) {
-  const isRealtime = verification === 'REALTIME_VERIFIED' || (realtime && realtime.available && realtime.status !== 'unavailable');
-  const isStale = verification === 'STALE_REALTIME' || (realtime && realtime.status === 'stale') || (ageSeconds != null && ageSeconds > 300);
-  const isScheduled = verification === 'SCHEDULE_VERIFIED' || ['Provider Verified', 'Schedule Verified', 'VERIFIED'].includes(verification);
-  const isCalculated = verification === 'PROVIDER_CALCULATED' || verification === 'Provider Calculated';
+  const verifRaw = (typeof verification === 'object' && verification !== null)
+    ? (verification.level || verification.status || '')
+    : (verification || '');
+  const verifNorm = String(verifRaw).toUpperCase().replace(/\s+/g, '_');
+
+  const hasLiveTelemetry = realtime && realtime.available && realtime.status !== 'unavailable';
+  const isRealtime = verifNorm === 'REALTIME_VERIFIED' || verifNorm === 'LIVE_VERIFIED' || hasLiveTelemetry;
+  const isStale = verifNorm === 'STALE_REALTIME' || (realtime && realtime.status === 'stale') || (ageSeconds != null && ageSeconds > 300);
+  const isScheduled = ['PROVIDER_VERIFIED', 'SCHEDULE_VERIFIED', 'VERIFIED', 'SCHEDULED'].includes(verifNorm);
+  const isCalculated = ['PROVIDER_CALCULATED', 'ROUTE_CALCULATED', 'CALCULATED'].includes(verifNorm);
 
   const age = ageSeconds != null ? ageSeconds : (realtime?.age_seconds ?? null);
 
@@ -46,11 +52,11 @@ export default function RealtimeStatus({ verification, realtime, provider, lastU
     badgeIcon = '🔴';
   } else if (isScheduled) {
     badgeColor = 'bg-emerald-500/15 border-emerald-500/30 text-emerald-600 dark:text-emerald-400';
-    badgeLabel = '🟢 SCHEDULE VERIFIED';
+    badgeLabel = verifNorm === 'PROVIDER_VERIFIED' ? '🟢 PROVIDER VERIFIED' : '🟢 SCHEDULE VERIFIED';
     badgeIcon = '🟢';
   } else if (isCalculated) {
     badgeColor = 'bg-amber-500/15 border-amber-500/30 text-amber-600 dark:text-amber-400';
-    badgeLabel = '⚠️ PROVIDER CALCULATED';
+    badgeLabel = '⚠️ ROUTE CALCULATED';
     badgeIcon = '⚠️';
   }
 

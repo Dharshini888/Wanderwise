@@ -1,10 +1,11 @@
 import os
 import uuid
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 from ..services.transit.transit_orchestrator import TransitOrchestrator
 from ..services.transit.providers.railradar_provider import RailRadarProvider
+from ..services.transit.providers.flight_provider import FlightProvider
 
 router = APIRouter(prefix="/api/transit", tags=["Transit"])
 
@@ -47,56 +48,123 @@ class StrategyRequest(BaseModel):
 
 @router.post("/route")
 def get_route(data: TransitRequest):
+    if not data.origin or not data.origin.strip():
+        raise HTTPException(status_code=400, detail="Origin location is required.")
+    if not data.destination or not data.destination.strip():
+        raise HTTPException(status_code=400, detail="Destination location is required.")
+
     req_id = data.request_id or f"req_{uuid.uuid4().hex[:12]}"
     acc = data.origin_accuracy_m if data.origin_accuracy_m is not None else data.gps_accuracy
     d_lat = data.dest_lat if data.dest_lat is not None else data.destination_lat
     d_lon = data.dest_lon if data.dest_lon is not None else data.destination_lon
 
+    # Coordinate range validation
+    if data.origin_lat is not None and not (-90.0 <= data.origin_lat <= 90.0):
+        raise HTTPException(status_code=400, detail="Origin latitude must be between -90 and 90.")
+    if data.origin_lon is not None and not (-180.0 <= data.origin_lon <= 180.0):
+        raise HTTPException(status_code=400, detail="Origin longitude must be between -180 and 180.")
+    if d_lat is not None and not (-90.0 <= d_lat <= 90.0):
+        raise HTTPException(status_code=400, detail="Destination latitude must be between -90 and 90.")
+    if d_lon is not None and not (-180.0 <= d_lon <= 180.0):
+        raise HTTPException(status_code=400, detail="Destination longitude must be between -180 and 180.")
+
     logger.info(f"[TRANSIT] Route request received: {data.origin} -> {data.destination} (Coords: {data.origin_lat},{data.origin_lon} -> {d_lat},{d_lon}, Dep: {data.departure_type} / {data.departure_time})")
 
-    return TransitOrchestrator.get_transit_plan(
-        origin=data.origin,
-        destination=data.destination,
-        origin_source=data.origin_source,
-        origin_lat=data.origin_lat,
-        origin_lon=data.origin_lon,
-        dest_lat=d_lat,
-        dest_lon=d_lon,
-        gps_accuracy=acc,
-        origin_accuracy_m=acc,
-        preferred_mode=data.preferred_mode,
-        budget=data.budget,
-        budget_currency=data.budget_currency,
-        date=data.date,
-        departure_type=data.departure_type or "now",
-        departure_time=data.departure_time,
-        request_id=req_id,
-    )
+    try:
+        plan = TransitOrchestrator.get_transit_plan(
+            origin=data.origin.strip(),
+            destination=data.destination.strip(),
+            origin_source=data.origin_source,
+            origin_lat=data.origin_lat,
+            origin_lon=data.origin_lon,
+            dest_lat=d_lat,
+            dest_lon=d_lon,
+            gps_accuracy=acc,
+            origin_accuracy_m=acc,
+            preferred_mode=data.preferred_mode or "fastest",
+            budget=data.budget,
+            budget_currency=data.budget_currency,
+            date=data.date or "Today",
+            departure_type=data.departure_type or "now",
+            departure_time=data.departure_time,
+            request_id=req_id,
+        )
+
+        if plan.get("status") == "LOCATION_UNRESOLVED":
+            raise HTTPException(
+                status_code=400,
+                detail=plan.get("message") or f"Unable to resolve coordinates for '{data.origin}' or '{data.destination}'."
+            )
+
+        if plan.get("status") in ("ROUTING_ERROR", "ERROR"):
+            raise HTTPException(
+                status_code=502,
+                detail=plan.get("message") or "Transit providers failed to calculate a verified route."
+            )
+
+        return plan
+    except HTTPException:
+        raise
+    except TimeoutError as te:
+        logger.error(f"[TRANSIT] Timeout: {te}")
+        raise HTTPException(status_code=504, detail="Transit routing request timed out while contacting upstream providers.")
+    except Exception as e:
+        logger.exception(f"[TRANSIT] Routing pipeline error: {e}")
+        err_str = str(e).lower()
+        if "timeout" in err_str:
+            raise HTTPException(status_code=504, detail="Transit routing request timed out.")
+        if "connection" in err_str or "unreachable" in err_str:
+            raise HTTPException(status_code=503, detail="Transit service temporarily unavailable due to network connectivity.")
+        raise HTTPException(status_code=500, detail=f"Transit planning encountered an unexpected error: {str(e)}")
 
 
 @router.post("/intelligence")
 def get_intelligence(data: TransitRequest):
+    if not data.origin or not data.origin.strip():
+        raise HTTPException(status_code=400, detail="Origin location is required.")
+    if not data.destination or not data.destination.strip():
+        raise HTTPException(status_code=400, detail="Destination location is required.")
+
     req_id = data.request_id or f"req_{uuid.uuid4().hex[:12]}"
     acc = data.origin_accuracy_m if data.origin_accuracy_m is not None else data.gps_accuracy
     d_lat = data.dest_lat if data.dest_lat is not None else data.destination_lat
     d_lon = data.dest_lon if data.dest_lon is not None else data.destination_lon
 
-    return TransitOrchestrator.get_transit_plan(
-        origin=data.origin,
-        destination=data.destination,
-        origin_source=data.origin_source,
-        origin_lat=data.origin_lat,
-        origin_lon=data.origin_lon,
-        dest_lat=d_lat,
-        dest_lon=d_lon,
-        gps_accuracy=acc,
-        origin_accuracy_m=acc,
-        preferred_mode=data.preferred_mode,
-        budget=data.budget,
-        budget_currency=data.budget_currency,
-        date=data.date,
-        request_id=req_id,
-    )
+    try:
+        plan = TransitOrchestrator.get_transit_plan(
+            origin=data.origin.strip(),
+            destination=data.destination.strip(),
+            origin_source=data.origin_source,
+            origin_lat=data.origin_lat,
+            origin_lon=data.origin_lon,
+            dest_lat=d_lat,
+            dest_lon=d_lon,
+            gps_accuracy=acc,
+            origin_accuracy_m=acc,
+            preferred_mode=data.preferred_mode or "fastest",
+            budget=data.budget,
+            budget_currency=data.budget_currency,
+            date=data.date or "Today",
+            departure_type=data.departure_type or "now",
+            departure_time=data.departure_time,
+            request_id=req_id,
+        )
+
+        if plan.get("status") == "LOCATION_UNRESOLVED":
+            raise HTTPException(
+                status_code=400,
+                detail=plan.get("message") or f"Unable to resolve coordinates for '{data.origin}' or '{data.destination}'."
+            )
+
+        return plan
+    except HTTPException:
+        raise
+    except TimeoutError as te:
+        logger.error(f"[TRANSIT] Timeout: {te}")
+        raise HTTPException(status_code=504, detail="Transit intelligence request timed out.")
+    except Exception as e:
+        logger.exception(f"[TRANSIT] Intelligence pipeline error: {e}")
+        raise HTTPException(status_code=500, detail=f"Transit intelligence encountered an error: {str(e)}")
 
 
 @router.post("/strategy")
@@ -191,17 +259,29 @@ def get_transit_nearby(lat: float, lon: float, radius: int = 5000):
 
 
 @router.get("/debug/providers")
-def get_debug_providers():
+def get_debug_providers(probe: bool = True):
     rr_health = RailRadarProvider.health_check()
+    flight_health = FlightProvider.health_check(probe_network=probe)
     return {
         "transitous": {"configured": True},
         "transitland": {"configured": bool(os.getenv("TRANSITLAND_API_KEY"))},
         "navitia": {"configured": bool(os.getenv("NAVITIA_API_KEY"))},
         "railradar": rr_health,
-        "flight_provider": {"configured": bool(os.getenv("FLIGHT_API_KEY") or os.getenv("AVIATIONSTACK_API_KEY"))},
+        "flight_provider": flight_health,
         "osrm": {"configured": True},
         "gemini": {"configured": bool(os.getenv("GEMINI_API_KEY"))},
     }
+
+
+@router.get("/debug/flight")
+def get_debug_flight(test_cjb: bool = False, test_kix: bool = False):
+    health = FlightProvider.health_check(probe_network=True)
+    res = {"health": health}
+    if test_cjb:
+        res["cjb_test"] = FlightProvider.test_airport_code("CJB")
+    if test_kix:
+        res["kix_test"] = FlightProvider.test_airport_code("KIX")
+    return res
 
 
 @router.get("/debug/railradar")

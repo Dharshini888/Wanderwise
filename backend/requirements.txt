@@ -14,3 +14,4 @@ easyocr>=1.7.1
 PyMuPDF>=1.23.0
 opencv-python-headless>=4.8.0
 pillow>=10.0.0
+tzdata>=2024.1

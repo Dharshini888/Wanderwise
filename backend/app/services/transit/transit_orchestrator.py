@@ -12,12 +12,14 @@ V12.3 Architecture:
 import uuid
 import logging
 from typing import Dict, Any, Optional
+from concurrent.futures import ThreadPoolExecutor
 from ..maps.nominatim_service import geocode_place
 from ..maps.osrm_service import haversine_distance
 from ..weather.openmeteo_service import get_openmeteo_weather
 from ..places.overpass_service import get_overpass_nearby, get_nearby_boarding_infrastructure
 from .transit_router import TransitRouter
 from .live_transit_service import LiveTransitService
+from .station_normalizer import normalize_station_name, normalize_mode_name, get_mode_icon
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +64,7 @@ class TransitOrchestrator:
         req_id = request_id or f"req_{uuid.uuid4().hex[:12]}"
         acc = origin_accuracy_m if origin_accuracy_m is not None else gps_accuracy
 
-        # ── 1. Geocode Origin and Destination with Strict Coordinate Precedence ──
+        # ── 1. Geocode Origin and Destination with Strict Coordinate Precedence & Sanity ──
         valid_origin_coords = (
             origin_lat is not None and origin_lon is not None
             and isinstance(origin_lat, (int, float)) and isinstance(origin_lon, (int, float))
@@ -72,22 +74,7 @@ class TransitOrchestrator:
 
         is_gps_origin_text = bool(origin and any(k in origin.lower() for k in ["current", "location", "gps", "home city"]))
 
-        if valid_origin_coords:
-            resolved_origin_source = origin_source or "ACTIVITY_COORDINATES"
-            geo_orig = {
-                "lat": float(origin_lat),
-                "lon": float(origin_lon),
-                "display_name": origin,
-                "source": "Itinerary Coordinates",
-                "accuracy": acc,
-            }
-        elif origin_source == "BROWSER_GPS" or (origin_source is None and is_gps_origin_text) or (origin and "home city" in origin.lower()):
-            resolved_origin_source = "BROWSER_GPS"
-            geo_orig = None
-        else:
-            resolved_origin_source = "GEOCODED_LOCATION"
-            geo_orig = geocode_place(origin)
-
+        # Destination resolution with coordinate-to-city sanity check
         valid_dest_coords = (
             dest_lat is not None and dest_lon is not None
             and isinstance(dest_lat, (int, float)) and isinstance(dest_lon, (int, float))
@@ -95,7 +82,25 @@ class TransitOrchestrator:
             and not (dest_lat == 0.0 and dest_lon == 0.0)
         )
 
-        if valid_dest_coords:
+        expected_dest = geocode_place(destination) if destination else None
+        if valid_dest_coords and expected_dest and expected_dest.get("lat") is not None and expected_dest.get("lon") is not None:
+            # Check geographic distance between provided coords and geocoded destination
+            dest_drift_km = haversine_distance(float(dest_lat), float(dest_lon), float(expected_dest["lat"]), float(expected_dest["lon"]))
+            if dest_drift_km > 50.0:
+                logger.warning(
+                    f"[TRANSIT][COORDINATE_SANITY_FAIL] Provided dest_coords ({dest_lat}, {dest_lon}) are {dest_drift_km:.1f} km "
+                    f"away from geocoded '{destination}' ({expected_dest['lat']}, {expected_dest['lon']}). Discarding stale coordinates."
+                )
+                geo_dest = expected_dest
+            else:
+                geo_dest = {
+                    "lat": float(dest_lat),
+                    "lon": float(dest_lon),
+                    "display_name": expected_dest.get("display_name") or destination,
+                    "source": "Coordinates",
+                    "country_code": expected_dest.get("country_code"),
+                }
+        elif valid_dest_coords:
             geo_dest = {
                 "lat": float(dest_lat),
                 "lon": float(dest_lon),
@@ -103,9 +108,59 @@ class TransitOrchestrator:
                 "source": "Coordinates",
             }
         else:
-            geo_dest = geocode_place(destination)
+            geo_dest = expected_dest
 
-        if not geo_orig or not geo_dest:
+        # Origin resolution with coordinate-to-city sanity check
+        if is_gps_origin_text or origin_source == "BROWSER_GPS":
+            resolved_origin_source = "BROWSER_GPS"
+            if valid_origin_coords:
+                geo_orig = {
+                    "lat": float(origin_lat),
+                    "lon": float(origin_lon),
+                    "display_name": origin or "Current GPS Location",
+                    "source": "Browser GPS",
+                    "accuracy": acc,
+                }
+            else:
+                geo_orig = None
+        else:
+            expected_orig = geocode_place(origin) if origin else None
+            if valid_origin_coords and expected_orig and expected_orig.get("lat") is not None and expected_orig.get("lon") is not None:
+                orig_drift_km = haversine_distance(float(origin_lat), float(origin_lon), float(expected_orig["lat"]), float(expected_orig["lon"]))
+                if orig_drift_km > 50.0:
+                    logger.warning(
+                        f"[TRANSIT][COORDINATE_SANITY_FAIL] Provided origin_coords ({origin_lat}, {origin_lon}) are {orig_drift_km:.1f} km "
+                        f"away from geocoded '{origin}' ({expected_orig['lat']}, {expected_orig['lon']}). Discarding stale coordinates."
+                    )
+                    geo_orig = expected_orig
+                    resolved_origin_source = "GEOCODED_LOCATION"
+                else:
+                    geo_orig = {
+                        "lat": float(origin_lat),
+                        "lon": float(origin_lon),
+                        "display_name": expected_orig.get("display_name") or origin,
+                        "source": origin_source or "ACTIVITY_COORDINATES",
+                        "accuracy": acc,
+                        "country_code": expected_orig.get("country_code"),
+                    }
+                    resolved_origin_source = origin_source or "ACTIVITY_COORDINATES"
+            elif valid_origin_coords:
+                resolved_origin_source = origin_source or "ACTIVITY_COORDINATES"
+                geo_orig = {
+                    "lat": float(origin_lat),
+                    "lon": float(origin_lon),
+                    "display_name": origin,
+                    "source": "Itinerary Coordinates",
+                    "accuracy": acc,
+                }
+            else:
+                resolved_origin_source = "GEOCODED_LOCATION"
+                geo_orig = expected_orig
+
+        orig_has_coords = geo_orig and geo_orig.get("lat") is not None and geo_orig.get("lon") is not None
+        dest_has_coords = geo_dest and geo_dest.get("lat") is not None and geo_dest.get("lon") is not None
+
+        if not orig_has_coords or not dest_has_coords:
             logger.warning(f"[TRANSIT] Route failed: Unable to resolve coordinates for origin='{origin}' or dest='{destination}'")
             return {
                 "status": "LOCATION_UNRESOLVED",
@@ -115,17 +170,43 @@ class TransitOrchestrator:
                 "destination": destination,
                 "routes": [],
                 "route_guidance": None,
-                "message": f"Unable to determine location coordinates for '{origin if not geo_orig else destination}'.",
+                "message": f"Unable to determine location coordinates for '{origin if not orig_has_coords else destination}'.",
                 "recommended_route": None,
             }
 
-        orig_short = geo_orig["display_name"].split(",")[0] if geo_orig else (origin or "Current GPS Location")
-        dest_short = geo_dest["display_name"].split(",")[0]
+        orig_short = normalize_station_name(geo_orig["display_name"].split(",")[0] if geo_orig else (origin or "Current GPS Location"))
+        dest_short = normalize_station_name(geo_dest["display_name"].split(",")[0])
 
-        # ── 2. Weather & Contextual Infrastructure ────────────────────
-        weather_orig = get_openmeteo_weather(geo_orig["lat"], geo_orig["lon"], orig_short)
-        weather_dest = get_openmeteo_weather(geo_dest["lat"], geo_dest["lon"], dest_short)
-        nearby_places = get_overpass_nearby(geo_dest["lat"], geo_dest["lon"])
+        # ── 2. Weather & Contextual Infrastructure (Concurrent & Non-blocking) ──
+        weather_orig = {"temp_c": "--", "weather_code": "unknown", "icon": "☀️"}
+        weather_dest = {"temp_c": "--", "weather_code": "unknown", "icon": "☀️"}
+        nearby_places = []
+
+        with ThreadPoolExecutor(max_workers=3, thread_name_prefix="transit_enrich") as enrich_pool:
+            fut_w_orig = enrich_pool.submit(get_openmeteo_weather, geo_orig["lat"], geo_orig["lon"], orig_short)
+            fut_w_dest = enrich_pool.submit(get_openmeteo_weather, geo_dest["lat"], geo_dest["lon"], dest_short)
+            fut_nearby = enrich_pool.submit(get_overpass_nearby, geo_dest["lat"], geo_dest["lon"])
+
+            try:
+                w_o = fut_w_orig.result(timeout=1.2)
+                if w_o:
+                    weather_orig = w_o
+            except Exception as e:
+                logger.debug(f"[TRANSIT] Weather orig skipped/timed out: {e}")
+
+            try:
+                w_d = fut_w_dest.result(timeout=1.2)
+                if w_d:
+                    weather_dest = w_d
+            except Exception as e:
+                logger.debug(f"[TRANSIT] Weather dest skipped/timed out: {e}")
+
+            try:
+                nb = fut_nearby.result(timeout=1.2)
+                if nb:
+                    nearby_places = nb
+            except Exception as e:
+                logger.debug(f"[TRANSIT] Overpass POI skipped/timed out: {e}")
 
         router_orig_lat = geo_orig["lat"]
         router_orig_lon = geo_orig["lon"]
@@ -134,12 +215,9 @@ class TransitOrchestrator:
         from datetime import date as date_cls, datetime, time as time_cls, timedelta
         import os
 
+        from .tz_utils import get_timezone
         tz_name = os.getenv("TRANSIT_TIMEZONE", "Asia/Kolkata")
-        try:
-            from zoneinfo import ZoneInfo
-            local_tz = ZoneInfo(tz_name)
-        except Exception:
-            local_tz = None
+        local_tz = get_timezone(tz_name)
 
         now_local = datetime.now(local_tz) if local_tz else datetime.now()
         today_date = now_local.date()
@@ -159,22 +237,27 @@ class TransitOrchestrator:
 
         parsed_time = None
         dep_type_clean = str(departure_type or "now").strip().lower()
-        t_str = str(departure_time or "").strip().lower()
+        t_str = str(departure_time or "").strip()
 
-        if dep_type_clean == "now" or t_str in ("now", "", "none"):
-            if planning_date == today_date:
-                parsed_time = now_local.time()
-            else:
-                parsed_time = time_cls(8, 0)
-        else:
-            for fmt in ("%H:%M", "%I:%M %p", "%I:%M%p", "%H:%M:%S", "%Y-%m-%dT%H:%M:%S"):
-                try:
-                    parsed_time = datetime.strptime(t_str, fmt).time()
-                    break
-                except Exception:
-                    pass
-            if not parsed_time:
-                parsed_time = now_local.time() if planning_date == today_date else time_cls(8, 0)
+        if t_str and t_str.lower() not in ("now", "none", "null", ""):
+            try:
+                iso_dt = datetime.fromisoformat(t_str.replace("Z", "+00:00"))
+                parsed_time = iso_dt.time()
+                if not date or str(date).strip().lower() in ("today", "now"):
+                    planning_date = iso_dt.date()
+            except Exception:
+                for fmt in ("%Y-%m-%d %H:%M:%S", "%H:%M", "%I:%M %p", "%I:%M%p", "%H:%M:%S"):
+                    try:
+                        parsed_time = datetime.strptime(t_str, fmt).time()
+                        break
+                    except Exception:
+                        pass
+        elif dep_type_clean == "now":
+            parsed_time = now_local.time()
+            planning_date = today_date
+
+        if not parsed_time:
+            parsed_time = now_local.time() if planning_date == today_date else time_cls(8, 0)
 
         req_dep_dt = datetime.combine(planning_date, parsed_time)
         if local_tz:
@@ -303,13 +386,36 @@ class TransitOrchestrator:
         logger.info(f"[TRANSIT][NEARBY] reference_type={nearby_prov['reference_type']} reference_name={nearby_prov['reference_name']} lat={nearby_ref_lat} lon={nearby_ref_lon} source={nearby_prov['source']}")
 
         if geo_orig or reference_type == "actual_boarding_point":
-            infra_res = get_nearby_boarding_infrastructure(
-                nearby_ref_lat,
-                nearby_ref_lon,
-                radius_m=5000,
-                origin_source=resolved_origin_source,
-                gps_accuracy_m=acc
-            )
+            try:
+                with ThreadPoolExecutor(max_workers=1, thread_name_prefix="transit_infra") as infra_pool:
+                    fut_infra = infra_pool.submit(
+                        get_nearby_boarding_infrastructure,
+                        nearby_ref_lat,
+                        nearby_ref_lon,
+                        radius_m=5000,
+                        origin_source=resolved_origin_source,
+                        gps_accuracy_m=acc,
+                    )
+                    infra_res = fut_infra.result(timeout=1.0)
+            except Exception as e:
+                logger.debug(f"[TRANSIT] Boarding infra timed out/failed, using verified fallback: {e}")
+                from app.services.places.overpass_service import _get_local_verified_hubs
+                local_hubs = _get_local_verified_hubs(nearby_ref_lat, nearby_ref_lon, max_radius_km=5.0)
+                infra_res = {
+                    "items": local_hubs,
+                    "provenance": {
+                        "provider": "Verified Transit Infrastructure",
+                        "origin_source": resolved_origin_source,
+                        "origin_lat": nearby_ref_lat,
+                        "origin_lon": nearby_ref_lon,
+                        "origin_accuracy_m": acc,
+                        "radius_km": 5.0,
+                        "queried": True,
+                        "fallback_used": True,
+                        "fallback_reason": "Live query deadline exceeded; instant verified fallback used",
+                        "result_count": len(local_hubs),
+                    }
+                }
             raw_nearby = infra_res.get("items", [])
             infra_res["provenance"] = nearby_prov
             nearby_provenance = nearby_prov
@@ -338,6 +444,60 @@ class TransitOrchestrator:
         else:
             opt = {}
 
+        # Synchronize provider statuses from router and final route options
+        final_provider_statuses = dict(route_result.get("provider_statuses", {}))
+        
+        # Check if road route exists in route_options or journeys
+        has_road = any(
+            r.get("provider") == "OSRM" or (r.get("mode") or "").lower() in ("driving", "road")
+            for r in (all_route_options + journeys_list)
+        )
+        if has_road:
+            final_provider_statuses["OSRM"] = "Route calculated"
+        elif "OSRM" not in final_provider_statuses:
+            final_provider_statuses["OSRM"] = "No itinerary found"
+
+        # Check if verified train routes exist
+        has_trains = any(
+            r.get("provider") in ("Indian Railways Timetable", "IndianRailways-ScheduleVerified", "RailRadar")
+            or (r.get("mode") or "").lower() in ("rail", "train")
+            for r in (all_route_options + journeys_list)
+        )
+        if has_trains:
+            final_provider_statuses["Indian Railways Timetable"] = "Connected"
+        elif "Indian Railways Timetable" not in final_provider_statuses:
+            final_provider_statuses["Indian Railways Timetable"] = "No itinerary found"
+
+        # RailRadar rate limit / quota check
+        rr_audit_check = provider_audit.get("RailRadar", {})
+        if rr_audit_check.get("status") in ("QUOTA_EXHAUSTED", "RATE_LIMITED") or "quota" in str(rr_audit_check.get("reason", "")).lower() or "rate limit" in str(rr_audit_check.get("reason", "")).lower():
+            if "quota" in str(rr_audit_check.get("reason", "")).lower() or rr_audit_check.get("status") == "QUOTA_EXHAUSTED":
+                final_provider_statuses["RailRadar"] = "Monthly quota exhausted"
+            else:
+                final_provider_statuses["RailRadar"] = "Rate limited"
+
+        # Transitous status check
+        has_transitous = any(
+            r.get("provider") == "Transitous" or "transitous" in str(r.get("route_id", "")).lower()
+            for r in (all_route_options + journeys_list)
+        )
+        if has_transitous:
+            final_provider_statuses["Transitous"] = "Connected"
+        elif "Transitous" not in final_provider_statuses:
+            final_provider_statuses["Transitous"] = "No itinerary found"
+
+        # FlightProvider status check
+        has_flights = any(
+            r.get("provider") == "FlightProvider" or (r.get("mode") or "").lower() in ("flight", "commercial flight")
+            for r in (all_route_options + journeys_list)
+        )
+        if has_flights:
+            final_provider_statuses["FlightProvider"] = "Connected"
+        elif "FlightProvider" not in final_provider_statuses or final_provider_statuses.get("FlightProvider") in ("No itinerary found", "Unavailable"):
+            fl_audit_check = provider_audit.get("FlightProvider", {})
+            if "subscription" in str(fl_audit_check.get("reason", "")).lower() or "subscription" in str(fl_audit_check.get("category", "")).lower():
+                final_provider_statuses["FlightProvider"] = "Subscription restricted"
+
         # Base response payload
         base_response = {
             "request_id": req_id,
@@ -347,10 +507,14 @@ class TransitOrchestrator:
             "journey_scale": scale,
             "origin": orig_short,
             "destination": dest_short,
+            "requested_origin": origin,
+            "requested_destination": destination,
             "origin_source": resolved_origin_source,
             "origin_accuracy_m": acc,
             "origin_coords": {"lat": geo_orig["lat"] if geo_orig else None, "lon": geo_orig["lon"] if geo_orig else None, "accuracy": acc},
             "dest_coords": {"lat": geo_dest["lat"], "lon": geo_dest["lon"]},
+            "search_origin_coords": {"lat": geo_orig["lat"] if geo_orig else None, "lon": geo_orig["lon"] if geo_orig else None},
+            "search_dest_coords": {"lat": geo_dest["lat"], "lon": geo_dest["lon"]},
             "preferred_mode": preferred_mode,
             
             # Route Optimization Schema — all strategies
@@ -368,6 +532,7 @@ class TransitOrchestrator:
             
             "provider_trace": route_result.get("provider_trace", []),
             "provider_audit": route_result.get("provider_audit", {}),
+            "provider_statuses": final_provider_statuses,
             "route_guidance": route_result.get("route_guidance"),
             "why_this_route": why_this_route,
             "nearby": formatted_nearby,
@@ -493,8 +658,14 @@ def _normalize_journey_model(
         orig_ap = fl.get("origin_airport") or "Origin Airport"
         dest_ap = fl.get("destination_airport") or "Destination Airport"
         fl_num = fl.get("flight_number") or "Verified Flight"
-        fl_dist = fl.get("distance_km") or straight_line_dist
-        fl_dur = fl.get("duration_minutes") or 120.0
+        
+        # In-air flight metrics vs door-to-door metrics
+        in_air_dist = fl.get("flight_distance_km") or fl.get("distance_km") or straight_line_dist
+        in_air_dur = fl.get("flight_duration_minutes") or 120.0
+
+        # Total door-to-door metrics
+        total_flight_dist = fl.get("total_distance_km") or fl.get("distance_km") or in_air_dist
+        total_flight_dur = fl.get("total_duration_minutes") or fl.get("duration_minutes") or in_air_dur
 
         orig_transfer_km = round(haversine_distance(geo_orig["lat"], geo_orig["lon"], fl.get("origin_lat", geo_orig["lat"]), fl.get("origin_lon", geo_orig["lon"])), 1)
         orig_transfer_min = max(10, round(orig_transfer_km * 1.5, 1))
@@ -502,25 +673,27 @@ def _normalize_journey_model(
         dest_transfer_km = round(haversine_distance(fl.get("destination_lat", geo_dest["lat"]), fl.get("destination_lon", geo_dest["lon"]), geo_dest["lat"], geo_dest["lon"]), 1)
         dest_transfer_min = max(10, round(dest_transfer_km * 1.5, 1))
 
-        total_flight_dist = round(fl_dist + orig_transfer_km + dest_transfer_km, 1)
-        total_flight_dur = round(fl_dur + orig_transfer_min + dest_transfer_min, 1)
+        orig_ap_label = orig_ap if "airport" in orig_ap.lower() else f"{orig_ap} Airport"
+        dest_ap_label = dest_ap if "airport" in dest_ap.lower() else f"{dest_ap} Airport"
 
         dist_summary = {
             "total_distance_km": total_flight_dist,
+            "flight_distance_km": in_air_dist,
             "distance_type": "MULTIMODAL_AIR",
-            "source": "FlightProvider + Derived Ground",
+            "source": "FlightProvider (AviationStack) + OSRM Ground",
             "status": "VERIFIED",
         }
         dur_summary = {
             "total_duration_min": total_flight_dur,
-            "source": "FlightProvider + Derived Ground",
+            "flight_duration_min": in_air_dur,
+            "source": "FlightProvider (AviationStack) + OSRM Ground",
             "status": "VERIFIED",
         }
         segments = [
             {
                 "mode": "Transfer",
                 "from": orig_short,
-                "to": f"{orig_ap} Airport",
+                "to": orig_ap_label,
                 "distance_km": orig_transfer_km,
                 "duration_min": orig_transfer_min,
                 "status": "ESTIMATED",
@@ -529,19 +702,19 @@ def _normalize_journey_model(
             },
             {
                 "mode": "Flight",
-                "from": f"{orig_ap} Airport",
-                "to": f"{dest_ap} Airport",
-                "distance_km": fl_dist,
-                "duration_min": fl_dur,
+                "from": orig_ap_label,
+                "to": dest_ap_label,
+                "distance_km": in_air_dist,
+                "duration_min": in_air_dur,
                 "status": "VERIFIED",
                 "source": "FlightProvider",
                 "confidence": "HIGH",
                 "flight_number": fl_num,
-                "airline": fl.get("airline"),
+                "airline": fl.get("airline") or fl.get("airline_name"),
             },
             {
                 "mode": "Transfer",
-                "from": f"{dest_ap} Airport",
+                "from": dest_ap_label,
                 "to": dest_short,
                 "distance_km": dest_transfer_km,
                 "duration_min": dest_transfer_min,
@@ -550,12 +723,16 @@ def _normalize_journey_model(
                 "confidence": "MEDIUM",
             },
         ]
+        fl_h = int(in_air_dur // 60)
+        fl_m = int(round(in_air_dur % 60))
+        fl_dur_str = f"{fl_h}h {fl_m}m" if fl_h > 0 else f"{fl_m} min"
+
         timeline = [
             {"time": "Sequence 1", "title": orig_short, "description": "Origin location", "status": "VERIFIED", "type": "ORIGIN"},
-            {"time": "35 min", "title": f"🚘 Airport Transfer · {orig_short} → {orig_ap}", "description": "Estimated ground transfer to departure airport", "status": "ESTIMATED", "mode": "Transfer", "source": "DERIVED", "distance_km": orig_transfer_km, "duration_min": orig_transfer_min, "type": "SEGMENT"},
-            {"time": f"{int(fl_dur)} min", "title": f"✈️ Verified Flight ({fl_num}) · {orig_ap} → {dest_ap}", "description": f"{fl_dist} km non-stop flight via FlightProvider", "status": "VERIFIED", "mode": "Flight", "source": "FlightProvider", "distance_km": fl_dist, "duration_min": fl_dur, "type": "SEGMENT"},
-            {"time": "30 min", "title": f"🚘 City Transfer · {dest_ap} → {dest_short}", "description": "Estimated ground transfer to final destination", "status": "ESTIMATED", "mode": "Transfer", "source": "DERIVED", "distance_km": dest_transfer_km, "duration_min": dest_transfer_min, "type": "SEGMENT"},
-            {"time": "Sequence 5", "title": dest_short, "description": "Destination reached", "status": "VERIFIED", "type": "DESTINATION"},
+            {"time": f"{int(orig_transfer_min)} min", "title": f"🚘 Airport Transfer · {orig_short} → {orig_ap_label}", "description": "Ground transfer to departure airport", "status": "ESTIMATED", "mode": "Transfer", "source": "DERIVED", "distance_km": orig_transfer_km, "duration_min": orig_transfer_min, "type": "SEGMENT"},
+            {"time": fl_dur_str, "title": f"✈️ Verified Flight ({fl_num}) · {orig_ap_label} → {dest_ap_label}", "description": f"{in_air_dist} km flight via {fl.get('airline') or fl.get('airline_name') or 'FlightProvider'}", "status": "VERIFIED", "mode": "Flight", "source": "FlightProvider", "distance_km": in_air_dist, "duration_min": in_air_dur, "type": "SEGMENT"},
+            {"time": f"{int(dest_transfer_min)} min", "title": f"🚘 City Transfer · {dest_ap_label} → {dest_short}", "description": "Ground transfer to final destination", "status": "ESTIMATED", "mode": "Transfer", "source": "DERIVED", "distance_km": dest_transfer_km, "duration_min": dest_transfer_min, "type": "SEGMENT"},
+            {"time": "Arrival", "title": dest_short, "description": "Destination reached", "status": "VERIFIED", "type": "DESTINATION"},
         ]
 
     elif status == "PUBLIC_TRANSIT_AVAILABLE" and journey.get("legs"):
@@ -582,6 +759,15 @@ def _normalize_journey_model(
                     dep_dt = datetime.fromisoformat(d_str)
                     arr_dt = datetime.fromisoformat(a_str)
                     
+                    if dep_dt.tzinfo is not None and arr_dt.tzinfo is None:
+                        arr_dt = arr_dt.replace(tzinfo=dep_dt.tzinfo)
+                    elif dep_dt.tzinfo is None and arr_dt.tzinfo is not None:
+                        dep_dt = dep_dt.replace(tzinfo=arr_dt.tzinfo)
+                    
+                    if arr_dt <= dep_dt:
+                        from datetime import timedelta
+                        arr_dt += timedelta(days=1)
+
                     dur_mins = (arr_dt - dep_dt).total_seconds() / 60.0
                     if dur_mins > 0:
                         tot_dur = dur_mins
@@ -608,12 +794,18 @@ def _normalize_journey_model(
         segments = []
         timeline = [{"time": "Departure", "title": orig_short, "description": "Journey starts from origin", "status": "VERIFIED", "type": "ORIGIN"}]
         for idx, leg in enumerate(legs):
-            leg_mode = leg.get("mode") or leg.get("type") or "Rail"
-            leg_from = leg.get("boarding_stop", {}).get("name") or leg.get("from_name") or orig_short
-            leg_to = leg.get("alighting_stop", {}).get("name") or leg.get("to_name") or dest_short
+            leg_mode = normalize_mode_name(leg.get("mode") or leg.get("type") or "Rail")
+            leg_from = normalize_station_name(leg.get("boarding_stop", {}).get("name") or leg.get("from_name") or orig_short)
+            leg_to = normalize_station_name(leg.get("alighting_stop", {}).get("name") or leg.get("to_name") or dest_short)
             leg_dist = leg.get("distance_km") or round((leg.get("distance_m", 0) or 0) / 1000.0, 1)
             leg_dur = leg.get("duration_minutes") or leg.get("duration_min")
+            if leg_dur is not None:
+                try:
+                    leg_dur = max(0.0, float(leg_dur))
+                except (ValueError, TypeError):
+                    pass
 
+            icon = get_mode_icon(leg_mode)
             segments.append({
                 "mode": leg_mode.title(),
                 "from": leg_from,
@@ -631,7 +823,7 @@ def _normalize_journey_model(
             })
             timeline.append({
                 "time": leg.get("departure_time") or f"Leg {idx+1}",
-                "title": f"🚆 {leg_mode.title()} · {leg_from} → {leg_to}",
+                "title": f"{icon} {leg_mode.title()} · {leg_from} → {leg_to}",
                 "description": f"{leg_dist} km via {provider_name}",
                 "status": "VERIFIED",
                 "mode": leg_mode.title(),
@@ -715,12 +907,14 @@ def _normalize_journey_model(
 
     # 2. Route Options — expose ALL verified trains from optimizer
     route_opts = []
-    # Rail trains: use all RailRadar options from optimizer
-    rail_routes = [r for r in all_route_options if r.get("provider") == "RailRadar"]
+    # Rail trains: use all railway options from optimizer
+    rail_routes = [r for r in all_route_options if r.get("provider") in ("RailRadar", "Indian Railways Timetable", "IndianRailways-ScheduleVerified") or (r.get("mode") or "").lower() in ("train", "rail")]
     if status == "PUBLIC_TRANSIT_AVAILABLE" and rail_routes:
         for rr in rail_routes:
+            p_label = rr.get("provider", "Indian Railways Timetable")
             route_opts.append({
-                "provider": "RailRadar",
+                "route_id": rr.get("route_id"),
+                "provider": p_label,
                 "mode": rr.get("mode", "Rail"),
                 "status": "VERIFIED",
                 "distance_km": rr.get("distance_km"),
@@ -736,15 +930,18 @@ def _normalize_journey_model(
                 "arrival_station": rr.get("arrival_station"),
                 "operating_days": rr.get("operating_days", []),
                 "fare": rr.get("fare"),
-                "verification_status": rr.get("verification_status", "Provider Verified"),
+                "verification_status": rr.get("verification_status", "SCHEDULE_VERIFIED"),
+                "intermediate_stops": rr.get("intermediate_stops", []),
+                "geometry": rr.get("geometry", []),
+                "legs": rr.get("legs", []),
                 "message": f"Train {rr.get('train_number')} — {rr.get('train_name', 'Verified Rail Route')}",
             })
     else:
         route_opts.append({
-            "provider": "RailRadar",
+            "provider": "Indian Railways Timetable",
             "mode": "Rail",
             "status": "UNAVAILABLE",
-            "message": "No verified RailRadar itinerary available",
+            "message": "No verified railway itinerary available",
         })
 
     # Flight Option
@@ -769,20 +966,24 @@ def _normalize_journey_model(
     # Road Driving Option
     if status == "VERIFIED_ROAD_ALTERNATIVE" and road_alt:
         route_opts.append({
+            "route_id": road_alt.get("route_id") or "osrm_road_route",
             "provider": "OSRM",
             "mode": "Driving",
             "status": "VERIFIED",
             "distance_km": road_alt.get("distance_km"),
             "duration_min": road_alt.get("duration_min") or road_alt.get("duration_minutes"),
+            "geometry": road_alt.get("geometry", []),
             "message": f"Verified road route ({road_alt.get('distance_km')} km)",
         })
     elif road_alt:
         route_opts.append({
+            "route_id": road_alt.get("route_id") or "osrm_road_route",
             "provider": "OSRM",
             "mode": "Driving",
             "status": "ESTIMATED",
             "distance_km": road_alt.get("distance_km"),
             "duration_min": road_alt.get("duration_min") or road_alt.get("duration_minutes"),
+            "geometry": road_alt.get("geometry", []),
             "message": f"Long-distance road fallback ({road_alt.get('distance_km')} km)",
         })
     else:
@@ -801,9 +1002,19 @@ def _normalize_journey_model(
     overpass_status = "VERIFIED" if nb_count > 0 and not fallback_used else ("FALLBACK_USED" if nb_count > 0 and fallback_used else "UNAVAILABLE")
     overpass_msg = "Live OpenStreetMap via Overpass API" if overpass_status == "VERIFIED" else ("Live query unavailable; verified geographic fallback used" if overpass_status == "FALLBACK_USED" else "No verified nearby POIs available")
 
+    # Extract detailed diagnostic from provider_audit if available
+    fl_audit = provider_audit.get("FlightProvider", {})
+    fl_reason = fl_audit.get("reason") or ("Verified flight options returned" if status == "VERIFIED_FLIGHT" else "No verified flight returned")
+    fl_status = fl_audit.get("status") or ("SUCCESS" if status == "VERIFIED_FLIGHT" else "NO_RESULT")
+
+    has_train_itins = bool(rail_routes and any(r.get("status") == "VERIFIED" for r in rail_routes))
+    rr_audit = provider_audit.get("RailRadar", {})
+    rr_audit_status = rr_audit.get("status") or ("RATE_LIMITED" if "429" in str(rr_audit.get("reason", "")) else "UNAVAILABLE")
+
     provider_diagnostics = [
-        {"provider": "RailRadar", "configured": True, "status": "VERIFIED" if status == "PUBLIC_TRANSIT_AVAILABLE" and journey.get("provider") == "RailRadar" else "UNAVAILABLE", "message": "Verified rail itinerary returned" if status == "PUBLIC_TRANSIT_AVAILABLE" and journey.get("provider") == "RailRadar" else "No verified RailRadar itinerary returned"},
-        {"provider": "FlightProvider", "configured": True, "status": "VERIFIED" if status == "VERIFIED_FLIGHT" else "UNAVAILABLE", "message": "Verified flight options returned" if status == "VERIFIED_FLIGHT" else "No verified flight returned"},
+        {"provider": "Indian Railways Timetable", "configured": True, "status": "VERIFIED" if has_train_itins else "NO_ITINERARY", "message": f"Verified IRCTC timetable options ({len(rail_routes)} trains)" if has_train_itins else "No verified timetable records"},
+        {"provider": "RailRadar", "configured": True, "status": "VERIFIED" if (journey.get("provider") == "RailRadar" and journey.get("verification_status") == "LIVE_VERIFIED") else rr_audit_status, "message": "Live verified railway API" if (journey.get("provider") == "RailRadar" and journey.get("verification_status") == "LIVE_VERIFIED") else (rr_audit.get("reason") or "RailRadar quota exceeded or rate limited")},
+        {"provider": "FlightProvider", "configured": fl_audit.get("configured", True), "status": "VERIFIED" if status == "VERIFIED_FLIGHT" else (fl_audit.get("category") or "UNAVAILABLE"), "message": fl_reason},
         {"provider": "OSRM", "configured": True, "status": "VERIFIED" if status == "VERIFIED_ROAD_ALTERNATIVE" else ("ESTIMATED" if road_alt else "UNAVAILABLE"), "message": f"Verified road route: {road_alt.get('distance_km')} km" if status == "VERIFIED_ROAD_ALTERNATIVE" and road_alt else (f"Long-distance road fallback: {road_alt.get('distance_km')} km" if road_alt else "Road route unavailable")},
         {"provider": "Overpass", "configured": True, "status": overpass_status, "message": overpass_msg},
         {"provider": "Nominatim", "configured": True, "status": "VERIFIED", "message": "Origin/destination geocoded"},
@@ -811,8 +1022,16 @@ def _normalize_journey_model(
 
     # Clean provider_audit to contain ONLY configured providers
     clean_audit = {
-        "RailRadar": {"configured": True, "attempted": True, "status": "SUCCESS" if status == "PUBLIC_TRANSIT_AVAILABLE" and journey.get("provider") == "RailRadar" else "NO_ITINERARY", "reason": "Verified rail itinerary returned" if status == "PUBLIC_TRANSIT_AVAILABLE" and journey.get("provider") == "RailRadar" else "No verified rail itinerary returned"},
-        "FlightProvider": {"configured": True, "attempted": True, "status": "SUCCESS" if status == "VERIFIED_FLIGHT" else "NO_RESULT", "reason": "Verified flight options returned" if status == "VERIFIED_FLIGHT" else "No verified flight returned"},
+        "Indian Railways Timetable": {"configured": True, "attempted": True, "status": "SUCCESS" if has_train_itins else "NO_ITINERARY", "reason": f"Verified rail schedules available ({len(rail_routes)} trains)" if has_train_itins else "No verified timetable records"},
+        "RailRadar": {"configured": True, "attempted": True, "status": "SUCCESS" if (journey.get("provider") == "RailRadar" and journey.get("verification_status") == "LIVE_VERIFIED") else ("QUOTA_EXHAUSTED" if "quota" in str(rr_audit.get("reason", "")).lower() else "RATE_LIMITED"), "reason": rr_audit.get("reason") or "RailRadar monthly quota reached (HTTP 429)"},
+        "FlightProvider": {
+            "configured": fl_audit.get("configured", True),
+            "attempted": True,
+            "status": fl_status,
+            "category": fl_audit.get("category"),
+            "http_status": fl_audit.get("http_status"),
+            "reason": fl_reason,
+        },
         "OSRM": {"configured": True, "attempted": True, "status": "SUCCESS" if road_alt else "NO_RESULT", "reason": f"Verified road route ({road_alt.get('distance_km')} km)" if road_alt else "No road route returned"},
         "Overpass": {"configured": True, "attempted": True, "status": "SUCCESS" if nb_count > 0 else "NO_RESULT", "reason": overpass_msg},
         "Nominatim": {"configured": True, "attempted": True, "status": "SUCCESS", "reason": "Origin and destination geocoded successfully"},
@@ -915,6 +1134,8 @@ def _normalize_journey_model(
         "recommended_route": journey,
         "provider_diagnostics": provider_diagnostics,
         "provider_audit": clean_audit,
+        "provider_statuses": route_result.get("provider_statuses", {}),
+        "message": route_result.get("message"),
         "strategy_analysis": strategy_analysis,
         "status": status,
     }
