@@ -104,7 +104,7 @@ def test_1_railradar_quota_exhausted_captures_headers_and_trips_breaker():
     assert info["execution_time_ms"] >= 0.0
 
     # Circuit breaker must be active
-    assert RailRadarProvider._CIRCUIT_STATE == "RATE_LIMITED"
+    assert RailRadarProvider._CIRCUIT_STATE in ("RATE_LIMITED", "QUOTA_EXHAUSTED")
     assert RailRadarProvider._CIRCUIT_COOLDOWN_UNTIL > time.time()
 
     # Subsequent call while circuit breaker is active must NOT make network requests

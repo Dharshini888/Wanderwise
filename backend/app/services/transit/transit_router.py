@@ -281,6 +281,14 @@ class TransitRouter:
         )
 
         if guidance:
+            rec_m = (guidance.get("recommended_mode") or "").lower()
+            if "flight" in rec_m:
+                no_itinerary_msg = "No verified flight itinerary available for selected date."
+            elif "rail" in rec_m or "train" in rec_m:
+                no_itinerary_msg = "No verified train itinerary available for selected date."
+            else:
+                no_itinerary_msg = "No verified transit itineraries available for selected date."
+
             return {
                 "status": "ROUTE_GUIDANCE_AVAILABLE",
                 "result_level": 4,
@@ -292,7 +300,7 @@ class TransitRouter:
                 "provider_trace": provider_trace,
                 "provider_audit": provider_audit,
                 "provider_statuses": provider_statuses,
-                "message": mgr_res.get("message") or "No verified train itineraries are currently available. Other transport modes remain available.",
+                "message": no_itinerary_msg,
                 "why_this_route": ["No verified providers available. Provided AI estimated route guidance."],
             }
 

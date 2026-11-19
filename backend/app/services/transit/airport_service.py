@@ -72,6 +72,9 @@ GLOBAL_AIRPORTS: List[Dict[str, Any]] = [
     # Egypt
     {"iata": "CAI", "icao": "HECA", "name": "Cairo International Airport", "city": "Cairo", "country": "Egypt", "lat": 30.1219, "lon": 31.4056, "tier": "primary_international"},
 
+    # Bhutan / Himalayas
+    {"iata": "PBH", "icao": "VQPR", "name": "Paro International Airport", "city": "Paro", "country": "Bhutan", "lat": 27.4032, "lon": 89.4246, "tier": "primary_international", "timezone": "Asia/Thimphu"},
+
     # Hawaii
     {"iata": "HNL", "icao": "PHNL", "name": "Daniel K. Inouye International Airport", "city": "Honolulu", "country": "USA", "lat": 21.3187, "lon": -157.9224, "tier": "primary_international"},
 
@@ -187,7 +190,10 @@ DESTINATION_AIRPORT_MAP: Dict[str, List[str]] = {
     "goa": ["GOX", "GOI"],
     "jaipur": ["JAI"],
     "agra": ["AGR", "DEL"],
-    "pune": ["PNQ"]
+    "pune": ["PNQ"],
+    "bhutan": ["PBH"],
+    "paro": ["PBH"],
+    "thimphu": ["PBH"]
 }
 
 AIRPORTS_BY_IATA = {ap["iata"]: ap for ap in GLOBAL_AIRPORTS}
@@ -201,6 +207,7 @@ def get_airport_by_iata(iata_code: Optional[str]) -> Optional[Dict[str, Any]]:
 
 
 COUNTRY_TIMEZONE_MAP = {
+    "Bhutan": "Asia/Thimphu",
     "India": "Asia/Kolkata",
     "Japan": "Asia/Tokyo",
     "United Kingdom": "Europe/London",

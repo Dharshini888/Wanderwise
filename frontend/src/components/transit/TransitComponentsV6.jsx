@@ -1,7 +1,8 @@
 import React from 'react';
 import {
   IconRoute, IconSparkles, IconClock, IconAlertTriangle, 
-  IconCar, IconWalk, IconPlane, IconTrain, IconBus
+  IconCar, IconWalk, IconPlane, IconTrain, IconBus,
+  IconExternalLink, IconInfoCircle, IconShieldCheck, IconBuildingAirport, IconCash
 } from '@tabler/icons-react';
 import RealtimeStatus from './RealtimeStatus';
 
@@ -53,42 +54,293 @@ export function AIRouteGuidanceCard({ routeGuidance }) {
             <IconSparkles size={28} />
           </div>
           <div>
-            <div className="text-[10px] font-bold uppercase text-amber-600 dark:text-amber-400 tracking-widest flex items-center gap-1">
-              🤖 AI Transit Strategy
+            <div className="text-[10px] font-black uppercase text-amber-600 dark:text-amber-400 tracking-widest flex items-center gap-1.5">
+              <span>🤖 AI Recommendation</span>
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">Strategy</span>
             </div>
-            <h3 className="text-xl font-black text-[var(--text-primary)]">{routeGuidance.title || 'Guidance Recommended'}</h3>
+            <h3 className="text-xl font-black text-[var(--text-primary)]">{routeGuidance.title || 'Mode Recommendation'}</h3>
+          </div>
+        </div>
+        {routeGuidance.recommended_mode && (
+          <span className="px-3 py-1 rounded-full text-xs font-black bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+            {routeGuidance.recommended_mode}
+          </span>
+        )}
+      </div>
+
+      <p className="text-sm font-medium text-[var(--text-primary)] leading-relaxed bg-[var(--bg-glass)] p-4 rounded-xl border border-[var(--border-color)]">
+        {routeGuidance.reason || 'Transport mode recommended based on route geography, borders, and journey distance.'}
+      </p>
+
+      {routeGuidance.strategic_considerations && routeGuidance.strategic_considerations.length > 0 && (
+        <div className="pt-2">
+          <div className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] font-black mb-2 flex items-center gap-1">
+            <span>Strategic Considerations</span>
+          </div>
+          <ul className="space-y-1.5 text-xs text-[var(--text-secondary)] bg-[var(--bg-glass)] p-3.5 rounded-xl border border-[var(--border-color)]">
+            {routeGuidance.strategic_considerations.map((item, idx) => (
+              <li key={idx} className="flex items-start gap-2">
+                <span className="text-amber-500 font-bold mt-0.5">✦</span>
+                <span className="leading-snug">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function VerifiedJourneyResultsNotice({ verifiedResults, message, providerStatuses }) {
+  const finalMessage = verifiedResults?.message || message || 'No verified itinerary available for selected date.';
+  const statuses = verifiedResults?.provider_statuses || providerStatuses || {};
+
+  return (
+    <div className="glass-card p-6 rounded-3xl border border-rose-500/30 bg-[var(--bg-card)] shadow-xl space-y-4">
+      <div className="flex flex-wrap justify-between items-start gap-3">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-rose-500/15 rounded-2xl text-rose-500">
+            <IconAlertTriangle size={28} />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)]">
+                Verified Journey Results
+              </span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30">
+                Not verified for selected dates
+              </span>
+            </div>
+            <h3 className="text-lg font-black text-[var(--text-primary)] mt-0.5">
+              {finalMessage}
+            </h3>
           </div>
         </div>
       </div>
 
-      <p className="text-sm font-medium text-[var(--text-primary)] leading-relaxed bg-[var(--bg-glass)] p-4 rounded-xl border border-[var(--border-color)]">
-        {routeGuidance.reason || 'Schedules, platforms, and fares could not be verified from live providers.'}
-      </p>
+      <div className="text-xs text-[var(--text-secondary)] bg-[var(--bg-glass)] p-3.5 rounded-xl border border-[var(--border-color)] leading-relaxed">
+        None of the connected transport providers returned a verified, date-specific passenger itinerary matching the requested journey. Verified provider results require direct API timetable or schedule confirmation.
+      </div>
 
-      {routeGuidance.provider_status && (
+      {Object.keys(statuses).length > 0 && (
         <div className="pt-2">
-          <div className="text-xs uppercase tracking-widest text-[var(--text-muted)] font-bold mb-3">Provider Status</div>
+          <div className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] font-black mb-2.5">
+            Connected Provider Audit
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+            {Object.entries(statuses).map(([prov, st]) => {
+              const isConnected = String(st).toLowerCase().includes('connected') || String(st).toLowerCase().includes('calculated');
+              const isQuota = String(st).toLowerCase().includes('quota');
+              return (
+                <div key={prov} className="p-2.5 rounded-xl bg-[var(--bg-glass)] border border-[var(--border-color)] flex items-center justify-between text-xs">
+                  <span className="font-bold text-[var(--text-primary)] truncate">{prov}</span>
+                  <span className={`text-[10px] font-black px-2 py-0.5 rounded ${
+                    isConnected ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' :
+                    isQuota ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400' : 'bg-rose-500/15 text-rose-500'
+                  }`}>
+                    {st}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function ExternalTravelResearchCard({ research }) {
+  if (!research) return null;
+
+  const originAirports = research.candidate_airports?.origin_airports || [];
+  const destAirports = research.candidate_airports?.destination_airports || [];
+  const operators = research.candidate_operators_to_investigate || [];
+  const fare = research.indicative_fare_range;
+  const provenance = research.provenance || {};
+
+  return (
+    <div className="glass-card p-6 rounded-3xl border border-blue-500/30 bg-[var(--bg-card)] shadow-xl space-y-5">
+      {/* Header */}
+      <div className="flex flex-wrap justify-between items-start gap-3">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-blue-500/15 rounded-2xl text-blue-600 dark:text-blue-400">
+            <IconPlane size={28} />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400">
+                External Travel Research
+              </span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30">
+                Indicative information only
+              </span>
+            </div>
+            <h3 className="text-xl font-black text-[var(--text-primary)]">
+              Travel Intelligence & Logistics
+            </h3>
+          </div>
+        </div>
+        <div className="text-right">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] block">Route Distance</span>
+          <span className="text-sm font-black text-[var(--text-primary)]">~{research.distance_km || 0} km</span>
+        </div>
+      </div>
+
+      {/* Disclaimer Alert */}
+      <div className="flex items-start gap-2.5 p-3.5 bg-blue-500/10 border border-blue-500/20 rounded-xl text-xs text-blue-700 dark:text-blue-300">
+        <IconInfoCircle size={18} className="shrink-0 mt-0.5" />
+        <span className="leading-relaxed">
+          {research.disclaimer || 'Indicative information only · Not a confirmed itinerary. Schedules and fares are historical or published estimates and must be verified directly with operators.'}
+        </span>
+      </div>
+
+      {/* Grid: Candidate Airports */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Origin Airports */}
+        <div className="p-4 rounded-2xl bg-[var(--bg-glass)] border border-[var(--border-color)] space-y-2">
+          <div className="text-[11px] font-black uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
+            <IconBuildingAirport size={14} className="text-blue-500" />
+            <span>Candidate Origin Serving Airports</span>
+          </div>
+          {originAirports.length > 0 ? (
+            <div className="space-y-2">
+              {originAirports.map((ap, idx) => (
+                <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)]">
+                  <div>
+                    <div className="font-bold text-xs text-[var(--text-primary)] flex items-center gap-1.5">
+                      <span className="px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-600 dark:text-blue-400 font-mono font-black text-[11px]">
+                        {ap.iata}
+                      </span>
+                      <span>{ap.name || ap.full_name}</span>
+                    </div>
+                    <div className="text-[10px] text-[var(--text-muted)] mt-0.5">
+                      {ap.city}, {ap.country}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-xs text-[var(--text-muted)] italic">No candidate airports registered.</div>
+          )}
+        </div>
+
+        {/* Destination Airports */}
+        <div className="p-4 rounded-2xl bg-[var(--bg-glass)] border border-[var(--border-color)] space-y-2">
+          <div className="text-[11px] font-black uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
+            <IconBuildingAirport size={14} className="text-blue-500" />
+            <span>Candidate Destination Serving Airports</span>
+          </div>
+          {destAirports.length > 0 ? (
+            <div className="space-y-2">
+              {destAirports.map((ap, idx) => (
+                <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)]">
+                  <div>
+                    <div className="font-bold text-xs text-[var(--text-primary)] flex items-center gap-1.5">
+                      <span className="px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-600 dark:text-blue-400 font-mono font-black text-[11px]">
+                        {ap.iata}
+                      </span>
+                      <span>{ap.name || ap.full_name}</span>
+                    </div>
+                    <div className="text-[10px] text-[var(--text-muted)] mt-0.5">
+                      {ap.city}, {ap.country}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-xs text-[var(--text-muted)] italic">No candidate airports registered.</div>
+          )}
+        </div>
+      </div>
+
+      {/* Candidate Operators to Investigate */}
+      {operators.length > 0 && (
+        <div className="space-y-2.5">
+          <div className="text-[11px] font-black uppercase tracking-wider text-[var(--text-muted)]">
+            Operating Carriers to Investigate
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {Object.entries(routeGuidance.provider_status).map(([provider, status]) => (
-              <div key={provider} className="p-3 rounded-xl bg-[var(--bg-glass)] border border-[var(--border-color)] flex items-center justify-between">
-                <span className="font-bold text-xs text-[var(--text-primary)] capitalize">{provider.replace('_', ' ')}</span>
-                <span className="text-[10px] font-bold text-rose-500 bg-rose-500/10 px-2 py-1 rounded">No verified itinerary</span>
+            {operators.map((op, idx) => (
+              <div key={idx} className="p-3.5 rounded-2xl bg-[var(--bg-glass)] border border-[var(--border-color)] space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="font-black text-xs text-[var(--text-primary)]">{op.name}</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                    {op.mode || 'Commercial Operator'}
+                  </span>
+                </div>
+                <p className="text-[11px] text-[var(--text-secondary)] leading-snug">
+                  {op.note}
+                </p>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      <div className="pt-2 text-xs text-[var(--text-secondary)]">
-        <div className="font-bold mb-1">What is NOT verified:</div>
-        <ul className="list-disc pl-4 space-y-0.5 opacity-80">
-          <li>Airline / Provider Name</li>
-          <li>Flight / Train / Bus Number</li>
-          <li>Exact Fare</li>
-          <li>Departure / Arrival Times</li>
-          <li>Exact Duration</li>
-        </ul>
+      {/* Indicative Duration and Fare Range */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+        {research.indicative_duration_display && (
+          <div className="p-3.5 rounded-2xl bg-[var(--bg-glass)] border border-[var(--border-color)] flex items-center gap-3">
+            <div className="p-2.5 bg-blue-500/15 rounded-xl text-blue-600 dark:text-blue-400">
+              <IconClock size={20} />
+            </div>
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
+                Indicative Duration Estimate
+              </div>
+              <div className="text-xs font-black text-[var(--text-primary)]">
+                {research.indicative_duration_display}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {fare && (
+          <div className="p-3.5 rounded-2xl bg-[var(--bg-glass)] border border-[var(--border-color)] flex items-center gap-3">
+            <div className="p-2.5 bg-emerald-500/15 rounded-xl text-emerald-600 dark:text-emerald-400">
+              <IconCash size={20} />
+            </div>
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
+                Indicative Fare Range
+              </div>
+              <div className="text-xs font-black text-[var(--text-primary)]">
+                {fare.display}
+              </div>
+              <div className="text-[10px] text-[var(--text-muted)] italic">
+                {fare.note}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* Provenance & Citation */}
+      {provenance.source_name && (
+        <div className="pt-3 border-t border-[var(--border-color)] flex flex-wrap items-center justify-between gap-2 text-[11px] text-[var(--text-muted)]">
+          <div className="flex items-center gap-1.5">
+            <IconShieldCheck size={14} className="text-blue-500" />
+            <span>Source: <strong className="text-[var(--text-primary)]">{provenance.source_name}</strong></span>
+            {provenance.retrieved_at && (
+              <span className="opacity-70">• Retrieved {provenance.retrieved_at}</span>
+            )}
+          </div>
+          {provenance.source_url && (
+            <a
+              href={provenance.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline font-bold"
+            >
+              <span>Official Reference</span>
+              <IconExternalLink size={12} />
+            </a>
+          )}
+        </div>
+      )}
     </div>
   );
 }

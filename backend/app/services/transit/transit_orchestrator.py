@@ -498,12 +498,74 @@ class TransitOrchestrator:
             if "subscription" in str(fl_audit_check.get("reason", "")).lower() or "subscription" in str(fl_audit_check.get("category", "")).lower():
                 final_provider_statuses["FlightProvider"] = "Subscription restricted"
 
+        # ── Straight-line Distance Calculation ───────────────────────────
+        straight_dist = round(haversine_distance(geo_orig["lat"], geo_orig["lon"], geo_dest["lat"], geo_dest["lon"]), 1) if (geo_orig and geo_orig.get("lat") is not None and geo_dest.get("lat") is not None) else 0.0
+
+        # ── Category A: AI Transit Strategy ─────────────────────────────
+        ai_strategy = route_result.get("route_guidance")
+        if not ai_strategy:
+            from .ai_route_guidance import AIRouteGuidanceService
+            ai_strategy = AIRouteGuidanceService.generate_strategy(
+                origin_name=orig_short,
+                dest_name=dest_short,
+                journey_scale=scale,
+                origin_country=geo_orig.get("country_code", "") if geo_orig else "",
+                dest_country=geo_dest.get("country_code", "") if geo_dest else "",
+                distance_km=straight_dist,
+                search_id=req_id,
+            )
+
+        # ── Category B: Verified Journey Results ─────────────────────────
+        verified_routes_list = [r for r in all_route_options if r.get("provider") and r.get("provider") != "Estimated"]
+        has_verified_itins = bool(verified_routes_list and is_verified)
+
+        rec_m = (ai_strategy.get("recommended_mode") or "").lower() if ai_strategy else ""
+        if has_verified_itins:
+            v_status = "VERIFIED_ITINERARIES_AVAILABLE"
+            v_msg = f"{len(verified_routes_list)} verified itinerary available." if len(verified_routes_list) == 1 else f"{len(verified_routes_list)} verified itineraries available."
+            v_level = "PROVIDER_VERIFIED"
+        else:
+            v_status = "NO_VERIFIED_ITINERARY"
+            if "flight" in rec_m:
+                v_msg = "No verified flight itinerary available for selected date."
+            elif "rail" in rec_m or "train" in rec_m:
+                v_msg = "No verified train itinerary available for selected date."
+            else:
+                v_msg = "No verified transit itinerary available for selected date."
+            v_level = "UNVERIFIED"
+
+        verified_journey_results = {
+            "category": "VERIFIED_JOURNEY_RESULTS",
+            "status": v_status,
+            "has_verified_itineraries": has_verified_itins,
+            "count": len(verified_routes_list) if has_verified_itins else 0,
+            "message": v_msg,
+            "itineraries": verified_routes_list if has_verified_itins else [],
+            "provider_statuses": final_provider_statuses,
+            "verification_level": v_level,
+        }
+
+        # ── Category C: External Travel Research ─────────────────────────
+        from .external_travel_research import ExternalTravelResearchService
+        external_research = ExternalTravelResearchService.get_research(
+            origin_name=origin,
+            dest_name=destination,
+            origin_lat=geo_orig["lat"] if geo_orig else None,
+            origin_lon=geo_orig["lon"] if geo_orig else None,
+            dest_lat=geo_dest["lat"] if geo_dest else None,
+            dest_lon=geo_dest["lon"] if geo_dest else None,
+            distance_km=straight_dist,
+            scale=scale,
+            origin_country=geo_orig.get("country_code", "") if geo_orig else "",
+            dest_country=geo_dest.get("country_code", "") if geo_dest else "",
+        )
+
         # Base response payload
         base_response = {
             "request_id": req_id,
             "status": status,
             "result_level": result_level,
-            "verified": is_verified,
+            "verified": has_verified_itins,
             "journey_scale": scale,
             "origin": orig_short,
             "destination": dest_short,
@@ -517,6 +579,11 @@ class TransitOrchestrator:
             "search_dest_coords": {"lat": geo_dest["lat"], "lon": geo_dest["lon"]},
             "preferred_mode": preferred_mode,
             
+            # The Three Distinct Information Categories
+            "ai_transit_strategy": ai_strategy,
+            "verified_journey_results": verified_journey_results,
+            "external_travel_research": external_research,
+
             # Route Optimization Schema — all strategies
             "recommended_route": opt.get("recommended_route"),
             "route_options": opt.get("route_options", []),
@@ -533,8 +600,9 @@ class TransitOrchestrator:
             "provider_trace": route_result.get("provider_trace", []),
             "provider_audit": route_result.get("provider_audit", {}),
             "provider_statuses": final_provider_statuses,
-            "route_guidance": route_result.get("route_guidance"),
+            "route_guidance": ai_strategy,
             "why_this_route": why_this_route,
+            "message": v_msg if not has_verified_itins else route_result.get("message"),
             "nearby": formatted_nearby,
             "nearby_provenance": nearby_provenance,
             "weather_obj": {

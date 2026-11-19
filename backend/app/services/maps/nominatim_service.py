@@ -84,7 +84,12 @@ STATIC_COORDS = {
     "tromsø": {"lat": 69.6492, "lon": 18.9553, "display_name": "Tromsø, Norway", "country_code": "NO"},
     "cusco": {"lat": -13.5320, "lon": -71.9675, "display_name": "Cusco, Peru", "country_code": "PE"},
     "cuzco": {"lat": -13.5320, "lon": -71.9675, "display_name": "Cusco, Peru", "country_code": "PE"},
-    "queenstown": {"lat": -45.0312, "lon": 168.6626, "display_name": "Queenstown, New Zealand", "country_code": "NZ"}
+    "queenstown": {"lat": -45.0312, "lon": 168.6626, "display_name": "Queenstown, New Zealand", "country_code": "NZ"},
+    "bhutan": {"lat": 27.5142, "lon": 90.4336, "display_name": "Bhutan", "country_code": "BT"},
+    "paro": {"lat": 27.4287, "lon": 89.4164, "display_name": "Paro, Bhutan", "country_code": "BT"},
+    "thimphu": {"lat": 27.4728, "lon": 89.6393, "display_name": "Thimphu, Bhutan", "country_code": "BT"},
+    "sydney": {"lat": -33.8688, "lon": 151.2093, "display_name": "Sydney, New South Wales, Australia", "country_code": "AU"},
+    "auckland": {"lat": -36.8485, "lon": 174.7633, "display_name": "Auckland, New Zealand", "country_code": "NZ"}
 }
 
 def reverse_geocode(lat: float, lon: float) -> Optional[Dict[str, Any]]:

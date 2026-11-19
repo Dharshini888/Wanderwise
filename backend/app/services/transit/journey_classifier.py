@@ -23,7 +23,7 @@ COUNTRY_TO_CONTINENT = {
     "IN": "ASIA", "JP": "ASIA", "KR": "ASIA", "CN": "ASIA", "TH": "ASIA", "SG": "ASIA",
     "MY": "ASIA", "ID": "ASIA", "VN": "ASIA", "AE": "ASIA", "SA": "ASIA", "QA": "ASIA",
     "PK": "ASIA", "BD": "ASIA", "LK": "ASIA", "NP": "ASIA", "PH": "ASIA", "TW": "ASIA",
-    "HK": "ASIA", "MO": "ASIA", "IL": "ASIA", "JO": "ASIA", "LB": "ASIA", "KH": "ASIA",
+    "HK": "ASIA", "MO": "ASIA", "IL": "ASIA", "JO": "ASIA", "LB": "ASIA", "KH": "ASIA", "BT": "ASIA",
     # Europe (EUROPE)
     "GB": "EUROPE", "FR": "EUROPE", "DE": "EUROPE", "IT": "EUROPE", "ES": "EUROPE", "NL": "EUROPE",
     "BE": "EUROPE", "AT": "EUROPE", "CH": "EUROPE", "PT": "EUROPE", "SE": "EUROPE", "NO": "EUROPE",
@@ -71,6 +71,8 @@ def _extract_country_code(lat: Optional[float], lon: Optional[float], display_na
 
     # 2. Display name text analysis
     dn = (display_name or "").lower()
+    if any(k in dn for k in ["bhutan", "paro", "thimphu", ", bt"]):
+        return "BT"
     if any(k in dn for k in ["united kingdom", "england", "scotland", "wales", "london", "manchester", ", uk", ", gb"]):
         return "GB"
     if any(k in dn for k in ["france", "paris", "lyon", "marseille", ", fr"]):
@@ -98,6 +100,8 @@ def _extract_country_code(lat: Optional[float], lon: Optional[float], display_na
 
     # 3. High-precision geographic boundary resolution (works offline / sandboxed)
     if lat is not None and lon is not None:
+        if 26.7 <= lat <= 28.3 and 88.7 <= lon <= 92.2:
+            return "BT"
         if 8.0 <= lat <= 37.5 and 68.0 <= lon <= 97.5:
             return "IN"
         if 24.0 <= lat <= 46.0 and 123.0 <= lon <= 146.0:

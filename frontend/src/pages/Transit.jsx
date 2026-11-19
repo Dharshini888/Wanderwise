@@ -16,7 +16,9 @@ import {
   WeatherSafetyTab,
   BudgetAnalyticsTab,
   NearbyTab,
-  AIRouteGuidanceCard
+  AIRouteGuidanceCard,
+  VerifiedJourneyResultsNotice,
+  ExternalTravelResearchCard
 } from '../components/transit/TransitComponentsV6';
 import { API_URL, API_BASE_URL } from '../api/axios';
 
@@ -836,9 +838,22 @@ export default function Transit() {
           ) : result.status === 'ALTERNATIVE_PROVIDER_UNAVAILABLE' ? (
             /* Level 4: ALTERNATIVE_PROVIDER_UNAVAILABLE */
             <AlternativeProviderUnavailableView result={result} />
-          ) : result.status === 'ROUTE_GUIDANCE_AVAILABLE' ? (
-            /* Level 3: ROUTE_GUIDANCE_AVAILABLE */
-            <AIRouteGuidanceCard routeGuidance={result.route_guidance} />
+          ) : (result.status === 'ROUTE_GUIDANCE_AVAILABLE' || result.status === 'NO_VERIFIED_ITINERARY') ? (
+            /* Level 3: AI Strategy & External Research (Zero Verified Provider Itineraries) */
+            <div className="space-y-6">
+              {/* Category A: AI Recommendation */}
+              <AIRouteGuidanceCard routeGuidance={result.ai_transit_strategy || result.route_guidance} />
+
+              {/* Category B: Verified Journey Results */}
+              <VerifiedJourneyResultsNotice
+                verifiedResults={result.verified_journey_results}
+                message={result.verified_journey_results?.message || result.message}
+                providerStatuses={result.provider_statuses}
+              />
+
+              {/* Category C: External Travel Research */}
+              <ExternalTravelResearchCard research={result.external_travel_research} />
+            </div>
           ) : result.status === 'VERIFIED_ALTERNATIVE_AVAILABLE' ? (
             /* Level 2: VERIFIED_ALTERNATIVE_AVAILABLE */
             <VerifiedAlternativeView result={result} />
@@ -875,6 +890,11 @@ export default function Transit() {
 
               return (
                 <div className="space-y-6">
+                  {/* Category A: AI Recommendation Strategy */}
+                  {result.ai_transit_strategy && (
+                    <AIRouteGuidanceCard routeGuidance={result.ai_transit_strategy} />
+                  )}
+
                   {/* Interactive Map */}
                   <TransitMap 
                     routeOptions={allRoutes}
@@ -1005,7 +1025,12 @@ export default function Transit() {
                     {/* Route Options (Left Panel) */}
                     <div className="lg:col-span-1 space-y-4">
                       <div className="flex items-center justify-between">
-                        <h3 className="text-sm font-bold text-[var(--text-muted)] uppercase tracking-wider">Journey Options</h3>
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-sm font-black text-[var(--text-primary)]">Verified Journey Results</h3>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                            Provider Verified
+                          </span>
+                        </div>
                         <span className="text-[10px] text-purple-600 dark:text-purple-400 font-bold">{allRoutes.length} available</span>
                       </div>
 
@@ -1253,6 +1278,11 @@ export default function Transit() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Category C: External Travel Research (Separated from verified journey results) */}
+                  {result.external_travel_research && (
+                    <ExternalTravelResearchCard research={result.external_travel_research} />
+                  )}
                 </div>
               );
             })()
