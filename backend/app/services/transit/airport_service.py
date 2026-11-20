@@ -277,7 +277,7 @@ def resolve_serving_airports(destination: str, lat: Optional[float] = None, lon:
         if airports:
             return airports
 
-    # Proximity fallback: find all airports within 250km
+    # Proximity fallback: find nearest serving commercial airports within reasonable radius
     if lat is not None and lon is not None:
         nearby = []
         for ap in GLOBAL_AIRPORTS:
@@ -290,6 +290,13 @@ def resolve_serving_airports(destination: str, lat: Optional[float] = None, lon:
                 nearby.append(ap_copy)
         if nearby:
             nearby.sort(key=lambda x: x["distance_km"])
+            closest_dist = nearby[0]["distance_km"]
+            # Exclude distant airports from other regions if a closer serving gateway exists
+            if closest_dist <= 60.0:
+                max_allowed = max(closest_dist * 2.0, 75.0)
+                nearby = [ap for ap in nearby if ap["distance_km"] <= max_allowed]
+            elif closest_dist <= 100.0:
+                nearby = [ap for ap in nearby if ap["distance_km"] <= (closest_dist + 40.0)]
             return nearby
 
     # If neither destination alias nor nearby airport within 250km matches, return empty

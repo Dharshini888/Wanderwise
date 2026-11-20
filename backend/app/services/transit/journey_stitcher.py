@@ -64,15 +64,20 @@ def _get_cached_osrm_leg(
 from .tz_utils import KOLKATA_TZ, get_timezone
 
 
-def _parse_iso(ts_str: Optional[str], default_tz=KOLKATA_TZ) -> Optional[datetime]:
-    """Parse ISO 8601 timestamp. Normalizes to station timezone (default Asia/Kolkata)."""
+def _parse_iso(ts_str: Optional[str], default_tz=None) -> Optional[datetime]:
+    """
+    Parse ISO 8601 timestamp.
+    If the string has a timezone offset, preserves its authentic timezone.
+    If naive, attaches default_tz (or Asia/Kolkata).
+    """
     if not ts_str:
         return None
     try:
         dt = datetime.fromisoformat(ts_str.replace("Z", "+00:00"))
         if dt.tzinfo is not None:
-            return dt.astimezone(default_tz)
-        return dt.replace(tzinfo=default_tz)
+            return dt
+        tz_to_use = default_tz or KOLKATA_TZ
+        return dt.replace(tzinfo=tz_to_use)
     except Exception:
         return None
 
@@ -199,15 +204,14 @@ def evaluate_catchability(
 
 def _is_past_departure(dep_dt: datetime, now: datetime) -> bool:
     """
-    Returns True ONLY when the departure is on today's calendar AND
-    is more than 15 minutes in the past.
-    A departure on any future calendar date is always valid.
+    Returns True when the departure timestamp is in the past.
+    A departure in the future is always valid.
     """
-    if dep_dt.date() > now.date():
-        return False
-    if dep_dt.date() == now.date():
-        return dep_dt < (now - timedelta(minutes=15))
-    return True
+    if dep_dt.tzinfo is not None and now.tzinfo is None:
+        now = now.replace(tzinfo=dep_dt.tzinfo)
+    elif dep_dt.tzinfo is None and now.tzinfo is not None:
+        dep_dt = dep_dt.replace(tzinfo=now.tzinfo)
+    return dep_dt < now
 
 
 def stitch_door_to_door_journey(
@@ -389,8 +393,8 @@ def stitch_door_to_door_journey(
             total_duration_min=float(route.get("total_duration_minutes") or route.get("duration_min") or 120.0),
             duration_min=float(route.get("total_duration_minutes") or route.get("duration_min") or 120.0),
             total_distance_km=float(route.get("total_distance_km") or route.get("distance_km") or 0.0),
-            verification_status="Provider Verified",
-            verification=route.get("verification") or {"level": "PROVIDER_VERIFIED", "provider": "FlightProvider"},
+            verification_status="Partially Verified",
+            verification=route.get("verification") or {"level": "PARTIALLY_VERIFIED", "provider": "FlightProvider"},
             source=route.get("source") or {},
             realtime=route.get("realtime") or {"available": False, "status": "unavailable"},
             optimization_tags=["Fastest Multimodal Option", "Verified Commercial Flight"],
@@ -426,11 +430,14 @@ def stitch_door_to_door_journey(
         road_dur_min = max(1.0, float(route.get("duration_min") or route.get("duration_minutes") or 60.0))
         dur_rounded_min = int(round(road_dur_min))
         dep_start_dt = (main_dep_dt or now).replace(second=0, microsecond=0)
+        # On-demand road journeys must never start in the past
+        if dep_start_dt < now:
+            dep_start_dt = now.replace(second=0, microsecond=0)
         road_arr_dt = (dep_start_dt + timedelta(minutes=dur_rounded_min)).replace(second=0, microsecond=0)
         is_overnight = road_arr_dt.date() > dep_start_dt.date()
 
-        road_dep_display = route.get("departure_time_display") or _format_time_display(dep_start_dt)
-        road_arr_display = route.get("arrival_time_display") or _format_time_display(road_arr_dt)
+        road_dep_display = _format_time_display(dep_start_dt)
+        road_arr_display = _format_time_display(road_arr_dt)
         if is_overnight and "(+1 day)" not in road_arr_display:
             road_arr_display = f"{road_arr_display} (+1 day)"
 

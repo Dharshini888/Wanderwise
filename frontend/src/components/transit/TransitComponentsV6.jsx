@@ -195,66 +195,79 @@ export function ExternalTravelResearchCard({ research }) {
         </span>
       </div>
 
-      {/* Grid: Candidate Airports */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Origin Airports */}
-        <div className="p-4 rounded-2xl bg-[var(--bg-glass)] border border-[var(--border-color)] space-y-2">
-          <div className="text-[11px] font-black uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
-            <IconBuildingAirport size={14} className="text-blue-500" />
-            <span>Candidate Origin Serving Airports</span>
+      {/* Airports or Ground Corridor Guidance */}
+      {research.has_commercial_flights === false ? (
+        <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-800 dark:text-amber-200 flex items-start gap-3">
+          <IconTrain size={20} className="shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
+          <div>
+            <div className="font-bold mb-1">Ground Transport Corridor · Commercial Flights Not Applicable</div>
+            <p className="text-[11px] leading-relaxed opacity-90">
+              {research.flight_applicability_note || 'Commercial scheduled passenger flights do not operate on this short domestic corridor. Passenger rail, intercity express buses, and highway driving provide the primary direct connections.'}
+            </p>
           </div>
-          {originAirports.length > 0 ? (
-            <div className="space-y-2">
-              {originAirports.map((ap, idx) => (
-                <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)]">
-                  <div>
-                    <div className="font-bold text-xs text-[var(--text-primary)] flex items-center gap-1.5">
-                      <span className="px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-600 dark:text-blue-400 font-mono font-black text-[11px]">
-                        {ap.iata}
-                      </span>
-                      <span>{ap.name || ap.full_name}</span>
-                    </div>
-                    <div className="text-[10px] text-[var(--text-muted)] mt-0.5">
-                      {ap.city}, {ap.country}
+        </div>
+      ) : (
+        /* Grid: Candidate Airports */
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Origin Airports */}
+          <div className="p-4 rounded-2xl bg-[var(--bg-glass)] border border-[var(--border-color)] space-y-2">
+            <div className="text-[11px] font-black uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
+              <IconBuildingAirport size={14} className="text-blue-500" />
+              <span>Candidate Origin Serving Airports</span>
+            </div>
+            {originAirports.length > 0 ? (
+              <div className="space-y-2">
+                {originAirports.map((ap, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)]">
+                    <div>
+                      <div className="font-bold text-xs text-[var(--text-primary)] flex items-center gap-1.5">
+                        <span className="px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-600 dark:text-blue-400 font-mono font-black text-[11px]">
+                          {ap.iata}
+                        </span>
+                        <span>{ap.name || ap.full_name}</span>
+                      </div>
+                      <div className="text-[10px] text-[var(--text-muted)] mt-0.5">
+                        {ap.city}, {ap.country}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-xs text-[var(--text-muted)] italic">No candidate airports registered.</div>
-          )}
-        </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-xs text-[var(--text-muted)] italic">No candidate airports registered.</div>
+            )}
+          </div>
 
-        {/* Destination Airports */}
-        <div className="p-4 rounded-2xl bg-[var(--bg-glass)] border border-[var(--border-color)] space-y-2">
-          <div className="text-[11px] font-black uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
-            <IconBuildingAirport size={14} className="text-blue-500" />
-            <span>Candidate Destination Serving Airports</span>
-          </div>
-          {destAirports.length > 0 ? (
-            <div className="space-y-2">
-              {destAirports.map((ap, idx) => (
-                <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)]">
-                  <div>
-                    <div className="font-bold text-xs text-[var(--text-primary)] flex items-center gap-1.5">
-                      <span className="px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-600 dark:text-blue-400 font-mono font-black text-[11px]">
-                        {ap.iata}
-                      </span>
-                      <span>{ap.name || ap.full_name}</span>
-                    </div>
-                    <div className="text-[10px] text-[var(--text-muted)] mt-0.5">
-                      {ap.city}, {ap.country}
+          {/* Destination Airports */}
+          <div className="p-4 rounded-2xl bg-[var(--bg-glass)] border border-[var(--border-color)] space-y-2">
+            <div className="text-[11px] font-black uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
+              <IconBuildingAirport size={14} className="text-blue-500" />
+              <span>Candidate Destination Serving Airports</span>
+            </div>
+            {destAirports.length > 0 ? (
+              <div className="space-y-2">
+                {destAirports.map((ap, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)]">
+                    <div>
+                      <div className="font-bold text-xs text-[var(--text-primary)] flex items-center gap-1.5">
+                        <span className="px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-600 dark:text-blue-400 font-mono font-black text-[11px]">
+                          {ap.iata}
+                        </span>
+                        <span>{ap.name || ap.full_name}</span>
+                      </div>
+                      <div className="text-[10px] text-[var(--text-muted)] mt-0.5">
+                        {ap.city}, {ap.country}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-xs text-[var(--text-muted)] italic">No candidate airports registered.</div>
-          )}
+                ))}
+              </div>
+            ) : (
+              <div className="text-xs text-[var(--text-muted)] italic">No candidate airports registered.</div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Candidate Operators to Investigate */}
       {operators.length > 0 && (

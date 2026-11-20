@@ -212,6 +212,12 @@ export default function JourneyCard({
                 {journey.departure_time_display || journey.door_to_door_departure_display} → {journey.arrival_time_display || journey.door_to_door_arrival_display || '—'}
               </div>
             )}
+            {journey.flight_number && journey.flight_departure_time_display && (
+              <div className="text-[11px] font-semibold text-sky-600 dark:text-sky-400 mt-0.5 flex items-center gap-1.5 flex-wrap">
+                <span>✈️ {journey.flight_number} ({journey.origin_iata || 'AP'} → {journey.destination_iata || 'AP'}):</span>
+                <span>{journey.flight_departure_time_display} → {journey.flight_arrival_time_display}</span>
+              </div>
+            )}
             {journey.departure_date_display && (
               <div className="text-[10px] text-[var(--text-muted)] font-medium mt-0.5">
                 📅 {journey.departure_date_display}

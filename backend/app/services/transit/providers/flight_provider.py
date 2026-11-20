@@ -31,6 +31,7 @@ from datetime import datetime, date, timedelta, timezone
 from .base import TransitProvider, ProviderStatus, ProviderResult
 from ...maps.osrm_service import haversine_distance
 from ..airport_service import GLOBAL_AIRPORTS, resolve_serving_airports, get_airport_by_iata, get_airport_timezone
+from ..tz_utils import get_timezone, format_datetime_with_tz
 
 logger = logging.getLogger(__name__)
 
@@ -42,9 +43,11 @@ AIRPORTS_ENDPOINT = f"{AVIATIONSTACK_BASE_URL}/airports"
 def parse_aviationstack_datetime(iso_str: Optional[str], tz_name: Optional[str] = None) -> Optional[datetime]:
     """
     Parses AviationStack ISO-8601 strings and attaches the authentic local IANA timezone.
-    AviationStack returns the local wall-clock time in the scheduled string
+    AviationStack returns the local airport wall-clock time in the scheduled string
     (e.g. '2026-11-18T19:55:00+00:00') and specifies the authentic local timezone
     in a separate 'timezone' field (e.g. 'Asia/Kolkata').
+    Attaching the authentic local timezone ensures that when converted to UTC (.astimezone(timezone.utc)),
+    the exact global UTC instant is produced.
     """
     if not iso_str:
         return None
@@ -56,12 +59,22 @@ def parse_aviationstack_datetime(iso_str: Optional[str], tz_name: Optional[str] 
 
     if tz_name:
         try:
-            from app.services.transit.tz_utils import get_timezone
-            return naive_dt.replace(tzinfo=get_timezone(tz_name))
+            target_tz = get_timezone(tz_name)
+            return naive_dt.replace(tzinfo=target_tz)
         except Exception:
             pass
 
     return naive_dt.replace(tzinfo=timezone.utc)
+
+
+def parse_utc_flight_datetime(iso_str: Optional[str], tz_name: Optional[str] = None) -> Optional[datetime]:
+    """
+    Parses AviationStack flight timestamp and converts to timezone-aware UTC datetime.
+    """
+    local_dt = parse_aviationstack_datetime(iso_str, tz_name)
+    if not local_dt:
+        return None
+    return local_dt.astimezone(timezone.utc)
 
 
 def _mask_key(key: Optional[str]) -> str:
@@ -591,11 +604,12 @@ class FlightProvider(TransitProvider):
                 d_dt = parse_aviationstack_datetime(dep_time_raw, dep_tz_name)
                 a_dt = parse_aviationstack_datetime(arr_time_raw, arr_tz_name)
 
+                d_utc = d_dt.astimezone(timezone.utc) if d_dt else None
+                a_utc = a_dt.astimezone(timezone.utc) if a_dt else None
+
                 # Accurate in-air elapsed flight duration in UTC
                 flight_dur_min = 120.0
-                if d_dt and a_dt:
-                    d_utc = d_dt.astimezone(timezone.utc)
-                    a_utc = a_dt.astimezone(timezone.utc)
+                if d_utc and a_utc:
                     diff = (a_utc - d_utc).total_seconds() / 60.0
                     if diff > 10:
                         flight_dur_min = diff
@@ -605,15 +619,13 @@ class FlightProvider(TransitProvider):
                 flight_dur_display = f"{fl_h}h {fl_m}m" if fl_h > 0 else f"{fl_m}m"
 
                 # Local departure display (in departure airport local timezone)
-                dep_tz_str = d_dt.tzname() or "" if d_dt else ""
-                dep_disp = f"{d_dt.strftime('%I:%M %p').lstrip('0')} {dep_tz_str}".strip() if d_dt else None
+                flight_dep_disp = format_datetime_with_tz(d_dt, dep_tz_name) if d_dt else None
 
                 # Local arrival display (in arrival airport local timezone)
-                arr_tz_str = a_dt.tzname() or "" if a_dt else ""
-                arr_disp = f"{a_dt.strftime('%I:%M %p').lstrip('0')} {arr_tz_str}".strip() if a_dt else None
+                flight_arr_disp = format_datetime_with_tz(a_dt, arr_tz_name) if a_dt else None
                 if d_dt and a_dt and a_dt.date() > d_dt.date():
                     days_diff = (a_dt.date() - d_dt.date()).days
-                    arr_disp += f" (+{days_diff} day{'s' if days_diff > 1 else ''})"
+                    flight_arr_disp += f" (+{days_diff} day{'s' if days_diff > 1 else ''})"
 
                 airline_name = f.get("airline", {}).get("name") or "Commercial Airline"
 
@@ -622,8 +634,8 @@ class FlightProvider(TransitProvider):
                 needs_access = access_dist_km > 1.5
                 access_dur_min = round(max(10.0, access_dist_km * 1.5), 1) if needs_access else 0.0
 
-                # Airport Check-in buffer: 180 min international, 90 min domestic
-                checkin_buffer_min = 180.0 if is_intl else 90.0
+                # Airport Check-in buffer: 120 min international, 90 min domestic
+                checkin_buffer_min = 120.0 if is_intl else 90.0
 
                 # Airport Baggage Claim & Deplaning buffer: 45 min international, 30 min domestic
                 baggage_buffer_min = 45.0 if is_intl else 30.0
@@ -633,20 +645,31 @@ class FlightProvider(TransitProvider):
                 needs_egress = egress_dist_km > 1.5
                 egress_dur_min = round(max(10.0, egress_dist_km * 1.5), 1) if needs_egress else 0.0
 
-                # Door departure and arrival timestamps
+                # Door departure and arrival timestamps in respective local timezones
                 if d_dt:
                     door_dep_dt = d_dt - timedelta(minutes=int(access_dur_min + checkin_buffer_min))
                     ap_arr_dt = door_dep_dt + timedelta(minutes=int(access_dur_min))
+                    door_dep_disp = format_datetime_with_tz(door_dep_dt, dep_tz_name)
+                    ap_arr_disp = format_datetime_with_tz(ap_arr_dt, dep_tz_name)
                 else:
                     door_dep_dt = None
                     ap_arr_dt = None
+                    door_dep_disp = None
+                    ap_arr_disp = None
 
                 if a_dt:
                     ap_exit_dt = a_dt + timedelta(minutes=int(baggage_buffer_min))
                     door_arr_dt = ap_exit_dt + timedelta(minutes=int(egress_dur_min))
+                    ap_exit_disp = format_datetime_with_tz(ap_exit_dt, arr_tz_name)
+                    door_arr_disp = format_datetime_with_tz(door_arr_dt, arr_tz_name)
+                    if door_dep_dt and door_arr_dt.date() > door_dep_dt.date():
+                        d_diff = (door_arr_dt.date() - door_dep_dt.date()).days
+                        door_arr_disp += f" (+{d_diff} day{'s' if d_diff > 1 else ''})"
                 else:
                     ap_exit_dt = None
                     door_arr_dt = None
+                    ap_exit_disp = None
+                    door_arr_disp = None
 
                 # ── Build Door-to-Door Legs ──
                 legs = []
@@ -661,8 +684,8 @@ class FlightProvider(TransitProvider):
                         "to_name": dep_airport_full,
                         "departure_time": door_dep_dt.isoformat() if door_dep_dt else None,
                         "arrival_time": ap_arr_dt.isoformat() if ap_arr_dt else None,
-                        "departure_time_display": door_dep_dt.strftime("%I:%M %p").lstrip("0") if door_dep_dt else None,
-                        "arrival_time_display": ap_arr_dt.strftime("%I:%M %p").lstrip("0") if ap_arr_dt else None,
+                        "departure_time_display": door_dep_disp,
+                        "arrival_time_display": ap_arr_disp,
                         "duration_minutes": access_dur_min,
                         "duration_min": access_dur_min,
                         "distance_km": round(access_dist_km, 2),
@@ -679,8 +702,8 @@ class FlightProvider(TransitProvider):
                     "to_name": dep_airport_full,
                     "departure_time": ap_arr_dt.isoformat() if ap_arr_dt else None,
                     "arrival_time": d_dt.isoformat() if d_dt else None,
-                    "departure_time_display": ap_arr_dt.strftime("%I:%M %p").lstrip("0") if ap_arr_dt else None,
-                    "arrival_time_display": dep_disp,
+                    "departure_time_display": ap_arr_disp,
+                    "arrival_time_display": flight_dep_disp,
                     "duration_minutes": checkin_buffer_min,
                     "duration_min": checkin_buffer_min,
                     "verification_status": "Buffer Verified",
@@ -703,8 +726,10 @@ class FlightProvider(TransitProvider):
                     "destination_iata": actual_dest_ap["iata"],
                     "departure_time": d_dt.isoformat() if d_dt else None,
                     "arrival_time": a_dt.isoformat() if a_dt else None,
-                    "departure_time_display": dep_disp,
-                    "arrival_time_display": arr_disp,
+                    "departure_time_utc": d_utc.isoformat() if d_utc else None,
+                    "arrival_time_utc": a_utc.isoformat() if a_utc else None,
+                    "departure_time_display": flight_dep_disp,
+                    "arrival_time_display": flight_arr_disp,
                     "duration_minutes": round(flight_dur_min, 1),
                     "duration_min": round(flight_dur_min, 1),
                     "duration_display": flight_dur_display,
@@ -722,8 +747,8 @@ class FlightProvider(TransitProvider):
                     "to_name": arr_airport_full,
                     "departure_time": a_dt.isoformat() if a_dt else None,
                     "arrival_time": ap_exit_dt.isoformat() if ap_exit_dt else None,
-                    "departure_time_display": arr_disp,
-                    "arrival_time_display": ap_exit_dt.strftime("%I:%M %p").lstrip("0") if ap_exit_dt else None,
+                    "departure_time_display": flight_arr_disp,
+                    "arrival_time_display": ap_exit_disp,
                     "duration_minutes": baggage_buffer_min,
                     "duration_min": baggage_buffer_min,
                     "verification_status": "Buffer Verified",
@@ -740,8 +765,8 @@ class FlightProvider(TransitProvider):
                         "to_name": resolved_dest_name,
                         "departure_time": ap_exit_dt.isoformat() if ap_exit_dt else None,
                         "arrival_time": door_arr_dt.isoformat() if door_arr_dt else None,
-                        "departure_time_display": ap_exit_dt.strftime("%I:%M %p").lstrip("0") if ap_exit_dt else None,
-                        "arrival_time_display": door_arr_dt.strftime("%I:%M %p").lstrip("0") if door_arr_dt else None,
+                        "departure_time_display": ap_exit_disp,
+                        "arrival_time_display": door_arr_disp,
                         "duration_minutes": egress_dur_min,
                         "duration_min": egress_dur_min,
                         "distance_km": round(egress_dist_km, 2),
@@ -786,13 +811,17 @@ class FlightProvider(TransitProvider):
 
                     "departure_time": door_dep_dt.isoformat() if door_dep_dt else d_dt.isoformat() if d_dt else None,
                     "arrival_time": door_arr_dt.isoformat() if door_arr_dt else a_dt.isoformat() if a_dt else None,
-                    "departure_time_display": door_dep_dt.strftime("%I:%M %p").lstrip("0") if door_dep_dt else dep_disp,
-                    "arrival_time_display": door_arr_dt.strftime("%I:%M %p").lstrip("0") if door_arr_dt else arr_disp,
+                    "departure_time_display": door_dep_disp if door_dep_disp else flight_dep_disp,
+                    "arrival_time_display": door_arr_disp if door_arr_disp else flight_arr_disp,
 
                     "flight_departure_time": d_dt.isoformat() if d_dt else None,
                     "flight_arrival_time": a_dt.isoformat() if a_dt else None,
-                    "flight_departure_time_display": dep_disp,
-                    "flight_arrival_time_display": arr_disp,
+                    "flight_departure_time_utc": d_utc.isoformat() if d_utc else None,
+                    "flight_arrival_time_utc": a_utc.isoformat() if a_utc else None,
+                    "flight_departure_timezone": dep_tz_name,
+                    "flight_arrival_timezone": arr_tz_name,
+                    "flight_departure_time_display": flight_dep_disp,
+                    "flight_arrival_time_display": flight_arr_disp,
 
                     "flight_duration_minutes": round(flight_dur_min, 1),
                     "flight_duration_display": flight_dur_display,

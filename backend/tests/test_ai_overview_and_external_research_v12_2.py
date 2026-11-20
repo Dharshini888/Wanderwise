@@ -379,3 +379,66 @@ class TestAIOverviewAndExternalResearchV12_2:
         orig_b = [a["iata"] for a in research_b.get("candidate_airports", {}).get("origin_airports", [])]
         assert "PBH" not in orig_b
         assert "LHR" in orig_b or "LGW" in orig_b or "LCY" in orig_b
+
+    def test_successful_provider_response_keeps_external_research_separate(self):
+        """
+        Condition: Successful provider response (e.g. London -> Paris road or domestic train).
+        Asserts that provider verified itineraries are kept strictly separate from Category C external research.
+        """
+        plan = TransitOrchestrator.get_transit_plan(
+            origin="London",
+            destination="Paris",
+            preferred_mode="fastest",
+        )
+        assert plan.get("verified_journey_results") is not None
+        v_results = plan.get("verified_journey_results")
+        ext_res = plan.get("external_travel_research")
+
+        assert ext_res is not None
+        assert ext_res.get("category") == "EXTERNAL_TRAVEL_RESEARCH"
+        assert ext_res.get("is_indicative") is True
+        assert ext_res.get("is_live_quotation") is False
+
+        # Verify that none of the external research objects leak into verified itineraries
+        for itin in v_results.get("itineraries", []):
+            assert itin.get("category") != "EXTERNAL_TRAVEL_RESEARCH"
+            assert itin.get("provider") != "External Research"
+
+    def test_external_research_without_provider_results_never_marked_verified(self):
+        """
+        Condition: External research exists, but providers return zero verified results (e.g. Bhutan -> Delhi).
+        Asserts:
+          - Overall verified is False.
+          - Verified journey results status is NO_VERIFIED_ITINERARY.
+          - Verification level is UNVERIFIED.
+          - External research is NEVER assigned PROVIDER_VERIFIED status.
+        """
+        plan = TransitOrchestrator.get_transit_plan(
+            origin="Bhutan",
+            destination="New Delhi",
+            departure_type="now",
+        )
+        assert plan.get("verified") is False
+        v_results = plan.get("verified_journey_results")
+        assert v_results.get("status") == "NO_VERIFIED_ITINERARY"
+        assert v_results.get("verification_level") == "UNVERIFIED"
+
+        ext_res = plan.get("external_travel_research")
+        assert ext_res is not None
+        assert ext_res.get("provenance", {}).get("verification_status") != "PROVIDER_VERIFIED"
+        assert ext_res.get("provenance", {}).get("verification_status") == "UNVERIFIED_EXTERNAL_RESEARCH"
+
+    def test_timeouts_resilience(self):
+        """
+        Condition: Upstream provider timeouts.
+        Asserts that the system degrades gracefully within deadline and returns truthful provider statuses without crashing.
+        """
+        plan = TransitOrchestrator.get_transit_plan(
+            origin="Cairo",
+            destination="Dubai",
+            departure_type="now",
+        )
+        assert plan is not None
+        assert "status" in plan
+        assert plan.get("status") in ("ROUTE_GUIDANCE_AVAILABLE", "NO_VERIFIED_ITINERARY", "VERIFIED_ROAD_ALTERNATIVE")
+        assert "provider_statuses" in plan

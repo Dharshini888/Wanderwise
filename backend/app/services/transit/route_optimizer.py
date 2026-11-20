@@ -13,7 +13,7 @@ import uuid
 
 logger = logging.getLogger(__name__)
 
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, timezone
 import uuid
 import re
 import math
@@ -204,29 +204,43 @@ class RouteOptimizer:
         dur_source = f"{provider}"
         is_overnight = False
 
-        if dep_dt:
-            if dep_dt.tzinfo is not None:
-                dep_dt = dep_dt.astimezone(KOLKATA_TZ)
-            else:
-                dep_dt = dep_dt.replace(tzinfo=KOLKATA_TZ)
-            dep_dt = dep_dt.replace(second=0, microsecond=0)
+        is_flight_route = (provider == "FlightProvider") or ((raw_itinerary.get("mode") or mode or "").lower() in ("flight", "commercial flight"))
 
-        if arr_dt:
-            if arr_dt.tzinfo is not None:
-                arr_dt = arr_dt.astimezone(KOLKATA_TZ)
-            else:
-                arr_dt = arr_dt.replace(tzinfo=KOLKATA_TZ)
-            arr_dt = arr_dt.replace(second=0, microsecond=0)
+        if not is_flight_route:
+            if dep_dt:
+                if dep_dt.tzinfo is not None:
+                    dep_dt = dep_dt.astimezone(KOLKATA_TZ)
+                else:
+                    dep_dt = dep_dt.replace(tzinfo=KOLKATA_TZ)
+                dep_dt = dep_dt.replace(second=0, microsecond=0)
+
+            if arr_dt:
+                if arr_dt.tzinfo is not None:
+                    arr_dt = arr_dt.astimezone(KOLKATA_TZ)
+                else:
+                    arr_dt = arr_dt.replace(tzinfo=KOLKATA_TZ)
+                arr_dt = arr_dt.replace(second=0, microsecond=0)
+        else:
+            # Preserve authentic origin and destination airport local timezones
+            if dep_dt:
+                dep_dt = dep_dt.replace(second=0, microsecond=0)
+            if arr_dt:
+                arr_dt = arr_dt.replace(second=0, microsecond=0)
 
         if dep_dt and arr_dt:
-            # Overnight adjustment: if arrival time <= departure time, add +1 day
-            if arr_dt <= dep_dt:
+            # Duration calculation in UTC across any international timezone boundary
+            dep_utc = dep_dt.astimezone(timezone.utc) if dep_dt.tzinfo else dep_dt.replace(tzinfo=timezone.utc)
+            arr_utc = arr_dt.astimezone(timezone.utc) if arr_dt.tzinfo else arr_dt.replace(tzinfo=timezone.utc)
+
+            # Overnight adjustment: if arrival time <= departure time in UTC, add +1 day
+            if arr_utc <= dep_utc:
                 arr_dt += timedelta(days=1)
+                arr_utc += timedelta(days=1)
                 is_overnight = True
             elif arr_dt.date() > dep_dt.date():
                 is_overnight = True
 
-            calc_min = (arr_dt - dep_dt).total_seconds() / 60.0
+            calc_min = (arr_utc - dep_utc).total_seconds() / 60.0
             if calc_min > 0:
                 dur_min = round(calc_min, 1)
                 dur_source = f"{provider} (Calculated from timestamps)"
@@ -244,7 +258,7 @@ class RouteOptimizer:
                 dep_dt = departure_time.astimezone(KOLKATA_TZ) if departure_time.tzinfo else departure_time.replace(tzinfo=KOLKATA_TZ)
             elif isinstance(departure_time, str):
                 dep_dt = RouteOptimizer._normalize_provider_time(departure_time, journey_date, target_base_date=target_date)
-                if dep_dt:
+                if dep_dt and not is_flight_route:
                     dep_dt = dep_dt.astimezone(KOLKATA_TZ) if dep_dt.tzinfo else dep_dt.replace(tzinfo=KOLKATA_TZ)
 
             if dep_dt and dur_min and float(dur_min) > 0:
@@ -274,24 +288,26 @@ class RouteOptimizer:
         else:
             dur_min = 10.0
 
-        # Format display strings — always format local station timestamps cleanly in AM/PM format
+        # Format display strings — prefer authentic provider displays with timezones
         dep_time_iso = dep_dt.isoformat() if dep_dt else None
         arr_time_iso = arr_dt.isoformat() if arr_dt else None
 
         prov_dep_display = raw_itinerary.get("departure_time_display")
         prov_arr_display = raw_itinerary.get("arrival_time_display")
 
-        if dep_dt:
-            dep_display = dep_dt.strftime("%I:%M %p").lstrip("0")
-        elif prov_dep_display and prov_dep_display not in ("Unavailable", "None", None):
+        if prov_dep_display and prov_dep_display not in ("Unavailable", "None", None):
             dep_display = prov_dep_display
+        elif dep_dt:
+            tz_str = dep_dt.tzname() if is_flight_route else ""
+            dep_display = f"{dep_dt.strftime('%I:%M %p').lstrip('0')} {tz_str or ''}".strip()
         else:
             dep_display = "Unavailable"
 
-        if arr_dt:
-            arr_display_base = arr_dt.strftime("%I:%M %p").lstrip("0")
-        elif prov_arr_display and prov_arr_display not in ("Unavailable", "None", None):
+        if prov_arr_display and prov_arr_display not in ("Unavailable", "None", None):
             arr_display_base = prov_arr_display
+        elif arr_dt:
+            tz_str = arr_dt.tzname() if is_flight_route else ""
+            arr_display_base = f"{arr_dt.strftime('%I:%M %p').lstrip('0')} {tz_str or ''}".strip()
         else:
             arr_display_base = "Unavailable"
 
@@ -313,7 +329,7 @@ class RouteOptimizer:
         elif provider in ["GTFSLocal", "GTFS", "Transitous"]:
             verification_status = "Schedule Verified"
         elif provider == "FlightProvider":
-            verification_status = "Provider Verified"
+            verification_status = "Partially Verified"
         elif provider == "Transitland":
             verification_status = "Transit Data Verified"
         elif provider == "OSRM":
@@ -374,7 +390,7 @@ class RouteOptimizer:
         arr_source = "calculated_from_provider_duration" if (raw_arr_str is None and arr_dt) else (provider if arr_dt else None)
 
         route_verification = raw_itinerary.get("verification") or {
-            "level": "PROVIDER_VERIFIED" if provider == "FlightProvider" else ("route_calculated" if provider == "OSRM" else ("scheduled" if provider in ("RailRadar", "GTFSLocal", "GTFS", "Transitous") else "realtime_verified")),
+            "level": "PARTIALLY_VERIFIED" if provider == "FlightProvider" else ("route_calculated" if provider == "OSRM" else ("scheduled" if provider in ("RailRadar", "GTFSLocal", "GTFS", "Transitous") else "realtime_verified")),
             "provider": provider,
             "live": bool((raw_itinerary.get("realtime") or {}).get("available")),
         }
@@ -492,7 +508,7 @@ class RouteOptimizer:
                 elif d.tzinfo is None and n.tzinfo is not None:
                     d = d.replace(tzinfo=n.tzinfo)
                 # Evaluates strictly against full timezone-aware timestamps (never bare time strings)
-                if d < (n - timedelta(minutes=15)):
+                if d < n:
                     return True
             except Exception:
                 pass

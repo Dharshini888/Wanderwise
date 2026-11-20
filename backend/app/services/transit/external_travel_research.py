@@ -489,6 +489,96 @@ class ExternalTravelResearchService:
             if primary_d:
                 dest_aps = [primary_d]
 
+        # Check if corridor is a short ground corridor where commercial scheduled flights are not applicable
+        is_same_serving_airport = False
+        if origin_aps and dest_aps:
+            o_iatas = {a["iata"] for a in origin_aps}
+            d_iatas = {a["iata"] for a in dest_aps}
+            if o_iatas and d_iatas and (o_iatas == d_iatas or (len(o_iatas) == 1 and o_iatas.issubset(d_iatas))):
+                is_same_serving_airport = True
+
+        is_short_ground_corridor = (scale_clean == "DOMESTIC") and (dist < 180.0 or is_same_serving_airport)
+
+        if is_short_ground_corridor:
+            # Ground transport corridor: commercial flights are not applicable
+            ground_mins = max(20, int(round(dist / 60.0 * 60.0)))
+            g_h = ground_mins // 60
+            g_m = ground_mins % 60
+            ground_dur_display = f"~{g_h}h {g_m:02d}m (indicative passenger rail / expressway ground travel)" if g_h > 0 else f"~{g_m} mins (indicative ground travel)"
+
+            operators = [
+                {
+                    "name": "Passenger & Express Rail (Indian Railways)" if (origin_country == "India" or dest_country == "India") else "Regional Passenger Rail",
+                    "mode": "Rail",
+                    "type": "Scheduled Public Railway",
+                    "note": f"Frequent express, superfast, and intercity passenger rail services connecting {origin_name} and {dest_name}",
+                },
+                {
+                    "name": "State & Private Express Buses" if (origin_country == "India" or dest_country == "India") else "Intercity Bus Operators",
+                    "mode": "Bus",
+                    "type": "Scheduled Bus Transit",
+                    "note": f"Regular public and private intercity express coaches operating along the highway corridor between {origin_name} and {dest_name}",
+                },
+                {
+                    "name": "Highway Road Transit (Taxi / Driving)",
+                    "mode": "Road",
+                    "type": "On-Demand Road Travel",
+                    "note": f"Direct road connectivity via state/national highways ({dist:.0f} km driving distance)",
+                },
+            ]
+
+            currency = "INR" if (origin_country == "India" or dest_country == "India") else "USD"
+            if currency == "INR":
+                min_fare = 70
+                max_fare = max(250, int(round(dist * 3.5)))
+                fare_display = f"₹{min_fare}–₹{max_fare} (indicative public bus and passenger rail ground fares)"
+            else:
+                min_fare = 8
+                max_fare = max(25, int(round(dist * 0.25)))
+                fare_display = f"${min_fare}–${max_fare} (indicative ground transit fares)"
+
+            return {
+                "category": "EXTERNAL_TRAVEL_RESEARCH",
+                "is_external_research": True,
+                "is_indicative": True,
+                "is_live_quotation": False,
+                "is_confirmed_itinerary": False,
+                "has_commercial_flights": False,
+                "flight_applicability_note": (
+                    f"Ground transport corridor (~{dist:.0f} km). Commercial scheduled flights are not applicable for this short domestic journey. "
+                    "Passenger rail, intercity buses, and road transit provide the primary direct transport."
+                ),
+                "disclaimer": (
+                    "Indicative ground transport guidance only · Not a confirmed itinerary. "
+                    "Fares and travel times are published estimates and should be verified directly with transport operators."
+                ),
+                "origin": origin_name,
+                "destination": dest_name,
+                "scale": scale_clean,
+                "distance_km": dist,
+                "candidate_airports": {
+                    "origin_airports": [],
+                    "destination_airports": [],
+                },
+                "candidate_operators_to_investigate": operators,
+                "indicative_duration_display": ground_dur_display,
+                "indicative_duration_min": ground_mins,
+                "indicative_fare_range": {
+                    "min_amount": min_fare,
+                    "max_amount": max_fare,
+                    "currency": currency,
+                    "display": fare_display,
+                    "note": "Indicative ground transit fare range (passenger rail and intercity buses). Commercial scheduled flights do not operate on this corridor.",
+                },
+                "provenance": {
+                    "source_name": "Official Regional Public Transit & Railway Guide",
+                    "source_url": "https://indianrailways.gov.in" if currency == "INR" else "https://www.nationalrail.co.uk",
+                    "retrieved_at": now_iso,
+                    "category": "EXTERNAL_TRAVEL_RESEARCH",
+                    "verification_status": "UNVERIFIED_EXTERNAL_RESEARCH",
+                },
+            }
+
         # Estimated indicative flight duration
         # Aerodynamic model: (Distance / 750 km/h) * 60 + 35 min runway/climb/approach
         if dist > 300:
